@@ -31,6 +31,8 @@ require("lazy").setup({
     { "tpope/vim-unimpaired" },
     { "daschw/leaf.nvim" },
     { "preservim/nerdtree" },
+    { "ryanoasis/vim-devicons" },
+    { "Xuyuanp/nerdtree-git-plugin" },
     -- f-sharp tooling
     -- { "autozimu/LanguageClient-neovim" },
     { "ionide/Ionide-vim" },
