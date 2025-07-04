@@ -1,0 +1,20 @@
+return { 
+  "Shougo/neosnippet.vim",
+  "Shougo/neosnippet-snippets",
+  "vim-airline/vim-airline",
+  "mattn/emmet-vim",
+  "tpope/vim-fugitive",
+  "airblade/vim-gitgutter",
+  "OmniSharp/omnisharp-vim",
+  "tpope/vim-repeat",
+  "tpope/vim-sensible",
+  "tpope/vim-surround",
+  "godlygeek/tabular",
+  "tpope/vim-unimpaired",
+  "ryanoasis/vim-devicons",
+  "Xuyuanp/nerdtree-git-plugin",
+  -- f-sharp tooling
+  -- "autozimu/LanguageClient-neovim", branch = "next", build = "bash install.sh",
+  "ionide/Ionide-vim",
+  "junegunn/fzf",
+}

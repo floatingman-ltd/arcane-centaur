@@ -1,34 +1,46 @@
+-- alias'
+local global = vim.g
+local o = vim.opt
+
 -- Hint: use `:h <option>` to figure out the meaning if needed
-vim.opt.clipboard = 'unnamedplus'   -- use system clipboard 
-vim.opt.completeopt = {'menu', 'menuone', 'noselect'}
-vim.opt.mouse = 'a'                 -- allow the mouse to be used in Nvim
+o.clipboard = 'unnamedplus'   -- use system clipboard 
+o.completeopt = {'menu', 'menuone', 'noselect'}
+o.mouse = 'a'                 -- allow the mouse to be used in Nvim
 
 -- Tab
-vim.opt.tabstop = 4                 -- number of visual spaces per TAB
-vim.opt.softtabstop = 4             -- number of spacesin tab when editing
-vim.opt.shiftwidth = 4              -- insert 4 spaces on a tab
-vim.opt.expandtab = true            -- tabs are spaces, mainly because of python
-vim.opt.smartindent = true          -- syntax based indents
+o.tabstop = 2                 -- number of visual spaces per TAB
+o.softtabstop = 2             -- number of spacesin tab when editing
+o.shiftwidth = 2              -- insert 4 spaces on a tab
+o.expandtab = true            -- tabs are spaces, mainly because of python
+o.smartindent = true          -- syntax based indents
+o.autoindent = true
 
 -- UI config
-vim.opt.number = true               -- show absolute number
-vim.opt.relativenumber = true       -- add numbers to each line on the left side
-vim.opt.cursorline = true           -- highlight cursor line underneath the cursor horizontally
-vim.opt.splitbelow = true           -- open new vertical split bottom
-vim.opt.splitright = true           -- open new horizontal splits right
--- vim.opt.termguicolors = true        -- enabl 24-bit RGB color in the TUI
-vim.opt.showmode = false            -- we are experienced, wo don't need the "-- INSERT --" mode hint
+o.number = true               -- show absolute number
+o.relativenumber = true       -- add numbers to each line on the left side
+o.cursorline = true           -- highlight cursor line underneath the cursor horizontally
+o.splitbelow = true           -- open new vertical split bottom
+o.splitright = true           -- open new horizontal splits right
+-- o.termguicolors = true        -- enabl 24-bit RGB color in the TUI
+o.showmode = false            -- we are experienced, wo don't need the "-- INSERT --" mode hint
 
 -- Searching
-vim.opt.incsearch = true            -- search as characters are entered
-vim.opt.hlsearch = false            -- do not highlight matches
-vim.opt.ignorecase = true           -- ignore case in searches by default
-vim.opt.smartcase = true            -- but make it case sensitive if an uppercase is entered
+o.incsearch = true            -- search as characters are entered
+o.hlsearch = false            -- do not highlight matches
+o.ignorecase = true           -- ignore case in searches by default
+o.smartcase = true            -- but make it case sensitive if an uppercase is entered
 
-vim.opt.scrolloff = 8               -- an 8 line vertical margin
-vim.opt.signcolumn = "yes"          -- disable the ugly column
-vim.opt.colorcolumn = ""
+o.scrolloff = 8               -- an 8 line vertical margin
+o.signcolumn = "yes"          -- disable the ugly column
+o.colorcolumn = ""
 
 -- Spelling
-vim.opt.spell = true
-vim.opt.spelllang = "en_ca"
+o.spell = true
+o.spelllang = "en_ca"
+
+-- fsharp
+global['fsharp#fsautocomplete_command'] = {'dotnet','fsautocomplete','--background-service-enabled'}
+-- global['deoplete#enable_at_startup'] = 1
+
+-- pythoin provider
+-- global.python3_host_prog = "/usr/bin/python3"
