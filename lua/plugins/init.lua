@@ -15,6 +15,6 @@ return {
   "Xuyuanp/nerdtree-git-plugin",
   -- f-sharp tooling
   -- "autozimu/LanguageClient-neovim", branch = "next", build = "bash install.sh",
-  "ionide/Ionide-vim",
-  "junegunn/fzf",
+  -- "ionide/Ionide-vim",
+  -- "junegunn/fzf",
 }

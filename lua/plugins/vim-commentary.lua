@@ -1,2 +1,6 @@
-return 
-    { "tpope/vim-commentary" }
+return {
+  "tpope/vim-commentary",
+  keys = {
+    {"<C-/>",":Commentary<CR>"},
+  },
+}
