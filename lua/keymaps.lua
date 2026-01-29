@@ -46,9 +46,9 @@ vim.keymap.set("v", "< S-Tab> ", "< gv")
 -- replace code without placing the replaced text in the clipboard
 vim.keymap.set("x", "< leader> p", "\"_dP")
 
--- NERDTree
-vim.keymap.set("n","<leader>n",":NERDTreeFocus<CR>")
-vim.keymap.set("n","<C-n>",":NERDTree<CR>")
-vim.keymap.set("n","<C-t>",":NERDTreeToggle<CR>")
-vim.keymap.set("n","<C-f>",":NERDTreeFind<CR>")
+-- NvimTree
+vim.keymap.set("n","<leader>n",":NvimTreeOpen<CR>")
+vim.keymap.set("n","<C-n>",":NvimTreeOpen<CR>")
+vim.keymap.set("n","<C-t>",":NvimTreeToggle<CR>")
+vim.keymap.set("n","<C-f>",":NvimTreeFindFile<CR>")
 
