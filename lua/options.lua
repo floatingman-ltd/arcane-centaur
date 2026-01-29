@@ -39,7 +39,7 @@ o.spell = true
 o.spelllang = "en_ca"
 
 -- fsharp
-global['fsharp#fsautocomplete_command'] = {'dotnet','fsautocomplete','--background-service-enabled'}
+-- global['fsharp#fsautocomplete_command'] = {'dotnet','fsautocomplete','--background-service-enabled'}
 -- global['deoplete#enable_at_startup'] = 1
 
 -- pythoin provider
