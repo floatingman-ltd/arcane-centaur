@@ -1,16 +1,19 @@
 return { 
+  -- copilot
+  "github/copilot.vim",
+  -- general
+  "tpope/vim-repeat",
+  "tpope/vim-sensible",
+  "tpope/vim-surround",
+  "tpope/vim-unimpaired",
+  "vim-airline/vim-airline",
   -- "Shougo/neosnippet.vim",
   -- "Shougo/neosnippet-snippets",
-  "vim-airline/vim-airline",
   -- "mattn/emmet-vim",
   -- "tpope/vim-fugitive",
   -- "airblade/vim-gitgutter",
   -- "OmniSharp/omnisharp-vim",
-  "tpope/vim-repeat",
-  "tpope/vim-sensible",
-  "tpope/vim-surround",
   -- "godlygeek/tabular",
-  "tpope/vim-unimpaired",
   -- "ryanoasis/vim-devicons",
   -- "Xuyuanp/nerdtree-git-plugin",
   -- f-sharp tooling
