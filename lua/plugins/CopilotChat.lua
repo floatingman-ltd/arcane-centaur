@@ -10,8 +10,8 @@ return {
       model = 'gpt-4.1',
       temperature = 0.1,
       window = {
-        layout = 'horizontal',
-        height = 0.25;
+        layout = 'vertical',
+        height = 0.33;
       },
     },
   },
