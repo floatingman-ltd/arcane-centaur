@@ -18,7 +18,8 @@ return {
       function()
         require("conform").format({ async = true })
       end,
-      desc = "Format buffer",
+      mode = { "n", "v" },
+      desc = "Format buffer (or selection)",
     },
   },
 }
