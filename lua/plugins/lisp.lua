@@ -33,6 +33,7 @@ return {
     ft = { "lisp", "clojure", "scheme", "fennel" },
     config = function()
       local rainbow_delimiters = require("rainbow-delimiters")
+      -- Empty string key "" sets the default for all filetypes
       vim.g.rainbow_delimiters = {
         strategy = {
           [""] = rainbow_delimiters.strategy["global"],

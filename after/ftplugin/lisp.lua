@@ -4,7 +4,7 @@ local o = vim.opt_local
 
 -- Lisp indentation
 o.lisp = true
-o.lispwords:append("defun,defmacro,defmethod,defgeneric,defclass,define,lambda,let,let*,letrec")
+o.lispwords:append("defmethod,defgeneric,defclass,define,letrec")
 
 -- Disable spell checking in code (comments are still checked)
 o.spell = false
