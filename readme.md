@@ -172,6 +172,37 @@ Leader key is **Space**.
 | F# | ✅ | — | — | — |
 | Haskell | — | ✅ haskell-tools | ✅ GHCi | — |
 
+## Copilot Model Configuration
+
+This config ships two Copilot plugins, each with its own model setting.
+
+### Inline completions — `github/copilot.vim`
+
+Edit `lua/plugins/init.lua` and change the `vim.g.copilot_model` value:
+
+```lua
+config = function()
+  vim.g.copilot_model = "gpt-4o"   -- change to any supported model
+end,
+```
+
+Common values: `"gpt-4o"`, `"gpt-4.1"`, `"claude-sonnet-4-5"`.
+
+### Chat — `CopilotC-Nvim/CopilotChat.nvim`
+
+Edit `lua/plugins/CopilotChat.lua` and change the `model` field inside `opts`:
+
+```lua
+opts = {
+  model = 'claude-opus-4-5',   -- change to any supported model
+  ...
+}
+```
+
+Common values: `"gpt-4o"`, `"gpt-4.1"`, `"claude-opus-4-5"`, `"claude-sonnet-4-5"`.
+
+You can also switch models interactively inside a chat buffer with the `/model` command.
+
 ## Plugin Overview
 
 Plugins are managed by [lazy.nvim](https://github.com/folke/lazy.nvim) and organized in `lua/plugins/`:

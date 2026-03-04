@@ -1,6 +1,13 @@
 return { 
   -- copilot
-  "github/copilot.vim",
+  -- Change vim.g.copilot_model to switch the inline-completion model,
+  -- e.g. "gpt-4o", "gpt-4.1", or "claude-sonnet-4-5".
+  {
+    "github/copilot.vim",
+    config = function()
+      vim.g.copilot_model = "gpt-4o"
+    end,
+  },
   -- general
   "tpope/vim-repeat",
   "tpope/vim-sensible",

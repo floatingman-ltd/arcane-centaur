@@ -7,7 +7,9 @@ return {
     },
     build = "make tiktoken",
     opts = {
-      model = 'Claude Opus 4.5',
+      -- Change `model` to switch the CopilotChat model,
+      -- e.g. "gpt-4o", "gpt-4.1", "claude-opus-4-5", or "claude-sonnet-4-5".
+      model = 'claude-opus-4-5',
       temperature = 0.1,
       window = {
         layout = 'vertical',
