@@ -9,6 +9,10 @@ return {
     config = function()
       -- Prefix for all Conjure mappings
       vim.g["conjure#mapping#prefix"] = "<localleader>"
+
+      -- Common Lisp Swank connection (default port used by swank:create-server)
+      vim.g["conjure#client#common_lisp#swank#connection#default_host"] = "127.0.0.1"
+      vim.g["conjure#client#common_lisp#swank#connection#default_port"] = "4005"
     end,
   },
 

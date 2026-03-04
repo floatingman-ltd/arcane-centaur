@@ -40,7 +40,7 @@ All four plugins lazy-load only when you open a **Lisp**, **Clojure**, **Scheme*
 
    ```sh
    # Common Lisp (SBCL via Swank)
-   sbcl --load ~/.quicklisp/setup.lisp --eval '(ql:quickload :swank)' --eval '(swank:create-server)'
+   sbcl --load ~/.quicklisp/setup.lisp --eval '(ql:quickload :swank)' --eval '(swank:create-server :dont-close t)'
 
    # Clojure (nREPL)
    clj -Sdeps '{:deps {nrepl/nrepl {:mvn/version "1.0.0"} cider/cider-nrepl {:mvn/version "0.30.0"}}}' -M -m nrepl.cmdline --middleware '["cider.nrepl/cider-middleware"]'
