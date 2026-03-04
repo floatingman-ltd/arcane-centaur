@@ -1,6 +1,2 @@
-require("nvim-treesitter.configs").setup {
-  ensure_installed = { "lisp" },
-  highlight = {
-    enable = true,
-  },
-}
+-- Treesitter configuration is managed by lazy.nvim in lua/plugins/init.lua
+-- This file is kept for reference only.
