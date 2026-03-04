@@ -52,3 +52,6 @@ vim.keymap.set("n","<C-n>",":NvimTreeOpen<CR>")
 vim.keymap.set("n","<C-t>",":NvimTreeToggle<CR>")
 vim.keymap.set("n","<C-f>",":NvimTreeFindFile<CR>")
 
+-- Copilot chat
+vim.api.nvim_set_keymap("i", "<C-J>", 'copilot#Accept("<CR>")', { silent = true, expr = true })
+vim.api.nvim_set_keymap("n", "<leader>c", "<C-w> h", {noremap = true, silent = true})
