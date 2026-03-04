@@ -7,14 +7,16 @@ return {
   "tpope/vim-surround",
   "tpope/vim-unimpaired",
   "vim-airline/vim-airline",
-  -- lisp
-  {"guns/vim-sexp", ft = {"lisp", "clojure", "scheme"}},
+  -- treesitter
   {
     "nvim-treesitter/nvim-treesitter", 
     build = ":TSUpdate",
     opts = {
-      ensure_installed = {"lisp", "clojure", "lua", "fsharp", "vim"},
+      ensure_installed = {"lisp", "clojure", "scheme", "lua", "fsharp", "vim"},
       highlight = {
+        enable = true,
+      },
+      indent = {
         enable = true,
       },
     },
