@@ -87,6 +87,20 @@ All four plugins lazy-load only when you open a **Lisp**, **Clojure**, **Scheme*
 
 5. **Parinfer** runs in the background — just adjust indentation and parens follow. No keys needed.
 
+6. **Stop the Swank server** when you are done (Common Lisp only):
+
+   From within Neovim, evaluate the following with `,ee` (cursor on the form) or `,eb` (entire buffer):
+
+   ```lisp
+   (swank:stop-server 4005)
+   ```
+
+   Alternatively, switch to the terminal running SBCL and call the same form at the REPL prompt, or quit the process entirely:
+
+   ```lisp
+   (quit)
+   ```
+
 ### Typical Workflow
 
 ```
