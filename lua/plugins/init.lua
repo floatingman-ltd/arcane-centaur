@@ -7,6 +7,31 @@ return {
   "tpope/vim-surround",
   "tpope/vim-unimpaired",
   "vim-airline/vim-airline",
+  -- lisp
+  {"guns/vim-sexp", ft = {"lisp", "clojure", "scheme"}},
+  {
+    "nvim-treesitter/nvim-treesitter", 
+    build = ":TSUpdate",
+    opts = {
+      ensure_installed = {"lisp", "clojure", "lua", "fsharp", "vim"},
+      highlight = {
+        enable = true,
+      },
+    },
+  },
+  {"neovim/nvim-lspconfig"},
+  {
+    "hrsh7th/nvim-cmp",
+    dependencies = {
+      "hrsh7th/cmp-nvim-lsp",
+      "hrsh7th/cmp-buffer",
+      "hrsh7th/cmp-path",
+      "hrsh7th/cmp-cmdline",
+      "saadparwaiz1/cmp_luasnip",
+    },
+  },
+
+-- other
   -- "Shougo/neosnippet.vim",
   -- "Shougo/neosnippet-snippets",
   -- "mattn/emmet-vim",

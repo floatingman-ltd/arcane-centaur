@@ -7,7 +7,7 @@ return {
     },
     build = "make tiktoken",
     opts = {
-      model = 'gpt-4.1',
+      model = 'Claude Opus 4.5',
       temperature = 0.1,
       window = {
         layout = 'vertical',
