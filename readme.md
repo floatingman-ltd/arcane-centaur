@@ -34,6 +34,8 @@ This configuration is built around an interactive, REPL-driven Lisp workflow. Fo
 
 All four plugins lazy-load only when you open a **Lisp**, **Clojure**, **Scheme**, or **Fennel** file.
 
+[conform.nvim](https://github.com/stevearc/conform.nvim) is also loaded for these filetypes and provides **format-on-save** as well as a manual **`<leader>f`** keybinding (normal and visual mode) to reformat the current buffer or selection.
+
 ### Quick Start
 
 1. **Start your REPL** in a terminal (Conjure connects to it):
@@ -142,6 +144,7 @@ Leader key is **Space**.
 | `Ctrl-t` | Normal | Toggle file tree |
 | `Ctrl-f` | Normal | Find current file in tree |
 | `Ctrl-j` | Insert | Accept Copilot suggestion |
+| `<leader>f` | Normal / Visual | Format buffer (or selection) |
 
 ## Supported Languages
 
@@ -167,6 +170,7 @@ Plugins are managed by [lazy.nvim](https://github.com/folke/lazy.nvim) and organ
 | `fzf-lua.lua` | Fuzzy finder |
 | `nvim-tree.lua` | File explorer tree |
 | `vim-commentary.lua` | Toggle comments with `gcc` |
+| `conform.lua` | Formatting (format-on-save + `<leader>f`) for Lisp filetypes |
 
 ## Project Structure
 
@@ -186,6 +190,7 @@ lua/
     fzf-lua.lua             # Fuzzy finder
     nvim-tree.lua           # File tree
     vim-commentary.lua      # Comment toggling
+    conform.lua             # Formatting for Lisp filetypes
 after/ftplugin/
   lisp.lua                  # Lisp indent settings & lispwords
   clojure.lua               # Clojure indent settings
