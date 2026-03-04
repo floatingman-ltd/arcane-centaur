@@ -178,11 +178,14 @@ This config ships two Copilot plugins, each with its own model setting.
 
 ### Inline completions — `github/copilot.vim`
 
-Edit `lua/plugins/init.lua` and change the `vim.g.copilot_model` value:
+Edit `lua/plugins/copilot.lua` and uncomment the desired `vim.g.copilot_model` line:
 
 ```lua
 config = function()
-  vim.g.copilot_model = "gpt-4o"   -- change to any supported model
+  vim.g.copilot_model = "gpt-4o"         -- active
+  -- vim.g.copilot_model = "gpt-4.1"
+  -- vim.g.copilot_model = "claude-sonnet-4-5"
+  -- vim.g.copilot_model = "claude-opus-4-5"
 end,
 ```
 
@@ -194,7 +197,10 @@ Edit `lua/plugins/CopilotChat.lua` and change the `model` field inside `opts`:
 
 ```lua
 opts = {
-  model = 'claude-opus-4-5',   -- change to any supported model
+  model = 'claude-opus-4-5',       -- active
+  -- model = 'claude-sonnet-4-5',
+  -- model = 'gpt-4o',
+  -- model = 'gpt-4.1',
   ...
 }
 ```
@@ -209,7 +215,10 @@ Plugins are managed by [lazy.nvim](https://github.com/folke/lazy.nvim) and organ
 
 | File | Plugins |
 |---|---|
-| `init.lua` | Copilot, vim-repeat, vim-sensible, vim-surround, vim-unimpaired, airline, treesitter, lspconfig, nvim-cmp |
+| `init.lua` | vim-repeat, vim-sensible, vim-surround, vim-unimpaired, airline, lspconfig |
+| `copilot.lua` | Copilot inline completions |
+| `treesitter.lua` | nvim-treesitter |
+| `nvim-cmp.lua` | nvim-cmp + completion sources |
 | `lisp.lua` | Conjure, vim-sexp, nvim-parinfer, rainbow-delimiters |
 | `CopilotChat.lua` | Copilot Chat integration |
 | `fzf-lua.lua` | Fuzzy finder |
@@ -227,9 +236,12 @@ lua/
   loader/init.lua           # lazy.nvim bootstrap
   config/
     lsp.lua                 # LSP server setup (cl_lsp)
-    treesitter.lua          # (config managed in plugins/init.lua)
+    treesitter.lua          # (config managed in plugins/treesitter.lua)
   plugins/
-    init.lua                # Core plugins
+    init.lua                # Bare-string plugins (tpope, airline, lspconfig)
+    copilot.lua             # Copilot inline completions + model setting
+    treesitter.lua          # nvim-treesitter
+    nvim-cmp.lua            # Completion engine + sources
     lisp.lua                # Lisp ecosystem plugins
     CopilotChat.lua         # AI chat
     fzf-lua.lua             # Fuzzy finder
