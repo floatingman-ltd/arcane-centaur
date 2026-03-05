@@ -15,3 +15,6 @@ end
 
 -- Common Lisp LSP
 lspconfig.cl_lsp.setup{ on_attach = on_attach }
+
+-- F# LSP (requires: dotnet tool install -g fsautocomplete)
+lspconfig.fsautocomplete.setup{ on_attach = on_attach }

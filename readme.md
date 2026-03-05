@@ -20,6 +20,8 @@ On first launch, [lazy.nvim](https://github.com/folke/lazy.nvim) will bootstrap 
 | **build-essential, tree** | General tooling | `sudo apt install build-essential tree -y` |
 | **cl_lsp** | Common Lisp LSP server | Install via Quicklisp or your CL package manager |
 | **A Lisp REPL** | Conjure connects to a running REPL | SBCL, Clojure nREPL, or MIT Scheme (see below) |
+| **.NET SDK ≥ 6** | F# compiler and `dotnet fsi` REPL | <https://dotnet.microsoft.com/download> |
+| **fsautocomplete** | F# LSP server | `dotnet tool install -g fsautocomplete` |
 | **A [Nerd Font][]** *(optional)* | File-type icons in the tree and fuzzy-finder | See below |
 
 [Nerd Font]: https://www.nerdfonts.com/
@@ -216,7 +218,14 @@ All four plugins lazy-load only when you open a **Lisp**, **Clojure**, **Scheme*
 
 ## LSP Support
 
-The Common Lisp LSP (`cl_lsp`) is configured in `lua/config/lsp.lua` with these keybindings (available in any LSP-enabled buffer):
+Two LSP servers are configured in `lua/config/lsp.lua`. Both share the same keybindings (available in any LSP-enabled buffer):
+
+| Server | Language | Notes |
+|---|---|---|
+| `cl_lsp` | Common Lisp | Install via Quicklisp |
+| `fsautocomplete` | F# | `dotnet tool install -g fsautocomplete` |
+
+Keybindings:
 
 | Keys | Action |
 |---|---|
@@ -227,6 +236,65 @@ The Common Lisp LSP (`cl_lsp`) is configured in `lua/config/lsp.lua` with these 
 | `<leader>ca` | Code action |
 | `<leader>e` | Show diagnostic float |
 | `[d` / `]d` | Previous / next diagnostic |
+
+## Working with F#
+
+F# support uses [iron.nvim](https://github.com/Vigemus/iron.nvim) for REPL interaction and `fsautocomplete` for LSP-powered completions, go-to-definition, hover docs, and formatting.
+
+All F# plugins lazy-load only when you open a `.fs`, `.fsx`, or `.fsi` file.
+
+### Quick Start
+
+1. **Ensure prerequisites are installed:**
+
+   ```sh
+   # .NET SDK (includes dotnet fsi)
+   dotnet --version
+
+   # F# language server
+   dotnet tool install -g fsautocomplete
+   ```
+
+2. **Open a source file** — plugins and LSP attach automatically:
+
+   ```sh
+   nvim hello.fs
+   ```
+
+3. **Start the REPL** and send code (local leader is `,`):
+
+   | Keys | Action |
+   |---|---|
+   | `,sl` | Send current line to `dotnet fsi` |
+   | `,sc` | Send motion / visual selection |
+   | `,sp` | Send paragraph |
+   | `,sf` | Send entire file |
+   | `,si` | Interrupt the REPL |
+   | `,sq` | Quit the REPL |
+   | `,cl` | Clear the REPL buffer |
+
+   The REPL opens as a horizontal split at the bottom of the window (40% height).
+
+4. **LSP features** work the same as for Common Lisp — `gd`, `K`, `gr`, `<leader>rn`, `<leader>ca`, `<leader>e`, `[d`/`]d`.
+
+5. **Format on save** is enabled via `conform.nvim` using the fsautocomplete formatter.
+   You can also trigger it manually with `<leader>f`.
+
+### Typical Workflow
+
+```
+ ┌──────────────────────────────────────────────────────┐
+ │  Neovim                                              │
+ │  ┌─────────────────────────┬────────────────────┐   │
+ │  │  hello.fs               │  dotnet fsi REPL   │   │
+ │  │                         │                    │   │
+ │  │  let greet name =       │  > val greet :     │   │
+ │  │    printfn "Hi %s" name │    string -> unit  │   │
+ │  │                         │  > Hi Walt         │   │
+ │  │  ,sl to send line ──────┘                    │   │
+ │  └─────────────────────────┴────────────────────┘   │
+ └──────────────────────────────────────────────────────┘
+```
 
 ## General Keybindings
 
@@ -248,12 +316,12 @@ Leader key is **Space**.
 
 | Language | Treesitter | LSP | REPL (Conjure) | Structural Editing |
 |---|---|---|---|---|
-| Common Lisp | ✅ | ✅ cl_lsp | ✅ Swank | ✅ vim-sexp + parinfer |
-| Clojure | ✅ | — | ✅ nREPL | ✅ vim-sexp + parinfer |
-| Scheme | ✅ | — | ✅ built-in | ✅ vim-sexp + parinfer |
-| Fennel | — | — | ✅ | ✅ parinfer |
+| Common Lisp | ✅ | ✅ cl_lsp | ✅ Swank (Conjure) | ✅ vim-sexp + parinfer |
+| Clojure | ✅ | — | ✅ nREPL (Conjure) | ✅ vim-sexp + parinfer |
+| Scheme | ✅ | — | ✅ built-in (Conjure) | ✅ vim-sexp + parinfer |
+| Fennel | — | — | ✅ (Conjure) | ✅ parinfer |
 | Lua | ✅ | — | — | — |
-| F# | ✅ | — | — | — |
+| F# | ✅ | ✅ fsautocomplete | ✅ dotnet fsi (iron.nvim) | — |
 | Haskell | — | ✅ haskell-tools | ✅ GHCi | — |
 
 ## Copilot Model Configuration
@@ -308,7 +376,8 @@ Plugins are managed by [lazy.nvim](https://github.com/folke/lazy.nvim) and organ
 | `fzf-lua.lua` | Fuzzy finder |
 | `nvim-tree.lua` | File explorer tree |
 | `vim-commentary.lua` | Toggle comments with `gcc` |
-| `conform.lua` | Formatting (format-on-save + `<leader>f`) for Lisp filetypes |
+| `fsharp.lua` | iron.nvim REPL integration for F# (`dotnet fsi`) |
+| `conform.lua` | Formatting (format-on-save + `<leader>f`) for Lisp and F# filetypes |
 
 ## Project Structure
 
@@ -319,7 +388,7 @@ lua/
   keymaps.lua               # Global keybindings
   loader/init.lua           # lazy.nvim bootstrap
   config/
-    lsp.lua                 # LSP server setup (cl_lsp)
+    lsp.lua                 # LSP server setup (cl_lsp, fsautocomplete)
     terminal.lua            # Terminal detection & capability flags
     treesitter.lua          # (config managed in plugins/treesitter.lua)
   plugins/
@@ -328,14 +397,16 @@ lua/
     treesitter.lua          # nvim-treesitter
     nvim-cmp.lua            # Completion engine + sources
     lisp.lua                # Lisp ecosystem plugins
+    fsharp.lua              # F# REPL via iron.nvim (dotnet fsi)
     CopilotChat.lua         # AI chat
     fzf-lua.lua             # Fuzzy finder
     nvim-tree.lua           # File tree
     vim-commentary.lua      # Comment toggling
-    conform.lua             # Formatting for Lisp filetypes
+    conform.lua             # Formatting for Lisp and F# filetypes
 after/ftplugin/
   lisp.lua                  # Lisp indent settings & lispwords
   clojure.lua               # Clojure indent settings
   scheme.lua                # Scheme indent settings
+  fsharp.lua                # F# indent settings (4-space) & localleader
   haskell.lua               # Haskell-tools keybindings
 ```
