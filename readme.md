@@ -24,47 +24,50 @@ On first launch, [lazy.nvim](https://github.com/folke/lazy.nvim) will bootstrap 
 
 [Nerd Font]: https://www.nerdfonts.com/
 
-### Recommended Terminal — WezTerm
+### Recommended Terminal — GNOME Terminal
 
-[WezTerm](https://wezfurlong.org/wezterm/) is the recommended terminal
-emulator for this configuration.  It is GPU-accelerated, cross-platform
-(Linux / macOS / Windows), and written in Rust.  Key features:
+[GNOME Terminal](https://help.gnome.org/users/gnome-terminal/stable/) is the
+default terminal emulator for this configuration.  It ships with most GNOME-based
+Linux distributions and is powered by the VTE library.  Key features:
 
-* **Full Nerd Font support** — icons render correctly out of the box once
-  a Nerd Font is selected.
-* **Undercurl rendering** — curly underlines for spell-check and diagnostic
-  highlights work without fallbacks.
-* **True-colour & ligatures** — 24-bit colour and font ligatures are
-  supported natively.
-* **Lua-based configuration** — settings live in `~/.wezterm.lua`, which
-  pairs well with this Neovim config.
+* **Nerd Font support** — icons render correctly once a Nerd Font is installed
+  and selected as the profile font (*Preferences → Profiles → Custom font*).
+* **True-colour support** — 24-bit RGB colour is supported natively.
+* **System integration** — tightly integrated with the GNOME desktop
+  environment, no additional installation required on Ubuntu/Fedora/Debian.
 
-#### Installing WezTerm
+GNOME Terminal does **not** auto-detect Nerd Font usage (see [Terminal
+Auto-Detection](#terminal-auto-detection) below).  After installing a Nerd
+Font, set the override in `lua/options.lua`:
+
+```lua
+vim.g.have_nerd_font = true
+```
+
+#### Installing GNOME Terminal
+
+GNOME Terminal is pre-installed on most GNOME-based distributions.  If it is
+not present:
 
 | Platform | Command |
 |---|---|
-| **Ubuntu / Debian** | See [WezTerm APT instructions](https://wezfurlong.org/wezterm/install/linux.html#__tabbed_1_1) — add the APT repo, then `sudo apt install wezterm` |
-| **Fedora** | See [WezTerm COPR instructions](https://wezfurlong.org/wezterm/install/linux.html#__tabbed_1_2) — enable the COPR repo, then `sudo dnf install wezterm` |
-| **Arch Linux** | `sudo pacman -S wezterm` |
-| **macOS (Homebrew)** | `brew install --cask wezterm` |
-| **Windows (Scoop)** | `scoop install wezterm` |
-| **Flatpak** | `flatpak install flathub org.wezfurlong.wezterm` |
+| **Ubuntu / Debian** | `sudo apt install gnome-terminal` |
+| **Fedora** | `sudo dnf install gnome-terminal` |
+| **Arch Linux** | `sudo pacman -S gnome-terminal` |
 
-After installing, set a Nerd Font in your WezTerm config (`~/.wezterm.lua`):
+#### Secondary Terminal — TTY Console
 
-```lua
-local wezterm = require("wezterm")
-local config = wezterm.config_builder()
+The Linux TTY console (accessed with **Ctrl+Alt+F2** through **F6**) is
+supported as a secondary terminal.  It is useful in minimal or headless
+environments where no graphical display is available.
 
-config.font = wezterm.font("JetBrainsMono Nerd Font")  -- adjust to match your installed font
-config.font_size = 12.0
-
-return config
-```
+Keep in mind that the TTY console does not support Nerd Font glyphs or
+24-bit colour, so icon-based plugins fall back to plain Unicode glyphs
+automatically.  Undercurl is rendered as a plain underline.
 
 > **Other terminals that work well:** [Alacritty](https://alacritty.org/)
-> also has full Nerd Font and undercurl support.  The Neovim config auto-detects
-> both and enables the appropriate features.
+> also has full Nerd Font and undercurl support.  The Neovim config
+> auto-detects it and enables the appropriate features.
 
 #### Nerd Font Setup
 
@@ -78,8 +81,8 @@ To install a Nerd Font:
 1. Download a Nerd Font (e.g. *JetBrainsMono Nerd Font*) from
    <https://www.nerdfonts.com/font-downloads>.
 2. Install it system-wide or for the current user.
-3. Select it in your terminal emulator (see the WezTerm example above, or
-   GNOME Terminal: *Preferences → Profiles → Custom font*).
+3. Select it in your terminal emulator (GNOME Terminal: *Preferences → Profiles → Custom font*,
+   or see your terminal's documentation).
 
 #### Terminal Auto-Detection
 
@@ -89,9 +92,9 @@ adjusts its behaviour:
 
 | Terminal | Nerd Font icons | Undercurl | Notes |
 |---|---|---|---|
-| **WezTerm** | ✅ auto-enabled | ✅ native | Recommended |
+| **GNOME Terminal** (VTE) | ❌ fallback glyphs | ❌ → underline | **Default** — set `vim.g.have_nerd_font = true` in `lua/options.lua` after installing a Nerd Font |
+| **TTY Console** | ❌ fallback glyphs | ❌ → underline | Secondary — no graphical font support |
 | **Alacritty** | ✅ auto-enabled | ✅ native | |
-| **GNOME Terminal** (VTE) | ❌ fallback glyphs | ❌ → underline | Set `vim.g.have_nerd_font = true` in `lua/options.lua` to override |
 | **Other / unknown** | ❌ fallback glyphs | ❌ → underline | Override as above if your terminal supports Nerd Fonts |
 
 Detection logic lives in `lua/config/terminal.lua`.  If the auto-detection is
