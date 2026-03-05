@@ -309,7 +309,7 @@ Leader key is **Space**.
 | `Ctrl-t` | Normal | Toggle file tree |
 | `Ctrl-f` | Normal | Find current file in tree |
 | `Ctrl-j` | Insert | Accept full Copilot suggestion |
-| `Ctrl-.` | Insert | Accept next word of Copilot suggestion |
+| `Alt-f` | Insert | Accept next word of Copilot suggestion |
 | `<leader>f` | Normal / Visual | Format buffer (or selection) |
 
 ## Supported Languages

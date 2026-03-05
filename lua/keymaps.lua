@@ -30,15 +30,15 @@ vim.keymap.set('n', '<C-Right>', ':vertical resize +2<CR>', opts)
 vim.keymap.set('v', '<', '<gv', opts)
 vim.keymap.set('v', '>', '>gv', opts)
 
--- The following command let's you move up and down the selected code as a block. 
--- It even correctly indents the code if, for example, you are moving some code 
--- inside an if statement. To use it, simply select the code in visual mode and 
+-- The following command let's you move up and down the selected code as a block.
+-- It even correctly indents the code if, for example, you are moving some code
+-- inside an if statement. To use it, simply select the code in visual mode and
 -- press Shift + Up or Shift + Down.
 vim.keymap.set("v", "< S-Down> ", ":m '> +1< CR> gv=gv")
 vim.keymap.set("v", "< S-Up> ", ":m '<-2< CR> gv=gv")
 
 -- This command is from my VSCode days, and I got used to indent an unindent the
--- code with Tab and Shift + Tab. It simply indents the code and then reselects 
+-- code with Tab and Shift + Tab. It simply indents the code and then reselects
 -- the previous selection.
 vim.keymap.set("v", "< Tab> ", "> gv")
 vim.keymap.set("v", "< S-Tab> ", "< gv")
@@ -55,5 +55,6 @@ vim.keymap.set("n","<C-f>",":NvimTreeFindFile<CR>")
 -- Copilot chat
 vim.api.nvim_set_keymap("i", "<C-J>", 'copilot#Accept("<CR>")', { silent = true, expr = true })
 -- Accept only the next word of a Copilot suggestion (instead of the whole completion)
-vim.api.nvim_set_keymap("i", "<C-.>", 'copilot#AcceptWord()', { silent = true, expr = true })
+-- <M-f> follows the readline/Emacs "Alt-f = forward word" convention — same semantic intent.
+vim.api.nvim_set_keymap("i", "<M-f>", 'copilot#AcceptWord()', { silent = true, expr = true })
 vim.api.nvim_set_keymap("n", "<leader>c", "<C-w> h", {noremap = true, silent = true})
