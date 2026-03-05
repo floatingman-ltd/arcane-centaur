@@ -20,6 +20,86 @@ On first launch, [lazy.nvim](https://github.com/folke/lazy.nvim) will bootstrap 
 | **build-essential, tree** | General tooling | `sudo apt install build-essential tree -y` |
 | **cl_lsp** | Common Lisp LSP server | Install via Quicklisp or your CL package manager |
 | **A Lisp REPL** | Conjure connects to a running REPL | SBCL, Clojure nREPL, or MIT Scheme (see below) |
+| **A [Nerd Font][]** *(optional)* | File-type icons in the tree and fuzzy-finder | See below |
+
+[Nerd Font]: https://www.nerdfonts.com/
+
+### Recommended Terminal — WezTerm
+
+[WezTerm](https://wezfurlong.org/wezterm/) is the recommended terminal
+emulator for this configuration.  It is GPU-accelerated, cross-platform
+(Linux / macOS / Windows), and written in Rust.  Key features:
+
+* **Full Nerd Font support** — icons render correctly out of the box once
+  a Nerd Font is selected.
+* **Undercurl rendering** — curly underlines for spell-check and diagnostic
+  highlights work without fallbacks.
+* **True-colour & ligatures** — 24-bit colour and font ligatures are
+  supported natively.
+* **Lua-based configuration** — settings live in `~/.wezterm.lua`, which
+  pairs well with this Neovim config.
+
+#### Installing WezTerm
+
+| Platform | Command |
+|---|---|
+| **Ubuntu / Debian** | See [WezTerm APT instructions](https://wezfurlong.org/wezterm/install/linux.html#__tabbed_1_1) — add the APT repo, then `sudo apt install wezterm` |
+| **Fedora** | See [WezTerm COPR instructions](https://wezfurlong.org/wezterm/install/linux.html#__tabbed_1_2) — enable the COPR repo, then `sudo dnf install wezterm` |
+| **Arch Linux** | `sudo pacman -S wezterm` |
+| **macOS (Homebrew)** | `brew install --cask wezterm` |
+| **Windows (Scoop)** | `scoop install wezterm` |
+| **Flatpak** | `flatpak install flathub org.wezfurlong.wezterm` |
+
+After installing, set a Nerd Font in your WezTerm config (`~/.wezterm.lua`):
+
+```lua
+local wezterm = require("wezterm")
+local config = wezterm.config_builder()
+
+config.font = wezterm.font("JetBrainsMono Nerd Font")  -- adjust to match your installed font
+config.font_size = 12.0
+
+return config
+```
+
+> **Other terminals that work well:** [Alacritty](https://alacritty.org/)
+> also has full Nerd Font and undercurl support.  The Neovim config auto-detects
+> both and enables the appropriate features.
+
+#### Nerd Font Setup
+
+`nvim-tree` and `fzf-lua` can display file-type icons when a patched
+[Nerd Font](https://www.nerdfonts.com/) is installed **and** selected as the
+terminal font.  Without one the config automatically falls back to plain
+Unicode glyphs, so icons are entirely optional.
+
+To install a Nerd Font:
+
+1. Download a Nerd Font (e.g. *JetBrainsMono Nerd Font*) from
+   <https://www.nerdfonts.com/font-downloads>.
+2. Install it system-wide or for the current user.
+3. Select it in your terminal emulator (see the WezTerm example above, or
+   GNOME Terminal: *Preferences → Profiles → Custom font*).
+
+#### Terminal Auto-Detection
+
+The configuration automatically detects which terminal emulator is running
+(via `$TERM_PROGRAM`, `$VTE_VERSION`, and related environment variables) and
+adjusts its behaviour:
+
+| Terminal | Nerd Font icons | Undercurl | Notes |
+|---|---|---|---|
+| **WezTerm** | ✅ auto-enabled | ✅ native | Recommended |
+| **Alacritty** | ✅ auto-enabled | ✅ native | |
+| **GNOME Terminal** (VTE) | ❌ fallback glyphs | ❌ → underline | Set `vim.g.have_nerd_font = true` in `lua/options.lua` to override |
+| **Other / unknown** | ❌ fallback glyphs | ❌ → underline | Override as above if your terminal supports Nerd Fonts |
+
+Detection logic lives in `lua/config/terminal.lua`.  If the auto-detection is
+wrong for your setup you can still force the flag in `lua/options.lua`:
+
+```lua
+vim.g.have_nerd_font = true   -- or false
+```
 
 ## Working with Lisp
 
@@ -237,6 +317,7 @@ lua/
   loader/init.lua           # lazy.nvim bootstrap
   config/
     lsp.lua                 # LSP server setup (cl_lsp)
+    terminal.lua            # Terminal detection & capability flags
     treesitter.lua          # (config managed in plugins/treesitter.lua)
   plugins/
     init.lua                # Bare-string plugins (tpope, airline, lspconfig)
