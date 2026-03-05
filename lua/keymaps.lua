@@ -58,3 +58,46 @@ vim.api.nvim_set_keymap("i", "<C-J>", 'copilot#Accept("<CR>")', { silent = true,
 -- <M-f> follows the readline/Emacs "Alt-f = forward word" convention — same semantic intent.
 vim.api.nvim_set_keymap("i", "<M-f>", 'copilot#AcceptWord()', { silent = true, expr = true })
 vim.api.nvim_set_keymap("n", "<leader>c", "<C-w> h", {noremap = true, silent = true})
+
+-----------------
+-- Terminal    --
+-----------------
+
+-- Toggle a persistent bottom terminal split with <leader>t.
+-- The terminal buffer is reused across toggles so shell history is preserved.
+local term_buf = -1
+local term_win = -1
+
+local function toggle_terminal()
+  -- If the window is still open, close it (hide, don't kill the buffer).
+  if vim.api.nvim_win_is_valid(term_win) then
+    vim.api.nvim_win_close(term_win, false)
+    term_win = -1
+    return
+  end
+
+  -- Open a horizontal split at the bottom, sized to ~30% of the screen.
+  vim.cmd("botright split")
+  vim.cmd("resize " .. math.floor(vim.o.lines * 0.30))
+
+  if vim.api.nvim_buf_is_valid(term_buf) then
+    -- Reuse the existing terminal buffer.
+    vim.api.nvim_set_current_buf(term_buf)
+  else
+    -- First open: start a new terminal.
+    vim.cmd("terminal")
+    term_buf = vim.api.nvim_get_current_buf()
+  end
+
+  term_win = vim.api.nvim_get_current_win()
+  vim.cmd("startinsert")
+end
+
+vim.keymap.set("n", "<leader>t", toggle_terminal, { noremap = true, silent = true, desc = "Toggle terminal split" })
+
+-- Inside the terminal, <C-\><C-n> is the standard Neovim escape to normal mode.
+-- Additionally map <leader>t so you can close the panel from inside the terminal.
+vim.keymap.set("t", "<leader>t", function()
+  vim.cmd("stopinsert")
+  toggle_terminal()
+end, { noremap = true, silent = true, desc = "Toggle terminal split (from terminal)" })
