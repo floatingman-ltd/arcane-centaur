@@ -21,7 +21,7 @@ o.relativenumber = true       -- add numbers to each line on the left side
 o.cursorline = true           -- highlight cursor line underneath the cursor horizontally
 o.splitbelow = true           -- open new vertical split bottom
 o.splitright = true           -- open new horizontal splits right
--- o.termguicolors = true        -- enabl 24-bit RGB color in the TUI
+o.termguicolors = true         -- enable 24-bit RGB color in the TUI
 o.showmode = false            -- we are experienced, wo don't need the "-- INSERT --" mode hint
 
 -- Searching
