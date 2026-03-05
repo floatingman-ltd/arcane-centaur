@@ -54,4 +54,6 @@ vim.keymap.set("n","<C-f>",":NvimTreeFindFile<CR>")
 
 -- Copilot chat
 vim.api.nvim_set_keymap("i", "<C-J>", 'copilot#Accept("<CR>")', { silent = true, expr = true })
+-- Accept only the next word of a Copilot suggestion (instead of the whole completion)
+vim.api.nvim_set_keymap("i", "<C-.>", 'copilot#AcceptWord()', { silent = true, expr = true })
 vim.api.nvim_set_keymap("n", "<leader>c", "<C-w> h", {noremap = true, silent = true})
