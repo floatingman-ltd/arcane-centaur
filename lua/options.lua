@@ -38,8 +38,10 @@ o.colorcolumn = ""
 o.spell = true
 o.spelllang = "en_ca"
 
--- Set to true if you have a Nerd Font installed and selected in your terminal
-global.have_nerd_font = false
+-- Nerd Font support — auto-detected from the terminal emulator.
+-- Override to true/false here if the detection is wrong for your setup.
+local term = require("config.terminal")
+global.have_nerd_font = term.has_nerd_font
 
 -- leader key
 global.mapleader = " "

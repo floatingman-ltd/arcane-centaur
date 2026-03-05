@@ -6,8 +6,7 @@ return {
   "folke/tokyonight.nvim",
   priority = 1000,
   config = function()
-    -- GNOME Terminal (and other VTE-based terminals) set VTE_VERSION
-    local is_gnome = vim.env.VTE_VERSION ~= nil
+    local term = require("config.terminal")
 
     require("tokyonight").setup({
       style = style,
@@ -18,16 +17,17 @@ return {
         keywords = { italic = true },
         functions = {},
         variables = {},
-        -- GNOME Terminal does not support in-process transparency; use dark
-        -- panels and manage terminal background via the terminal profile
+        -- VTE terminals (GNOME Terminal, etc.) do not support in-process
+        -- transparency; use dark panels and manage background via the
+        -- terminal profile
         sidebars = "dark",
         floats   = "dark",
       },
-      -- Transparency is controlled by the GNOME Terminal profile, not by Neovim
+      -- Transparency is controlled by the terminal profile, not by Neovim
       transparent = false,
       on_highlights = function(hl, _)
-        if is_gnome then
-          -- GNOME Terminal does not render undercurl; fall back to underline
+        if not term.has_undercurl then
+          -- The terminal does not render undercurl; fall back to underline
           -- for spell and diagnostic highlight groups so they remain visible
           for _, name in ipairs({
             "SpellBad", "SpellCap", "SpellLocal", "SpellRare",
