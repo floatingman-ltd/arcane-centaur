@@ -20,6 +20,31 @@ On first launch, [lazy.nvim](https://github.com/folke/lazy.nvim) will bootstrap 
 | **build-essential, tree** | General tooling | `sudo apt install build-essential tree -y` |
 | **cl_lsp** | Common Lisp LSP server | Install via Quicklisp or your CL package manager |
 | **A Lisp REPL** | Conjure connects to a running REPL | SBCL, Clojure nREPL, or MIT Scheme (see below) |
+| **A [Nerd Font][]** *(optional)* | File-type icons in the tree and fuzzy-finder | See below |
+
+[Nerd Font]: https://www.nerdfonts.com/
+
+#### Nerd Font Setup
+
+`nvim-tree` and `fzf-lua` can display file-type icons when a patched
+[Nerd Font](https://www.nerdfonts.com/) is installed **and** selected as the
+terminal font.  Without one the config automatically falls back to plain
+Unicode glyphs, so icons are entirely optional.
+
+To enable icons:
+
+1. Download and install a Nerd Font (e.g. *JetBrainsMono Nerd Font*).
+2. Set it as the **monospace / custom font** in your terminal emulator
+   (GNOME Terminal: *Preferences → Profiles → Custom font*).
+3. Set the flag in `lua/options.lua`:
+
+   ```lua
+   vim.g.have_nerd_font = true
+   ```
+
+> **GNOME Terminal note:** GNOME Terminal only honours fonts set in the active
+> profile.  Make sure *Custom font* is ticked and points to the Nerd Font
+> variant — the system monospace alias is not enough.
 
 ## Working with Lisp
 

@@ -38,6 +38,9 @@ o.colorcolumn = ""
 o.spell = true
 o.spelllang = "en_ca"
 
+-- Set to true if you have a Nerd Font installed and selected in your terminal
+global.have_nerd_font = false
+
 -- leader key
 global.mapleader = " "
 
