@@ -8,10 +8,10 @@ return {
     build = "make tiktoken",
     opts = {
       -- Chat model. Uncomment one line to activate it.
-      model = 'claude-opus-4-5',
+      -- model = 'claude-opus-4-5',
       -- model = 'claude-sonnet-4-5',
       -- model = 'gpt-4o',
-      -- model = 'gpt-4.1',
+      model = 'gpt-4.1',
       temperature = 0.1,
       window = {
         layout = 'vertical',
