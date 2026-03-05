@@ -6,32 +6,37 @@ return {
   "folke/tokyonight.nvim",
   priority = 1000,
   config = function()
-    -- Detect kitty terminal for optimised rendering
-    local is_kitty = vim.env.TERM == "xterm-kitty" or vim.env.KITTY_WINDOW_ID ~= nil
+    -- GNOME Terminal (and other VTE-based terminals) set VTE_VERSION
+    local is_gnome = vim.env.VTE_VERSION ~= nil
 
     require("tokyonight").setup({
       style = style,
-      -- Kitty supports true color and undercurl natively; enable the extras
+      -- Sync the 16-color ANSI palette with the TokyoNight palette
       terminal_colors = true,
       styles = {
         comments = { italic = true },
         keywords = { italic = true },
         functions = {},
         variables = {},
-        -- Use background transparency when running inside kitty so the
-        -- terminal's own background / blur settings show through
-        sidebars = is_kitty and "transparent" or "dark",
-        floats   = is_kitty and "transparent" or "dark",
+        -- GNOME Terminal does not support in-process transparency; use dark
+        -- panels and manage terminal background via the terminal profile
+        sidebars = "dark",
+        floats   = "dark",
       },
-      -- Let kitty handle the background so blurring / background images work
-      transparent = is_kitty,
-      -- Undercurl is fully supported by kitty
+      -- Transparency is controlled by the GNOME Terminal profile, not by Neovim
+      transparent = false,
       on_highlights = function(hl, _)
-        if is_kitty then
-          -- Ensure undercurl is explicitly enabled for spell/diagnostic groups in kitty
-          for _, name in ipairs({ "SpellBad", "SpellCap", "SpellLocal", "SpellRare" }) do
+        if is_gnome then
+          -- GNOME Terminal does not render undercurl; fall back to underline
+          -- for spell and diagnostic highlight groups so they remain visible
+          for _, name in ipairs({
+            "SpellBad", "SpellCap", "SpellLocal", "SpellRare",
+            "DiagnosticUnderlineError", "DiagnosticUnderlineWarn",
+            "DiagnosticUnderlineInfo", "DiagnosticUnderlineHint",
+          }) do
             if hl[name] then
-              hl[name].undercurl = true
+              hl[name].undercurl = false
+              hl[name].underline = true
             end
           end
         end
