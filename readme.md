@@ -310,6 +310,8 @@ Leader key is **Space**.
 | `Ctrl-f` | Normal | Find current file in tree |
 | `Ctrl-j` | Insert | Accept full Copilot suggestion |
 | `Alt-f` | Insert | Accept next word of Copilot suggestion |
+| `<leader>c` | Normal | Focus CopilotChat window |
+| `<leader>t` | Normal | Toggle terminal split |
 | `<leader>f` | Normal / Visual | Format buffer (or selection) |
 
 ## Supported Languages
@@ -338,6 +340,39 @@ end,
 ```
 
 Common values: `"gpt-4o"`, `"gpt-4.1"`, `"claude-sonnet-4-5"`.
+
+## GitHub Copilot CLI
+
+[`gh copilot`](https://github.com/github/gh-extension-copilot) is a separate CLI tool that brings Copilot assistance to your shell, complementing the in-editor plugins.
+
+### Installation
+
+```sh
+# Requires the GitHub CLI (gh)
+brew install gh          # or: sudo apt install gh
+
+# Install the Copilot extension
+gh extension install github/gh-copilot
+```
+
+### Usage
+
+| Command | What it does |
+|---|---|
+| `gh copilot suggest "find files modified in last 7 days"` | Suggests a shell command; offers to run, copy, or revise it |
+| `gh copilot explain "tar -xzf archive.tar.gz --strip-components=1"` | Explains what a command does in plain English |
+
+### Using from inside Neovim
+
+Press **`<leader>t`** to open the built-in terminal split, then run `gh copilot` commands directly in the shell:
+
+```sh
+gh copilot suggest "recursively delete all .DS_Store files"
+```
+
+Press **`Esc`** to leave terminal insert mode, then `<C-k>` to jump back to your editor window.
+
+> **Tip:** `gh copilot` focuses on shell/CLI tasks. Use **CopilotChat** (`:CopilotChat`) for code-aware questions with buffer context.
 
 ## Plugin Overview
 
