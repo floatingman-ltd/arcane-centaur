@@ -236,6 +236,7 @@ Plugins are managed by [lazy.nvim](https://github.com/folke/lazy.nvim) and organ
 | `nvim-tree.lua` | File explorer tree |
 | `vim-commentary.lua` | Toggle comments with `gcc` |
 | `fsharp.lua` | iron.nvim REPL integration for F# (`dotnet fsi`) |
+| `colorscheme.lua` | TokyoNight theme (moon / storm / night / day variants) |
 | `conform.lua` | Formatting (format-on-save + `<leader>f`) for Lisp and F# filetypes |
 | `markdown.lua` | markdown-preview.nvim (browser preview, PlantUML via Docker server) |
 | `plantuml.lua` | plantuml-syntax + `:PumlPreview` command (browser preview via Docker server) |
@@ -262,6 +263,7 @@ lua/
     fzf-lua.lua             # Fuzzy finder
     nvim-tree.lua           # File tree
     vim-commentary.lua      # Comment toggling
+    colorscheme.lua         # TokyoNight theme (moon/storm/night/day)
     conform.lua             # Formatting for Lisp and F# filetypes
     markdown.lua            # markdown-preview.nvim (browser preview)
     plantuml.lua            # plantuml-syntax + PumlPreview command
@@ -273,6 +275,9 @@ after/ftplugin/
   haskell.lua               # Haskell-tools keybindings
   markdown.lua              # Markdown localleader & preview keymap
   plantuml.lua              # PlantUML localleader & PumlPreview keymap
+docker/
+  plantuml-server/          # Docker Compose for PlantUML render server
+  sbcl-swank/               # Docker Compose for SBCL/Swank REPL
 docs/
   lisp.md                   # Lisp / Clojure / Scheme / Fennel guide
   fsharp.md                 # F# guide
