@@ -21,6 +21,24 @@ The `cl_lsp` server is configured in `lua/config/lsp.lua` for Common Lisp. Insta
 
 1. **Start your REPL** in a terminal (Conjure connects to it):
 
+   **Option A — Docker (recommended for Common Lisp):**
+   A pre-configured Docker setup lives in `docker/sbcl-swank/`. It runs SBCL with Quicklisp and starts the Swank server on port 4005 automatically.
+
+   ```sh
+   # Build the image once:
+   docker compose -f ~/.config/nvim/docker/sbcl-swank/docker-compose.yml build
+
+   # Start the server, mounting your project directory into /lisp inside the container:
+   LISP_DIR=$PWD docker compose -f ~/.config/nvim/docker/sbcl-swank/docker-compose.yml up -d
+
+   # Stop it when done:
+   LISP_DIR=$PWD docker compose -f ~/.config/nvim/docker/sbcl-swank/docker-compose.yml down
+   ```
+
+   Conjure will auto-connect on the next file open, or use `,cc` to connect manually.
+
+   **Option B — local SBCL:**
+
    ```sh
    # Common Lisp (SBCL via Swank)
    sbcl --load ~/.quicklisp/setup.lisp --eval '(ql:quickload :swank)' --eval '(swank:create-server :dont-close t)'
@@ -70,7 +88,13 @@ The `cl_lsp` server is configured in `lua/config/lsp.lua` for Common Lisp. Insta
 
 6. **Stop the Swank server** when you are done (Common Lisp only):
 
-   From within Neovim, evaluate the following with `,ee` (cursor on the form) or `,eb` (entire buffer):
+   If using **Docker**, stop the container:
+
+   ```sh
+   LISP_DIR=$PWD docker compose -f ~/.config/nvim/docker/sbcl-swank/docker-compose.yml down
+   ```
+
+   If running **SBCL locally**, evaluate the following with `,ee` (cursor on the form) or `,eb` (entire buffer):
 
    ```lisp
    (swank:stop-server 4005)
@@ -86,9 +110,9 @@ The `cl_lsp` server is configured in `lua/config/lsp.lua` for Common Lisp. Insta
 
 ```
  ┌──────────────────────────────────────────────┐
- │  Terminal A: REPL server (SBCL/nREPL/etc.)   │
+ │  Docker: sbcl-swank (or local REPL server)   │
  └──────────────────────────────────────────────┘
-         ▲  Conjure connects automatically
+         ▲  Conjure connects on 127.0.0.1:4005
          │
  ┌──────────────────────────────────────────────┐
  │  Neovim                                      │
