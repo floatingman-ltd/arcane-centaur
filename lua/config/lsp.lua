@@ -18,3 +18,6 @@ lspconfig.cl_lsp.setup{ on_attach = on_attach }
 
 -- F# LSP (requires: dotnet tool install -g fsautocomplete)
 lspconfig.fsautocomplete.setup{ on_attach = on_attach }
+
+-- Markdown LSP (requires: marksman on $PATH)
+lspconfig.marksman.setup{ on_attach = on_attach }
