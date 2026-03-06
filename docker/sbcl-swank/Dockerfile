@@ -10,18 +10,21 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN curl -fsSL -o /tmp/ql.lisp https://beta.quicklisp.org/quicklisp.lisp && \
     sbcl --non-interactive \
          --load /tmp/ql.lisp \
-         --eval '(quicklisp-quickstart:install :path "/root/quicklisp")' \
-         --eval '(ql:add-to-init-file)' && \
+         --eval '(quicklisp-quickstart:install :path "/root/quicklisp")' && \
     rm /tmp/ql.lisp
 
 # Pre-fetch Swank so first startup is fast
-RUN sbcl --non-interactive --eval '(ql:quickload :swank)' --eval '(quit)'
+RUN sbcl --non-interactive \
+         --load /root/quicklisp/setup.lisp \
+         --eval '(ql:quickload :swank)' \
+         --eval '(quit)'
 
 WORKDIR /lisp
 
 EXPOSE 4005
 
 CMD ["sbcl", \
+     "--load", "/root/quicklisp/setup.lisp", \
      "--eval", "(ql:quickload :swank)", \
      "--eval", "(swank:create-server :port 4005 :dont-close t)", \
      "--eval", "(loop (sleep 60))"]
