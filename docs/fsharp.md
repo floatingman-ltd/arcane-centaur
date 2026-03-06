@@ -8,7 +8,7 @@ All F# plugins lazy-load only when you open a `.fs`, `.fsx`, or `.fsi` file.
 
 | Dependency | Purpose | Install hint |
 |---|---|---|
-| **.NET SDK ≥ 6** | F# compiler and `dotnet fsi` REPL | <https://dotnet.microsoft.com/download> |
+| **.NET SDK ≥ 8** | F# compiler and `dotnet fsi` REPL | <https://dotnet.microsoft.com/download> |
 | **fsautocomplete** | F# LSP server | `dotnet tool install -g fsautocomplete` |
 
 ### Installing .NET SDK
