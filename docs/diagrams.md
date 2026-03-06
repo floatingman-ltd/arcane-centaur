@@ -21,7 +21,7 @@ Treesitter parsers (`markdown`, `markdown_inline`, `plantuml`) provide syntax hi
 | **Node.js / npm** | Build step for markdown-preview.nvim | `sudo apt install nodejs npm` |
 | **python3** | Encode `.puml` buffers for the server API | Pre-installed on most Linux distros |
 | **xdg-open** | Open rendered diagram URLs in the browser | Pre-installed on most Linux desktops |
-| **marksman** *(optional)* | Markdown LSP | `sudo apt install marksman` / `brew install marksman` |
+| **marksman** *(optional)* | Markdown LSP | `sudo apt install marksman` |
 
 ## Starting the PlantUML Server
 

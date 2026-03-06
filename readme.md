@@ -22,7 +22,7 @@ On first launch, [lazy.nvim](https://github.com/folke/lazy.nvim) will bootstrap 
 | **A Lisp REPL** | Conjure connects to a running REPL | SBCL, Clojure nREPL, or MIT Scheme (see below) |
 | **.NET SDK ≥ 6** | F# compiler and `dotnet fsi` REPL | <https://dotnet.microsoft.com/download> |
 | **fsautocomplete** | F# LSP server | `dotnet tool install -g fsautocomplete` |
-| **PlantUML Docker server** *(diagrams)* | Render PlantUML diagrams | `docker run -d -p 8080:8080 plantuml/plantuml-server` |
+| **PlantUML Docker server** *(diagrams)* | Render PlantUML diagrams | See [docs/diagrams.md](docs/diagrams.md#starting-the-plantuml-server) |
 | **Node.js / npm** *(diagrams)* | Build step for markdown-preview.nvim | `sudo apt install nodejs npm` |
 | **marksman** *(optional, diagrams)* | Markdown LSP | `sudo apt install marksman` |
 | **A [Nerd Font][]** *(optional)* | File-type icons in the tree and fuzzy-finder | See below |
