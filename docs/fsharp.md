@@ -4,6 +4,26 @@ F# support uses [iron.nvim](https://github.com/Vigemus/iron.nvim) for REPL inter
 
 All F# plugins lazy-load only when you open a `.fs`, `.fsx`, or `.fsi` file.
 
+## Prerequisites
+
+| Dependency | Purpose | Install hint |
+|---|---|---|
+| **.NET SDK ≥ 6** | F# compiler and `dotnet fsi` REPL | <https://dotnet.microsoft.com/download> |
+| **fsautocomplete** | F# LSP server | `dotnet tool install -g fsautocomplete` |
+
+### Installing .NET SDK
+
+Follow the official guide for Ubuntu/WSL:
+
+```sh
+# Add Microsoft package feed and install
+wget https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb
+sudo dpkg -i packages-microsoft-prod.deb
+sudo apt update && sudo apt install -y dotnet-sdk-8.0
+```
+
+Or download directly from <https://dotnet.microsoft.com/download>.
+
 ## LSP
 
 The `fsautocomplete` server is configured in `lua/config/lsp.lua`. Install it with:

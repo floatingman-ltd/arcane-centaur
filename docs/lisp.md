@@ -13,6 +13,32 @@ All four plugins lazy-load only when you open a **Lisp**, **Clojure**, **Scheme*
 
 [conform.nvim](https://github.com/stevearc/conform.nvim) is also loaded for these filetypes and provides **format-on-save** as well as a manual **`<leader>f`** keybinding (normal and visual mode) to reformat the current buffer or selection.
 
+## Prerequisites
+
+| Dependency | Purpose | Install hint |
+|---|---|---|
+| **cl_lsp** | Common Lisp LSP server | Install via Quicklisp — see below |
+| **A Lisp REPL** | Conjure connects to a running REPL | SBCL, Clojure nREPL, or MIT Scheme |
+
+### Installing cl_lsp (Common Lisp LSP)
+
+`cl_lsp` is installed through Quicklisp:
+
+```lisp
+(ql:quickload :cl-lsp)
+```
+
+Or follow the [cl-lsp repository](https://github.com/cxxxr/cl-lsp) for the latest instructions.
+
+### Choosing a REPL
+
+| Language | REPL | Notes |
+|---|---|---|
+| Common Lisp | SBCL | Recommended — Docker setup included (see Quick Start) |
+| Clojure | Clojure nREPL | Start with `clojure -M:nrepl` |
+| Scheme | MIT Scheme | `sudo apt install mit-scheme` |
+| Fennel | Fennel REPL | `fennel --repl` |
+
 ## LSP
 
 The `cl_lsp` server is configured in `lua/config/lsp.lua` for Common Lisp. Install it via Quicklisp or your CL package manager. See [readme.md](../readme.md#lsp-support) for the shared LSP keybindings.
