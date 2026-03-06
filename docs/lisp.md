@@ -15,21 +15,6 @@ All four plugins lazy-load only when you open a **Lisp**, **Clojure**, **Scheme*
 
 ## Prerequisites
 
-| Dependency | Purpose | Install hint |
-|---|---|---|
-| **cl_lsp** | Common Lisp LSP server | Install via Quicklisp — see below |
-| **A Lisp REPL** | Conjure connects to a running REPL | SBCL, Clojure nREPL, or MIT Scheme |
-
-### Installing cl_lsp (Common Lisp LSP)
-
-`cl_lsp` is installed through Quicklisp:
-
-```lisp
-(ql:quickload :cl-lsp)
-```
-
-Or follow the [cl-lsp repository](https://github.com/cxxxr/cl-lsp) for the latest instructions.
-
 ### Choosing a REPL
 
 | Language | REPL | Notes |
@@ -41,7 +26,7 @@ Or follow the [cl-lsp repository](https://github.com/cxxxr/cl-lsp) for the lates
 
 ## LSP
 
-The `cl_lsp` server is configured in `lua/config/lsp.lua` for Common Lisp. See the [Prerequisites](#prerequisites) section above for install steps and [readme.md](../readme.md#lsp-support) for the shared LSP keybindings.
+The `cl_lsp` server is configured in `lua/config/lsp.lua` for Common Lisp. Install it via Quicklisp: `(ql:quickload :cl-lsp)`. See [readme.md](../readme.md#lsp-support) for the shared LSP keybindings.
 
 ## Quick Start
 
