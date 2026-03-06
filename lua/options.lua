@@ -43,6 +43,23 @@ o.spelllang = "en_ca"
 local term = require("config.terminal")
 global.have_nerd_font = term.has_nerd_font
 
+-- WSL clipboard — use win32yank.exe for fast, reliable system clipboard
+-- integration instead of the slower xclip/xsel fallback.
+if term.is_wsl and vim.fn.executable("win32yank.exe") == 1 then
+  global.clipboard = {
+    name = "win32yank-wsl",
+    copy = {
+      ["+"] = "win32yank.exe -i --crlf",
+      ["*"] = "win32yank.exe -i --crlf",
+    },
+    paste = {
+      ["+"] = "win32yank.exe -o --lf",
+      ["*"] = "win32yank.exe -o --lf",
+    },
+    cache_enabled = true,
+  }
+end
+
 -- leader key
 global.mapleader = " "
 

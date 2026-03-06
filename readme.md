@@ -60,6 +60,42 @@ not present:
 | **Fedora** | `sudo dnf install gnome-terminal` |
 | **Arch Linux** | `sudo pacman -S gnome-terminal` |
 
+#### Windows Terminal (WSL)
+
+[Windows Terminal](https://aka.ms/terminal) is fully supported when running
+Neovim inside **WSL** (Windows Subsystem for Linux).  The config auto-detects
+it via the `WT_SESSION` environment variable and enables Nerd Font icons and
+undercurl automatically.
+
+**Clipboard integration** — on WSL the config uses
+[`win32yank.exe`](https://github.com/equalsraf/win32yank) for fast system
+clipboard access.  Install it once on the **Windows** side:
+
+```powershell
+# From a Windows PowerShell / Terminal prompt:
+scoop install win32yank      # or: choco install win32yank
+```
+
+The executable must be on your Windows `PATH` (which WSL inherits by default).
+Verify with:
+
+```sh
+which win32yank.exe   # should print a /mnt/c/... path
+```
+
+**Nerd Font setup for Windows Terminal** — install a Nerd Font on Windows,
+then select it in Windows Terminal settings:
+
+1. Download *FiraCode Nerd Font* from
+   <https://www.nerdfonts.com/font-downloads>.
+2. Install it on **Windows** (right-click → *Install for all users*).
+3. Open Windows Terminal → *Settings → Profiles → Defaults → Appearance →
+   Font face* and select **FiraCode Nerd Font**.
+
+> **Tip:** If `win32yank.exe` is not available, Neovim falls back to its
+> built-in clipboard provider detection (`xclip`, `xsel`, etc.), which may be
+> slower or require an X server.
+
 #### Secondary Terminal — TTY Console
 
 The Linux TTY console (accessed with **Ctrl+Alt+F2** through **F6**) is
@@ -83,7 +119,7 @@ Unicode glyphs, so icons are entirely optional.
 
 To install a Nerd Font:
 
-1. Download a Nerd Font (e.g. *JetBrainsMono Nerd Font*) from
+1. Download *FiraCode Nerd Font* from
    <https://www.nerdfonts.com/font-downloads>.
 2. Install it system-wide or for the current user.
 3. Select it in your terminal emulator (GNOME Terminal: *Preferences → Profiles → Custom font*,
@@ -98,6 +134,7 @@ adjusts its behaviour:
 | Terminal | Nerd Font icons | Undercurl | Notes |
 |---|---|---|---|
 | **GNOME Terminal** (VTE) | ❌ fallback glyphs | ❌ → underline | **Default** — set `vim.g.have_nerd_font = true` in `lua/options.lua` after installing a Nerd Font |
+| **Windows Terminal** (WSL) | ✅ auto-enabled | ✅ native | Clipboard via `win32yank.exe`; see [Windows Terminal (WSL)](#windows-terminal-wsl) |
 | **TTY Console** | ❌ fallback glyphs | ❌ → underline | Secondary — no graphical font support |
 | **Alacritty** | ✅ auto-enabled | ✅ native | |
 | **Other / unknown** | ❌ fallback glyphs | ❌ → underline | Override as above if your terminal supports Nerd Fonts |
@@ -205,10 +242,10 @@ gh extension install github/gh-copilot
 Alternatively, install the standalone Copilot CLI via npm (no `gh` CLI required):
 
 ```sh
-npm install -g @githubnext/github-copilot-cli
+npm install -g @github/copilot
 ```
 
-> **Note:** If using npm, run `github-copilot-cli auth` once to authenticate.
+> **Note:** If using npm, run `copilot auth` once to authenticate.
 
 ### Usage
 
