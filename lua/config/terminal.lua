@@ -9,6 +9,9 @@
 
 local M = {}
 
+--- True when running inside Windows Subsystem for Linux.
+local is_wsl = vim.env.WSL_DISTRO_NAME ~= nil
+
 --- Detect the terminal emulator from environment variables.
 --- Returns a short, lowercase identifier string.
 local function detect()
@@ -16,6 +19,11 @@ local function detect()
   if vim.env.TERM_PROGRAM == "Alacritty"
     or (vim.env.TERM or ""):find("alacritty") then
     return "alacritty"
+  end
+
+  -- Windows Terminal on WSL — WT_SESSION is always set
+  if vim.env.WT_SESSION ~= nil then
+    return "wt"
   end
 
   -- VTE-based terminals (GNOME Terminal, Tilix, Terminator, …)
@@ -51,16 +59,19 @@ M.name = detect()
 --- select it in the terminal settings).
 local nerd_font_terminals = {
   alacritty = true,
+  wt        = true,
 }
 
 --- True when the terminal supports the undercurl SGR escape (curly
 --- underlines used by spell-check and diagnostics).
 local undercurl_terminals = {
   alacritty = true,
+  wt        = true,
 }
 
 M.has_nerd_font = nerd_font_terminals[M.name] or false
 M.has_undercurl = undercurl_terminals[M.name] or false
 M.is_vte        = M.name == "vte"
+M.is_wsl        = is_wsl
 
 return M
