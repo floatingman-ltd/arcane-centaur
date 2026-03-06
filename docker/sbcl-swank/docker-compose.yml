@@ -1,0 +1,10 @@
+services:
+  sbcl-swank:
+    build: .
+    ports:
+      - "127.0.0.1:4005:4005"
+    volumes:
+      # Mount your project directory into /lisp inside the container.
+      # Override with: LISP_DIR=/path/to/project docker compose up
+      - "${LISP_DIR:-$PWD}:/lisp"
+    restart: unless-stopped

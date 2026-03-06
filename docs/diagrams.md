@@ -17,20 +17,34 @@ Treesitter parsers (`markdown`, `markdown_inline`, `plantuml`) provide syntax hi
 
 | Dependency | Purpose | Install hint |
 |---|---|---|
-| **PlantUML Docker server** | Render `.puml` diagrams | `docker run -d -p 8080:8080 plantuml/plantuml-server` |
+| **PlantUML Docker server** | Render `.puml` diagrams | See [Docker setup](#starting-the-plantuml-server) below |
 | **Node.js / npm** | Build step for markdown-preview.nvim | `sudo apt install nodejs npm` |
 | **python3** | Encode `.puml` buffers for the server API | Pre-installed on most Linux distros |
 | **xdg-open** | Open rendered diagram URLs in the browser | Pre-installed on most Linux desktops |
 | **marksman** *(optional)* | Markdown LSP | `sudo apt install marksman` / `brew install marksman` |
 
+## Starting the PlantUML Server
+
+A Docker Compose file is provided at `docker/plantuml-server/docker-compose.yml` using the `plantuml/plantuml-server:jetty` image. Port 8080 is bound to localhost only.
+
+```sh
+# Pull and start (runs in the background):
+docker compose -f ~/.config/nvim/docker/plantuml-server/docker-compose.yml up -d
+
+# Stop it when done:
+docker compose -f ~/.config/nvim/docker/plantuml-server/docker-compose.yml down
+```
+
+The server is stateless — no build step or volume is needed. It will be available at `http://localhost:8080` immediately after startup.
+
 ## Quick Start
 
 ### Markdown with embedded PlantUML
 
-1. Start your PlantUML Docker server:
+1. Start the PlantUML server (if not already running):
 
    ```sh
-   docker run -d -p 8080:8080 plantuml/plantuml-server
+   docker compose -f ~/.config/nvim/docker/plantuml-server/docker-compose.yml up -d
    ```
 
 2. Open (or create) a Markdown file:
@@ -59,7 +73,9 @@ Treesitter parsers (`markdown`, `markdown_inline`, `plantuml`) provide syntax hi
 
 ### Standalone `.puml` files
 
-1. Open or create a `.puml` file:
+1. Ensure the PlantUML server is running (see [Starting the PlantUML Server](#starting-the-plantuml-server)).
+
+2. Open or create a `.puml` file:
 
    ```sh
    nvim sequence.puml
