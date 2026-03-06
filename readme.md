@@ -108,122 +108,19 @@ vim.g.have_nerd_font = true   -- or false
 
 ## Working with Lisp
 
-This configuration is built around an interactive, REPL-driven Lisp workflow. Four plugins work together to give you a seamless experience:
+→ See **[docs/lisp.md](docs/lisp.md)** for the full guide: Conjure, vim-sexp, parinfer, rainbow-delimiters, Quick Start, and Typical Workflow.
 
-| Plugin | Role |
-|---|---|
-| [Conjure](https://github.com/Olical/conjure) | Connect to a REPL and evaluate code without leaving the editor |
-| [vim-sexp](https://github.com/guns/vim-sexp) + [mappings](https://github.com/tpope/vim-sexp-mappings-for-regular-people) | Structural editing — slurp, barf, and move S-expressions |
-| [nvim-parinfer](https://github.com/gpanders/nvim-parinfer) | Keeps parentheses balanced automatically as you edit indentation |
-| [rainbow-delimiters.nvim](https://github.com/HiPhish/rainbow-delimiters.nvim) | Color-codes matching delimiters so you can see nesting at a glance |
+## Working with F#
 
-All four plugins lazy-load only when you open a **Lisp**, **Clojure**, **Scheme**, or **Fennel** file.
+→ See **[docs/fsharp.md](docs/fsharp.md)** for the full guide: iron.nvim REPL, fsautocomplete LSP, Quick Start, and Typical Workflow.
 
-[conform.nvim](https://github.com/stevearc/conform.nvim) is also loaded for these filetypes and provides **format-on-save** as well as a manual **`<leader>f`** keybinding (normal and visual mode) to reformat the current buffer or selection.
+## Working with Haskell
 
-### Quick Start
-
-1. **Start your REPL** in a terminal (Conjure connects to it):
-
-   ```sh
-   # Common Lisp (SBCL via Swank)
-   sbcl --load ~/.quicklisp/setup.lisp --eval '(ql:quickload :swank)' --eval '(swank:create-server :dont-close t)'
-
-   # Clojure (nREPL)
-   clj -Sdeps '{:deps {nrepl/nrepl {:mvn/version "1.0.0"} cider/cider-nrepl {:mvn/version "0.30.0"}}}' -M -m nrepl.cmdline --middleware '["cider.nrepl/cider-middleware"]'
-
-   # Scheme (MIT Scheme)
-   mit-scheme   # Conjure connects via its built-in Scheme client
-   ```
-
-2. **Open a source file** in Neovim — plugins load automatically:
-
-   ```sh
-   nvim hello.lisp    # or hello.clj, hello.scm, hello.fnl
-   ```
-
-3. **Evaluate code** using Conjure (local leader is `,`):
-
-   | Keys | Action |
-   |---|---|
-   | `,ee` | Evaluate the form under the cursor |
-   | `,er` | Evaluate the root (outermost) form |
-   | `,eb` | Evaluate the entire buffer |
-   | `,e!` | Replace the form with its result |
-   | `,lv` | Open the REPL log in a vertical split |
-   | `,ls` | Open the REPL log in a horizontal split |
-   | `,lq` | Close the REPL log window |
-
-4. **Edit structure** with vim-sexp (normal mode):
-
-   | Keys | Action |
-   |---|---|
-   | `>)` | Slurp forward — pull the next element into the current form |
-   | `<)` | Barf forward — push the last element out of the current form |
-   | `<(` | Slurp backward |
-   | `>(` | Barf backward |
-   | `<f` | Move the current form left among its siblings |
-   | `>f` | Move the current form right among its siblings |
-   | `<e` | Move the current element left |
-   | `>e` | Move the current element right |
-   | `cse(` or `cse)` | Surround the element with `()` |
-   | `cse[` or `cse]` | Surround the element with `[]` |
-   | `dsf` | Delete surrounding function call (splice) |
-
-5. **Parinfer** runs in the background — just adjust indentation and parens follow. No keys needed.
-
-6. **Stop the Swank server** when you are done (Common Lisp only):
-
-   From within Neovim, evaluate the following with `,ee` (cursor on the form) or `,eb` (entire buffer):
-
-   ```lisp
-   (swank:stop-server 4005)
-   ```
-
-   Alternatively, switch to the terminal running SBCL and call the same form at the REPL prompt, or quit the process entirely:
-
-   ```lisp
-   (quit)
-   ```
-
-### Typical Workflow
-
-```
- ┌──────────────────────────────────────────────┐
- │  Terminal A: REPL server (SBCL/nREPL/etc.)   │
- └──────────────────────────────────────────────┘
-         ▲  Conjure connects automatically
-         │
- ┌──────────────────────────────────────────────┐
- │  Neovim                                      │
- │  ┌───────────────────┬──────────────────┐    │
- │  │  source.lisp      │  Conjure log     │    │
- │  │                   │  (REPL output)   │    │
- │  │  (defun greet (n) │  => "Hello!"     │    │
- │  │    (format t      │                  │    │
- │  │      "Hello ~a" n)│                  │    │
- │  │  )                │                  │    │
- │  │                   │                  │    │
- │  │  ,ee to eval ─────┘                  │    │
- │  └───────────────────┴──────────────────┘    │
- └──────────────────────────────────────────────┘
-```
-
-1. Write or edit code in the left pane.
-2. Press `,ee` to evaluate the expression under the cursor — the result appears in the Conjure log.
-3. Use `,lv` to open the log in a vertical split if it isn't visible.
-4. Use vim-sexp motions (`>)`, `<(`, etc.) to restructure S-expressions without counting parentheses.
-5. Parinfer keeps parens balanced automatically as you change indentation.
-6. Rainbow delimiters let you visually match nesting depth.
+→ See **[docs/haskell.md](docs/haskell.md)** for the full guide: haskell-tools.nvim, hls LSP, and GHCi REPL keybindings.
 
 ## LSP Support
 
-Two LSP servers are configured in `lua/config/lsp.lua`. Both share the same keybindings (available in any LSP-enabled buffer):
-
-| Server | Language | Notes |
-|---|---|---|
-| `cl_lsp` | Common Lisp | Install via Quicklisp |
-| `fsautocomplete` | F# | `dotnet tool install -g fsautocomplete` |
+LSP servers are configured in `lua/config/lsp.lua`. See each language's doc for server-specific setup. All servers share these keybindings (available in any LSP-enabled buffer):
 
 Keybindings:
 
@@ -236,65 +133,6 @@ Keybindings:
 | `<leader>ca` | Code action |
 | `<leader>e` | Show diagnostic float |
 | `[d` / `]d` | Previous / next diagnostic |
-
-## Working with F#
-
-F# support uses [iron.nvim](https://github.com/Vigemus/iron.nvim) for REPL interaction and `fsautocomplete` for LSP-powered completions, go-to-definition, hover docs, and formatting.
-
-All F# plugins lazy-load only when you open a `.fs`, `.fsx`, or `.fsi` file.
-
-### Quick Start
-
-1. **Ensure prerequisites are installed:**
-
-   ```sh
-   # .NET SDK (includes dotnet fsi)
-   dotnet --version
-
-   # F# language server
-   dotnet tool install -g fsautocomplete
-   ```
-
-2. **Open a source file** — plugins and LSP attach automatically:
-
-   ```sh
-   nvim hello.fs
-   ```
-
-3. **Start the REPL** and send code (local leader is `,`):
-
-   | Keys | Action |
-   |---|---|
-   | `,sl` | Send current line to `dotnet fsi` |
-   | `,sc` | Send motion / visual selection |
-   | `,sp` | Send paragraph |
-   | `,sf` | Send entire file |
-   | `,si` | Interrupt the REPL |
-   | `,sq` | Quit the REPL |
-   | `,cl` | Clear the REPL buffer |
-
-   The REPL opens as a horizontal split at the bottom of the window (40% height).
-
-4. **LSP features** work the same as for Common Lisp — `gd`, `K`, `gr`, `<leader>rn`, `<leader>ca`, `<leader>e`, `[d`/`]d`.
-
-5. **Format on save** is enabled via `conform.nvim` using the fsautocomplete formatter.
-   You can also trigger it manually with `<leader>f`.
-
-### Typical Workflow
-
-```
- ┌──────────────────────────────────────────────────────┐
- │  Neovim                                              │
- │  ┌─────────────────────────┬────────────────────┐    │
- │  │  hello.fs               │  dotnet fsi REPL   │    │
- │  │                         │                    │    │
- │  │  let greet name =       │  > val greet :     │    │
- │  │    printfn "Hi %s" name │    string -> unit  │    │
- │  │                         │  > Hi Walt         │    │
- │  │  ,sl to send line ──────┘                    │    │
- │  └─────────────────────────┴────────────────────┘    │
- └──────────────────────────────────────────────────────┘
-```
 
 ## General Keybindings
 
@@ -316,15 +154,15 @@ Leader key is **Space**.
 
 ## Supported Languages
 
-| Language | Treesitter | LSP | REPL (Conjure) | Structural Editing |
-|---|---|---|---|---|
-| Common Lisp | ✅ | ✅ cl_lsp | ✅ Swank (Conjure) | ✅ vim-sexp + parinfer |
-| Clojure | ✅ | — | ✅ nREPL (Conjure) | ✅ vim-sexp + parinfer |
-| Scheme | ✅ | — | ✅ built-in (Conjure) | ✅ vim-sexp + parinfer |
-| Fennel | — | — | ✅ (Conjure) | ✅ parinfer |
-| Lua | ✅ | — | — | — |
-| F# | ✅ | ✅ fsautocomplete | ✅ dotnet fsi (iron.nvim) | — |
-| Haskell | — | ✅ haskell-tools | ✅ GHCi | — |
+| Language | Treesitter | LSP | REPL | Structural Editing | Guide |
+|---|---|---|---|---|---|
+| Common Lisp | ✅ | ✅ cl_lsp | ✅ Swank (Conjure) | ✅ vim-sexp + parinfer | [docs/lisp.md](docs/lisp.md) |
+| Clojure | ✅ | — | ✅ nREPL (Conjure) | ✅ vim-sexp + parinfer | [docs/lisp.md](docs/lisp.md) |
+| Scheme | ✅ | — | ✅ built-in (Conjure) | ✅ vim-sexp + parinfer | [docs/lisp.md](docs/lisp.md) |
+| Fennel | — | — | ✅ (Conjure) | ✅ parinfer | [docs/lisp.md](docs/lisp.md) |
+| Lua | ✅ | — | — | — | — |
+| F# | ✅ | ✅ fsautocomplete | ✅ dotnet fsi (iron.nvim) | — | [docs/fsharp.md](docs/fsharp.md) |
+| Haskell | — | ✅ haskell-tools | ✅ GHCi | — | [docs/haskell.md](docs/haskell.md) |
 
 ## Copilot Model Configuration
 
@@ -420,4 +258,8 @@ after/ftplugin/
   scheme.lua                # Scheme indent settings
   fsharp.lua                # F# indent settings (4-space) & localleader
   haskell.lua               # Haskell-tools keybindings
+docs/
+  lisp.md                   # Lisp / Clojure / Scheme / Fennel guide
+  fsharp.md                 # F# guide
+  haskell.md                # Haskell guide
 ```
