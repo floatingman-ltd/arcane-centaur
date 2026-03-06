@@ -22,6 +22,9 @@ On first launch, [lazy.nvim](https://github.com/folke/lazy.nvim) will bootstrap 
 | **A Lisp REPL** | Conjure connects to a running REPL | SBCL, Clojure nREPL, or MIT Scheme (see below) |
 | **.NET SDK ≥ 6** | F# compiler and `dotnet fsi` REPL | <https://dotnet.microsoft.com/download> |
 | **fsautocomplete** | F# LSP server | `dotnet tool install -g fsautocomplete` |
+| **PlantUML Docker server** *(diagrams)* | Render PlantUML diagrams | `docker run -d -p 8080:8080 plantuml/plantuml-server` |
+| **Node.js / npm** *(diagrams)* | Build step for markdown-preview.nvim | `sudo apt install nodejs npm` |
+| **marksman** *(optional, diagrams)* | Markdown LSP | `sudo apt install marksman` |
 | **A [Nerd Font][]** *(optional)* | File-type icons in the tree and fuzzy-finder | See below |
 
 [Nerd Font]: https://www.nerdfonts.com/
@@ -106,6 +109,10 @@ wrong for your setup you can still force the flag in `lua/options.lua`:
 vim.g.have_nerd_font = true   -- or false
 ```
 
+## Working with Diagrams
+
+→ See **[docs/diagrams.md](docs/diagrams.md)** for the full guide: PlantUML in Markdown, standalone `.puml` files, Docker server setup, and keybindings.
+
 ## Working with Lisp
 
 → See **[docs/lisp.md](docs/lisp.md)** for the full guide: Conjure, vim-sexp, parinfer, rainbow-delimiters, Quick Start, and Typical Workflow.
@@ -163,6 +170,8 @@ Leader key is **Space**.
 | Lua | ✅ | — | — | — | — |
 | F# | ✅ | ✅ fsautocomplete | ✅ dotnet fsi (iron.nvim) | — | [docs/fsharp.md](docs/fsharp.md) |
 | Haskell | — | ✅ haskell-tools | ✅ GHCi | — | [docs/haskell.md](docs/haskell.md) |
+| Markdown | ✅ | ✅ marksman | — | — | [docs/diagrams.md](docs/diagrams.md) |
+| PlantUML | ✅ | — | — | — | [docs/diagrams.md](docs/diagrams.md) |
 
 ## Copilot Model Configuration
 
@@ -228,6 +237,8 @@ Plugins are managed by [lazy.nvim](https://github.com/folke/lazy.nvim) and organ
 | `vim-commentary.lua` | Toggle comments with `gcc` |
 | `fsharp.lua` | iron.nvim REPL integration for F# (`dotnet fsi`) |
 | `conform.lua` | Formatting (format-on-save + `<leader>f`) for Lisp and F# filetypes |
+| `markdown.lua` | markdown-preview.nvim (browser preview, PlantUML via Docker server) |
+| `plantuml.lua` | plantuml-syntax + `:PumlPreview` command (browser preview via Docker server) |
 
 ## Project Structure
 
@@ -238,7 +249,7 @@ lua/
   keymaps.lua               # Global keybindings
   loader/init.lua           # lazy.nvim bootstrap
   config/
-    lsp.lua                 # LSP server setup (cl_lsp, fsautocomplete)
+    lsp.lua                 # LSP server setup (cl_lsp, fsautocomplete, marksman)
     terminal.lua            # Terminal detection & capability flags
     treesitter.lua          # (config managed in plugins/treesitter.lua)
   plugins/
@@ -252,14 +263,19 @@ lua/
     nvim-tree.lua           # File tree
     vim-commentary.lua      # Comment toggling
     conform.lua             # Formatting for Lisp and F# filetypes
+    markdown.lua            # markdown-preview.nvim (browser preview)
+    plantuml.lua            # plantuml-syntax + PumlPreview command
 after/ftplugin/
   lisp.lua                  # Lisp indent settings & lispwords
   clojure.lua               # Clojure indent settings
   scheme.lua                # Scheme indent settings
   fsharp.lua                # F# indent settings (4-space) & localleader
   haskell.lua               # Haskell-tools keybindings
+  markdown.lua              # Markdown localleader & preview keymap
+  plantuml.lua              # PlantUML localleader & PumlPreview keymap
 docs/
   lisp.md                   # Lisp / Clojure / Scheme / Fennel guide
   fsharp.md                 # F# guide
   haskell.md                # Haskell guide
+  diagrams.md               # Markdown + PlantUML diagram guide
 ```
