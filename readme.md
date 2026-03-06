@@ -195,12 +195,20 @@ Common values: `"gpt-4o"`, `"gpt-4.1"`, `"claude-sonnet-4-5"`.
 ### Installation
 
 ```sh
-# Requires the GitHub CLI (gh)
-brew install gh          # or: sudo apt install gh
+# Install the GitHub CLI (gh) — Ubuntu / WSL
+sudo apt install gh
 
 # Install the Copilot extension
 gh extension install github/gh-copilot
 ```
+
+Alternatively, install the standalone Copilot CLI via npm (no `gh` CLI required):
+
+```sh
+npm install -g @githubnext/github-copilot-cli
+```
+
+> **Note:** If using npm, run `github-copilot-cli auth` once to authenticate.
 
 ### Usage
 
