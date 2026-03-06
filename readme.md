@@ -235,14 +235,6 @@ sudo apt install gh
 gh extension install github/gh-copilot
 ```
 
-Alternatively, install the standalone Copilot CLI via npm (no `gh` CLI required):
-
-```sh
-npm install -g @github/copilot
-```
-
-> **Note:** If using npm, run `copilot auth` once to authenticate.
-
 ### Usage
 
 | Command | What it does |

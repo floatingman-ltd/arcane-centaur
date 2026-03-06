@@ -107,7 +107,7 @@ The server is stateless — no build step or volume is needed. It will be availa
    nvim sequence.puml
    ```
 
-2. Write your diagram:
+3. Write your diagram:
 
    ```plantuml
    @startuml
@@ -116,7 +116,7 @@ The server is stateless — no build step or volume is needed. It will be availa
    @enduml
    ```
 
-3. Press **`,p`** to render and open the diagram in your browser via the Docker server.
+4. Press **`,p`** to render and open the diagram in your browser via the Docker server.
 
 ## Keybindings
 
