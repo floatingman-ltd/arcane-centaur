@@ -18,16 +18,12 @@ On first launch, [lazy.nvim](https://github.com/folke/lazy.nvim) will bootstrap 
 |---|---|---|
 | **Neovim ≥ 0.9** | Editor | `brew install neovim` / `sudo apt install neovim` |
 | **build-essential, tree** | General tooling | `sudo apt install build-essential tree -y` |
-| **cl_lsp** | Common Lisp LSP server | Install via Quicklisp or your CL package manager |
-| **A Lisp REPL** | Conjure connects to a running REPL | SBCL, Clojure nREPL, or MIT Scheme (see below) |
-| **.NET SDK ≥ 6** | F# compiler and `dotnet fsi` REPL | <https://dotnet.microsoft.com/download> |
-| **fsautocomplete** | F# LSP server | `dotnet tool install -g fsautocomplete` |
-| **PlantUML Docker server** *(diagrams)* | Render PlantUML diagrams | `docker run -d -p 8080:8080 plantuml/plantuml-server` |
-| **Node.js / npm** *(diagrams)* | Build step for markdown-preview.nvim | `sudo apt install nodejs npm` |
-| **marksman** *(optional, diagrams)* | Markdown LSP | `sudo apt install marksman` |
 | **A [Nerd Font][]** *(optional)* | File-type icons in the tree and fuzzy-finder | See below |
 
 [Nerd Font]: https://www.nerdfonts.com/
+
+Language-specific prerequisites (LSP servers, REPLs, runtimes) are documented in each language guide:
+[Lisp / Clojure / Scheme](docs/lisp.md) · [F#](docs/fsharp.md) · [Haskell](docs/haskell.md) · [Diagrams / Markdown](docs/diagrams.md)
 
 ### Recommended Terminal — GNOME Terminal
 
