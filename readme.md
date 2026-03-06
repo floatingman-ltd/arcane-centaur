@@ -16,7 +16,7 @@ On first launch, [lazy.nvim](https://github.com/folke/lazy.nvim) will bootstrap 
 
 | Dependency | Purpose | Install hint |
 |---|---|---|
-| **Neovim ≥ 0.9** | Editor | `brew install neovim` / `sudo apt install neovim` |
+| **Neovim ≥ 0.9** | Editor | `sudo snap install nvim --classic` |
 | **build-essential, tree** | General tooling | `sudo apt install build-essential tree -y` |
 | **A [Nerd Font][]** *(optional)* | File-type icons in the tree and fuzzy-finder | See below |
 
@@ -56,6 +56,42 @@ not present:
 | **Fedora** | `sudo dnf install gnome-terminal` |
 | **Arch Linux** | `sudo pacman -S gnome-terminal` |
 
+#### Windows Terminal (WSL)
+
+[Windows Terminal](https://aka.ms/terminal) is fully supported when running
+Neovim inside **WSL** (Windows Subsystem for Linux).  The config auto-detects
+it via the `WT_SESSION` environment variable and enables Nerd Font icons and
+undercurl automatically.
+
+**Clipboard integration** — on WSL the config uses
+[`win32yank.exe`](https://github.com/equalsraf/win32yank) for fast system
+clipboard access.  Install it once on the **Windows** side:
+
+```powershell
+# From a Windows PowerShell / Terminal prompt:
+scoop install win32yank      # or: choco install win32yank
+```
+
+The executable must be on your Windows `PATH` (which WSL inherits by default).
+Verify with:
+
+```sh
+which win32yank.exe   # should print a /mnt/c/... path
+```
+
+**Nerd Font setup for Windows Terminal** — install a Nerd Font on Windows,
+then select it in Windows Terminal settings:
+
+1. Download *FiraCode Nerd Font* from
+   <https://www.nerdfonts.com/font-downloads>.
+2. Install it on **Windows** (right-click → *Install for all users*).
+3. Open Windows Terminal → *Settings → Profiles → Defaults → Appearance →
+   Font face* and select **FiraCode Nerd Font**.
+
+> **Tip:** If `win32yank.exe` is not available, Neovim falls back to its
+> built-in clipboard provider detection (`xclip`, `xsel`, etc.), which may be
+> slower or require an X server.
+
 #### Secondary Terminal — TTY Console
 
 The Linux TTY console (accessed with **Ctrl+Alt+F2** through **F6**) is
@@ -79,7 +115,7 @@ Unicode glyphs, so icons are entirely optional.
 
 To install a Nerd Font:
 
-1. Download a Nerd Font (e.g. *JetBrainsMono Nerd Font*) from
+1. Download *FiraCode Nerd Font* from
    <https://www.nerdfonts.com/font-downloads>.
 2. Install it system-wide or for the current user.
 3. Select it in your terminal emulator (GNOME Terminal: *Preferences → Profiles → Custom font*,
@@ -94,6 +130,7 @@ adjusts its behaviour:
 | Terminal | Nerd Font icons | Undercurl | Notes |
 |---|---|---|---|
 | **GNOME Terminal** (VTE) | ❌ fallback glyphs | ❌ → underline | **Default** — set `vim.g.have_nerd_font = true` in `lua/options.lua` after installing a Nerd Font |
+| **Windows Terminal** (WSL) | ✅ auto-enabled | ✅ native | Clipboard via `win32yank.exe`; see [Windows Terminal (WSL)](#windows-terminal-wsl) |
 | **TTY Console** | ❌ fallback glyphs | ❌ → underline | Secondary — no graphical font support |
 | **Alacritty** | ✅ auto-enabled | ✅ native | |
 | **Other / unknown** | ❌ fallback glyphs | ❌ → underline | Override as above if your terminal supports Nerd Fonts |
@@ -191,12 +228,20 @@ Common values: `"gpt-4o"`, `"gpt-4.1"`, `"claude-sonnet-4-5"`.
 ### Installation
 
 ```sh
-# Requires the GitHub CLI (gh)
-brew install gh          # or: sudo apt install gh
+# Install the GitHub CLI (gh) — Ubuntu / WSL
+sudo apt install gh
 
 # Install the Copilot extension
 gh extension install github/gh-copilot
 ```
+
+Alternatively, install the standalone Copilot CLI via npm (no `gh` CLI required):
+
+```sh
+npm install -g @github/copilot
+```
+
+> **Note:** If using npm, run `copilot auth` once to authenticate.
 
 ### Usage
 
@@ -232,6 +277,7 @@ Plugins are managed by [lazy.nvim](https://github.com/folke/lazy.nvim) and organ
 | `nvim-tree.lua` | File explorer tree |
 | `vim-commentary.lua` | Toggle comments with `gcc` |
 | `fsharp.lua` | iron.nvim REPL integration for F# (`dotnet fsi`) |
+| `colorscheme.lua` | TokyoNight theme (moon / storm / night / day variants) |
 | `conform.lua` | Formatting (format-on-save + `<leader>f`) for Lisp and F# filetypes |
 | `markdown.lua` | markdown-preview.nvim (browser preview, PlantUML via Docker server) |
 | `plantuml.lua` | plantuml-syntax + `:PumlPreview` command (browser preview via Docker server) |
@@ -258,6 +304,7 @@ lua/
     fzf-lua.lua             # Fuzzy finder
     nvim-tree.lua           # File tree
     vim-commentary.lua      # Comment toggling
+    colorscheme.lua         # TokyoNight theme (moon/storm/night/day)
     conform.lua             # Formatting for Lisp and F# filetypes
     markdown.lua            # markdown-preview.nvim (browser preview)
     plantuml.lua            # plantuml-syntax + PumlPreview command
@@ -269,6 +316,9 @@ after/ftplugin/
   haskell.lua               # Haskell-tools keybindings
   markdown.lua              # Markdown localleader & preview keymap
   plantuml.lua              # PlantUML localleader & PumlPreview keymap
+docker/
+  plantuml-server/          # Docker Compose for PlantUML render server
+  sbcl-swank/               # Docker Compose for SBCL/Swank REPL
 docs/
   lisp.md                   # Lisp / Clojure / Scheme / Fennel guide
   fsharp.md                 # F# guide

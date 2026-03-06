@@ -18,10 +18,36 @@ Treesitter parsers (`markdown`, `markdown_inline`, `plantuml`) provide syntax hi
 | Dependency | Purpose | Install hint |
 |---|---|---|
 | **PlantUML Docker server** | Render `.puml` diagrams | See [Docker setup](#starting-the-plantuml-server) below |
-| **Node.js / npm** | Build step for markdown-preview.nvim | `sudo apt install nodejs npm` |
+| **Node.js / npm** | Build step for markdown-preview.nvim | Install via nvm (see below) |
 | **python3** | Encode `.puml` buffers for the server API | Pre-installed on most Linux distros |
 | **xdg-open** | Open rendered diagram URLs in the browser | Pre-installed on most Linux desktops |
-| **marksman** *(optional)* | Markdown LSP | `sudo apt install marksman` / `brew install marksman` |
+| **marksman** *(optional)* | Markdown LSP | `sudo apt install marksman` |
+
+### Installing Node.js via nvm
+
+Using [nvm](https://github.com/nvm-sh/nvm) installs the LTS release into a
+user-managed prefix — no `sudo` needed for global packages:
+
+```sh
+# 1. Install nvm
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+
+# 2. Reload your shell
+source ~/.bashrc   # or ~/.zshrc
+
+# 3. Install and use the LTS release
+nvm install --lts
+nvm use --lts
+
+# 4. Persist the default across new shells
+nvm alias default lts/*
+
+# 5. Verify
+node --version
+npm --version
+```
+
+> **WSL note:** nvm works identically on WSL — no extra steps required.
 
 ## Starting the PlantUML Server
 
