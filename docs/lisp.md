@@ -41,7 +41,7 @@ Or follow the [cl-lsp repository](https://github.com/cxxxr/cl-lsp) for the lates
 
 ## LSP
 
-The `cl_lsp` server is configured in `lua/config/lsp.lua` for Common Lisp. Install it via Quicklisp or your CL package manager. See [readme.md](../readme.md#lsp-support) for the shared LSP keybindings.
+The `cl_lsp` server is configured in `lua/config/lsp.lua` for Common Lisp. See the [Prerequisites](#prerequisites) section above for install steps and [readme.md](../readme.md#lsp-support) for the shared LSP keybindings.
 
 ## Quick Start
 

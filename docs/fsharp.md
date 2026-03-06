@@ -26,24 +26,18 @@ Or download directly from <https://dotnet.microsoft.com/download>.
 
 ## LSP
 
-The `fsautocomplete` server is configured in `lua/config/lsp.lua`. Install it with:
-
-```sh
-dotnet tool install -g fsautocomplete
-```
-
-See [readme.md](../readme.md#lsp-support) for the shared LSP keybindings.
+The `fsautocomplete` server is configured in `lua/config/lsp.lua`. See the [Prerequisites](#prerequisites) section above for install steps and [readme.md](../readme.md#lsp-support) for the shared LSP keybindings.
 
 ## Quick Start
 
-1. **Ensure prerequisites are installed:**
+1. **Verify prerequisites are installed:**
 
    ```sh
    # .NET SDK (includes dotnet fsi)
    dotnet --version
 
    # F# language server
-   dotnet tool install -g fsautocomplete
+   dotnet tool list -g | grep fsautocomplete
    ```
 
 2. **Open a source file** — plugins and LSP attach automatically:
