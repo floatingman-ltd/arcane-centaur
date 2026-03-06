@@ -16,7 +16,7 @@ On first launch, [lazy.nvim](https://github.com/folke/lazy.nvim) will bootstrap 
 
 | Dependency | Purpose | Install hint |
 |---|---|---|
-| **Neovim ≥ 0.9** | Editor | `brew install neovim` / `sudo apt install neovim` |
+| **Neovim ≥ 0.9** | Editor | `sudo snap install nvim --classic` |
 | **build-essential, tree** | General tooling | `sudo apt install build-essential tree -y` |
 | **cl_lsp** | Common Lisp LSP server | Install via Quicklisp or your CL package manager |
 | **A Lisp REPL** | Conjure connects to a running REPL | SBCL, Clojure nREPL, or MIT Scheme (see below) |
