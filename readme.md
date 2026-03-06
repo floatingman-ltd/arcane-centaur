@@ -23,7 +23,7 @@ On first launch, [lazy.nvim](https://github.com/folke/lazy.nvim) will bootstrap 
 | **.NET SDK ≥ 6** | F# compiler and `dotnet fsi` REPL | <https://dotnet.microsoft.com/download> |
 | **fsautocomplete** | F# LSP server | `dotnet tool install -g fsautocomplete` |
 | **PlantUML Docker server** *(diagrams)* | Render PlantUML diagrams | `docker run -d -p 8080:8080 plantuml/plantuml-server` |
-| **Node.js / npm** *(diagrams)* | Build step for markdown-preview.nvim | `sudo apt install nodejs npm` |
+| **Node.js / npm** *(diagrams)* | Build step for markdown-preview.nvim | Install via nvm — see [docs/diagrams.md](docs/diagrams.md#prerequisites) |
 | **marksman** *(optional, diagrams)* | Markdown LSP | `sudo apt install marksman` |
 | **A [Nerd Font][]** *(optional)* | File-type icons in the tree and fuzzy-finder | See below |
 
