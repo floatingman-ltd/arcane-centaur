@@ -192,6 +192,38 @@ Leader key is **Space**.
 | `<leader>t` | Normal | Toggle terminal split |
 | `<leader>f` | Normal / Visual | Format buffer (or selection) |
 
+## Auto-Completion
+
+Auto-completion is powered by [nvim-cmp](https://github.com/hrsh7th/nvim-cmp) and draws from LSP, snippets, open buffers, file paths, and (when spell-checking is active) the spell dictionary.
+
+### Triggering the menu
+
+The completion menu opens automatically as you type.  To open it on demand in
+insert mode, press **`Alt+Space`** (`<M-Space>`).
+
+### Navigating the menu
+
+Once the menu is open, use **`j`** and **`k`** to move through suggestions —
+matching the standard Neovim screen-movement keys.  Both keys fall back to
+inserting the literal character when the menu is not visible.
+
+| Key | Action |
+|---|---|
+| `j` | Move to the next suggestion |
+| `k` | Move to the previous suggestion |
+| `Ctrl-f` | Scroll the documentation preview down |
+| `Ctrl-b` | Scroll the documentation preview up |
+
+### Selecting the highlighted entry
+
+Press **`Enter`** (`<CR>`) to confirm and insert the currently highlighted
+suggestion.  If nothing is highlighted, `Enter` inserts a newline as normal
+(selection is never forced automatically).
+
+### Cancelling the menu
+
+Press **`Ctrl+e`** to dismiss the completion menu and return to normal typing.
+
 ## Supported Languages
 
 | Language | Treesitter | LSP | REPL | Structural Editing | Guide |
