@@ -26,6 +26,22 @@ return {
           -- Confirm with Enter; select = false so a highlighted entry is
           -- required (avoids accidentally inserting the first suggestion).
           ["<CR>"]      = cmp.mapping.confirm({ select = false }),
+          -- Navigate the completion menu with j/k, matching screen movement.
+          -- Falls back to inserting the character when the menu is closed.
+          ["j"]         = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              cmp.select_next_item()
+            else
+              fallback()
+            end
+          end, { "i" }),
+          ["k"]         = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              cmp.select_prev_item()
+            else
+              fallback()
+            end
+          end, { "i" }),
         }),
         sources = cmp.config.sources({
           { name = "nvim_lsp" },
