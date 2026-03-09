@@ -1,4 +1,4 @@
-vim.b.localleader = ","
+vim.b.maplocalleader = ","
 vim.keymap.set("n", "<localleader>p", "<cmd>MarkdownPreviewToggle<cr>", { buffer = true, desc = "Toggle markdown preview" })
 
 -- MARP presentation commands (requires Docker; see docs/presentations.md)
