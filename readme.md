@@ -23,7 +23,7 @@ On first launch, [lazy.nvim](https://github.com/folke/lazy.nvim) will bootstrap 
 [Nerd Font]: https://www.nerdfonts.com/
 
 Language-specific prerequisites (LSP servers, REPLs, runtimes) are documented in each language guide:
-[Lisp / Clojure / Scheme](docs/lisp.md) · [F#](docs/fsharp.md) · [Haskell](docs/haskell.md) · [Diagrams / Markdown](docs/diagrams.md)
+[Lisp / Clojure / Scheme](docs/lisp.md) · [F#](docs/fsharp.md) · [Haskell](docs/haskell.md) · [Diagrams / Markdown](docs/diagrams.md) · [Presentations / MARP](docs/presentations.md)
 
 ### Recommended Terminal — GNOME Terminal
 
@@ -146,6 +146,10 @@ vim.g.have_nerd_font = true   -- or false
 
 → See **[docs/diagrams.md](docs/diagrams.md)** for the full guide: PlantUML in Markdown, standalone `.puml` files, Docker server setup, and keybindings.
 
+## Working with Presentations (MARP)
+
+→ See **[docs/presentations.md](docs/presentations.md)** for the full guide: MARP live preview via Docker, export to PPTX / HTML / PDF, and keybindings.
+
 ## Working with Lisp
 
 → See **[docs/lisp.md](docs/lisp.md)** for the full guide: Conjure, vim-sexp, parinfer, rainbow-delimiters, Quick Start, and Typical Workflow.
@@ -236,6 +240,7 @@ Press **`Ctrl+e`** to dismiss the completion menu and return to normal typing.
 | F# | ✅ | ✅ fsautocomplete | ✅ dotnet fsi (iron.nvim) | — | [docs/fsharp.md](docs/fsharp.md) |
 | Haskell | — | ✅ haskell-tools | ✅ GHCi | — | [docs/haskell.md](docs/haskell.md) |
 | Markdown | ✅ | ✅ marksman | — | — | [docs/diagrams.md](docs/diagrams.md) |
+| MARP (slides) | ✅ *(markdown)* | — | — | — | [docs/presentations.md](docs/presentations.md) |
 | PlantUML | ✅ | — | — | — | [docs/diagrams.md](docs/diagrams.md) |
 
 ## Copilot Model Configuration
@@ -316,6 +321,7 @@ lua/
   loader/init.lua           # lazy.nvim bootstrap
   config/
     lsp.lua                 # LSP server setup (cl_lsp, fsautocomplete, marksman)
+    marp.lua                # MARP presentation commands (preview + export)
     terminal.lua            # Terminal detection & capability flags
     treesitter.lua          # (config managed in plugins/treesitter.lua)
   plugins/
@@ -338,9 +344,10 @@ after/ftplugin/
   scheme.lua                # Scheme indent settings
   fsharp.lua                # F# indent settings (4-space) & localleader
   haskell.lua               # Haskell-tools keybindings
-  markdown.lua              # Markdown localleader & preview keymap
+  markdown.lua              # Markdown localleader & preview keymap + MARP commands
   plantuml.lua              # PlantUML localleader & PumlPreview keymap
 docker/
+  marp/                     # Docker Compose for MARP presentation server
   plantuml-server/          # Docker Compose for PlantUML render server
   sbcl-swank/               # Docker Compose for SBCL/Swank REPL
 docs/
@@ -348,4 +355,5 @@ docs/
   fsharp.md                 # F# guide
   haskell.md                # Haskell guide
   diagrams.md               # Markdown + PlantUML diagram guide
+  presentations.md          # MARP presentation guide
 ```
