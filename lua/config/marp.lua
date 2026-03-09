@@ -54,12 +54,19 @@ function M.preview()
     vim.notify("Marp: buffer has no file", vim.log.levels.WARN)
     return
   end
+  if vim.fn.executable("xdg-open") ~= 1 then
+    vim.notify("Marp: xdg-open not found — open http://localhost:8880/" .. name .. " manually", vim.log.levels.WARN)
+    return
+  end
   local url = "http://localhost:8880/" .. name
   vim.fn.jobstart({ "xdg-open", url }, { detach = true })
 end
 
---- Register MARP user commands.
+--- Register MARP user commands (idempotent — safe to call from ftplugin).
 function M.setup()
+  if M._loaded then return end
+  M._loaded = true
+
   vim.api.nvim_create_user_command("MarpPreview", M.preview,
     { desc = "Open file in MARP preview server" })
   vim.api.nvim_create_user_command("MarpToPptx", function() M.convert("pptx") end,
