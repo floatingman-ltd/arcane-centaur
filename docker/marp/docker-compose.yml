@@ -1,0 +1,12 @@
+services:
+  marp:
+    image: marpteam/marp-cli
+    ports:
+      - "127.0.0.1:8880:8080"
+      - "127.0.0.1:37717:37717"   # LiveReload port for automatic browser refresh
+    volumes:
+      # Mount your slides directory into the container.
+      # Override with: MARP_DIR=/path/to/slides docker compose up
+      - "${MARP_DIR:-$PWD}:/home/marp/app"
+    command: ["-s", "."]
+    restart: unless-stopped
