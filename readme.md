@@ -194,7 +194,6 @@ Leader key is **Space**.
 | `Ctrl-f` | Normal | Find current file in tree |
 | `Ctrl-j` | Insert | Accept full Copilot suggestion |
 | `Alt-f` | Insert | Accept next word of Copilot suggestion |
-| `<leader>c` | Normal | Focus CopilotChat window |
 | `<leader>t` | Normal | Toggle terminal split |
 | `<leader>f` | Normal / Visual | Format buffer (or selection) |
 
@@ -291,8 +290,6 @@ gh copilot suggest "recursively delete all .DS_Store files"
 
 Press **`Esc`** to leave terminal insert mode, then `<C-k>` to jump back to your editor window.
 
-> **Tip:** `gh copilot` focuses on shell/CLI tasks. Use **CopilotChat** (`:CopilotChat`) for code-aware questions with buffer context.
-
 ## Plugin Overview
 
 Plugins are managed by [lazy.nvim](https://github.com/folke/lazy.nvim) and organized in `lua/plugins/`:
@@ -304,6 +301,7 @@ Plugins are managed by [lazy.nvim](https://github.com/folke/lazy.nvim) and organ
 | `copilot.lua` | Copilot inline completions | [copilot.md](docs/cheatsheets/copilot.md) |
 | `fsharp.lua` | iron.nvim REPL integration for F# (`dotnet fsi`) | [fsharp.md](docs/cheatsheets/fsharp.md) |
 | `fzf-lua.lua` | Fuzzy finder | [fzf.md](docs/cheatsheets/fzf.md) |
+| `haskell.lua` | haskell-tools.nvim (GHCi REPL + HLS integration) | [haskell.md](docs/cheatsheets/haskell.md) |
 | `html.lua` | Bracey HTML live preview | [html.md](docs/cheatsheets/html.md) |
 | `init.lua` | vim-repeat, vim-sensible, vim-surround, vim-unimpaired, airline, lspconfig | [lsp.md](docs/cheatsheets/lsp.md) |
 | `lisp.lua` | Conjure, vim-sexp, nvim-parinfer, rainbow-delimiters | [lisp.md](docs/cheatsheets/lisp.md) |
@@ -333,6 +331,7 @@ lua/
     copilot.lua             # Copilot inline completions + model setting
     fsharp.lua              # F# REPL via iron.nvim (dotnet fsi)
     fzf-lua.lua             # Fuzzy finder
+    haskell.lua             # haskell-tools.nvim (GHCi REPL + HLS)
     html.lua                # Bracey HTML live preview
     init.lua                # Bare-string plugins (tpope, airline, lspconfig)
     lisp.lua                # Lisp ecosystem plugins

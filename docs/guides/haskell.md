@@ -19,13 +19,17 @@ All Haskell plugins lazy-load only when you open a `.hs` or `.lhs` file.
 
 haskell-tools provides a built-in GHCi REPL. Keybindings are defined in `after/ftplugin/haskell.lua`.
 
+Leader is `Space`; no LocalLeader bindings are used in Haskell buffers.
+
 | Keys | Action |
 |---|---|
-| `,rr` | Toggle GHCi REPL for the current package |
-| `,rf` | Toggle GHCi REPL for the current file |
-| `,rq` | Quit the REPL |
-| `,rl` | Reload the REPL |
+| `<leader>rr` | Toggle GHCi REPL for the current package |
+| `<leader>rf` | Toggle GHCi REPL for the current file |
+| `<leader>rq` | Quit the GHCi REPL |
+| `Space-cl` | Run code lenses (haskell-language-server) |
+| `Space-hs` | Hoogle search for type under cursor |
+| `Space-ea` | Evaluate all code snippets in the buffer |
 
 ## Configuration
 
-Plugin spec lives in `lua/plugins/` and ftplugin overrides live in `after/ftplugin/haskell.lua`.
+Plugin spec lives in `lua/plugins/haskell.lua` and ftplugin overrides live in `after/ftplugin/haskell.lua`.
