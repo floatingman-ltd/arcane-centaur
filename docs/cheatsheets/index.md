@@ -6,21 +6,21 @@
 
 | Plugin / Area | Cheatsheet |
 |---|---|
-| Navigation & Splits | [navigation.md](navigation.md) |
-| Visual Editing | [editing.md](editing.md) |
-| File Tree (nvim-tree) | [file-tree.md](file-tree.md) |
-| Comments (vim-commentary) | [comments.md](comments.md) |
-| Formatting (conform.nvim) | [formatting.md](formatting.md) |
-| GitHub Copilot | [copilot.md](copilot.md) |
-| LSP | [lsp.md](lsp.md) |
 | Auto-Completion (nvim-cmp) | [completion.md](completion.md) |
-| Fuzzy Finder (fzf-lua) | [fzf.md](fzf.md) |
-| Haskell (haskell-tools) | [haskell.md](haskell.md) |
+| Comments (vim-commentary) | [comments.md](comments.md) |
 | F# REPL (iron.nvim) | [fsharp.md](fsharp.md) |
-| Lisp / Clojure / Scheme (Conjure + vim-sexp) | [lisp.md](lisp.md) |
-| Markdown Preview + MARP | [markdown.md](markdown.md) |
-| PlantUML Preview | [plantuml.md](plantuml.md) |
+| File Tree (nvim-tree) | [file-tree.md](file-tree.md) |
+| Formatting (conform.nvim) | [formatting.md](formatting.md) |
+| Fuzzy Finder (fzf-lua) | [fzf.md](fzf.md) |
+| GitHub Copilot | [copilot.md](copilot.md) |
+| Haskell (haskell-tools) | [haskell.md](haskell.md) |
 | HTML Live Preview (Bracey) | [html.md](html.md) |
+| Lisp / Clojure / Scheme (Conjure + vim-sexp) | [lisp.md](lisp.md) |
+| LSP | [lsp.md](lsp.md) |
+| Markdown Preview + MARP | [markdown.md](markdown.md) |
+| Navigation & Splits | [navigation.md](navigation.md) |
+| PlantUML Preview | [plantuml.md](plantuml.md) |
+| Visual Editing | [editing.md](editing.md) |
 
 ---
 
