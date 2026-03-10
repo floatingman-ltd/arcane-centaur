@@ -1,2 +1,0 @@
-return 
-    { "preservim/nerdtree" }
