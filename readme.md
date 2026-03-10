@@ -180,6 +180,8 @@ Keybindings:
 
 ## General Keybindings
 
+→ See **[docs/cheatsheet.md](docs/cheatsheet.md)** for the complete one-page keybinding reference.
+
 Leader key is **Space**.
 
 | Keys | Mode | Action |
