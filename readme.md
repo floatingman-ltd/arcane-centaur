@@ -297,21 +297,22 @@ Press **`Esc`** to leave terminal insert mode, then `<C-k>` to jump back to your
 
 Plugins are managed by [lazy.nvim](https://github.com/folke/lazy.nvim) and organized in `lua/plugins/`:
 
-| File | Plugins |
-|---|---|
-| `init.lua` | vim-repeat, vim-sensible, vim-surround, vim-unimpaired, airline, lspconfig |
-| `copilot.lua` | Copilot inline completions |
-| `treesitter.lua` | nvim-treesitter |
-| `nvim-cmp.lua` | nvim-cmp + completion sources |
-| `lisp.lua` | Conjure, vim-sexp, nvim-parinfer, rainbow-delimiters |
-| `fzf-lua.lua` | Fuzzy finder |
-| `nvim-tree.lua` | File explorer tree |
-| `vim-commentary.lua` | Toggle comments with `gcc` |
-| `fsharp.lua` | iron.nvim REPL integration for F# (`dotnet fsi`) |
-| `colorscheme.lua` | TokyoNight theme (moon / storm / night / day variants) |
-| `conform.lua` | Formatting (format-on-save + `<leader>f`) for Lisp and F# filetypes |
-| `markdown.lua` | markdown-preview.nvim (browser preview, PlantUML via Docker server) |
-| `plantuml.lua` | plantuml-syntax + `:PumlPreview` command (browser preview via Docker server) |
+| File | Plugins | Cheatsheet |
+|---|---|---|
+| `init.lua` | vim-repeat, vim-sensible, vim-surround, vim-unimpaired, airline, lspconfig | [lsp.md](docs/cheatsheets/lsp.md) |
+| `copilot.lua` | Copilot inline completions | [copilot.md](docs/cheatsheets/copilot.md) |
+| `treesitter.lua` | nvim-treesitter | — |
+| `nvim-cmp.lua` | nvim-cmp + completion sources | [completion.md](docs/cheatsheets/completion.md) |
+| `lisp.lua` | Conjure, vim-sexp, nvim-parinfer, rainbow-delimiters | [lisp.md](docs/cheatsheets/lisp.md) |
+| `fzf-lua.lua` | Fuzzy finder | [fzf.md](docs/cheatsheets/fzf.md) |
+| `nvim-tree.lua` | File explorer tree | [file-tree.md](docs/cheatsheets/file-tree.md) |
+| `vim-commentary.lua` | Toggle comments with `gcc` | [comments.md](docs/cheatsheets/comments.md) |
+| `fsharp.lua` | iron.nvim REPL integration for F# (`dotnet fsi`) | [fsharp.md](docs/cheatsheets/fsharp.md) |
+| `colorscheme.lua` | TokyoNight theme (moon / storm / night / day variants) | — |
+| `conform.lua` | Formatting (format-on-save + `<leader>f`) for Lisp and F# filetypes | [formatting.md](docs/cheatsheets/formatting.md) |
+| `markdown.lua` | markdown-preview.nvim (browser preview, PlantUML via Docker server) | [markdown.md](docs/cheatsheets/markdown.md) |
+| `plantuml.lua` | plantuml-syntax + `:PumlPreview` command (browser preview via Docker server) | [plantuml.md](docs/cheatsheets/plantuml.md) |
+| `html.lua` | Bracey HTML live preview | [html.md](docs/cheatsheets/html.md) |
 
 ## Project Structure
 
