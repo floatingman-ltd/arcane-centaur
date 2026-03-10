@@ -23,7 +23,7 @@ On first launch, [lazy.nvim](https://github.com/folke/lazy.nvim) will bootstrap 
 [Nerd Font]: https://www.nerdfonts.com/
 
 Language-specific prerequisites (LSP servers, REPLs, runtimes) are documented in each language guide:
-[Lisp / Clojure / Scheme](docs/guides/lisp.md) · [F#](docs/guides/fsharp.md) · [Haskell](docs/guides/haskell.md) · [Diagrams / Markdown](docs/guides/diagrams.md) · [Presentations / MARP](docs/guides/presentations.md)
+[Diagrams / Markdown](docs/guides/diagrams.md) · [F#](docs/guides/fsharp.md) · [Haskell](docs/guides/haskell.md) · [Lisp / Clojure / Scheme](docs/guides/lisp.md) · [Presentations / MARP](docs/guides/presentations.md)
 
 ### Recommended Terminal — GNOME Terminal
 
@@ -146,14 +146,6 @@ vim.g.have_nerd_font = true   -- or false
 
 → See **[docs/guides/diagrams.md](docs/guides/diagrams.md)** for the full guide: PlantUML in Markdown, standalone `.puml` files, Docker server setup, and keybindings.
 
-## Working with Presentations (MARP)
-
-→ See **[docs/guides/presentations.md](docs/guides/presentations.md)** for the full guide: MARP live preview via Docker, export to PPTX / HTML / PDF, and keybindings.
-
-## Working with Lisp
-
-→ See **[docs/guides/lisp.md](docs/guides/lisp.md)** for the full guide: Conjure, vim-sexp, parinfer, rainbow-delimiters, Quick Start, and Typical Workflow.
-
 ## Working with F#
 
 → See **[docs/guides/fsharp.md](docs/guides/fsharp.md)** for the full guide: iron.nvim REPL, fsautocomplete LSP, Quick Start, and Typical Workflow.
@@ -161,6 +153,14 @@ vim.g.have_nerd_font = true   -- or false
 ## Working with Haskell
 
 → See **[docs/guides/haskell.md](docs/guides/haskell.md)** for the full guide: haskell-tools.nvim, hls LSP, and GHCi REPL keybindings.
+
+## Working with Lisp
+
+→ See **[docs/guides/lisp.md](docs/guides/lisp.md)** for the full guide: Conjure, vim-sexp, parinfer, rainbow-delimiters, Quick Start, and Typical Workflow.
+
+## Working with Presentations (MARP)
+
+→ See **[docs/guides/presentations.md](docs/guides/presentations.md)** for the full guide: MARP live preview via Docker, export to PPTX / HTML / PDF, and keybindings.
 
 ## LSP Support
 
@@ -234,16 +234,16 @@ Press **`Ctrl+e`** to dismiss the completion menu and return to normal typing.
 
 | Language | Treesitter | LSP | REPL | Structural Editing | Guide |
 |---|---|---|---|---|---|
-| Common Lisp | ✅ | ✅ cl_lsp | ✅ Swank (Conjure) | ✅ vim-sexp + parinfer | [docs/guides/lisp.md](docs/guides/lisp.md) |
 | Clojure | ✅ | — | ✅ nREPL (Conjure) | ✅ vim-sexp + parinfer | [docs/guides/lisp.md](docs/guides/lisp.md) |
-| Scheme | ✅ | — | ✅ built-in (Conjure) | ✅ vim-sexp + parinfer | [docs/guides/lisp.md](docs/guides/lisp.md) |
-| Fennel | — | — | ✅ (Conjure) | ✅ parinfer | [docs/guides/lisp.md](docs/guides/lisp.md) |
-| Lua | ✅ | — | — | — | — |
+| Common Lisp | ✅ | ✅ cl_lsp | ✅ Swank (Conjure) | ✅ vim-sexp + parinfer | [docs/guides/lisp.md](docs/guides/lisp.md) |
 | F# | ✅ | ✅ fsautocomplete | ✅ dotnet fsi (iron.nvim) | — | [docs/guides/fsharp.md](docs/guides/fsharp.md) |
+| Fennel | — | — | ✅ (Conjure) | ✅ parinfer | [docs/guides/lisp.md](docs/guides/lisp.md) |
 | Haskell | — | ✅ haskell-tools | ✅ GHCi | — | [docs/guides/haskell.md](docs/guides/haskell.md) |
+| Lua | ✅ | — | — | — | — |
 | Markdown | ✅ | ✅ marksman | — | — | [docs/guides/diagrams.md](docs/guides/diagrams.md) |
 | MARP (slides) | ✅ *(markdown)* | — | — | — | [docs/guides/presentations.md](docs/guides/presentations.md) |
 | PlantUML | ✅ | — | — | — | [docs/guides/diagrams.md](docs/guides/diagrams.md) |
+| Scheme | ✅ | — | ✅ built-in (Conjure) | ✅ vim-sexp + parinfer | [docs/guides/lisp.md](docs/guides/lisp.md) |
 
 ## Copilot Model Configuration
 
@@ -299,20 +299,20 @@ Plugins are managed by [lazy.nvim](https://github.com/folke/lazy.nvim) and organ
 
 | File | Plugins | Cheatsheet |
 |---|---|---|
-| `init.lua` | vim-repeat, vim-sensible, vim-surround, vim-unimpaired, airline, lspconfig | [lsp.md](docs/cheatsheets/lsp.md) |
-| `copilot.lua` | Copilot inline completions | [copilot.md](docs/cheatsheets/copilot.md) |
-| `treesitter.lua` | nvim-treesitter | — |
-| `nvim-cmp.lua` | nvim-cmp + completion sources | [completion.md](docs/cheatsheets/completion.md) |
-| `lisp.lua` | Conjure, vim-sexp, nvim-parinfer, rainbow-delimiters | [lisp.md](docs/cheatsheets/lisp.md) |
-| `fzf-lua.lua` | Fuzzy finder | [fzf.md](docs/cheatsheets/fzf.md) |
-| `nvim-tree.lua` | File explorer tree | [file-tree.md](docs/cheatsheets/file-tree.md) |
-| `vim-commentary.lua` | Toggle comments with `gcc` | [comments.md](docs/cheatsheets/comments.md) |
-| `fsharp.lua` | iron.nvim REPL integration for F# (`dotnet fsi`) | [fsharp.md](docs/cheatsheets/fsharp.md) |
 | `colorscheme.lua` | TokyoNight theme (moon / storm / night / day variants) | — |
 | `conform.lua` | Formatting (format-on-save + `<leader>f`) for Lisp and F# filetypes | [formatting.md](docs/cheatsheets/formatting.md) |
-| `markdown.lua` | markdown-preview.nvim (browser preview, PlantUML via Docker server) | [markdown.md](docs/cheatsheets/markdown.md) |
-| `plantuml.lua` | plantuml-syntax + `:PumlPreview` command (browser preview via Docker server) | [plantuml.md](docs/cheatsheets/plantuml.md) |
+| `copilot.lua` | Copilot inline completions | [copilot.md](docs/cheatsheets/copilot.md) |
+| `fsharp.lua` | iron.nvim REPL integration for F# (`dotnet fsi`) | [fsharp.md](docs/cheatsheets/fsharp.md) |
+| `fzf-lua.lua` | Fuzzy finder | [fzf.md](docs/cheatsheets/fzf.md) |
 | `html.lua` | Bracey HTML live preview | [html.md](docs/cheatsheets/html.md) |
+| `init.lua` | vim-repeat, vim-sensible, vim-surround, vim-unimpaired, airline, lspconfig | [lsp.md](docs/cheatsheets/lsp.md) |
+| `lisp.lua` | Conjure, vim-sexp, nvim-parinfer, rainbow-delimiters | [lisp.md](docs/cheatsheets/lisp.md) |
+| `markdown.lua` | markdown-preview.nvim (browser preview, PlantUML via Docker server) | [markdown.md](docs/cheatsheets/markdown.md) |
+| `nvim-cmp.lua` | nvim-cmp + completion sources | [completion.md](docs/cheatsheets/completion.md) |
+| `nvim-tree.lua` | File explorer tree | [file-tree.md](docs/cheatsheets/file-tree.md) |
+| `plantuml.lua` | plantuml-syntax + `:PumlPreview` command (browser preview via Docker server) | [plantuml.md](docs/cheatsheets/plantuml.md) |
+| `treesitter.lua` | nvim-treesitter | — |
+| `vim-commentary.lua` | Toggle comments with `gcc` | [comments.md](docs/cheatsheets/comments.md) |
 
 ## Project Structure
 
@@ -328,53 +328,54 @@ lua/
     terminal.lua            # Terminal detection & capability flags
     treesitter.lua          # (config managed in plugins/treesitter.lua)
   plugins/
-    init.lua                # Bare-string plugins (tpope, airline, lspconfig)
-    copilot.lua             # Copilot inline completions + model setting
-    treesitter.lua          # nvim-treesitter
-    nvim-cmp.lua            # Completion engine + sources
-    lisp.lua                # Lisp ecosystem plugins
-    fsharp.lua              # F# REPL via iron.nvim (dotnet fsi)
-    fzf-lua.lua             # Fuzzy finder
-    nvim-tree.lua           # File tree
-    vim-commentary.lua      # Comment toggling
     colorscheme.lua         # TokyoNight theme (moon/storm/night/day)
     conform.lua             # Formatting for Lisp and F# filetypes
+    copilot.lua             # Copilot inline completions + model setting
+    fsharp.lua              # F# REPL via iron.nvim (dotnet fsi)
+    fzf-lua.lua             # Fuzzy finder
+    html.lua                # Bracey HTML live preview
+    init.lua                # Bare-string plugins (tpope, airline, lspconfig)
+    lisp.lua                # Lisp ecosystem plugins
     markdown.lua            # markdown-preview.nvim (browser preview)
+    nvim-cmp.lua            # Completion engine + sources
+    nvim-tree.lua           # File tree
     plantuml.lua            # plantuml-syntax + PumlPreview command
+    treesitter.lua          # nvim-treesitter
+    vim-commentary.lua      # Comment toggling
 after/ftplugin/
-  lisp.lua                  # Lisp indent settings & lispwords
   clojure.lua               # Clojure indent settings
-  scheme.lua                # Scheme indent settings
   fsharp.lua                # F# indent settings (4-space) & localleader
   haskell.lua               # Haskell-tools keybindings
+  lisp.lua                  # Lisp indent settings & lispwords
   markdown.lua              # Markdown localleader & preview keymap + MARP commands
   plantuml.lua              # PlantUML localleader & PumlPreview keymap
+  scheme.lua                # Scheme indent settings
 docker/
   marp/                     # Docker Compose for MARP presentation server
   plantuml-server/          # Docker Compose for PlantUML render server
   sbcl-swank/               # Docker Compose for SBCL/Swank REPL
 docs/
   cheatsheets/
+    comments.md             # vim-commentary
+    completion.md           # nvim-cmp
+    copilot.md              # GitHub Copilot
+    editing.md              # Visual-mode editing
+    file-tree.md            # nvim-tree
+    formatting.md           # conform.nvim
+    fsharp.md               # iron.nvim / dotnet fsi
+    fzf.md                  # fzf-lua fuzzy finder
+    haskell.md              # haskell-tools REPL & HLS
+    html.md                 # Bracey HTML live preview
     index.md              # Main keybinding reference (links to plugin sheets)
-    navigation.md         # Window navigation & terminal
-    editing.md            # Visual-mode editing
-    file-tree.md          # nvim-tree
-    copilot.md            # GitHub Copilot
-    lsp.md                # LSP keybindings
-    completion.md         # nvim-cmp
-    comments.md           # vim-commentary
-    formatting.md         # conform.nvim
-    fzf.md                # fzf-lua fuzzy finder
-    haskell.md            # haskell-tools REPL & HLS
-    fsharp.md             # iron.nvim / dotnet fsi
-    lisp.md               # Conjure + vim-sexp
-    markdown.md           # Markdown preview + MARP
-    plantuml.md           # PlantUML preview
-    html.md               # Bracey HTML live preview
+    lisp.md                 # Conjure + vim-sexp
+    lsp.md                  # LSP keybindings
+    markdown.md             # Markdown preview + MARP
+    navigation.md           # Window navigation & terminal
+    plantuml.md             # PlantUML preview
   guides/
-    lisp.md               # Lisp / Clojure / Scheme / Fennel guide
-    fsharp.md             # F# guide
-    haskell.md            # Haskell guide
-    diagrams.md           # Markdown + PlantUML diagram guide
-    presentations.md      # MARP presentation guide
+    diagrams.md             # Markdown + PlantUML diagram guide
+    fsharp.md               # F# guide
+    haskell.md              # Haskell guide
+    lisp.md                 # Lisp / Clojure / Scheme / Fennel guide
+    presentations.md        # MARP presentation guide
 ```
