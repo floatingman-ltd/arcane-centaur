@@ -162,6 +162,33 @@ vim.g.have_nerd_font = true   -- or false
 
 → See **[docs/guides/presentations.md](docs/guides/presentations.md)** for the full guide: MARP live preview via Docker, export to PPTX / HTML / PDF, and keybindings.
 
+## Working with Git
+
+Git integration is provided by two complementary plugins:
+
+* **vim-fugitive** — full git command interface (`:Git status`, `:Git commit`, `:Git log`, etc.)
+* **gitsigns.nvim** — live gutter signs showing added / changed / removed lines, with hunk-level staging, resetting, and inline blame
+
+### Quick keybindings
+
+| Keys | Action |
+|---|---|
+| `<leader>gs` | Open git status window |
+| `<leader>gb` | Blame current file |
+| `<leader>gl` | Git log |
+| `<leader>gd` | Diff unstaged changes |
+| `<leader>gp` | Push |
+| `]h` / `[h` | Jump to next / previous changed hunk |
+| `<leader>hs` | Stage hunk under cursor |
+| `<leader>hr` | Reset hunk under cursor |
+| `<leader>hb` | Show full blame for current line |
+
+→ See **[docs/cheatsheets/git.md](docs/cheatsheets/git.md)** for the complete reference.
+
+> **Conflict note:** `<leader>hs` is also bound to *Hoogle search* in Haskell
+> buffers (buffer-local, so it takes priority there). Use the fugitive status
+> window to stage changes while editing Haskell files.
+
 ## LSP Support
 
 LSP servers are configured in `lua/config/lsp.lua`. See each language's doc for server-specific setup. All servers share these keybindings (available in any LSP-enabled buffer):
@@ -301,6 +328,7 @@ Plugins are managed by [lazy.nvim](https://github.com/folke/lazy.nvim) and organ
 | `copilot.lua` | Copilot inline completions | [copilot.md](docs/cheatsheets/copilot.md) |
 | `fsharp.lua` | iron.nvim REPL integration for F# (`dotnet fsi`) | [fsharp.md](docs/cheatsheets/fsharp.md) |
 | `fzf-lua.lua` | Fuzzy finder | [fzf.md](docs/cheatsheets/fzf.md) |
+| `git.lua` | vim-fugitive (`:Git` commands) + gitsigns.nvim (hunk signs & staging) | [git.md](docs/cheatsheets/git.md) |
 | `haskell.lua` | haskell-tools.nvim (GHCi REPL + HLS integration) | [haskell.md](docs/cheatsheets/haskell.md) |
 | `html.lua` | Bracey HTML live preview | [html.md](docs/cheatsheets/html.md) |
 | `init.lua` | vim-repeat, vim-sensible, vim-surround, vim-unimpaired, airline, lspconfig | [lsp.md](docs/cheatsheets/lsp.md) |
@@ -332,6 +360,7 @@ lua/
     copilot.lua             # Copilot inline completions + model setting
     fsharp.lua              # F# REPL via iron.nvim (dotnet fsi)
     fzf-lua.lua             # Fuzzy finder
+    git.lua                 # Git (vim-fugitive + gitsigns.nvim)
     haskell.lua             # haskell-tools.nvim (GHCi REPL + HLS)
     html.lua                # Bracey HTML live preview
     init.lua                # Bare-string plugins (tpope, airline, lspconfig)
