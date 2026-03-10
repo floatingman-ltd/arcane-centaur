@@ -23,7 +23,7 @@ On first launch, [lazy.nvim](https://github.com/folke/lazy.nvim) will bootstrap 
 [Nerd Font]: https://www.nerdfonts.com/
 
 Language-specific prerequisites (LSP servers, REPLs, runtimes) are documented in each language guide:
-[Lisp / Clojure / Scheme](docs/lisp.md) · [F#](docs/fsharp.md) · [Haskell](docs/haskell.md) · [Diagrams / Markdown](docs/diagrams.md) · [Presentations / MARP](docs/presentations.md)
+[Lisp / Clojure / Scheme](docs/guides/lisp.md) · [F#](docs/guides/fsharp.md) · [Haskell](docs/guides/haskell.md) · [Diagrams / Markdown](docs/guides/diagrams.md) · [Presentations / MARP](docs/guides/presentations.md)
 
 ### Recommended Terminal — GNOME Terminal
 
@@ -144,23 +144,23 @@ vim.g.have_nerd_font = true   -- or false
 
 ## Working with Diagrams
 
-→ See **[docs/diagrams.md](docs/diagrams.md)** for the full guide: PlantUML in Markdown, standalone `.puml` files, Docker server setup, and keybindings.
+→ See **[docs/guides/diagrams.md](docs/guides/diagrams.md)** for the full guide: PlantUML in Markdown, standalone `.puml` files, Docker server setup, and keybindings.
 
 ## Working with Presentations (MARP)
 
-→ See **[docs/presentations.md](docs/presentations.md)** for the full guide: MARP live preview via Docker, export to PPTX / HTML / PDF, and keybindings.
+→ See **[docs/guides/presentations.md](docs/guides/presentations.md)** for the full guide: MARP live preview via Docker, export to PPTX / HTML / PDF, and keybindings.
 
 ## Working with Lisp
 
-→ See **[docs/lisp.md](docs/lisp.md)** for the full guide: Conjure, vim-sexp, parinfer, rainbow-delimiters, Quick Start, and Typical Workflow.
+→ See **[docs/guides/lisp.md](docs/guides/lisp.md)** for the full guide: Conjure, vim-sexp, parinfer, rainbow-delimiters, Quick Start, and Typical Workflow.
 
 ## Working with F#
 
-→ See **[docs/fsharp.md](docs/fsharp.md)** for the full guide: iron.nvim REPL, fsautocomplete LSP, Quick Start, and Typical Workflow.
+→ See **[docs/guides/fsharp.md](docs/guides/fsharp.md)** for the full guide: iron.nvim REPL, fsautocomplete LSP, Quick Start, and Typical Workflow.
 
 ## Working with Haskell
 
-→ See **[docs/haskell.md](docs/haskell.md)** for the full guide: haskell-tools.nvim, hls LSP, and GHCi REPL keybindings.
+→ See **[docs/guides/haskell.md](docs/guides/haskell.md)** for the full guide: haskell-tools.nvim, hls LSP, and GHCi REPL keybindings.
 
 ## LSP Support
 
@@ -180,7 +180,7 @@ Keybindings:
 
 ## General Keybindings
 
-→ See **[docs/cheatsheet.md](docs/cheatsheet.md)** for the complete one-page keybinding reference.
+→ See **[docs/cheatsheets/index.md](docs/cheatsheets/index.md)** for the complete one-page keybinding reference.
 
 Leader key is **Space**.
 
@@ -234,16 +234,16 @@ Press **`Ctrl+e`** to dismiss the completion menu and return to normal typing.
 
 | Language | Treesitter | LSP | REPL | Structural Editing | Guide |
 |---|---|---|---|---|---|
-| Common Lisp | ✅ | ✅ cl_lsp | ✅ Swank (Conjure) | ✅ vim-sexp + parinfer | [docs/lisp.md](docs/lisp.md) |
-| Clojure | ✅ | — | ✅ nREPL (Conjure) | ✅ vim-sexp + parinfer | [docs/lisp.md](docs/lisp.md) |
-| Scheme | ✅ | — | ✅ built-in (Conjure) | ✅ vim-sexp + parinfer | [docs/lisp.md](docs/lisp.md) |
-| Fennel | — | — | ✅ (Conjure) | ✅ parinfer | [docs/lisp.md](docs/lisp.md) |
+| Common Lisp | ✅ | ✅ cl_lsp | ✅ Swank (Conjure) | ✅ vim-sexp + parinfer | [docs/guides/lisp.md](docs/guides/lisp.md) |
+| Clojure | ✅ | — | ✅ nREPL (Conjure) | ✅ vim-sexp + parinfer | [docs/guides/lisp.md](docs/guides/lisp.md) |
+| Scheme | ✅ | — | ✅ built-in (Conjure) | ✅ vim-sexp + parinfer | [docs/guides/lisp.md](docs/guides/lisp.md) |
+| Fennel | — | — | ✅ (Conjure) | ✅ parinfer | [docs/guides/lisp.md](docs/guides/lisp.md) |
 | Lua | ✅ | — | — | — | — |
-| F# | ✅ | ✅ fsautocomplete | ✅ dotnet fsi (iron.nvim) | — | [docs/fsharp.md](docs/fsharp.md) |
-| Haskell | — | ✅ haskell-tools | ✅ GHCi | — | [docs/haskell.md](docs/haskell.md) |
-| Markdown | ✅ | ✅ marksman | — | — | [docs/diagrams.md](docs/diagrams.md) |
-| MARP (slides) | ✅ *(markdown)* | — | — | — | [docs/presentations.md](docs/presentations.md) |
-| PlantUML | ✅ | — | — | — | [docs/diagrams.md](docs/diagrams.md) |
+| F# | ✅ | ✅ fsautocomplete | ✅ dotnet fsi (iron.nvim) | — | [docs/guides/fsharp.md](docs/guides/fsharp.md) |
+| Haskell | — | ✅ haskell-tools | ✅ GHCi | — | [docs/guides/haskell.md](docs/guides/haskell.md) |
+| Markdown | ✅ | ✅ marksman | — | — | [docs/guides/diagrams.md](docs/guides/diagrams.md) |
+| MARP (slides) | ✅ *(markdown)* | — | — | — | [docs/guides/presentations.md](docs/guides/presentations.md) |
+| PlantUML | ✅ | — | — | — | [docs/guides/diagrams.md](docs/guides/diagrams.md) |
 
 ## Copilot Model Configuration
 
@@ -353,9 +353,27 @@ docker/
   plantuml-server/          # Docker Compose for PlantUML render server
   sbcl-swank/               # Docker Compose for SBCL/Swank REPL
 docs/
-  lisp.md                   # Lisp / Clojure / Scheme / Fennel guide
-  fsharp.md                 # F# guide
-  haskell.md                # Haskell guide
-  diagrams.md               # Markdown + PlantUML diagram guide
-  presentations.md          # MARP presentation guide
+  cheatsheets/
+    index.md              # Main keybinding reference (links to plugin sheets)
+    navigation.md         # Window navigation & terminal
+    editing.md            # Visual-mode editing
+    file-tree.md          # nvim-tree
+    copilot.md            # GitHub Copilot
+    lsp.md                # LSP keybindings
+    completion.md         # nvim-cmp
+    comments.md           # vim-commentary
+    formatting.md         # conform.nvim
+    fzf.md                # fzf-lua fuzzy finder
+    haskell.md            # haskell-tools REPL & HLS
+    fsharp.md             # iron.nvim / dotnet fsi
+    lisp.md               # Conjure + vim-sexp
+    markdown.md           # Markdown preview + MARP
+    plantuml.md           # PlantUML preview
+    html.md               # Bracey HTML live preview
+  guides/
+    lisp.md               # Lisp / Clojure / Scheme / Fennel guide
+    fsharp.md             # F# guide
+    haskell.md            # Haskell guide
+    diagrams.md           # Markdown + PlantUML diagram guide
+    presentations.md      # MARP presentation guide
 ```
