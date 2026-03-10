@@ -43,3 +43,31 @@ TokyoNight "moon" variant. Change the `style` variable at the top of `lua/plugin
 
 ## Copilot Model
 To change the Copilot model, edit the `config` function in `lua/plugins/copilot.lua` and set `vim.g.copilot_model` to the desired value (e.g. `"gpt-4o"`, `"gpt-4.1"`, `"claude-sonnet-4-5"`).
+
+## Documentation Policy
+
+**All non-documentation changes must also update the relevant documentation.** When adding or changing a plugin, keybinding, LSP server, filetype setting, or any other user-visible behaviour, update the matching docs:
+
+| Change type | Files to update |
+|---|---|
+| New or changed plugin | `readme.md` (Plugin Overview + Project Structure tables), relevant `docs/guides/*.md`, relevant `docs/cheatsheets/*.md` |
+| New or changed keybinding | `readme.md` (General Keybindings), `docs/cheatsheets/index.md`, the specific `docs/cheatsheets/<area>.md` |
+| New language support | `readme.md` (Supported Languages table), new `docs/guides/<lang>.md`, new `docs/cheatsheets/<lang>.md` |
+| New LSP server | `readme.md` (LSP Support), `docs/guides/<lang>.md` |
+| New Docker service | `readme.md` (Working with … section), `docs/guides/<area>.md` |
+| Terminal / font changes | `readme.md` (Terminal Auto-Detection table) |
+
+`docs/cheatsheets/index.md` is the single-page keybinding reference. If a new cheatsheet file is added, add a row in its Plugin Cheatsheets table.
+
+## Validation
+
+This repository contains no traditional build system. Validate Lua changes with:
+
+```sh
+# Syntax-check all Lua files from the repo root (requires luac, e.g. lua5.4)
+find . -name '*.lua' -print0 | xargs -0 luac -p
+```
+
+If `luac` is unavailable, use `lua -e 'loadfile("<file>")()'` per file, or open Neovim and run `:luafile %` / `:source %` to surface any runtime errors.
+
+No CI pipelines are configured in this repository; validation is manual.
