@@ -239,6 +239,7 @@ LocalLeader is `,` in Markdown buffers.
 | Keys | Action |
 |---|---|
 | `,p` | Toggle Markdown browser preview |
+| `,dp` | Export to PDF with PlantUML diagrams rendered |
 | `,mp` | MARP: open slide in preview server |
 | `,mx` | MARP: export to PowerPoint (`.pptx`) |
 | `,mh` | MARP: export to HTML |
