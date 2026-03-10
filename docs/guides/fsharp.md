@@ -26,7 +26,7 @@ Or download directly from <https://dotnet.microsoft.com/download>.
 
 ## LSP
 
-The `fsautocomplete` server is configured in `lua/config/lsp.lua`. See the [Prerequisites](#prerequisites) section above for install steps and [readme.md](../readme.md#lsp-support) for the shared LSP keybindings.
+The `fsautocomplete` server is configured in `lua/config/lsp.lua`. See the [Prerequisites](#prerequisites) section above for install steps and [readme.md](../../readme.md#lsp-support) for the shared LSP keybindings.
 
 ## Quick Start
 

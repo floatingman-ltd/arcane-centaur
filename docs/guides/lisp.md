@@ -26,7 +26,7 @@ All four plugins lazy-load only when you open a **Lisp**, **Clojure**, **Scheme*
 
 ## LSP
 
-The `cl_lsp` server is configured in `lua/config/lsp.lua` for Common Lisp. Install it via Quicklisp: `(ql:quickload :cl-lsp)`. See [readme.md](../readme.md#lsp-support) for the shared LSP keybindings.
+The `cl_lsp` server is configured in `lua/config/lsp.lua` for Common Lisp. Install it via Quicklisp: `(ql:quickload :cl-lsp)`. See [readme.md](../../readme.md#lsp-support) for the shared LSP keybindings.
 
 ## Quick Start
 

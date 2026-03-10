@@ -153,7 +153,7 @@ The `marksman` LSP server provides:
 - **Diagnostics** — broken links and malformed references are flagged inline
 - **Go-to-definition** (`gd`) — jump to linked documents
 
-See [readme.md](../readme.md#lsp-support) for the shared LSP keybindings.
+See [readme.md](../../readme.md#lsp-support) for the shared LSP keybindings.
 
 ## Diagram Types Supported
 

@@ -2,9 +2,31 @@
 
 **Leader** = `Space` · **LocalLeader** = `,` (in all language buffers)
 
+## Plugin Cheatsheets
+
+| Plugin / Area | Cheatsheet |
+|---|---|
+| Navigation & Splits | [navigation.md](navigation.md) |
+| Visual Editing | [editing.md](editing.md) |
+| File Tree (nvim-tree) | [file-tree.md](file-tree.md) |
+| Comments (vim-commentary) | [comments.md](comments.md) |
+| Formatting (conform.nvim) | [formatting.md](formatting.md) |
+| GitHub Copilot | [copilot.md](copilot.md) |
+| LSP | [lsp.md](lsp.md) |
+| Auto-Completion (nvim-cmp) | [completion.md](completion.md) |
+| Fuzzy Finder (fzf-lua) | [fzf.md](fzf.md) |
+| Haskell (haskell-tools) | [haskell.md](haskell.md) |
+| F# REPL (iron.nvim) | [fsharp.md](fsharp.md) |
+| Lisp / Clojure / Scheme (Conjure + vim-sexp) | [lisp.md](lisp.md) |
+| Markdown Preview + MARP | [markdown.md](markdown.md) |
+| PlantUML Preview | [plantuml.md](plantuml.md) |
+| HTML Live Preview (Bracey) | [html.md](html.md) |
+
 ---
 
-## Navigation & Splits
+## Quick Reference
+
+### Navigation & Splits
 
 | Keys | Mode | Action |
 |---|---|---|
@@ -17,9 +39,11 @@
 | `Ctrl-←` | Normal | Shrink split width |
 | `Ctrl-→` | Normal | Grow split width |
 
+→ [Full reference](navigation.md)
+
 ---
 
-## File Tree (nvim-tree)
+### File Tree (nvim-tree)
 
 | Keys | Mode | Action |
 |---|---|---|
@@ -27,18 +51,22 @@
 | `Ctrl-t` | Normal | Toggle file tree |
 | `Ctrl-f` | Normal | Reveal current file in tree |
 
+→ [Full reference](file-tree.md)
+
 ---
 
-## Terminal
+### Terminal
 
 | Keys | Mode | Action |
 |---|---|---|
 | `<leader>t` | Normal | Toggle terminal split |
 | `Esc` | Terminal | Exit terminal insert mode |
 
+→ [Full reference](navigation.md)
+
 ---
 
-## Editing (Visual / Cross-mode)
+### Editing (Visual Mode)
 
 | Keys | Mode | Action |
 |---|---|---|
@@ -50,9 +78,11 @@
 | `Shift-↑` | Visual | Move selected block up |
 | `<leader>p` | Visual | Paste without overwriting clipboard |
 
+→ [Full reference](editing.md)
+
 ---
 
-## Comments (vim-commentary)
+### Comments (vim-commentary)
 
 | Keys | Mode | Action |
 |---|---|---|
@@ -60,19 +90,23 @@
 | `gc` | Visual | Toggle comment on selection |
 | `Ctrl-/` | Normal | Toggle comment (`:Commentary`) |
 
+→ [Full reference](comments.md)
+
 ---
 
-## Formatting (conform.nvim)
+### Formatting (conform.nvim)
 
 | Keys | Mode | Action |
 |---|---|---|
 | `<leader>f` | Normal / Visual | Format buffer or selection (LSP-preferred) |
 
-*Format-on-save is enabled automatically for Lisp, Clojure, Scheme, Fennel, and F# buffers.*
+*Format-on-save is enabled for Lisp, Clojure, Scheme, Fennel, and F# buffers.*
+
+→ [Full reference](formatting.md)
 
 ---
 
-## Copilot (Insert / Normal)
+### Copilot
 
 | Keys | Mode | Action |
 |---|---|---|
@@ -80,9 +114,11 @@
 | `Alt-f` | Insert | Accept next word of suggestion |
 | `<leader>c` | Normal | Focus CopilotChat window |
 
+→ [Full reference](copilot.md)
+
 ---
 
-## LSP (all LSP-enabled buffers)
+### LSP (all LSP-enabled buffers)
 
 | Keys | Mode | Action |
 |---|---|---|
@@ -95,9 +131,11 @@
 | `[d` | Normal | Previous diagnostic |
 | `]d` | Normal | Next diagnostic |
 
+→ [Full reference](lsp.md)
+
 ---
 
-## Auto-Completion (nvim-cmp)
+### Auto-Completion (nvim-cmp)
 
 | Keys | Mode | Action |
 |---|---|---|
@@ -109,9 +147,13 @@
 | `Ctrl-f` | Insert | Scroll docs preview down |
 | `Ctrl-b` | Insert | Scroll docs preview up |
 
+→ [Full reference](completion.md)
+
 ---
 
-## Haskell (haskell-tools · `after/ftplugin/haskell.lua`)
+### Haskell (haskell-tools)
+
+Leader is `Space`; no LocalLeader bindings are used in Haskell buffers.
 
 | Keys | Mode | Action |
 |---|---|---|
@@ -122,9 +164,11 @@
 | `Space-hs` | Normal | Hoogle search for type under cursor |
 | `Space-ea` | Normal | Evaluate all code snippets |
 
+→ [Full reference](haskell.md) · [Guide](../guides/haskell.md)
+
 ---
 
-## F# REPL — iron.nvim (`lua/plugins/fsharp.lua`)
+### F# REPL — iron.nvim
 
 LocalLeader is `,` in F# buffers.
 
@@ -139,13 +183,15 @@ LocalLeader is `,` in F# buffers.
 | `,sq` | Normal | Quit / exit REPL |
 | `,cl` | Normal | Clear REPL output |
 
+→ [Full reference](fsharp.md) · [Guide](../guides/fsharp.md)
+
 ---
 
-## Lisp / Clojure / Scheme — Conjure (`lua/plugins/lisp.lua`)
+### Lisp / Clojure / Scheme — Conjure
 
 LocalLeader is `,` in Lisp/Clojure/Scheme/Fennel buffers.
 
-### Evaluation
+#### Evaluation
 
 | Keys | Action |
 |---|---|
@@ -155,7 +201,7 @@ LocalLeader is `,` in Lisp/Clojure/Scheme/Fennel buffers.
 | `,e!` | Replace form with its evaluated result |
 | `,cc` | Connect to REPL manually |
 
-### REPL Log
+#### REPL Log
 
 | Keys | Action |
 |---|---|
@@ -163,9 +209,11 @@ LocalLeader is `,` in Lisp/Clojure/Scheme/Fennel buffers.
 | `,ls` | Open REPL log in horizontal split |
 | `,lq` | Close REPL log window |
 
+→ [Full reference](lisp.md) · [Guide](../guides/lisp.md)
+
 ---
 
-## Structural Editing — vim-sexp (Lisp / Clojure / Scheme)
+### Structural Editing — vim-sexp
 
 | Keys | Action |
 |---|---|
@@ -181,9 +229,11 @@ LocalLeader is `,` in Lisp/Clojure/Scheme/Fennel buffers.
 | `cse[` or `cse]` | Surround element with `[]` |
 | `dsf` | Delete surrounding function call (splice) |
 
+→ [Full reference](lisp.md)
+
 ---
 
-## Markdown (`after/ftplugin/markdown.lua`)
+### Markdown
 
 LocalLeader is `,` in Markdown buffers.
 
@@ -195,12 +245,30 @@ LocalLeader is `,` in Markdown buffers.
 | `,mh` | MARP: export to HTML |
 | `,md` | MARP: export to PDF |
 
+→ [Full reference](markdown.md) · [Diagrams guide](../guides/diagrams.md) · [Presentations guide](../guides/presentations.md)
+
 ---
 
-## PlantUML (`after/ftplugin/plantuml.lua`)
+### PlantUML
 
 LocalLeader is `,` in PlantUML buffers.
 
 | Keys | Action |
 |---|---|
 | `,p` | Preview diagram in browser (via Docker server) |
+
+→ [Full reference](plantuml.md)
+
+---
+
+### HTML Live Preview (Bracey)
+
+LocalLeader is `,` in HTML / CSS / JavaScript buffers.
+
+| Keys | Action |
+|---|---|
+| `,p` | Start HTML live preview in browser |
+| `,x` | Stop the live preview |
+| `,r` | Reload the live preview |
+
+→ [Full reference](html.md)

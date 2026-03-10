@@ -13,7 +13,7 @@ All Haskell plugins lazy-load only when you open a `.hs` or `.lhs` file.
 
 ## LSP
 
-`haskell-tools` manages the `hls` LSP connection automatically — no manual `lspconfig` setup is needed. See [readme.md](../readme.md#lsp-support) for the shared LSP keybindings (`gd`, `K`, `gr`, etc.).
+`haskell-tools` manages the `hls` LSP connection automatically — no manual `lspconfig` setup is needed. See [readme.md](../../readme.md#lsp-support) for the shared LSP keybindings (`gd`, `K`, `gr`, etc.).
 
 ## REPL (GHCi)
 
