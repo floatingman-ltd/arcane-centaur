@@ -62,6 +62,7 @@ end
 
 -- leader key
 global.mapleader = " "
+global.maplocalleader = ","
 
 -- copilot
 global.copilot_no_tab_map = true
