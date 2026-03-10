@@ -7,3 +7,7 @@ vim.keymap.set("n", "<localleader>mp", "<cmd>MarpPreview<cr>", { buffer = true, 
 vim.keymap.set("n", "<localleader>mx", "<cmd>MarpToPptx<cr>", { buffer = true, desc = "MARP: export to PPTX" })
 vim.keymap.set("n", "<localleader>mh", "<cmd>MarpToHtml<cr>", { buffer = true, desc = "MARP: export to HTML" })
 vim.keymap.set("n", "<localleader>md", "<cmd>MarpToPdf<cr>", { buffer = true, desc = "MARP: export to PDF" })
+
+-- Markdown → PDF with PlantUML diagrams (requires Docker; see docs/guides/diagrams.md)
+require("config.mdpdf").setup()
+vim.keymap.set("n", "<localleader>dp", "<cmd>MdToPdf<cr>", { buffer = true, desc = "Export markdown to PDF with PlantUML diagrams" })

@@ -118,6 +118,55 @@ The server is stateless — no build step or volume is needed. It will be availa
 
 4. Press **`,p`** to render and open the diagram in your browser via the Docker server.
 
+## Exporting to PDF
+
+The `:MdToPdf` command exports the current Markdown document to PDF, rendering
+all fenced `plantuml` code blocks as PNG images via the local PlantUML server.
+
+### Prerequisites
+
+| Dependency | Purpose |
+|---|---|
+| **PlantUML Docker server** | Render PlantUML diagrams — must be running on `localhost:8080` |
+| **`pandoc/extra` Docker image** | Pandoc + LaTeX PDF engine |
+
+Pull the image once before first use:
+
+```sh
+docker pull pandoc/extra
+```
+
+### Usage
+
+1. Ensure the PlantUML server is running (see [Starting the PlantUML Server](#starting-the-plantuml-server)).
+
+2. Open a Markdown file that contains fenced PlantUML blocks:
+
+   ```sh
+   nvim architecture.md
+   ```
+
+3. Press **`,dp`** (or run `:MdToPdf`) to export to PDF.
+
+   The output file is written to the same directory as the source file with a
+   `.pdf` extension (e.g. `architecture.pdf`).
+
+### How It Works
+
+The command runs `pandoc/extra` via `docker run --rm --network=host`. A bundled
+Pandoc Lua filter (`docker/md2pdf/plantuml-filter.lua`) intercepts each fenced
+`plantuml` code block, encodes it using PlantUML's deflate + base64 scheme, and
+fetches the rendered PNG from `http://localhost:8080`. Pandoc's LaTeX PDF engine
+then assembles the document with the images inline.
+
+```
+fenced plantuml block
+  → filter encodes content
+  → HTTP GET localhost:8080/png/<encoded>
+  → PNG saved to /tmp
+  → embedded as image in PDF
+```
+
 ## Keybindings
 
 `localleader` is **`,`** for both `markdown` and `plantuml` buffers.
@@ -125,6 +174,7 @@ The server is stateless — no build step or volume is needed. It will be availa
 | Keys | Filetype | Action |
 |---|---|---|
 | `,p` | markdown | Toggle browser preview (`MarkdownPreviewToggle`) |
+| `,dp` | markdown | Export to PDF with PlantUML diagrams rendered (`MdToPdf`) |
 | `,p` | plantuml | Render and open diagram in browser (`PumlPreview`) |
 
 ## How PumlPreview Works

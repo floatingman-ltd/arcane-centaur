@@ -144,7 +144,7 @@ vim.g.have_nerd_font = true   -- or false
 
 ## Working with Diagrams
 
-→ See **[docs/guides/diagrams.md](docs/guides/diagrams.md)** for the full guide: PlantUML in Markdown, standalone `.puml` files, Docker server setup, and keybindings.
+→ See **[docs/guides/diagrams.md](docs/guides/diagrams.md)** for the full guide: PlantUML in Markdown, standalone `.puml` files, Docker server setup, keybindings, and **exporting to PDF**.
 
 ## Working with F#
 
@@ -305,7 +305,7 @@ Plugins are managed by [lazy.nvim](https://github.com/folke/lazy.nvim) and organ
 | `html.lua` | Bracey HTML live preview | [html.md](docs/cheatsheets/html.md) |
 | `init.lua` | vim-repeat, vim-sensible, vim-surround, vim-unimpaired, airline, lspconfig | [lsp.md](docs/cheatsheets/lsp.md) |
 | `lisp.lua` | Conjure, vim-sexp, nvim-parinfer, rainbow-delimiters | [lisp.md](docs/cheatsheets/lisp.md) |
-| `markdown.lua` | markdown-preview.nvim (browser preview, PlantUML via Docker server) | [markdown.md](docs/cheatsheets/markdown.md) |
+| `markdown.lua` | markdown-preview.nvim (browser preview, PlantUML via Docker server); `:MdToPdf` PDF export | [markdown.md](docs/cheatsheets/markdown.md) |
 | `nvim-cmp.lua` | nvim-cmp + completion sources | [completion.md](docs/cheatsheets/completion.md) |
 | `nvim-tree.lua` | File explorer tree | [file-tree.md](docs/cheatsheets/file-tree.md) |
 | `plantuml.lua` | plantuml-syntax + `:PumlPreview` command (browser preview via Docker server) | [plantuml.md](docs/cheatsheets/plantuml.md) |
@@ -323,6 +323,7 @@ lua/
   config/
     lsp.lua                 # LSP server setup (cl_lsp, fsautocomplete, marksman)
     marp.lua                # MARP presentation commands (preview + export)
+    mdpdf.lua               # Markdown → PDF export command (MdToPdf)
     terminal.lua            # Terminal detection & capability flags
     treesitter.lua          # (config managed in plugins/treesitter.lua)
   plugins/
@@ -346,11 +347,12 @@ after/ftplugin/
   fsharp.lua                # F# indent settings (4-space) & localleader
   haskell.lua               # Haskell-tools keybindings
   lisp.lua                  # Lisp indent settings & lispwords
-  markdown.lua              # Markdown localleader & preview keymap + MARP commands
+  markdown.lua              # Markdown localleader, preview keymap, MARP commands, MdToPdf
   plantuml.lua              # PlantUML localleader & PumlPreview keymap
   scheme.lua                # Scheme indent settings
 docker/
   marp/                     # Docker Compose for MARP presentation server
+  md2pdf/                   # Pandoc Lua filter for Markdown → PDF with PlantUML
   plantuml-server/          # Docker Compose for PlantUML render server
   sbcl-swank/               # Docker Compose for SBCL/Swank REPL
 docs/
