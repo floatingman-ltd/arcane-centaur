@@ -12,6 +12,7 @@
 | File Tree (nvim-tree) | [file-tree.md](file-tree.md) |
 | Formatting (conform.nvim) | [formatting.md](formatting.md) |
 | Fuzzy Finder (fzf-lua) | [fzf.md](fzf.md) |
+| Git (vim-fugitive + gitsigns) | [git.md](git.md) |
 | GitHub Copilot | [copilot.md](copilot.md) |
 | Haskell (haskell-tools) | [haskell.md](haskell.md) |
 | HTML Live Preview (Bracey) | [html.md](html.md) |
@@ -147,6 +148,26 @@
 | `Ctrl-b` | Insert | Scroll docs preview up |
 
 → [Full reference](completion.md)
+
+---
+
+### Git — vim-fugitive + gitsigns
+
+| Keys | Mode | Action |
+|---|---|---|
+| `<leader>gs` | Normal | Git status (`:Git`) |
+| `<leader>gb` | Normal | Git blame |
+| `<leader>gl` | Normal | Git log |
+| `<leader>gd` | Normal | Git diff (unstaged) |
+| `<leader>gp` | Normal | Git push |
+| `]h` | Normal | Next hunk |
+| `[h` | Normal | Previous hunk |
+| `<leader>hs` | Normal / Visual | Stage hunk |
+| `<leader>hr` | Normal / Visual | Reset hunk |
+| `<leader>hu` | Normal | Undo stage |
+| `<leader>hb` | Normal | Blame line |
+
+→ [Full reference](git.md)
 
 ---
 
