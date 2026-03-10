@@ -112,7 +112,6 @@
 |---|---|---|
 | `Ctrl-j` | Insert | Accept full inline suggestion |
 | `Alt-f` | Insert | Accept next word of suggestion |
-| `<leader>c` | Normal | Focus CopilotChat window |
 
 → [Full reference](copilot.md)
 

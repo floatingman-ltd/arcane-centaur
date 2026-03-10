@@ -13,16 +13,6 @@
 
 `Alt-f` follows the readline/Emacs "forward-word" convention (`M-f`).
 
-## CopilotChat
-
-| Keys | Mode | Action |
-|---|---|---|
-| `<leader>c` | Normal | Focus the CopilotChat window |
-
-Use `:CopilotChat` to open the chat panel and ask code-aware questions with
-buffer context. The `<leader>c` key moves focus to the chat window if it is
-already open.
-
 ## Model Configuration
 
 The active inline-completion model is set in `lua/plugins/copilot.lua`:
