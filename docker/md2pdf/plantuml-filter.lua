@@ -1,10 +1,12 @@
 -- Pandoc Lua filter: render plantuml fenced code blocks via the local PlantUML
--- Docker server (http://localhost:8080) as SVG
+-- Docker server (http://localhost:8080) as SVG.
 --
 -- Requirements (available in pandoc/extra):
---   python3       — PlantUML deflate + base64 encoding
 --   curl          — fetch rendered SVG from the PlantUML server
 --   rsvg-convert  — convert SVG to PNG for LaTeX / PDF output
+--
+-- No Python or other external encoding tool is required; the PlantUML server's
+-- native ~1 hex encoding is computed in pure Lua.
 --
 -- The container must be started with --network=host so that
 -- localhost:8080 resolves to the host's PlantUML server.
@@ -12,15 +14,13 @@
 -- For HTML output the SVG is embedded inline; for all other outputs
 -- (including PDF) the SVG is converted to PNG via rsvg-convert.
 
-local encode_script = [[
-import sys, zlib, base64
-data = sys.stdin.buffer.read()
-compressed = zlib.compress(data)[2:-4]
-b64 = base64.b64encode(compressed).decode()
-alpha = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_'
-std  = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
-print(''.join(alpha[std.index(c)] if c in std else c for c in b64), end='')
-]]
+--- Encode a PlantUML string using the server's ~1 hex encoding format.
+--- The ~1 prefix signals hex encoding to the PlantUML server.
+local function hex_encode(text)
+  return "~1" .. text:gsub(".", function(c)
+    return string.format("%02x", string.byte(c))
+  end)
+end
 
 local img_counter = 0
 
@@ -29,10 +29,7 @@ function CodeBlock(el)
 
   img_counter = img_counter + 1
 
-  local encoded = pandoc.pipe("python3", { "-c", encode_script }, el.text)
-  encoded = encoded:gsub("%s+", "")
-
-  local svg_url  = "http://localhost:8080/svg/" .. encoded
+  local svg_url  = "http://localhost:8080/svg/" .. hex_encode(el.text)
   local svg_file = "/tmp/puml_diagram_" .. img_counter .. ".svg"
 
   -- Fetch SVG from the PlantUML server
@@ -65,8 +62,8 @@ function CodeBlock(el)
   end)
 
   if not conv_ok then
-    io.stderr:write("plantuml-filter: rsvg-convert failed for diagram " .. img_counter
-      .. ": " .. tostring(conv_err) .. "\n")
+    io.stderr:write(string.format("plantuml-filter: rsvg-convert failed for diagram %d: %s\n",
+      img_counter, tostring(conv_err)))
     -- rsvg-convert is not available: fall back to the SVG path so the caller
     -- sees a clear error rather than a silent failure; PDF/LaTeX output will
     -- not render this image, but the document will still build.

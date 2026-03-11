@@ -18,8 +18,9 @@
 | `:PumlPreview` | Encode the current buffer and open it as SVG at `http://localhost:8080/svg/<encoded>` |
 | `:PumlExportSvg` | Encode the current buffer, fetch SVG from the Docker server, and save it as `<stem>.svg` |
 
-Both commands read the buffer, encode it using PlantUML's deflate + base64
-scheme via `python3`, then open or download the result from the Docker server.
+Both commands encode the buffer using the PlantUML server's native `~1` hex
+format (pure Lua — no Python or other external tool required), then open or
+download the result from the Docker server.
 `curl` must be available for `:PumlExportSvg`.
 
 ## Fenced Code Blocks in Markdown

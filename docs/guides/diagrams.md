@@ -19,7 +19,6 @@ Treesitter parsers (`markdown`, `markdown_inline`, `plantuml`) provide syntax hi
 |---|---|---|
 | **PlantUML Docker server** | Render `.puml` diagrams | See [Docker setup](#starting-the-plantuml-server) below |
 | **Node.js / npm** | Build step for markdown-preview.nvim | Install via nvm (see below) |
-| **python3** | Encode `.puml` buffers for the server API | Pre-installed on most Linux distros |
 | **curl** | Download SVG files (`:PumlExportSvg`) | Pre-installed on most Linux distros |
 | **xdg-open** | Open rendered diagram URLs in the browser | Pre-installed on most Linux desktops |
 | **marksman** *(optional)* | Markdown LSP | `sudo apt install marksman` |
@@ -188,15 +187,15 @@ docker pull pandoc/extra
 
 The command runs `pandoc/extra` via `docker run --rm --network=host`. A bundled
 Pandoc Lua filter (`docker/md2pdf/plantuml-filter.lua`) intercepts each fenced
-`plantuml` code block, encodes it using PlantUML's deflate + base64 scheme, and
-fetches the rendered SVG from `http://localhost:8080`. For PDF output the SVG is
-converted to PNG via `rsvg-convert` before Pandoc's LaTeX PDF engine assembles
-the document.
+`plantuml` code block, encodes it using the PlantUML server's `~1` hex encoding
+(pure Lua — no Python needed), and fetches the rendered SVG from
+`http://localhost:8080`. For PDF output the SVG is converted to PNG via
+`rsvg-convert` before Pandoc's LaTeX PDF engine assembles the document.
 
 ```
 fenced plantuml block
-  → filter encodes content
-  → HTTP GET localhost:8080/svg/<encoded>
+  → filter hex-encodes content (~1 + hex, pure Lua)
+  → HTTP GET localhost:8080/svg/~1<hexencoded>
   → SVG saved to /tmp
   → rsvg-convert SVG → PNG (for PDF/LaTeX output)
   → embedded as image in PDF
@@ -215,13 +214,13 @@ fenced plantuml block
 
 ## How PumlPreview Works
 
-The `:PumlPreview` command (defined in `lua/plugins/plantuml.lua`) reads the current buffer, encodes it using PlantUML's deflate + base64 encoding scheme via `python3`, then constructs the URL:
+The `:PumlPreview` command (defined in `lua/plugins/plantuml.lua`) reads the current buffer and encodes it using the PlantUML server's native **hex encoding** format (`~1` prefix + lowercase hex bytes) — entirely in Lua with no external tools. It then constructs the URL:
 
 ```
-http://localhost:8080/svg/<encoded>
+http://localhost:8080/svg/~1<hexencoded>
 ```
 
-This URL is opened with `xdg-open`. The Docker server renders the diagram and serves it as an SVG directly in your browser.
+This URL is opened with `xdg-open`. The Docker server renders the diagram and serves it as an SVG directly in your browser. No Python, Java, or other encoding tool is required.
 
 ## Configuration
 

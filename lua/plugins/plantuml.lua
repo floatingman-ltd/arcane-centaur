@@ -1,42 +1,27 @@
-local encode_cmd = "python3 -c \""
-  .. "import sys, zlib, base64; "
-  .. "data = sys.stdin.buffer.read(); "
-  .. "compressed = zlib.compress(data)[2:-4]; "
-  .. "b64 = base64.b64encode(compressed).decode(); "
-  .. "alpha = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_'; "
-  .. "std  = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'; "
-  .. "print(''.join(alpha[std.index(c)] if c in std else c for c in b64), end='')\""
+--- Encode a PlantUML string using the server's hex encoding format.
+--- The ~1 prefix signals hex encoding to the PlantUML server; no external
+--- tools are required.
+local function hex_encode(text)
+  return "~1" .. text:gsub(".", function(c)
+    return string.format("%02x", string.byte(c))
+  end)
+end
 
---- Encode the current buffer and return the PlantUML URL for the given format,
---- or nil on failure.
+--- Encode the current buffer and return the PlantUML URL for the given format.
 local function puml_encode(format)
   local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
   local content = table.concat(lines, "\n")
-
-  -- PlantUML encoding: deflate then re-encode with PlantUML's custom base64 alphabet
-  local encoded = vim.fn.system(encode_cmd, content)
-
-  if vim.v.shell_error ~= 0 then
-    vim.notify("PumlPreview: encoding failed — is python3 available?", vim.log.levels.ERROR)
-    return nil
-  end
-
-  return "http://localhost:8080/" .. format .. "/" .. vim.trim(encoded)
+  return "http://localhost:8080/" .. format .. "/" .. hex_encode(content)
 end
 
 --- Open the current buffer rendered as SVG in the default browser.
 local function puml_preview()
-  local url = puml_encode("svg")
-  if url then
-    vim.fn.jobstart({ "xdg-open", url }, { detach = true })
-  end
+  vim.fn.jobstart({ "xdg-open", puml_encode("svg") }, { detach = true })
 end
 
 --- Save the current buffer as an SVG file alongside the source file.
 local function puml_export_svg()
   local url = puml_encode("svg")
-  if not url then return end
-
   local src = vim.fn.expand("%:p")
   local out = (src ~= "" and vim.fn.fnamemodify(src, ":r") or "/tmp/diagram") .. ".svg"
 
