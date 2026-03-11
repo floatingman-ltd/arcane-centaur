@@ -4,25 +4,37 @@
 
 → Back to [main cheatsheet](index.md) · Full guide: [../guides/diagrams.md](../guides/diagrams.md)
 
-## Preview
+## Preview & Export
 
 | Keys | Mode | Action |
 |---|---|---|
-| `,p` | Normal | Render and open diagram in browser (`PumlPreview`) |
+| `,p` | Normal | Render and open diagram as **SVG** in browser (`PumlPreview`) |
+| `,s` | Normal | Export diagram to an **SVG file** alongside the source (`PumlExportSvg`) |
 
-## User Command
+## User Commands
 
 | Command | Description |
 |---|---|
-| `:PumlPreview` | Encode the current buffer and open it in the PlantUML Docker server |
+| `:PumlPreview` | Encode the current buffer and open it as SVG at `http://localhost:8080/svg/<encoded>` |
+| `:PumlExportSvg` | Encode the current buffer, fetch SVG from the Docker server, and save it as `<stem>.svg` |
 
-The command reads the buffer, encodes it using PlantUML's deflate + base64
-scheme via `python3`, then opens the result at `http://localhost:8080/png/<encoded>`
-with `xdg-open`.
+Both commands read the buffer, encode it using PlantUML's deflate + base64
+scheme via `python3`, then open or download the result from the Docker server.
+`curl` must be available for `:PumlExportSvg`.
+
+## Fenced Code Blocks in Markdown
+
+PlantUML diagrams embedded in Markdown fenced code blocks are rendered as SVG
+when using the two export workflows:
+
+| Workflow | How SVG is used |
+|---|---|
+| `,p` in Markdown | Browser preview via `markdown-preview.nvim` (rendered by Docker server) |
+| `,dp` in Markdown | PDF export — SVG fetched from server, converted to PNG via `rsvg-convert` |
 
 ## Prerequisites
 
-The PlantUML Docker server must be running before using `:PumlPreview`:
+The PlantUML Docker server must be running before using any PlantUML command:
 
 ```sh
 docker compose -f ~/.config/nvim/docker/plantuml-server/docker-compose.yml up -d
@@ -30,4 +42,4 @@ docker compose -f ~/.config/nvim/docker/plantuml-server/docker-compose.yml up -d
 
 ---
 
-*Keymap defined in `after/ftplugin/plantuml.lua`. `:PumlPreview` command defined in `lua/plugins/plantuml.lua`.*
+*Keymaps defined in `after/ftplugin/plantuml.lua`. Commands defined in `lua/plugins/plantuml.lua`.*

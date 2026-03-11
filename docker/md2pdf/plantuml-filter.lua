@@ -1,12 +1,16 @@
 -- Pandoc Lua filter: render plantuml fenced code blocks via the local PlantUML
--- Docker server (http://localhost:8080).
+-- Docker server (http://localhost:8080) as SVG
 --
 -- Requirements (available in pandoc/extra):
---   python3  — PlantUML deflate + base64 encoding
---   wget     — fetch rendered PNG from the PlantUML server
+--   python3       — PlantUML deflate + base64 encoding
+--   curl          — fetch rendered SVG from the PlantUML server
+--   rsvg-convert  — convert SVG to PNG for LaTeX / PDF output
 --
 -- The container must be started with --network=host so that
 -- localhost:8080 resolves to the host's PlantUML server.
+--
+-- For HTML output the SVG is embedded inline; for all other outputs
+-- (including PDF) the SVG is converted to PNG via rsvg-convert.
 
 local encode_script = [[
 import sys, zlib, base64
@@ -28,11 +32,12 @@ function CodeBlock(el)
   local encoded = pandoc.pipe("python3", { "-c", encode_script }, el.text)
   encoded = encoded:gsub("%s+", "")
 
-  local tmpfile = "/tmp/puml_diagram_" .. img_counter .. ".png"
-  local url     = "http://localhost:8080/png/" .. encoded
+  local svg_url  = "http://localhost:8080/svg/" .. encoded
+  local svg_file = "/tmp/puml_diagram_" .. img_counter .. ".svg"
 
+  -- Fetch SVG from the PlantUML server
   local ok, err = pcall(function()
-    pandoc.pipe("wget", { "-q", "-O", tmpfile, url }, "")
+    pandoc.pipe("curl", { "-fsSL", "-o", svg_file, svg_url }, "")
   end)
 
   if not ok then
@@ -41,5 +46,32 @@ function CodeBlock(el)
     return el
   end
 
-  return pandoc.Para({ pandoc.Image({ pandoc.Str("diagram") }, tmpfile) })
+  -- For HTML output embed the SVG directly; for all other formats (PDF/LaTeX)
+  -- convert to PNG so the renderer doesn't need native SVG support.
+  local fmt = FORMAT or ""
+  if fmt == "html" or fmt == "html5" or fmt == "html4" then
+    local svg_data = io.open(svg_file, "r")
+    if svg_data then
+      local content = svg_data:read("*a")
+      svg_data:close()
+      return pandoc.RawBlock("html", content)
+    end
+  end
+
+  -- Raster fallback: convert SVG → PNG using rsvg-convert (bundled in pandoc/extra)
+  local png_file = "/tmp/puml_diagram_" .. img_counter .. ".png"
+  local conv_ok, conv_err = pcall(function()
+    pandoc.pipe("rsvg-convert", { "-o", png_file, svg_file }, "")
+  end)
+
+  if not conv_ok then
+    io.stderr:write("plantuml-filter: rsvg-convert failed for diagram " .. img_counter
+      .. ": " .. tostring(conv_err) .. "\n")
+    -- rsvg-convert is not available: fall back to the SVG path so the caller
+    -- sees a clear error rather than a silent failure; PDF/LaTeX output will
+    -- not render this image, but the document will still build.
+    return pandoc.Para({ pandoc.Image({ pandoc.Str("diagram") }, svg_file) })
+  end
+
+  return pandoc.Para({ pandoc.Image({ pandoc.Str("diagram") }, png_file) })
 end

@@ -336,7 +336,7 @@ Plugins are managed by [lazy.nvim](https://github.com/folke/lazy.nvim) and organ
 | `markdown.lua` | markdown-preview.nvim (browser preview, PlantUML via Docker server); `:MdToPdf` PDF export | [markdown.md](docs/cheatsheets/markdown.md) |
 | `nvim-cmp.lua` | nvim-cmp + completion sources | [completion.md](docs/cheatsheets/completion.md) |
 | `nvim-tree.lua` | File explorer tree | [file-tree.md](docs/cheatsheets/file-tree.md) |
-| `plantuml.lua` | plantuml-syntax + `:PumlPreview` command (browser preview via Docker server) | [plantuml.md](docs/cheatsheets/plantuml.md) |
+| `plantuml.lua` | plantuml-syntax + `:PumlPreview` command (SVG browser preview via Docker server) + `:PumlExportSvg` (save SVG file) | [plantuml.md](docs/cheatsheets/plantuml.md) |
 | `treesitter.lua` | nvim-treesitter | — |
 | `vim-commentary.lua` | Toggle comments with `gcc` | [comments.md](docs/cheatsheets/comments.md) |
 

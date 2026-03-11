@@ -5,7 +5,7 @@ This configuration supports architectural and documentation diagrams through two
 | Workflow | Plugin(s) | Preview |
 |---|---|---|
 | PlantUML in Markdown code fences | [markdown-preview.nvim](https://github.com/iamcco/markdown-preview.nvim) | Browser (via Docker server) |
-| Standalone `.puml` files | [plantuml-syntax](https://github.com/aklt/plantuml-syntax) + custom `:PumlPreview` | Browser (via Docker server) |
+| Standalone `.puml` files | [plantuml-syntax](https://github.com/aklt/plantuml-syntax) + custom `:PumlPreview` | Browser (SVG via Docker server) |
 
 Both workflows route rendering through a local PlantUML Docker server at `http://localhost:8080`. No local Java or PlantUML binary is needed.
 
@@ -20,6 +20,7 @@ Treesitter parsers (`markdown`, `markdown_inline`, `plantuml`) provide syntax hi
 | **PlantUML Docker server** | Render `.puml` diagrams | See [Docker setup](#starting-the-plantuml-server) below |
 | **Node.js / npm** | Build step for markdown-preview.nvim | Install via nvm (see below) |
 | **python3** | Encode `.puml` buffers for the server API | Pre-installed on most Linux distros |
+| **curl** | Download SVG files (`:PumlExportSvg`) | Pre-installed on most Linux distros |
 | **xdg-open** | Open rendered diagram URLs in the browser | Pre-installed on most Linux desktops |
 | **marksman** *(optional)* | Markdown LSP | `sudo apt install marksman` |
 
@@ -116,19 +117,51 @@ The server is stateless — no build step or volume is needed. It will be availa
    @enduml
    ```
 
-4. Press **`,p`** to render and open the diagram in your browser via the Docker server.
+4. Press **`,p`** to render and open the diagram as **SVG** in your browser via the Docker server.
+
+5. Press **`,s`** to export the diagram as an **SVG file** (saved as `<stem>.svg` in the same directory).
+
+## SVG Output
+
+All diagram rendering uses the **SVG** format instead of PNG. SVG diagrams are:
+
+- **Resolution-independent** — scale to any size without pixelation
+- **Smaller** — typically a fraction of the size of an equivalent PNG
+- **Browser-native** — all modern browsers render SVG directly
+
+### SVG in Standalone `.puml` Files
+
+`:PumlPreview` opens `http://localhost:8080/svg/<encoded>` with `xdg-open`. The browser
+renders the SVG directly.
+
+`:PumlExportSvg` fetches the same URL via `curl` and saves it as `<stem>.svg` alongside
+the source file. The SVG file can be embedded in HTML pages, documentation sites, or
+vector graphics editors.
+
+### SVG in Fenced Code Blocks (Markdown)
+
+PlantUML fenced code blocks in Markdown files are rendered in the browser preview by
+`markdown-preview.nvim` via the local Docker server. Diagrams are served as SVG through
+the server's `/svg/` endpoint.
+
+When exporting Markdown to PDF (`:MdToPdf`), each fenced `plantuml` block is:
+
+1. Encoded and fetched from `http://localhost:8080/svg/<encoded>`
+2. Saved as a temporary `.svg` file
+3. Converted to PNG via `rsvg-convert` (bundled in `pandoc/extra`) for LaTeX compatibility
+4. Embedded in the PDF as a high-quality raster image
 
 ## Exporting to PDF
 
 The `:MdToPdf` command exports the current Markdown document to PDF, rendering
-all fenced `plantuml` code blocks as PNG images via the local PlantUML server.
+all fenced `plantuml` code blocks as images via the local PlantUML server.
 
 ### Prerequisites
 
 | Dependency | Purpose |
 |---|---|
 | **PlantUML Docker server** | Render PlantUML diagrams — must be running on `localhost:8080` |
-| **`pandoc/extra` Docker image** | Pandoc + LaTeX PDF engine |
+| **`pandoc/extra` Docker image** | Pandoc + LaTeX PDF engine + `rsvg-convert` |
 
 Pull the image once before first use:
 
@@ -156,14 +189,16 @@ docker pull pandoc/extra
 The command runs `pandoc/extra` via `docker run --rm --network=host`. A bundled
 Pandoc Lua filter (`docker/md2pdf/plantuml-filter.lua`) intercepts each fenced
 `plantuml` code block, encodes it using PlantUML's deflate + base64 scheme, and
-fetches the rendered PNG from `http://localhost:8080`. Pandoc's LaTeX PDF engine
-then assembles the document with the images inline.
+fetches the rendered SVG from `http://localhost:8080`. For PDF output the SVG is
+converted to PNG via `rsvg-convert` before Pandoc's LaTeX PDF engine assembles
+the document.
 
 ```
 fenced plantuml block
   → filter encodes content
-  → HTTP GET localhost:8080/png/<encoded>
-  → PNG saved to /tmp
+  → HTTP GET localhost:8080/svg/<encoded>
+  → SVG saved to /tmp
+  → rsvg-convert SVG → PNG (for PDF/LaTeX output)
   → embedded as image in PDF
 ```
 
@@ -175,17 +210,18 @@ fenced plantuml block
 |---|---|---|
 | `,p` | markdown | Toggle browser preview (`MarkdownPreviewToggle`) |
 | `,dp` | markdown | Export to PDF with PlantUML diagrams rendered (`MdToPdf`) |
-| `,p` | plantuml | Render and open diagram in browser (`PumlPreview`) |
+| `,p` | plantuml | Render and open diagram as SVG in browser (`PumlPreview`) |
+| `,s` | plantuml | Export diagram to SVG file (`PumlExportSvg`) |
 
 ## How PumlPreview Works
 
 The `:PumlPreview` command (defined in `lua/plugins/plantuml.lua`) reads the current buffer, encodes it using PlantUML's deflate + base64 encoding scheme via `python3`, then constructs the URL:
 
 ```
-http://localhost:8080/png/<encoded>
+http://localhost:8080/svg/<encoded>
 ```
 
-This URL is opened with `xdg-open`. The Docker server renders the diagram and serves it as a PNG directly in your browser.
+This URL is opened with `xdg-open`. The Docker server renders the diagram and serves it as an SVG directly in your browser.
 
 ## Configuration
 
@@ -194,7 +230,7 @@ The Docker server URL is hardcoded to `http://localhost:8080`. To change it, upd
 | File | Setting |
 |---|---|
 | `lua/plugins/markdown.lua` | `vim.g.mkdp_preview_options.plantuml_server` |
-| `lua/plugins/plantuml.lua` | URL string in the `puml_preview` function |
+| `lua/plugins/plantuml.lua` | URL string in the `puml_encode` function |
 
 ## LSP (marksman)
 
