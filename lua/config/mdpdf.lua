@@ -1,9 +1,11 @@
--- Markdown → PDF with PlantUML diagram rendering (via Docker + Pandoc)
+-- Markdown → PDF with PlantUML and Mermaid diagram rendering (via Docker + Pandoc)
 -- Requires: Docker, PlantUML server running on localhost:8080.
 --
--- Uses the pandoc/extra Docker image with a bundled Lua filter to render each
--- fenced plantuml code block into a PNG via the local PlantUML server, then
--- assembles the final document with Pandoc's LaTeX PDF engine.
+-- Uses the pandoc/extra Docker image with two bundled Lua filters:
+--   plantuml-filter.lua — renders fenced plantuml blocks via the local PlantUML
+--                         Docker server (http://localhost:8080)
+--   mermaid-filter.lua  — renders fenced mermaid blocks via the Kroki public API
+--                         (https://kroki.io) — requires internet access
 --
 -- See docs/guides/diagrams.md for the full guide.
 
@@ -39,6 +41,7 @@ function M.convert()
     "pandoc/extra",
     name,
     "--lua-filter=/filters/plantuml-filter.lua",
+    "--lua-filter=/filters/mermaid-filter.lua",
     "-o", stem .. ".pdf",
   }
 
@@ -60,7 +63,7 @@ function M.setup()
   M._loaded = true
 
   vim.api.nvim_create_user_command("MdToPdf", M.convert,
-    { desc = "Export Markdown to PDF, rendering PlantUML diagrams via Docker" })
+    { desc = "Export Markdown to PDF, rendering PlantUML and Mermaid diagrams via Docker" })
 end
 
 return M

@@ -144,7 +144,9 @@ vim.g.have_nerd_font = true   -- or false
 
 ## Working with Diagrams
 
-→ See **[docs/guides/diagrams.md](docs/guides/diagrams.md)** for the full guide: PlantUML in Markdown, standalone `.puml` files, Docker server setup, keybindings, and **exporting to PDF**.
+→ See **[docs/guides/diagrams.md](docs/guides/diagrams.md)** for the full guide: PlantUML and Mermaid in Markdown, standalone `.puml` files, Docker server setup, keybindings, and **exporting to PDF**.
+
+Mermaid fenced code blocks (`` ```mermaid `` … `` ``` ``) render natively in the browser preview — **no extra plugin required**. PlantUML rendering uses a local Docker server.
 
 ## Working with F#
 
@@ -267,6 +269,7 @@ Press **`Ctrl+e`** to dismiss the completion menu and return to normal typing.
 | Haskell | — | ✅ haskell-tools | ✅ GHCi | — | [docs/guides/haskell.md](docs/guides/haskell.md) |
 | Lua | ✅ | — | — | — | — |
 | Markdown | ✅ | ✅ marksman | — | — | [docs/guides/diagrams.md](docs/guides/diagrams.md) |
+| Mermaid *(in Markdown)* | ✅ *(markdown)* | — | — | — | [docs/guides/diagrams.md](docs/guides/diagrams.md) |
 | MARP (slides) | ✅ *(markdown)* | — | — | — | [docs/guides/presentations.md](docs/guides/presentations.md) |
 | PlantUML | ✅ | — | — | — | [docs/guides/diagrams.md](docs/guides/diagrams.md) |
 | Scheme | ✅ | — | ✅ built-in (Conjure) | ✅ vim-sexp + parinfer | [docs/guides/lisp.md](docs/guides/lisp.md) |
