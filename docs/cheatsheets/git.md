@@ -8,7 +8,7 @@
 
 ## vim-fugitive — Git Operations
 
-Run any git command with `:Git <args>` (e.g. `:Git commit`, `:Git rebase -i HEAD~3`).
+Run any git command with `:Git <args>` or its short alias `:G <args>` (e.g. `:Git commit`, `:G rebase -i HEAD~3`).
 
 | Keys | Mode | Action |
 |---|---|---|
