@@ -1,13 +1,14 @@
-# Working with Diagrams (Markdown + PlantUML)
+# Working with Diagrams (Markdown + PlantUML + Mermaid)
 
-This configuration supports architectural and documentation diagrams through two complementary workflows:
+This configuration supports architectural and documentation diagrams through three complementary workflows:
 
 | Workflow | Plugin(s) | Preview |
 |---|---|---|
 | PlantUML in Markdown code fences | [markdown-preview.nvim](https://github.com/iamcco/markdown-preview.nvim) | Browser (via Docker server) |
+| Mermaid in Markdown code fences | [markdown-preview.nvim](https://github.com/iamcco/markdown-preview.nvim) | Browser (**built-in, no extra plugin**) |
 | Standalone `.puml` files | [plantuml-syntax](https://github.com/aklt/plantuml-syntax) + custom `:PumlPreview` | Browser (via Docker server) |
 
-Both workflows route rendering through a local PlantUML Docker server at `http://localhost:8080`. No local Java or PlantUML binary is needed.
+PlantUML rendering routes through a local PlantUML Docker server at `http://localhost:8080`. Mermaid diagrams are rendered natively by `markdown-preview.nvim`'s browser preview — **no extra plugin or server is required**.
 
 Treesitter parsers (`markdown`, `markdown_inline`, `plantuml`) provide syntax highlighting and text objects for both file types.
 
@@ -65,6 +66,33 @@ The server is stateless — no build step or volume is needed. It will be availa
 
 ## Quick Start
 
+### Markdown with embedded Mermaid
+
+Mermaid diagrams are rendered directly by the browser preview — no Docker server or extra plugin is required.
+
+1. Open (or create) a Markdown file:
+
+   ```sh
+   nvim architecture.md
+   ```
+
+2. Add a Mermaid diagram in a fenced code block:
+
+   ````markdown
+   ## Deployment Overview
+
+   ```mermaid
+   graph TD
+       User -->|HTTP| LoadBalancer
+       LoadBalancer --> AppA
+       LoadBalancer --> AppB
+       AppA --> Database
+       AppB --> Database
+   ```
+   ````
+
+3. Press **`,p`** to open a live browser preview. The Mermaid diagram renders automatically.
+
 ### Markdown with embedded PlantUML
 
 1. Start the PlantUML server (if not already running):
@@ -121,7 +149,7 @@ The server is stateless — no build step or volume is needed. It will be availa
 ## Exporting to PDF
 
 The `:MdToPdf` command exports the current Markdown document to PDF, rendering
-all fenced `plantuml` code blocks as PNG images via the local PlantUML server.
+all fenced `plantuml` and `mermaid` code blocks as PNG images.
 
 ### Prerequisites
 
@@ -129,12 +157,19 @@ all fenced `plantuml` code blocks as PNG images via the local PlantUML server.
 |---|---|
 | **PlantUML Docker server** | Render PlantUML diagrams — must be running on `localhost:8080` |
 | **`pandoc/extra` Docker image** | Pandoc + LaTeX PDF engine |
+| **Internet access** | Render Mermaid diagrams via the [Kroki](https://kroki.io) public API |
 
 Pull the image once before first use:
 
 ```sh
 docker pull pandoc/extra
 ```
+
+> **No internet?** Mermaid blocks will be left as literal code in the PDF if the
+> Kroki API is unreachable. PlantUML diagrams are unaffected as they use a local
+> server. You can self-host Kroki with Docker to avoid the public API dependency —
+> change the `KROKI_BASE_URL` constant at the top of
+> `docker/md2pdf/mermaid-filter.lua` to point at your own instance.
 
 ### Usage
 
@@ -153,18 +188,26 @@ docker pull pandoc/extra
 
 ### How It Works
 
-The command runs `pandoc/extra` via `docker run --rm --network=host`. A bundled
-Pandoc Lua filter (`docker/md2pdf/plantuml-filter.lua`) intercepts each fenced
+The command runs `pandoc/extra` via `docker run --rm --network=host`. Two bundled
+Pandoc Lua filters process diagram blocks before PDF assembly:
+
+**PlantUML** (`docker/md2pdf/plantuml-filter.lua`) intercepts each fenced
 `plantuml` code block, encodes it using PlantUML's deflate + base64 scheme, and
-fetches the rendered PNG from `http://localhost:8080`. Pandoc's LaTeX PDF engine
-then assembles the document with the images inline.
+fetches the rendered PNG from `http://localhost:8080`.
+
+**Mermaid** (`docker/md2pdf/mermaid-filter.lua`) intercepts each fenced
+`mermaid` code block, encodes it with base64url, and fetches the rendered PNG
+from the [Kroki](https://kroki.io) public API.
+
+Pandoc's LaTeX PDF engine then assembles the document with both sets of images
+inline.
 
 ```
-fenced plantuml block
-  → filter encodes content
-  → HTTP GET localhost:8080/png/<encoded>
-  → PNG saved to /tmp
-  → embedded as image in PDF
+fenced plantuml block                  fenced mermaid block
+  → filter encodes content               → filter encodes content
+  → HTTP GET localhost:8080/png/<enc>    → HTTP GET kroki.io/mermaid/png/<enc>
+  → PNG saved to /tmp                    → PNG saved to /tmp
+  → embedded as image in PDF             → embedded as image in PDF
 ```
 
 ## Keybindings
@@ -189,12 +232,14 @@ This URL is opened with `xdg-open`. The Docker server renders the diagram and se
 
 ## Configuration
 
-The Docker server URL is hardcoded to `http://localhost:8080`. To change it, update these two locations:
+The PlantUML server URL is hardcoded to `http://localhost:8080`. To change it, update these two locations:
 
 | File | Setting |
 |---|---|
 | `lua/plugins/markdown.lua` | `vim.g.mkdp_preview_options.plantuml_server` |
 | `lua/plugins/plantuml.lua` | URL string in the `puml_preview` function |
+
+The Mermaid PDF export endpoint defaults to the Kroki public API (`https://kroki.io`). To self-host Kroki, change `KROKI_BASE_URL` at the top of `docker/md2pdf/mermaid-filter.lua`.
 
 ## LSP (marksman)
 
@@ -206,6 +251,8 @@ The `marksman` LSP server provides:
 See [readme.md](../../readme.md#lsp-support) for the shared LSP keybindings.
 
 ## Diagram Types Supported
+
+### PlantUML
 
 PlantUML supports a wide range of diagram types in both workflows:
 
@@ -221,3 +268,21 @@ PlantUML supports a wide range of diagram types in both workflows:
 | Mind Map | `@startmindmap` / `@endmindmap` |
 | Gantt | `@startgantt` / `@endgantt` |
 | C4 | `@startuml` with `!include C4_Context.puml` |
+
+### Mermaid
+
+Mermaid covers a complementary set of diagram types, all rendered with a
+`mermaid` fence in Markdown:
+
+| Diagram | Mermaid keyword |
+|---|---|
+| Flowchart | `graph TD` / `graph LR` |
+| Sequence | `sequenceDiagram` |
+| Class | `classDiagram` |
+| State | `stateDiagram-v2` |
+| Entity-Relationship | `erDiagram` |
+| Gantt | `gantt` |
+| Pie chart | `pie` |
+| Git graph | `gitGraph` |
+| Mind map | `mindmap` |
+| Timeline | `timeline` |

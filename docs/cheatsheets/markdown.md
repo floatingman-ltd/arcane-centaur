@@ -10,18 +10,18 @@
 |---|---|---|
 | `,p` | Normal | Toggle live browser preview (`MarkdownPreviewToggle`) |
 
-The preview auto-refreshes as you edit and uses the PlantUML Docker server
-(`http://localhost:8080`) to render embedded PlantUML fenced code blocks.
+The preview auto-refreshes as you edit. **Mermaid fenced code blocks render natively** in the browser — no extra plugin or Docker server required. PlantUML fenced code blocks are rendered via the PlantUML Docker server (`http://localhost:8080`).
 
-## Export to PDF with PlantUML diagrams (requires Docker)
+## Export to PDF with PlantUML and Mermaid diagrams (requires Docker)
 
 | Keys | Mode | Action |
 |---|---|---|
-| `,dp` | Normal | Export to PDF, rendering PlantUML diagrams (`MdToPdf`) |
+| `,dp` | Normal | Export to PDF, rendering PlantUML and Mermaid diagrams (`MdToPdf`) |
 
 Requires the PlantUML server (`docker/plantuml-server/docker-compose.yml`) and
-the `pandoc/extra` Docker image (`docker pull pandoc/extra`). The PDF is written
-to the same directory as the source file. See [../guides/diagrams.md](../guides/diagrams.md#exporting-to-pdf).
+the `pandoc/extra` Docker image (`docker pull pandoc/extra`). Mermaid blocks are
+rendered via the [Kroki](https://kroki.io) public API (internet access required).
+The PDF is written to the same directory as the source file. See [../guides/diagrams.md](../guides/diagrams.md#exporting-to-pdf).
 
 ## MARP Presentations (requires Docker)
 
@@ -44,7 +44,7 @@ docker compose -f ~/.config/nvim/docker/marp/docker-compose.yml up -d
 | Command | Description |
 |---|---|
 | `:MarkdownPreviewToggle` | Toggle browser Markdown preview |
-| `:MdToPdf` | Export to PDF, rendering PlantUML diagrams via Docker |
+| `:MdToPdf` | Export to PDF, rendering PlantUML and Mermaid diagrams via Docker |
 | `:MarpPreview` | Open file in MARP preview server |
 | `:MarpToPptx` | Export to PowerPoint (`.pptx`) |
 | `:MarpToHtml` | Export to HTML |
