@@ -36,11 +36,13 @@ The `cl_lsp` server is configured in `lua/config/lsp.lua` for Common Lisp. Insta
    A pre-configured Docker setup lives in `docker/sbcl-swank/`. It runs SBCL with Quicklisp and starts the Swank server on port 4005 automatically.
 
    ```sh
-   # Build the image once:
+   # Build the image before first use and after pulling config updates:
    docker compose -f ~/.config/nvim/docker/sbcl-swank/docker-compose.yml build
 
-   # Start the server, mounting your project directory into /lisp inside the container:
-   LISP_DIR=$PWD docker compose -f ~/.config/nvim/docker/sbcl-swank/docker-compose.yml up -d
+   # Start the server, mounting your project directory into /lisp inside the container.
+   # --build ensures the image is up-to-date; Docker layer caching keeps this fast
+   # when nothing has changed.
+   LISP_DIR=$PWD docker compose -f ~/.config/nvim/docker/sbcl-swank/docker-compose.yml up -d --build
 
    # Stop it when done:
    LISP_DIR=$PWD docker compose -f ~/.config/nvim/docker/sbcl-swank/docker-compose.yml down
@@ -150,3 +152,31 @@ The `cl_lsp` server is configured in `lua/config/lsp.lua` for Common Lisp. Insta
 4. Use vim-sexp motions (`>)`, `<(`, etc.) to restructure S-expressions without counting parentheses.
 5. Parinfer keeps parens balanced automatically as you change indentation.
 6. Rainbow delimiters let you visually match nesting depth.
+
+## Troubleshooting
+
+### HUD shows `;eval` but not the result
+
+The HUD displays the evaluation notification immediately when you press an eval key, but the result (`; => 6`) arrives in a second message from Swank. If you see the eval line but no result, the most common cause is a **stale Docker image**.
+
+Swank's `*use-dedicated-output-stream*` is `t` by default. With it enabled, Swank sends a `:new-port` message instructing the client to open a second TCP connection for output. Conjure's Swank client does not implement this handshake, so its message loop stalls and the `:return` carrying the result is never processed.
+
+The fix is already in the Dockerfile (`swank:*use-dedicated-output-stream* nil`), but you need to rebuild the image to pick it up. Use the build and start commands from the Quick Start section above.
+
+### Checking the full evaluation log
+
+The HUD shows the last few lines of Conjure's log buffer as a floating popup. To see the complete history:
+
+| Keys | Action |
+|---|---|
+| `,lv` | Open the log in a vertical split |
+| `,ls` | Open the log in a horizontal split |
+| `,lq` | Close the log window |
+
+### Verifying the connection
+
+| Keys | Action |
+|---|---|
+| `,cs` | Show current connection status |
+| `,cc` | Connect to Swank manually (if auto-connect failed) |
+| `,cd` | Disconnect |

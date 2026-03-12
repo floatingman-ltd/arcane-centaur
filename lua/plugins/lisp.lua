@@ -15,14 +15,18 @@ return {
 
       -- Common Lisp Swank connection (default port used by swank:create-server)
       vim.g["conjure#client#common_lisp#swank#connection#default_host"] = "127.0.0.1"
-      vim.g["conjure#client#common_lisp#swank#connection#default_port"] = "4005"
+      vim.g["conjure#client#common_lisp#swank#connection#default_port"] = 4005
 
       -- Enable the HUD floating popup so evaluation results are visible even
       -- when the log buffer is not open.  Must be set here (init) rather than
       -- config so the flag is in place before Conjure's own startup code runs.
       vim.g["conjure#log#hud#enabled"] = true
-      -- Keep the HUD visible long enough for async output to arrive.
-      vim.g["conjure#log#hud#passive_close_delay"] = 2000
+      -- Keep the HUD visible long enough for async output to arrive (ms).
+      vim.g["conjure#log#hud#passive_close_delay"] = 5000
+
+      -- When the log buffer is already open, scroll it to the latest result
+      -- automatically so evaluation output is never off-screen.
+      vim.g["conjure#log#jump_to_latest#enabled"] = true
     end,
   },
 
