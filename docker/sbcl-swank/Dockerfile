@@ -26,5 +26,5 @@ EXPOSE 4005
 CMD ["sbcl", \
      "--load", "/root/quicklisp/setup.lisp", \
      "--eval", "(ql:quickload :swank)", \
-     "--eval", "(swank:create-server :port 4005 :dont-close t)", \
+     "--eval", "(swank:create-server :port 4005 :dont-close t :style :spawn)", \
      "--eval", "(loop (sleep 60))"]
