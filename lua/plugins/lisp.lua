@@ -13,6 +13,10 @@ return {
       -- Common Lisp Swank connection (default port used by swank:create-server)
       vim.g["conjure#client#common_lisp#swank#connection#default_host"] = "127.0.0.1"
       vim.g["conjure#client#common_lisp#swank#connection#default_port"] = "4005"
+
+      -- Always show the HUD popup with the latest evaluation result so results
+      -- are visible even when the log buffer is not open.
+      vim.g["conjure#log#hud#enabled"] = true
     end,
   },
 
