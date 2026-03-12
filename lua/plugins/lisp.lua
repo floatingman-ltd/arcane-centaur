@@ -6,7 +6,10 @@ return {
     dependencies = {
       "PaterJason/cmp-conjure",
     },
-    config = function()
+    init = function()
+      -- These globals must be set before Conjure loads so it reads the correct
+      -- values at initialisation time.
+
       -- Prefix for all Conjure mappings
       vim.g["conjure#mapping#prefix"] = "<localleader>"
 
@@ -14,9 +17,12 @@ return {
       vim.g["conjure#client#common_lisp#swank#connection#default_host"] = "127.0.0.1"
       vim.g["conjure#client#common_lisp#swank#connection#default_port"] = "4005"
 
-      -- Always show the HUD popup with the latest evaluation result so results
-      -- are visible even when the log buffer is not open.
+      -- Enable the HUD floating popup so evaluation results are visible even
+      -- when the log buffer is not open.  Must be set here (init) rather than
+      -- config so the flag is in place before Conjure's own startup code runs.
       vim.g["conjure#log#hud#enabled"] = true
+      -- Keep the HUD visible long enough for async output to arrive.
+      vim.g["conjure#log#hud#passive_close_delay"] = 2000
     end,
   },
 
