@@ -55,7 +55,11 @@ The `cl_lsp` server is configured in `lua/config/lsp.lua` for Common Lisp. Insta
    ```sh
    # Common Lisp (SBCL via Swank) — :style :spawn creates a new thread per
    # connection, which ensures evaluation results are returned to Conjure correctly.
-   sbcl --load ~/.quicklisp/setup.lisp --eval '(ql:quickload :swank)' --eval '(swank:create-server :dont-close t :style :spawn)'
+   # swank::*use-dedicated-output-stream* (double colon — internal symbol) must be
+   # nil so Swank keeps all traffic on the main connection; with it enabled Swank
+   # sends a :new-port handshake that Conjure does not implement, causing the
+   # connection to be closed with "end of file".
+   sbcl --load ~/.quicklisp/setup.lisp --eval '(ql:quickload :swank)' --eval '(setf swank::*use-dedicated-output-stream* nil)' --eval '(swank:create-server :dont-close t :style :spawn)'
 
    # Clojure (nREPL)
    clj -Sdeps '{:deps {nrepl/nrepl {:mvn/version "1.0.0"} cider/cider-nrepl {:mvn/version "0.30.0"}}}' -M -m nrepl.cmdline --middleware '["cider.nrepl/cider-middleware"]'
@@ -152,58 +156,58 @@ The `cl_lsp` server is configured in `lua/config/lsp.lua` for Common Lisp. Insta
 
 ## Troubleshooting
 
-### HUD shows `;eval` but not the result
+### HUD shows `;eval` but not the result / `close-connection: end of file`
 
-The Conjure HUD logs the evaluation intent the moment you press an eval key.
-The result (`; => 6`) is a separate message that arrives once Swank returns it.
-If you see the intent line but never the result, Conjure is **not actually
-connected** to Swank — evals are logged locally but never sent.
+There are two distinct failure modes that look the same from Neovim's side
+(eval notification appears but no result ever arrives):
 
-**Step 1 — check whether port 4005 is open:**
+**Failure mode A — port 4005 never opens (SBCL crashed at startup)**
 
-```sh
-# Should print 'Connected to 127.0.0.1 port 4005' when Swank is ready.
-# Ctrl-C to exit once you see the message.
-nc -z 127.0.0.1 4005 && echo "Swank is listening" || echo "Swank is NOT listening"
-```
+Symptoms: `docker compose logs` shows an error before the `Swank started`
+line; `nc -z 127.0.0.1 4005` reports the port is not listening.
 
-If Swank is not listening, the container is still starting up.  Check its
-status:
+**Failure mode B — port opens but connection is immediately dropped**
 
-```sh
-docker compose -f ~/.config/nvim/docker/sbcl-swank/docker-compose.yml ps
-```
+Symptoms: The container starts cleanly, port 4005 accepts connections, but
+the Docker terminal shows `swank:close-connection: end of file`.  This is
+caused by `*use-dedicated-output-stream*` being `t` (its default value).
+With it enabled, Swank's first action after a client connects is to send a
+`:new-port` message asking the client to open a second TCP connection for
+output.  Conjure's Common Lisp Swank client does not implement this
+handshake, so it stops responding; Swank reads EOF on the control stream and
+closes the connection.
 
-The `STATUS` column will say `starting` or `healthy`.  Only open a Lisp file
-once the status is `healthy`.  The easiest way to guarantee this is to use
-`--wait` when starting the container (as shown in the Quick Start above) —
-it blocks until the healthcheck passes before returning to your shell.
+The fix — `(setf swank::*use-dedicated-output-stream* nil)` — is already in
+the Dockerfile.  Note the **double colon** (`swank::`): this symbol is
+internal to the swank package and is not exported, so the single-colon form
+(`swank:`) raises a package error and must not be used.
 
-**Step 2 — reconnect if you opened the file too early:**
-
-If you already have a `.lisp` buffer open and the container has since become
-healthy, Conjure will not retry on its own.  Reconnect manually:
-
-| Keys | Action |
-|---|---|
-| `,cs` | Show current connection status |
-| `,cc` | Connect (or reconnect) to Swank |
-
-**Step 3 — check the container logs for startup errors:**
-
-```sh
-docker compose -f ~/.config/nvim/docker/sbcl-swank/docker-compose.yml logs
-```
-
-SBCL prints a line like `Swank started at port: 4005.` when the server is
-ready.  If you see an error before that line, the container is not healthy.
-Rebuild from scratch:
+**Step 1 — rebuild the image from scratch to pick up the fix:**
 
 ```sh
 docker compose -f ~/.config/nvim/docker/sbcl-swank/docker-compose.yml down
 docker compose -f ~/.config/nvim/docker/sbcl-swank/docker-compose.yml build --no-cache
 LISP_DIR=$PWD docker compose -f ~/.config/nvim/docker/sbcl-swank/docker-compose.yml up -d --wait
 ```
+
+**Step 2 — verify the container started cleanly:**
+
+```sh
+# Check status — should reach 'healthy', not stay on 'starting'
+docker compose -f ~/.config/nvim/docker/sbcl-swank/docker-compose.yml ps
+
+# Inspect logs — look for 'Swank started at port: 4005.' with no errors above it
+docker compose -f ~/.config/nvim/docker/sbcl-swank/docker-compose.yml logs
+```
+
+**Step 3 — reconnect if you opened the file before the container was healthy:**
+
+Conjure does not retry a failed auto-connect.  Reconnect manually:
+
+| Keys | Action |
+|---|---|
+| `,cs` | Show current connection status |
+| `,cc` | Connect (or reconnect) to Swank |
 
 ### Checking the full evaluation log
 
