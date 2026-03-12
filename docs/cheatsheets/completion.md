@@ -7,16 +7,16 @@
 | Keys | Mode | Action |
 |---|---|---|
 | `Alt-Space` | Insert | Open completion menu on demand |
-| `j` | Insert (menu open) | Select next suggestion |
-| `k` | Insert (menu open) | Select previous suggestion |
+| `Ctrl-n` | Insert (menu open) | Select next suggestion |
+| `Ctrl-p` | Insert (menu open) | Select previous suggestion |
 | `Enter` | Insert | Confirm highlighted suggestion |
 | `Ctrl-e` | Insert | Dismiss completion menu |
 | `Ctrl-f` | Insert | Scroll documentation preview down |
 | `Ctrl-b` | Insert | Scroll documentation preview up |
 
 `Enter` only inserts when an entry is actively highlighted — it will not
-accidentally confirm the first suggestion. `j` and `k` fall back to inserting
-the literal character when the menu is not open.
+accidentally confirm the first suggestion. `Ctrl-n` and `Ctrl-p` follow
+Vim's built-in completion-navigation convention and never block normal typing.
 
 ## Completion Sources
 

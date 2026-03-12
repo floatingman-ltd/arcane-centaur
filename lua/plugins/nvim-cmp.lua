@@ -26,16 +26,17 @@ return {
           -- Confirm with Enter; select = false so a highlighted entry is
           -- required (avoids accidentally inserting the first suggestion).
           ["<CR>"]      = cmp.mapping.confirm({ select = false }),
-          -- Navigate the completion menu with j/k, matching screen movement.
-          -- Falls back to inserting the character when the menu is closed.
-          ["j"]         = cmp.mapping(function(fallback)
+          -- Navigate the completion menu with <C-n>/<C-p> (Vim's built-in
+          -- completion-next/prev convention). Unlike j/k these are not
+          -- printable characters, so they never block normal typing.
+          ["<C-n>"]     = cmp.mapping(function(fallback)
             if cmp.visible() then
               cmp.select_next_item()
             else
               fallback()
             end
           end, { "i" }),
-          ["k"]         = cmp.mapping(function(fallback)
+          ["<C-p>"]     = cmp.mapping(function(fallback)
             if cmp.visible() then
               cmp.select_prev_item()
             else
