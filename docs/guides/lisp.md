@@ -53,7 +53,9 @@ The `cl_lsp` server is configured in `lua/config/lsp.lua` for Common Lisp. Insta
    ```sh
    # Common Lisp (SBCL via Swank) — :style :spawn creates a new thread per
    # connection, which ensures evaluation results are returned to Conjure correctly.
-   sbcl --load ~/.quicklisp/setup.lisp --eval '(ql:quickload :swank)' --eval '(swank:create-server :dont-close t :style :spawn)'
+   # *use-dedicated-output-stream* nil routes all output through the main Swank
+   # connection so that Conjure captures it in the HUD/log instead of the output window.
+   sbcl --load ~/.quicklisp/setup.lisp --eval '(ql:quickload :swank)' --eval '(setf swank:*use-dedicated-output-stream* nil)' --eval '(swank:create-server :dont-close t :style :spawn)'
 
    # Clojure (nREPL)
    clj -Sdeps '{:deps {nrepl/nrepl {:mvn/version "1.0.0"} cider/cider-nrepl {:mvn/version "0.30.0"}}}' -M -m nrepl.cmdline --middleware '["cider.nrepl/cider-middleware"]'
