@@ -140,8 +140,8 @@
 | Keys | Mode | Action |
 |---|---|---|
 | `Alt-Space` | Insert | Open completion menu |
-| `j` | Insert | Select next suggestion (menu open) |
-| `k` | Insert | Select previous suggestion (menu open) |
+| `Ctrl-n` | Insert | Select next suggestion (menu open) |
+| `Ctrl-p` | Insert | Select previous suggestion (menu open) |
 | `Enter` | Insert | Confirm highlighted suggestion |
 | `Ctrl-e` | Insert | Dismiss completion menu |
 | `Ctrl-f` | Insert | Scroll docs preview down |
