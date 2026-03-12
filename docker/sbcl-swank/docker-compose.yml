@@ -8,3 +8,13 @@ services:
       # Override with: LISP_DIR=/path/to/project docker compose up
       - "${LISP_DIR:-$PWD}:/lisp"
     restart: unless-stopped
+    healthcheck:
+      # Use bash's built-in /dev/tcp device to test TCP reachability without
+      # sending any data to the Swank server.  No extra packages required.
+      test: ["CMD", "bash", "-c", "exec 3<>/dev/tcp/127.0.0.1/4005"]
+      # SBCL + Quicklisp takes ~10 s to start; give it a generous start_period
+      # before the first check counts against the retry limit.
+      start_period: 15s
+      interval: 5s
+      timeout: 3s
+      retries: 12

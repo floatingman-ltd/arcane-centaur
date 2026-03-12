@@ -39,10 +39,10 @@ The `cl_lsp` server is configured in `lua/config/lsp.lua` for Common Lisp. Insta
    # Build the image before first use and after pulling config updates:
    docker compose -f ~/.config/nvim/docker/sbcl-swank/docker-compose.yml build
 
-   # Start the server, mounting your project directory into /lisp inside the container.
-   # --build ensures the image is up-to-date; Docker layer caching keeps this fast
-   # when nothing has changed.
-   LISP_DIR=$PWD docker compose -f ~/.config/nvim/docker/sbcl-swank/docker-compose.yml up -d --build
+   # Start the server and wait until Swank is ready before returning.
+   # --build keeps the image current; --wait blocks until the healthcheck
+   # passes so Conjure can connect as soon as you open a file.
+   LISP_DIR=$PWD docker compose -f ~/.config/nvim/docker/sbcl-swank/docker-compose.yml up -d --build --wait
 
    # Stop it when done:
    LISP_DIR=$PWD docker compose -f ~/.config/nvim/docker/sbcl-swank/docker-compose.yml down
@@ -55,10 +55,7 @@ The `cl_lsp` server is configured in `lua/config/lsp.lua` for Common Lisp. Insta
    ```sh
    # Common Lisp (SBCL via Swank) — :style :spawn creates a new thread per
    # connection, which ensures evaluation results are returned to Conjure correctly.
-   # *use-dedicated-output-stream* nil keeps all traffic on the main connection;
-   # without it Swank sends a :new-port handshake that stalls Conjure's message loop
-   # and prevents :return values from reaching the HUD.
-   sbcl --load ~/.quicklisp/setup.lisp --eval '(ql:quickload :swank)' --eval '(setf swank:*use-dedicated-output-stream* nil)' --eval '(swank:create-server :dont-close t :style :spawn)'
+   sbcl --load ~/.quicklisp/setup.lisp --eval '(ql:quickload :swank)' --eval '(swank:create-server :dont-close t :style :spawn)'
 
    # Clojure (nREPL)
    clj -Sdeps '{:deps {nrepl/nrepl {:mvn/version "1.0.0"} cider/cider-nrepl {:mvn/version "0.30.0"}}}' -M -m nrepl.cmdline --middleware '["cider.nrepl/cider-middleware"]'
@@ -157,26 +154,64 @@ The `cl_lsp` server is configured in `lua/config/lsp.lua` for Common Lisp. Insta
 
 ### HUD shows `;eval` but not the result
 
-The HUD displays the evaluation notification immediately when you press an eval key, but the result (`; => 6`) arrives in a second message from Swank. If you see the eval line but no result, the most common cause is a **stale Docker image**.
+The Conjure HUD logs the evaluation intent the moment you press an eval key.
+The result (`; => 6`) is a separate message that arrives once Swank returns it.
+If you see the intent line but never the result, Conjure is **not actually
+connected** to Swank — evals are logged locally but never sent.
 
-Swank's `*use-dedicated-output-stream*` is `t` by default. With it enabled, Swank sends a `:new-port` message instructing the client to open a second TCP connection for output. Conjure's Swank client does not implement this handshake, so its message loop stalls and the `:return` carrying the result is never processed.
+**Step 1 — check whether port 4005 is open:**
 
-The fix is already in the Dockerfile (`swank:*use-dedicated-output-stream* nil`), but you need to rebuild the image to pick it up. Use the build and start commands from the Quick Start section above.
+```sh
+# Should print 'Connected to 127.0.0.1 port 4005' when Swank is ready.
+# Ctrl-C to exit once you see the message.
+nc -z 127.0.0.1 4005 && echo "Swank is listening" || echo "Swank is NOT listening"
+```
+
+If Swank is not listening, the container is still starting up.  Check its
+status:
+
+```sh
+docker compose -f ~/.config/nvim/docker/sbcl-swank/docker-compose.yml ps
+```
+
+The `STATUS` column will say `starting` or `healthy`.  Only open a Lisp file
+once the status is `healthy`.  The easiest way to guarantee this is to use
+`--wait` when starting the container (as shown in the Quick Start above) —
+it blocks until the healthcheck passes before returning to your shell.
+
+**Step 2 — reconnect if you opened the file too early:**
+
+If you already have a `.lisp` buffer open and the container has since become
+healthy, Conjure will not retry on its own.  Reconnect manually:
+
+| Keys | Action |
+|---|---|
+| `,cs` | Show current connection status |
+| `,cc` | Connect (or reconnect) to Swank |
+
+**Step 3 — check the container logs for startup errors:**
+
+```sh
+docker compose -f ~/.config/nvim/docker/sbcl-swank/docker-compose.yml logs
+```
+
+SBCL prints a line like `Swank started at port: 4005.` when the server is
+ready.  If you see an error before that line, the container is not healthy.
+Rebuild from scratch:
+
+```sh
+docker compose -f ~/.config/nvim/docker/sbcl-swank/docker-compose.yml down
+docker compose -f ~/.config/nvim/docker/sbcl-swank/docker-compose.yml build --no-cache
+LISP_DIR=$PWD docker compose -f ~/.config/nvim/docker/sbcl-swank/docker-compose.yml up -d --wait
+```
 
 ### Checking the full evaluation log
 
-The HUD shows the last few lines of Conjure's log buffer as a floating popup. To see the complete history:
+The HUD shows the last few lines of Conjure's log buffer as a floating popup.
+To see the complete history:
 
 | Keys | Action |
 |---|---|
 | `,lv` | Open the log in a vertical split |
 | `,ls` | Open the log in a horizontal split |
 | `,lq` | Close the log window |
-
-### Verifying the connection
-
-| Keys | Action |
-|---|---|
-| `,cs` | Show current connection status |
-| `,cc` | Connect to Swank manually (if auto-connect failed) |
-| `,cd` | Disconnect |
