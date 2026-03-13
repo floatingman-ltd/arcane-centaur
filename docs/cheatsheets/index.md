@@ -89,7 +89,8 @@
 |---|---|---|
 | `gcc` | Normal | Toggle line comment |
 | `gc` | Visual | Toggle comment on selection |
-| `Ctrl-/` | Normal | Toggle comment (`:Commentary`) |
+| `Ctrl-_` | Normal | Toggle comment (most terminals) |
+| `Ctrl-/` | Normal | Toggle comment (Kitty / WezTerm) |
 
 → [Full reference](comments.md)
 
