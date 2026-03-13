@@ -3,6 +3,7 @@
 -- See docs/presentations.md for the full guide.
 
 local M = {}
+local util = require("config.util")
 
 local function uid_gid()
   local uid = vim.fn.system("id -u"):gsub("%s+", "")
@@ -54,12 +55,8 @@ function M.preview()
     vim.notify("Marp: buffer has no file", vim.log.levels.WARN)
     return
   end
-  if vim.fn.executable("xdg-open") ~= 1 then
-    vim.notify("Marp: xdg-open not found — open http://localhost:8880/" .. name .. " manually", vim.log.levels.WARN)
-    return
-  end
   local url = "http://localhost:8880/" .. name
-  vim.fn.jobstart({ "xdg-open", url }, { detach = true })
+  util.open_url(url)
 end
 
 --- Register MARP user commands (idempotent — safe to call from ftplugin).

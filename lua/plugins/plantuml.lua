@@ -1,3 +1,5 @@
+local util = require("config.util")
+
 local function puml_preview()
   local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
   local content = table.concat(lines, "\n")
@@ -21,7 +23,7 @@ local function puml_preview()
   end
 
   local url = "http://localhost:8080/png/" .. vim.trim(encoded)
-  vim.fn.jobstart({ "xdg-open", url }, { detach = true })
+  util.open_url(url)
 end
 
 return {
