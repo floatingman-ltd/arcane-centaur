@@ -26,10 +26,10 @@
 
 | Keys | Action |
 |---|---|
-| `>)` | Slurp forward — pull next element into form |
-| `<)` | Barf forward — push last element out of form |
-| `<(` | Slurp backward |
-| `>(` | Barf backward |
+| `>)` | **Slurp forward** — extend the closing `)` rightward, pulling the next sibling *into* the form |
+| `<)` | **Barf forward** — shrink the closing `)` leftward, pushing the last element *out of* the form |
+| `<(` | **Slurp backward** — extend the opening `(` leftward, pulling the previous sibling *into* the form |
+| `>(` | **Barf backward** — shrink the opening `(` rightward, pushing the first element *out of* the form |
 | `>f` | Move current form right among siblings |
 | `<f` | Move current form left among siblings |
 | `>e` | Move current element right |
@@ -37,6 +37,8 @@
 | `cse(` or `cse)` | Surround element with `()` |
 | `cse[` or `cse]` | Surround element with `[]` |
 | `dsf` | Delete surrounding function call (splice) |
+
+> See [../guides/lisp.md](../guides/lisp.md#structural-editing-slurp--barf) for step-by-step examples of each slurp/barf operation.
 
 ## Other Active Plugins
 
