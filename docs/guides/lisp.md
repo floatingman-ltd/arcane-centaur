@@ -96,10 +96,10 @@ The `cl_lsp` server is configured in `lua/config/lsp.lua` for Common Lisp. Insta
 
    | Keys | Action |
    |---|---|
-   | `>)` | Slurp forward — pull the next element into the current form |
-   | `<)` | Barf forward — push the last element out of the current form |
-   | `<(` | Slurp backward |
-   | `>(` | Barf backward |
+   | `>)` | **Slurp forward** — extend the closing `)` rightward, pulling the next sibling *into* the form |
+   | `<)` | **Barf forward** — shrink the closing `)` leftward, pushing the last element *out of* the form |
+   | `<(` | **Slurp backward** — extend the opening `(` leftward, pulling the previous sibling *into* the form |
+   | `>(` | **Barf backward** — shrink the opening `(` rightward, pushing the first element *out of* the form |
    | `<f` | Move the current form left among its siblings |
    | `>f` | Move the current form right among its siblings |
    | `<e` | Move the current element left |
@@ -107,6 +107,8 @@ The `cl_lsp` server is configured in `lua/config/lsp.lua` for Common Lisp. Insta
    | `cse(` or `cse)` | Surround the element with `()` |
    | `cse[` or `cse]` | Surround the element with `[]` |
    | `dsf` | Delete surrounding function call (splice) |
+
+   See [Structural Editing: Slurp & Barf](#structural-editing-slurp--barf) below for step-by-step examples.
 
 5. **Parinfer** runs in the background — just adjust indentation and parens follow. No keys needed.
 
@@ -129,6 +131,87 @@ The `cl_lsp` server is configured in `lua/config/lsp.lua` for Common Lisp. Insta
    ```lisp
    (quit)
    ```
+
+## Structural Editing: Slurp & Barf
+
+Slurp and barf let you **reshape S-expressions without manually counting or moving parentheses**. The cursor can be anywhere inside (or on the delimiter of) the target form when you press the key.
+
+Each example below shows the code before and after the operation.
+
+---
+
+### Slurp forward — `>)`
+
+Moves the **closing** `)` one step to the right, pulling the **next sibling** element into the form.
+
+```lisp
+; Before — cursor anywhere inside (foo bar); 'baz' is a sibling outside the form
+(foo bar) baz
+
+; After >)  — 'baz' is now inside the form
+(foo bar baz)
+```
+
+Useful when you realise a following expression belongs inside the current call. Press `>)` again to pull in the next sibling, and so on.
+
+---
+
+### Barf forward — `<)`
+
+Moves the **closing** `)` one step to the left, pushing the **last element** out of the form.
+
+```lisp
+; Before — cursor anywhere inside (foo bar baz)
+(foo bar baz)
+
+; After <)  — 'baz' has been expelled; it is now a sibling after the form
+(foo bar) baz
+```
+
+This is the reverse of slurp forward. Use it to trim an element you accidentally slurped in, or to split a call up.
+
+---
+
+### Slurp backward — `<(`
+
+Moves the **opening** `(` one step to the left, pulling the **previous sibling** element into the form.
+
+```lisp
+; Before — cursor anywhere inside (bar baz); 'foo' is a sibling before the form
+foo (bar baz)
+
+; After <(  — 'foo' is now the first element inside the form
+(foo bar baz)
+```
+
+---
+
+### Barf backward — `>(`
+
+Moves the **opening** `(` one step to the right, pushing the **first element** out of the form.
+
+```lisp
+; Before — cursor anywhere inside (foo bar baz)
+(foo bar baz)
+
+; After >(  — 'foo' has been expelled; it is now a sibling before the form
+foo (bar baz)
+```
+
+---
+
+### Combining operations
+
+Slurp/barf pairs let you migrate elements between adjacent forms without cutting and pasting:
+
+```lisp
+; Start: two separate forms (cursor inside the defun)
+(defun greet (name)) (format t "Hello ~a!" name)
+
+; >)  slurp the format call into defun
+(defun greet (name)
+  (format t "Hello ~a!" name))
+```
 
 ## Typical Workflow
 
