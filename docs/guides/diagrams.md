@@ -21,7 +21,7 @@ Treesitter parsers (`markdown`, `markdown_inline`, `plantuml`) provide syntax hi
 | **PlantUML Docker server** | Render `.puml` diagrams | See [Docker setup](#starting-the-plantuml-server) below |
 | **Node.js / npm** | Build step for markdown-preview.nvim | Install via nvm (see below) |
 | **python3** | Encode `.puml` buffers for the server API | Pre-installed on most Linux distros |
-| **xdg-open** | Open rendered diagram URLs in the browser | Pre-installed on most Linux desktops |
+| **Browser opener** | Open rendered diagram URLs in the browser | `xdg-open` (Linux), `open` (macOS), `wslview`/`explorer.exe` (WSL) — auto-detected |
 | **marksman** *(optional)* | Markdown LSP | `sudo apt install marksman` |
 
 ### Installing Node.js via nvm
@@ -228,7 +228,7 @@ The `:PumlPreview` command (defined in `lua/plugins/plantuml.lua`) reads the cur
 http://localhost:8080/png/<encoded>
 ```
 
-This URL is opened with `xdg-open`. The Docker server renders the diagram and serves it as a PNG directly in your browser.
+This URL is opened with the first available browser opener (`xdg-open` on Linux, `open` on macOS, `wslview` or `explorer.exe` on WSL). The Docker server renders the diagram and serves it as a PNG directly in your browser.
 
 ## Configuration
 
