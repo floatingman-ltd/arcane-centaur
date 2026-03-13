@@ -8,3 +8,17 @@ services:
       # Override with: LISP_DIR=/path/to/project docker compose up
       - "${LISP_DIR:-$PWD}:/lisp"
     restart: unless-stopped
+    healthcheck:
+      # Check /proc/net/tcp for port 4005 (0x0FA5) without opening a TCP
+      # connection.  The previous check used /dev/tcp which made a real
+      # Swank connection every 5 s — Swank accepted it, read EOF when bash
+      # exited, and logged "close-connection: end of file" repeatedly,
+      # masking real connection errors.  /proc/net/tcp requires no packages
+      # and is always available on Linux.
+      test: ["CMD", "bash", "-c", "grep -q :0FA5 /proc/net/tcp 2>/dev/null"]
+      # SBCL + Quicklisp takes ~10 s to start; give it a generous start_period
+      # before the first check counts against the retry limit.
+      start_period: 15s
+      interval: 5s
+      timeout: 3s
+      retries: 12

@@ -19,12 +19,16 @@ RUN sbcl --non-interactive \
          --eval '(ql:quickload :swank)' \
          --eval '(quit)'
 
+# Copy the Swank startup script
+COPY swank-start.lisp /app/swank-start.lisp
+
 WORKDIR /lisp
 
 EXPOSE 4005
 
+# --non-interactive: exit cleanly on unhandled errors instead of hanging
+# in the Lisp debugger (which has no TTY inside a container).
 CMD ["sbcl", \
+     "--non-interactive", \
      "--load", "/root/quicklisp/setup.lisp", \
-     "--eval", "(ql:quickload :swank)", \
-     "--eval", "(swank:create-server :port 4005 :dont-close t :style :spawn)", \
-     "--eval", "(loop (sleep 60))"]
+     "--load", "/app/swank-start.lisp"]
