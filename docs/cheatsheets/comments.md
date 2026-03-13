@@ -16,4 +16,4 @@
 
 ---
 
-*Plugin configured in `lua/plugins/vim-commentary.lua`. `Ctrl-/` key defined there via lazy.nvim `keys`.*
+*Plugin configured in `lua/plugins/vim-commentary.lua`. `gcc`, `gc`, and `Ctrl-/` keys are registered via lazy.nvim `keys` so the plugin loads on first use of any of them.*
