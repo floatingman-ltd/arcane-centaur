@@ -23,7 +23,7 @@ On first launch, [lazy.nvim](https://github.com/folke/lazy.nvim) will bootstrap 
 [Nerd Font]: https://www.nerdfonts.com/
 
 Language-specific prerequisites (LSP servers, REPLs, runtimes) are documented in each language guide:
-[Diagrams / Markdown](docs/guides/diagrams.md) · [F#](docs/guides/fsharp.md) · [Haskell](docs/guides/haskell.md) · [Lisp / Clojure / Scheme](docs/guides/lisp.md) · [Presentations / MARP](docs/guides/presentations.md)
+[Markdown](docs/guides/markdown.md) · [Diagrams](docs/guides/diagrams.md) · [F#](docs/guides/fsharp.md) · [Haskell](docs/guides/haskell.md) · [Lisp / Clojure / Scheme](docs/guides/lisp.md) · [Presentations / MARP](docs/guides/presentations.md)
 
 ### Recommended Terminal — GNOME Terminal
 
@@ -141,6 +141,14 @@ wrong for your setup you can still force the flag in `lua/options.lua`:
 ```lua
 vim.g.have_nerd_font = true   -- or false
 ```
+
+## Working with Markdown
+
+→ See **[docs/guides/markdown.md](docs/guides/markdown.md)** for the full guide: single-file browser preview, markserv Docker server for cross-page links, in-editor navigation, and PDF export.
+
+- **`,p`** — toggle `markdown-preview.nvim` (single file with PlantUML/Mermaid)
+- **`,sp`** — open in markserv Docker server — cross-page links between `.md` files resolve correctly
+- **`<CR>`** — follow a link to another `.md` file in the editor (mkdnflow.nvim)
 
 ## Working with Diagrams
 
@@ -268,7 +276,7 @@ Press **`Ctrl+e`** to dismiss the completion menu and return to normal typing.
 | Fennel | — | — | ✅ (Conjure) | ✅ parinfer | [docs/guides/lisp.md](docs/guides/lisp.md) |
 | Haskell | — | ✅ haskell-tools | ✅ GHCi | — | [docs/guides/haskell.md](docs/guides/haskell.md) |
 | Lua | ✅ | — | — | — | — |
-| Markdown | ✅ | ✅ marksman | — | — | [docs/guides/diagrams.md](docs/guides/diagrams.md) |
+| Markdown | ✅ | ✅ marksman | — | — | [docs/guides/markdown.md](docs/guides/markdown.md) |
 | Mermaid *(in Markdown)* | ✅ *(markdown)* | — | — | — | [docs/guides/diagrams.md](docs/guides/diagrams.md) |
 | MARP (slides) | ✅ *(markdown)* | — | — | — | [docs/guides/presentations.md](docs/guides/presentations.md) |
 | PlantUML | ✅ | — | — | — | [docs/guides/diagrams.md](docs/guides/diagrams.md) |
@@ -356,6 +364,7 @@ lua/
     lsp.lua                 # LSP server setup (cl_lsp, fsautocomplete, marksman)
     marp.lua                # MARP presentation commands (preview + export)
     mdpdf.lua               # Markdown → PDF export command (MdToPdf)
+    mdpreview.lua           # Markdown markserv server preview command (MdServerPreview)
     terminal.lua            # Terminal detection & capability flags
     treesitter.lua          # (config managed in plugins/treesitter.lua)
     util.lua                # Shared helpers (open_url: cross-platform browser opener)
@@ -382,11 +391,12 @@ after/ftplugin/
   fsharp.lua                # F# indent settings (4-space) & localleader
   haskell.lua               # Haskell-tools keybindings
   lisp.lua                  # Lisp indent settings & lispwords
-  markdown.lua              # Markdown localleader, preview keymap, MARP commands, MdToPdf
+  markdown.lua              # Markdown localleader, preview keymap, MARP commands, MdToPdf, MdServerPreview
   plantuml.lua              # PlantUML localleader & PumlPreview keymap
   scheme.lua                # Scheme indent settings
 docker/
   marp/                     # Docker Compose for MARP presentation server
+  markserv/                 # Docker + Compose for markserv markdown preview server (cross-page links)
   md2pdf/                   # Pandoc Lua filter for Markdown → PDF with PlantUML
   plantuml-server/          # Docker Compose for PlantUML render server
   sbcl-swank/               # Docker Compose for SBCL/Swank REPL
@@ -405,7 +415,7 @@ docs/
     index.md              # Main keybinding reference (links to plugin sheets)
     lisp.md                 # Conjure + vim-sexp
     lsp.md                  # LSP keybindings
-    markdown.md             # Markdown preview + MARP
+    markdown.md             # Markdown preview + MARP + markserv
     navigation.md           # Window navigation & terminal
     plantuml.md             # PlantUML preview
   guides/
@@ -413,5 +423,6 @@ docs/
     fsharp.md               # F# guide
     haskell.md              # Haskell guide
     lisp.md                 # Lisp / Clojure / Scheme / Fennel guide
+    markdown.md             # Markdown preview guide (markserv, cross-page links)
     presentations.md        # MARP presentation guide
 ```
