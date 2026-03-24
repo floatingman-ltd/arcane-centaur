@@ -337,6 +337,7 @@ Plugins are managed by [lazy.nvim](https://github.com/folke/lazy.nvim) and organ
 | `init.lua` | vim-repeat, vim-sensible, vim-surround, vim-unimpaired, airline, lspconfig | [lsp.md](docs/cheatsheets/lsp.md) |
 | `lisp.lua` | Conjure, vim-sexp, nvim-parinfer, rainbow-delimiters | [lisp.md](docs/cheatsheets/lisp.md) |
 | `markdown.lua` | markdown-preview.nvim (browser preview, PlantUML via Docker server); `:MdToPdf` PDF export | [markdown.md](docs/cheatsheets/markdown.md) |
+| `mkdnflow.lua` | mkdnflow.nvim (cross-page link navigation: `<CR>` follow, `<BS>` back) | [markdown.md](docs/cheatsheets/markdown.md) |
 | `nvim-cmp.lua` | nvim-cmp + completion sources | [completion.md](docs/cheatsheets/completion.md) |
 | `nvim-tree.lua` | File explorer tree | [file-tree.md](docs/cheatsheets/file-tree.md) |
 | `plantuml.lua` | plantuml-syntax + `:PumlPreview` command (browser preview via Docker server) | [plantuml.md](docs/cheatsheets/plantuml.md) |
@@ -370,6 +371,7 @@ lua/
     init.lua                # Bare-string plugins (tpope, airline, lspconfig)
     lisp.lua                # Lisp ecosystem plugins
     markdown.lua            # markdown-preview.nvim (browser preview)
+    mkdnflow.lua            # mkdnflow.nvim (cross-page link navigation)
     nvim-cmp.lua            # Completion engine + sources
     nvim-tree.lua           # File tree
     plantuml.lua            # plantuml-syntax + PumlPreview command

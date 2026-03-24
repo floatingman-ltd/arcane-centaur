@@ -260,6 +260,10 @@ LocalLeader is `,` in Markdown buffers.
 
 | Keys | Action |
 |---|---|
+| `<CR>` | Follow link under cursor (mkdnflow — opens target file) |
+| `<BS>` | Go back to previous file (mkdnflow) |
+| `<Tab>` | Jump to next link in buffer (mkdnflow) |
+| `<S-Tab>` | Jump to previous link in buffer (mkdnflow) |
 | `,p` | Toggle Markdown browser preview |
 | `,dp` | Export to PDF with PlantUML diagrams rendered |
 | `,mp` | MARP: open slide in preview server |

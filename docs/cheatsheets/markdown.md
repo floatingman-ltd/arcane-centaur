@@ -1,8 +1,19 @@
-# Markdown Cheatsheet (markdown-preview + MARP)
+# Markdown Cheatsheet (markdown-preview + mkdnflow + MARP)
 
 **LocalLeader** = `,` in Markdown buffers
 
 → Back to [main cheatsheet](index.md) · Full guide: [../guides/diagrams.md](../guides/diagrams.md) · Presentations guide: [../guides/presentations.md](../guides/presentations.md)
+
+## Cross-page Link Navigation (mkdnflow.nvim)
+
+| Keys | Mode | Action |
+|---|---|---|
+| `<CR>` | Normal | Follow link under cursor (opens target file in current window) |
+| `<BS>` | Normal | Go back to the previous file |
+| `<Tab>` | Normal | Jump to the next link in the buffer |
+| `<S-Tab>` | Normal | Jump to the previous link in the buffer |
+
+Use `<CR>` to follow a `[text](other-file.md)` link directly in the editor, then press `,p` to open the browser preview for that file. Press `<BS>` to return to the original file.
 
 ## Markdown Preview (markdown-preview.nvim)
 
@@ -52,4 +63,4 @@ docker compose -f ~/.config/nvim/docker/marp/docker-compose.yml up -d
 
 ---
 
-*Keymaps defined in `after/ftplugin/markdown.lua`. MARP commands defined in `lua/config/marp.lua`. PDF export command defined in `lua/config/mdpdf.lua`. Plugin configured in `lua/plugins/markdown.lua`.*
+*Link navigation keymaps provided by mkdnflow.nvim (`lua/plugins/mkdnflow.lua`). Preview keymap defined in `after/ftplugin/markdown.lua`. MARP commands defined in `lua/config/marp.lua`. PDF export command defined in `lua/config/mdpdf.lua`. Preview plugin configured in `lua/plugins/markdown.lua`.*
