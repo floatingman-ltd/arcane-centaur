@@ -18,7 +18,8 @@
 
 The command reads the buffer, encodes it using PlantUML's deflate + base64
 scheme via `python3`, then opens the result at `http://localhost:8080/png/<encoded>`
-with `xdg-open`.
+using the first available browser opener (`xdg-open` on Linux, `open` on macOS,
+`wslview` or `explorer.exe` on WSL).
 
 ## Prerequisites
 

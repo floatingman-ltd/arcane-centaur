@@ -357,6 +357,7 @@ lua/
     mdpdf.lua               # Markdown → PDF export command (MdToPdf)
     terminal.lua            # Terminal detection & capability flags
     treesitter.lua          # (config managed in plugins/treesitter.lua)
+    util.lua                # Shared helpers (open_url: cross-platform browser opener)
   plugins/
     colorscheme.lua         # TokyoNight theme (moon/storm/night/day)
     conform.lua             # Formatting for Lisp and F# filetypes
