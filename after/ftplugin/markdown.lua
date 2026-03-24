@@ -1,6 +1,10 @@
 vim.b.maplocalleader = ","
 vim.keymap.set("n", "<localleader>p", "<cmd>MarkdownPreviewToggle<cr>", { buffer = true, desc = "Toggle markdown preview" })
 
+-- Markserv server preview (requires Docker; see docs/guides/markdown.md)
+require("config.mdpreview").setup()
+vim.keymap.set("n", "<localleader>sp", "<cmd>MdServerPreview<cr>", { buffer = true, desc = "Open in markserv Docker preview server (cross-page links)" })
+
 -- MARP presentation commands (requires Docker; see docs/presentations.md)
 require("config.marp").setup()
 vim.keymap.set("n", "<localleader>mp", "<cmd>MarpPreview<cr>", { buffer = true, desc = "MARP: open in preview server" })
