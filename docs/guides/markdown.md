@@ -42,7 +42,23 @@ For MARP presentation slides, see **[presentations.md](presentations.md)**.
 3. Click links to other `.md` files — they open and render correctly because
    the whole project directory is served.
 
-4. Edit and save any file; the browser reloads automatically via LiveReload.
+4. Edit and save any file; the browser reloads automatically via SSE.
+
+---
+
+## PlantUML Server {#plantuml-server}
+
+The markserv preview server generates `<img>` URLs pointing at
+`http://localhost:8080` for `plantuml` fenced blocks.  The browser loads those
+images directly from the PlantUML Docker server, so you must start it before
+using PlantUML in the markserv preview:
+
+```sh
+docker compose -f ~/.config/nvim/docker/plantuml-server/docker-compose.yml up -d
+```
+
+The PlantUML server is stateless and starts instantly.  You can leave it running
+permanently.  See [diagrams.md](diagrams.md) for the full guide.
 
 ---
 
@@ -68,10 +84,18 @@ or use `mkdnflow.nvim` (`<CR>`) to navigate between files in the editor.
 
 ## Markserv Docker Server (`,sp`)
 
-`markserv` is a zero-configuration Node.js server that serves a whole directory
-tree.  Each `.md` file is rendered as GitHub-flavoured HTML on demand.  Because
-every file in the directory is reachable, relative links between markdown files
-resolve correctly.
+The markserv preview server is a custom Node.js server that renders a whole
+directory tree.  Each `.md` file is rendered as GitHub-flavoured HTML on demand.
+Because every file in the directory is reachable, relative links between markdown
+files resolve correctly.
+
+The server also renders diagrams embedded in fenced code blocks:
+
+- **`plantuml`** fenced blocks are converted to `<img>` tags that fetch SVGs
+  from the local PlantUML Docker server on `http://localhost:8080`.
+  Start that server first — see [Starting the PlantUML Server](#plantuml-server).
+- **`mermaid`** fenced blocks are rendered client-side by Mermaid.js loaded
+  from the jsDelivr CDN — no extra server is needed.
 
 ### How it works
 
@@ -83,7 +107,7 @@ your project/
 ```
 
 Start the container with `MD_DIR` pointing at the project root.  The container
-mounts that directory at `/docs` and `markserv` serves it.  Visiting
+mounts that directory at `/docs` and serves it.  Visiting
 `http://localhost:8090/index.md` and clicking `[guide](guide.md)` navigates to
 `http://localhost:8090/guide.md` — which the server renders correctly.
 
@@ -91,8 +115,7 @@ mounts that directory at `/docs` and `markserv` serves it.  Visiting
 
 | Port | Purpose |
 |------|---------|
-| `8090` | HTTP preview server |
-| `35729` | LiveReload WebSocket (auto-refresh on file save) |
+| `8090` | HTTP preview server (live reload via SSE on `/__livereload`) |
 
 ### Start / stop commands
 
@@ -159,7 +182,7 @@ LocalLeader is `,` in Markdown buffers.
 | Situation | Recommended tool |
 |-----------|-----------------|
 | Single file, diagrams, cursor sync | `,p` — markdown-preview.nvim |
-| Multi-file project, cross-page links | `,sp` — markserv Docker server |
+| Multi-file project, cross-page links, diagrams | `,sp` — markserv Docker server |
 | Navigate between linked files in editor | `<CR>` — mkdnflow.nvim |
 | Export to PDF with diagram rendering | `,dp` — MdToPdf |
 | MARP presentation slides | `,mp` — MARP Docker server |

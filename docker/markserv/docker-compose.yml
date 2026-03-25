@@ -2,8 +2,7 @@ services:
   markserv:
     build: .
     ports:
-      - "127.0.0.1:8090:8080"    # Markdown preview HTTP server
-      - "127.0.0.1:35729:35729"  # LiveReload — automatic browser refresh on file save
+      - "127.0.0.1:8090:8080"    # Markdown preview HTTP server (SSE live-reload on /__livereload)
     volumes:
       # Mount your markdown project root into the container.
       # Override with: MD_DIR=/path/to/project docker compose up

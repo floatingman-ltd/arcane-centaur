@@ -149,7 +149,7 @@ vim.g.have_nerd_font = true   -- or false
 → See **[docs/guides/markdown.md](docs/guides/markdown.md)** for the full guide: single-file browser preview, markserv Docker server for cross-page links, in-editor navigation, and PDF export.
 
 - **`,p`** — toggle `markdown-preview.nvim` (single file with PlantUML/Mermaid)
-- **`,sp`** — open in markserv Docker server — cross-page links between `.md` files resolve correctly
+- **`,sp`** — open in markserv Docker server — cross-page links and PlantUML/Mermaid diagrams rendered
 - **`<CR>`** — follow a link to another `.md` file in the editor (mkdnflow.nvim)
 
 ## Working with Diagrams
@@ -417,7 +417,7 @@ after/ftplugin/
   scheme.lua                # Scheme indent settings
 docker/
   marp/                     # Docker Compose for MARP presentation server
-  markserv/                 # Docker + Compose for markserv markdown preview server (cross-page links)
+  markserv/                 # Docker + Compose for markdown preview server (cross-page links, PlantUML/Mermaid diagrams)
   md2pdf/                   # Pandoc Lua filter for Markdown → PDF with PlantUML
   plantuml-server/          # Docker Compose for PlantUML render server
   sbcl-swank/               # Docker Compose for SBCL/Swank REPL
