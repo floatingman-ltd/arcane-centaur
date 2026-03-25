@@ -3,7 +3,7 @@ return {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
     opts = {
-      ensure_installed = {"lisp", "clojure", "scheme", "lua", "fsharp", "vim", "markdown", "markdown_inline", "plantuml", "http"},
+      ensure_installed = {"commonlisp", "clojure", "scheme", "lua", "fsharp", "vim", "markdown", "markdown_inline", "plantuml", "http"},
       highlight = {
         enable = true,
       },

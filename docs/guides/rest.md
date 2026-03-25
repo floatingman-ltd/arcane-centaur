@@ -162,6 +162,21 @@ Same root cause — nvim-treesitter timed out waiting for `tree-sitter build` to
 
 **Fix:** same as above — install the tree-sitter CLI, then **restart Neovim**.
 
+### `'fzf' is not a valid executable` when pressing `,e`
+
+kulala.nvim's default `display_mode` is `"fzf"`, which calls the standalone `fzf`
+system binary. This config uses the **fzf-lua** Neovim plugin (ibhagwan/fzf-lua) which
+does *not* place an `fzf` executable on `PATH`, so you will see:
+
+```
+'fzf' is not a valid executable, aborting. Please make sure 'fzf' is installed.
+```
+
+**Fix:** `lua/plugins/rest.lua` sets `display_mode = "vim_ui_select"` in kulala's opts,
+which routes environment selection through Neovim's built-in `vim.ui.select` and
+requires no external binary. If you still see the error after updating, run
+`:Lazy sync` to ensure kulala.nvim is up-to-date and then restart Neovim.
+
 ### All keymaps (`,r` `,l` `,o` `,e`) do nothing after the error
 
 When kulala's `setup()` errors (either due to the missing CLI or the timeout), the UI layer is never initialized. Every keymap that calls into the UI — including `,o` (open result pane) — will silently fail or show `nil` errors until kulala initializes successfully.

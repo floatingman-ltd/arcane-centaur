@@ -288,7 +288,7 @@ Press **`Ctrl+e`** to dismiss the completion menu and return to normal typing.
 | Language | Treesitter | LSP | REPL | Structural Editing | Guide |
 |---|---|---|---|---|---|
 | Clojure | ✅ | — | ✅ nREPL (Conjure) | ✅ vim-sexp + parinfer | [docs/guides/lisp.md](docs/guides/lisp.md) |
-| Common Lisp | ✅ | ✅ cl_lsp | ✅ Swank (Conjure) | ✅ vim-sexp + parinfer | [docs/guides/lisp.md](docs/guides/lisp.md) |
+| Common Lisp | ✅ | — | ✅ Swank (Conjure) | ✅ vim-sexp + parinfer | [docs/guides/lisp.md](docs/guides/lisp.md) |
 | F# | ✅ | ✅ fsautocomplete | ✅ dotnet fsi (iron.nvim) | — | [docs/guides/fsharp.md](docs/guides/fsharp.md) |
 | Fennel | — | — | ✅ (Conjure) | ✅ parinfer | [docs/guides/lisp.md](docs/guides/lisp.md) |
 | Haskell | — | ✅ haskell-tools | ✅ GHCi | — | [docs/guides/haskell.md](docs/guides/haskell.md) |
@@ -360,8 +360,9 @@ Plugins are managed by [lazy.nvim](https://github.com/folke/lazy.nvim) and organ
 | `git.lua` | vim-fugitive (`:Git` commands) + gitsigns.nvim (hunk signs & staging) | [git.md](docs/cheatsheets/git.md) |
 | `haskell.lua` | haskell-tools.nvim (GHCi REPL + HLS integration) | [haskell.md](docs/cheatsheets/haskell.md) |
 | `html.lua` | Bracey HTML live preview | [html.md](docs/cheatsheets/html.md) |
-| `init.lua` | vim-repeat, vim-sensible, vim-surround, vim-unimpaired, airline, lspconfig | [lsp.md](docs/cheatsheets/lsp.md) |
+| `init.lua` | vim-repeat, vim-surround, vim-unimpaired, lspconfig | [lsp.md](docs/cheatsheets/lsp.md) |
 | `lisp.lua` | Conjure, vim-sexp, nvim-parinfer, rainbow-delimiters | [lisp.md](docs/cheatsheets/lisp.md) |
+| `lualine.lua` | lualine.nvim status line (mode, branch, diagnostics, filetype) — no keybindings | — |
 | `markdown.lua` | markdown-preview.nvim (browser preview, PlantUML via Docker server); `:MdToPdf` PDF export | [markdown.md](docs/cheatsheets/markdown.md) |
 | `mkdnflow.lua` | mkdnflow.nvim (cross-page link navigation: `<CR>` follow, `<BS>` back) | [markdown.md](docs/cheatsheets/markdown.md) |
 | `nvim-cmp.lua` | nvim-cmp + completion sources | [completion.md](docs/cheatsheets/completion.md) |
@@ -380,7 +381,7 @@ lua/
   keymaps.lua               # Global keybindings
   loader/init.lua           # lazy.nvim bootstrap
   config/
-    lsp.lua                 # LSP server setup (cl_lsp, fsautocomplete, marksman)
+    lsp.lua                 # LSP server setup (fsautocomplete, marksman) + LspAttach keymaps
     marp.lua                # MARP presentation commands (preview + export)
     mdpdf.lua               # Markdown → PDF export command (MdToPdf)
     mdpreview.lua           # Markdown markserv server preview command (MdServerPreview)
@@ -396,8 +397,9 @@ lua/
     git.lua                 # Git (vim-fugitive + gitsigns.nvim)
     haskell.lua             # haskell-tools.nvim (GHCi REPL + HLS)
     html.lua                # Bracey HTML live preview
-    init.lua                # Bare-string plugins (tpope, airline, lspconfig)
+    init.lua                # Misc plugins (tpope utilities, lspconfig)
     lisp.lua                # Lisp ecosystem plugins
+    lualine.lua             # Lualine statusline
     markdown.lua            # markdown-preview.nvim (browser preview)
     mkdnflow.lua            # mkdnflow.nvim (cross-page link navigation)
     nvim-cmp.lua            # Completion engine + sources

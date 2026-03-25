@@ -44,7 +44,6 @@
 
 - **nvim-parinfer** — keeps parentheses balanced as you edit indentation (no keymaps)
 - **rainbow-delimiters.nvim** — color-codes matching delimiters by depth (no keymaps)
-- **LSP** (`cl_lsp` for Common Lisp) — see [lsp.md](lsp.md)
 - **Formatting** (conform.nvim, format-on-save) — see [formatting.md](formatting.md)
 
 ---
