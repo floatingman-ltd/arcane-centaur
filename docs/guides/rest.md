@@ -1,18 +1,19 @@
-# REST Client Guide (rest.nvim)
+# REST Client Guide (kulala.nvim)
 
-[rest.nvim](https://github.com/rest-nvim/rest.nvim) is a fast, tree-sitter-powered HTTP client built into Neovim. Write your API requests in `.http` files and execute them directly from the editor.
+[kulala.nvim](https://github.com/mistweaverco/kulala.nvim) is a fully-featured, pure-Lua REST client for Neovim. Write your API requests in `.http` files and execute them directly from the editor.
 
 ## Prerequisites
 
 | Dependency | Purpose | Install hint |
 |---|---|---|
 | **curl** | Sends HTTP requests | `sudo apt install curl` |
-| **Neovim ≥ 0.10.1** | Minimum version required by rest.nvim | `sudo snap install nvim --classic` |
+| **Neovim ≥ 0.10.1** | Minimum version required | `sudo snap install nvim --classic` |
 
 The following are installed automatically by lazy.nvim on first launch:
 
 - **`http` tree-sitter grammar** — via nvim-treesitter (`:TSUpdate`)
-- **nvim-nio**, **mimetypes**, and **xml2lua** — installed via LuaRocks from rest.nvim's rockspec (requires lazy.nvim ≥ v11)
+
+kulala.nvim has **no LuaRocks dependencies** and installs as a plain git plugin.
 
 ## Quick Start
 
@@ -25,7 +26,7 @@ Accept: application/json
 ```
 
 3. Place the cursor anywhere inside the request block.
-4. Press `,r` (or run `:Rest run`) to execute it.
+4. Press `,r` to execute it.
 5. The result pane opens automatically with the response body, headers, and timing stats.
 
 ## HTTP File Syntax
@@ -68,35 +69,49 @@ Content-Type: application/json
 }
 ```
 
-Run by name with `:Rest run createUser`.
-
 ## Environment Variables
 
-Store environment-specific values (base URLs, API keys, etc.) in an env file whose name matches the pattern `*.env.*` (e.g. `http.env.local`, `.env.development`):
+kulala.nvim supports two env file formats:
+
+**`http-client.env.json`** (named environments, selected with `,e`):
+
+```json
+{
+  "dev": {
+    "base_url": "https://api.example.com",
+    "api_key": "my-secret-key"
+  },
+  "prod": {
+    "base_url": "https://api.example.com",
+    "api_key": "prod-key"
+  }
+}
+```
+
+**`.env`** (dotenv format, loaded automatically from any parent directory):
 
 ```
-# http.env.local
 base_url=https://api.example.com
 api_key=my-secret-key
 ```
 
-Reference variables in your `.http` file:
+Reference variables in your `.http` file using either format:
 
 ```http
 GET {{base_url}}/users HTTP/1.1
 Authorization: Bearer {{api_key}}
 ```
 
-Register the env file with `,e` (`:Rest env select`) and pick the file from the list.
+Use `,e` to pick which named environment from `http-client.env.json` is active.
 
 ## Typical Workflow
 
 1. Create `requests.http` with your API calls.
-2. Create `http.env.local` with base URL and credentials.
-3. Press `,e` to register the env file.
+2. Create `http-client.env.json` with base URL and credentials.
+3. Press `,e` to select the environment.
 4. Press `,r` on each request to run it.
-5. Use `H` / `L` in the result pane to switch between response body, headers, and stats.
-6. Press `,l` to quickly re-run the last request after editing it.
+5. Press `,l` to quickly re-run the last request after editing it.
+6. Press `,o` to re-open the result pane if closed.
 
 ## Keybindings
 
@@ -107,23 +122,23 @@ Register the env file with `,e` (`:Rest env select`) and pick the file from the 
 | `,r` | Run request under cursor |
 | `,l` | Re-run last request |
 | `,o` | Open result pane |
-| `,e` | Select environment file |
+| `,e` | Select environment |
 
 ## Configuration
 
-rest.nvim is configured via `vim.g.rest_nvim`. The defaults are sensible for most use cases. To customise, add options in `lua/plugins/rest.lua`:
+kulala.nvim is configured via `opts` in `lua/plugins/rest.lua`. The defaults are sensible for most use cases. To customise:
 
 ```lua
-vim.g.rest_nvim = {
-  request = {
-    skip_ssl_verification = false,
-  },
-  response = {
-    hooks = {
-      format = true,   -- auto-format response body with gq
+return {
+  {
+    "mistweaverco/kulala.nvim",
+    ft = { "http" },
+    opts = {
+      default_env = "dev",
+      debug = false,
     },
   },
 }
 ```
 
-See `:h rest-nvim.config` for all available options.
+See the [kulala.nvim documentation](https://neovim.getkulala.net/docs/getting-started/configuration-options) for all available options.

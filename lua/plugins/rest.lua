@@ -1,9 +1,7 @@
 return {
   {
-    "rest-nvim/rest.nvim",
+    "mistweaverco/kulala.nvim",
     ft = { "http" },
-    dependencies = {
-      "nvim-treesitter/nvim-treesitter",
-    },
+    opts = {},
   },
 }

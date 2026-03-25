@@ -21,7 +21,7 @@
 | Markdown Preview + MARP | [markdown.md](markdown.md) |
 | Navigation & Splits | [navigation.md](navigation.md) |
 | PlantUML Preview | [plantuml.md](plantuml.md) |
-| REST Client (rest.nvim) | [rest.md](rest.md) |
+| REST Client (kulala.nvim) | [rest.md](rest.md) |
 | Visual Editing | [editing.md](editing.md) |
 
 ---
@@ -303,7 +303,7 @@ LocalLeader is `,` in HTML / CSS / JavaScript buffers.
 
 ---
 
-### REST Client (rest.nvim)
+### REST Client (kulala.nvim)
 
 LocalLeader is `,` in `.http` buffers.
 
@@ -312,6 +312,6 @@ LocalLeader is `,` in `.http` buffers.
 | `,r` | Run request under cursor |
 | `,l` | Re-run last request |
 | `,o` | Open result pane |
-| `,e` | Select environment file |
+| `,e` | Select environment |
 
 → [Full reference](rest.md) · [Guide](../guides/rest.md)

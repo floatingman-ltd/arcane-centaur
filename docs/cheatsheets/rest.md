@@ -1,4 +1,4 @@
-# REST Client Cheatsheet (rest.nvim)
+# REST Client Cheatsheet (kulala.nvim)
 
 **LocalLeader** = `,` in `.http` buffers
 
@@ -8,32 +8,21 @@
 
 | Keys | Mode | Action |
 |---|---|---|
-| `,r` | Normal | Run request under cursor (`:Rest run`) |
-| `,l` | Normal | Re-run last request (`:Rest last`) |
-| `,o` | Normal | Open result pane (`:Rest open`) |
-| `,e` | Normal | Select environment file (`:Rest env select`) |
-
-## Result Pane Navigation
-
-These keys are active inside the result pane window:
-
-| Keys | Action |
-|---|---|
-| `H` | Cycle to previous result pane |
-| `L` | Cycle to next result pane |
+| `,r` | Normal | Run request under cursor |
+| `,l` | Normal | Re-run last request |
+| `,o` | Normal | Open result pane |
+| `,e` | Normal | Select environment |
 
 ## Commands Reference
 
 | Command | Action |
 |---|---|
-| `:Rest run` | Run request under cursor |
-| `:Rest run {name}` | Run named request |
-| `:Rest last` | Re-run last executed request |
-| `:Rest open` | Open result pane |
-| `:Rest logs` | Edit rest.nvim log file |
-| `:Rest cookies` | Edit cookies file |
-| `:Rest env show` | Show registered `.env` file |
-| `:Rest env select` | Select & register a `.env` file |
-| `:Rest env set {path}` | Register a specific `.env` file |
+| `:Kulala run` | Run request under cursor |
+| `:Kulala replay` | Re-run last executed request |
+| `:Kulala open` | Open result pane |
+| `:Kulala inspect` | Inspect current request |
+| `:Kulala copy` | Copy request as curl command |
+| `:Kulala scratchpad` | Open HTTP scratchpad |
+| `:Kulala search` | Search and jump to a request |
 
 → [Guide](../guides/rest.md)
