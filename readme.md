@@ -207,12 +207,14 @@ Git integration is provided by two complementary plugins:
 
 Write HTTP requests in `.http` files and run them directly from Neovim with the [kulala.nvim](https://github.com/mistweaverco/kulala.nvim) plugin.
 
+> **Prerequisite:** the `tree-sitter` CLI must be on your `PATH`. kulala.nvim compiles a custom `kulala_http` grammar on first launch. Install it with `npm install -g tree-sitter-cli` (or `cargo install tree-sitter-cli`). See [docs/guides/rest.md](docs/guides/rest.md) for full install instructions.
+
 | Keys | Action |
 |---|---|
 | `,r` | Run request under cursor |
 | `,l` | Re-run last request |
 | `,o` | Open result pane |
-| `,e` | Select environment file |
+| `,e` | Select environment |
 
 ## LSP Support
 

@@ -8,10 +8,29 @@
 |---|---|---|
 | **curl** | Sends HTTP requests | `sudo apt install curl` |
 | **Neovim ≥ 0.10.1** | Minimum version required | `sudo snap install nvim --classic` |
+| **tree-sitter CLI** | Compiles kulala's custom HTTP parser on first launch | see below |
 
-The following are installed automatically by lazy.nvim on first launch:
+### Installing the tree-sitter CLI
 
-- **`http` tree-sitter grammar** — via nvim-treesitter (`:TSUpdate`)
+kulala.nvim ships a custom `kulala_http` tree-sitter grammar that nvim-treesitter compiles from source the first time you open an `.http` file. This requires the `tree-sitter` CLI binary to be on your `PATH`.
+
+**Via npm** (recommended if Node.js is already installed):
+
+```sh
+npm install -g tree-sitter-cli
+```
+
+**Via Cargo** (if you have a Rust toolchain):
+
+```sh
+cargo install tree-sitter-cli
+```
+
+**Pre-built binary**: download the latest release for your platform from
+<https://github.com/tree-sitter/tree-sitter/releases/latest> and place it
+somewhere on your `PATH` (e.g. `~/.local/bin/`).
+
+The compilation happens once; subsequent launches use the cached parser.
 
 kulala.nvim has **no LuaRocks dependencies** and installs as a plain git plugin.
 
