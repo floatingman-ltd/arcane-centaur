@@ -18,6 +18,8 @@ On first launch, [lazy.nvim](https://github.com/folke/lazy.nvim) will bootstrap 
 |---|---|---|
 | **Neovim ≥ 0.9** | Editor | `sudo snap install nvim --classic` |
 | **build-essential, tree** | General tooling | `sudo apt install build-essential tree -y` |
+| **Lua ≥ 5.1** *(5.4 recommended)* | Required by lazy.nvim's LuaRocks support | `sudo apt install lua5.4` |
+| **LuaRocks** | Plugin dependency manager used by lazy.nvim | `sudo apt install luarocks` |
 | **A [Nerd Font][]** *(optional)* | File-type icons in the tree and fuzzy-finder | See below |
 
 [Nerd Font]: https://www.nerdfonts.com/
