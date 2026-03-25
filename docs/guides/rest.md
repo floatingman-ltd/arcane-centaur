@@ -143,6 +143,31 @@ Use `,e` to pick which named environment from `http-client.env.json` is active.
 | `,o` | Open result pane |
 | `,e` | Select environment |
 
+## Troubleshooting
+
+### `ENOENT: no such file or directory (cmd): 'tree-sitter'`
+
+kulala.nvim builds its custom `kulala_http` tree-sitter grammar on first launch using the
+`tree-sitter` CLI. If the binary is not on your `PATH` you will see:
+
+```
+[nvim-treesitter/install/kulala_http] error: Error during "tree-sitter build": … ENOENT: 'tree-sitter'
+```
+
+**Fix:** install the tree-sitter CLI (see [Installing the tree-sitter CLI](#installing-the-tree-sitter-cli) above), then **restart Neovim**.
+
+### `async.lua: timeout` / `Failed to run config for kulala.nvim`
+
+Same root cause — nvim-treesitter timed out waiting for `tree-sitter build` to complete because the binary was not found.
+
+**Fix:** same as above — install the tree-sitter CLI, then **restart Neovim**.
+
+### All keymaps (`,r` `,l` `,o` `,e`) do nothing after the error
+
+When kulala's `setup()` errors (either due to the missing CLI or the timeout), the UI layer is never initialized. Every keymap that calls into the UI — including `,o` (open result pane) — will silently fail or show `nil` errors until kulala initializes successfully.
+
+**Fix:** install the tree-sitter CLI, restart Neovim, and open an `.http` file. The grammar is compiled once on this first successful launch; subsequent starts will use the cached parser and load instantly.
+
 ## Configuration
 
 kulala.nvim is configured via `opts` in `lua/plugins/rest.lua`. The defaults are sensible for most use cases. To customise:
