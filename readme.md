@@ -23,7 +23,7 @@ On first launch, [lazy.nvim](https://github.com/folke/lazy.nvim) will bootstrap 
 [Nerd Font]: https://www.nerdfonts.com/
 
 Language-specific prerequisites (LSP servers, REPLs, runtimes) are documented in each language guide:
-[Markdown](docs/guides/markdown.md) · [Diagrams](docs/guides/diagrams.md) · [F#](docs/guides/fsharp.md) · [Haskell](docs/guides/haskell.md) · [Lisp / Clojure / Scheme](docs/guides/lisp.md) · [Presentations / MARP](docs/guides/presentations.md)
+[Markdown](docs/guides/markdown.md) · [Diagrams](docs/guides/diagrams.md) · [F#](docs/guides/fsharp.md) · [Haskell](docs/guides/haskell.md) · [Lisp / Clojure / Scheme](docs/guides/lisp.md) · [Presentations / MARP](docs/guides/presentations.md) · [REST Client](docs/guides/rest.md)
 
 ### Recommended Terminal — GNOME Terminal
 
@@ -199,6 +199,19 @@ Git integration is provided by two complementary plugins:
 > buffers (buffer-local, so it takes priority there). Use the fugitive status
 > window to stage changes while editing Haskell files.
 
+## Working with REST APIs (rest.nvim)
+
+→ See **[docs/guides/rest.md](docs/guides/rest.md)** for the full guide: writing `.http` files, environment variables, and typical workflow.
+
+Write HTTP requests in `.http` files and run them directly from Neovim with the [rest.nvim](https://github.com/rest-nvim/rest.nvim) plugin.
+
+| Keys | Action |
+|---|---|
+| `,r` | Run request under cursor |
+| `,l` | Re-run last request |
+| `,o` | Open result pane |
+| `,e` | Select environment file |
+
 ## LSP Support
 
 LSP servers are configured in `lua/config/lsp.lua`. See each language's doc for server-specific setup. All servers share these keybindings (available in any LSP-enabled buffer):
@@ -275,6 +288,7 @@ Press **`Ctrl+e`** to dismiss the completion menu and return to normal typing.
 | F# | ✅ | ✅ fsautocomplete | ✅ dotnet fsi (iron.nvim) | — | [docs/guides/fsharp.md](docs/guides/fsharp.md) |
 | Fennel | — | — | ✅ (Conjure) | ✅ parinfer | [docs/guides/lisp.md](docs/guides/lisp.md) |
 | Haskell | — | ✅ haskell-tools | ✅ GHCi | — | [docs/guides/haskell.md](docs/guides/haskell.md) |
+| HTTP | ✅ | — | — | — | [docs/guides/rest.md](docs/guides/rest.md) |
 | Lua | ✅ | — | — | — | — |
 | Markdown | ✅ | ✅ marksman | — | — | [docs/guides/markdown.md](docs/guides/markdown.md) |
 | Mermaid *(in Markdown)* | ✅ *(markdown)* | — | — | — | [docs/guides/diagrams.md](docs/guides/diagrams.md) |
@@ -349,6 +363,7 @@ Plugins are managed by [lazy.nvim](https://github.com/folke/lazy.nvim) and organ
 | `nvim-cmp.lua` | nvim-cmp + completion sources | [completion.md](docs/cheatsheets/completion.md) |
 | `nvim-tree.lua` | File explorer tree | [file-tree.md](docs/cheatsheets/file-tree.md) |
 | `plantuml.lua` | plantuml-syntax + `:PumlPreview` command (browser preview via Docker server) | [plantuml.md](docs/cheatsheets/plantuml.md) |
+| `rest.lua` | rest.nvim HTTP client (run requests from `.http` files) | [rest.md](docs/cheatsheets/rest.md) |
 | `treesitter.lua` | nvim-treesitter | — |
 | `vim-commentary.lua` | Toggle comments with `gcc` | [comments.md](docs/cheatsheets/comments.md) |
 
@@ -384,12 +399,14 @@ lua/
     nvim-cmp.lua            # Completion engine + sources
     nvim-tree.lua           # File tree
     plantuml.lua            # plantuml-syntax + PumlPreview command
+    rest.lua                # rest.nvim HTTP client (run requests from .http files)
     treesitter.lua          # nvim-treesitter
     vim-commentary.lua      # Comment toggling
 after/ftplugin/
   clojure.lua               # Clojure indent settings
   fsharp.lua                # F# indent settings (4-space) & localleader
   haskell.lua               # Haskell-tools keybindings
+  http.lua                  # REST client localleader & keymaps
   lisp.lua                  # Lisp indent settings & lispwords
   markdown.lua              # Markdown localleader, preview keymap, MARP commands, MdToPdf, MdServerPreview
   plantuml.lua              # PlantUML localleader & PumlPreview keymap
@@ -418,6 +435,7 @@ docs/
     markdown.md             # Markdown preview + MARP + markserv
     navigation.md           # Window navigation & terminal
     plantuml.md             # PlantUML preview
+    rest.md                 # REST client (rest.nvim)
   guides/
     diagrams.md             # Markdown + PlantUML diagram guide
     fsharp.md               # F# guide
@@ -425,4 +443,5 @@ docs/
     lisp.md                 # Lisp / Clojure / Scheme / Fennel guide
     markdown.md             # Markdown preview guide (markserv, cross-page links)
     presentations.md        # MARP presentation guide
+    rest.md                 # REST client guide (rest.nvim, .http files)
 ```
