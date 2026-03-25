@@ -1,20 +1,38 @@
-# REST Client Guide (rest.nvim)
+# REST Client Guide (kulala.nvim)
 
-[rest.nvim](https://github.com/rest-nvim/rest.nvim) is a fast, tree-sitter-powered HTTP client built into Neovim. Write your API requests in `.http` files and execute them directly from the editor.
+[kulala.nvim](https://github.com/mistweaverco/kulala.nvim) is a fully-featured, pure-Lua REST client for Neovim. Write your API requests in `.http` files and execute them directly from the editor.
 
 ## Prerequisites
 
 | Dependency | Purpose | Install hint |
 |---|---|---|
 | **curl** | Sends HTTP requests | `sudo apt install curl` |
-| **Neovim ≥ 0.10.1** | Minimum version required by rest.nvim | `sudo snap install nvim --classic` |
+| **Neovim ≥ 0.10.1** | Minimum version required | `sudo snap install nvim --classic` |
+| **tree-sitter CLI** | Compiles kulala's custom HTTP parser on first launch | see below |
 
-The following are installed automatically by lazy.nvim on first launch:
+### Installing the tree-sitter CLI
 
-- **`http` tree-sitter grammar** — via nvim-treesitter (`:TSUpdate`)
-- **nvim-nio** — async I/O library ([nvim-lua/nvim-nio](https://github.com/nvim-lua/nvim-nio))
-- **fidget.nvim** — progress notifications ([j-hui/fidget.nvim](https://github.com/j-hui/fidget.nvim))
-- **mimetypes** and **xml2lua** — pure-Lua MIME and XML libraries installed via LuaRocks
+kulala.nvim ships a custom `kulala_http` tree-sitter grammar that nvim-treesitter compiles from source the first time you open an `.http` file. This requires the `tree-sitter` CLI binary to be on your `PATH`.
+
+**Via npm** (recommended if Node.js is already installed):
+
+```sh
+npm install -g tree-sitter-cli
+```
+
+**Via Cargo** (if you have a Rust toolchain):
+
+```sh
+cargo install tree-sitter-cli
+```
+
+**Pre-built binary**: download the latest release for your platform from
+<https://github.com/tree-sitter/tree-sitter/releases/latest> and place it
+somewhere on your `PATH` (e.g. `~/.local/bin/`).
+
+The compilation happens once; subsequent launches use the cached parser.
+
+kulala.nvim has **no LuaRocks dependencies** and installs as a plain git plugin.
 
 ## Quick Start
 
@@ -27,7 +45,7 @@ Accept: application/json
 ```
 
 3. Place the cursor anywhere inside the request block.
-4. Press `,r` (or run `:Rest run`) to execute it.
+4. Press `,r` to execute it.
 5. The result pane opens automatically with the response body, headers, and timing stats.
 
 ## HTTP File Syntax
@@ -70,35 +88,49 @@ Content-Type: application/json
 }
 ```
 
-Run by name with `:Rest run createUser`.
-
 ## Environment Variables
 
-Store environment-specific values (base URLs, API keys, etc.) in an env file whose name matches the pattern `*.env.*` (e.g. `http.env.local`, `.env.development`):
+kulala.nvim supports two env file formats:
+
+**`http-client.env.json`** (named environments, selected with `,e`):
+
+```json
+{
+  "dev": {
+    "base_url": "https://api.example.com",
+    "api_key": "my-secret-key"
+  },
+  "prod": {
+    "base_url": "https://api.example.com",
+    "api_key": "prod-key"
+  }
+}
+```
+
+**`.env`** (dotenv format, loaded automatically from any parent directory):
 
 ```
-# http.env.local
 base_url=https://api.example.com
 api_key=my-secret-key
 ```
 
-Reference variables in your `.http` file:
+Reference variables in your `.http` file using either format:
 
 ```http
 GET {{base_url}}/users HTTP/1.1
 Authorization: Bearer {{api_key}}
 ```
 
-Register the env file with `,e` (`:Rest env select`) and pick the file from the list.
+Use `,e` to pick which named environment from `http-client.env.json` is active.
 
 ## Typical Workflow
 
 1. Create `requests.http` with your API calls.
-2. Create `http.env.local` with base URL and credentials.
-3. Press `,e` to register the env file.
+2. Create `http-client.env.json` with base URL and credentials.
+3. Press `,e` to select the environment.
 4. Press `,r` on each request to run it.
-5. Use `H` / `L` in the result pane to switch between response body, headers, and stats.
-6. Press `,l` to quickly re-run the last request after editing it.
+5. Press `,l` to quickly re-run the last request after editing it.
+6. Press `,o` to re-open the result pane if closed.
 
 ## Keybindings
 
@@ -109,23 +141,48 @@ Register the env file with `,e` (`:Rest env select`) and pick the file from the 
 | `,r` | Run request under cursor |
 | `,l` | Re-run last request |
 | `,o` | Open result pane |
-| `,e` | Select environment file |
+| `,e` | Select environment |
+
+## Troubleshooting
+
+### `ENOENT: no such file or directory (cmd): 'tree-sitter'`
+
+kulala.nvim builds its custom `kulala_http` tree-sitter grammar on first launch using the
+`tree-sitter` CLI. If the binary is not on your `PATH` you will see:
+
+```
+[nvim-treesitter/install/kulala_http] error: Error during "tree-sitter build": … ENOENT: 'tree-sitter'
+```
+
+**Fix:** install the tree-sitter CLI (see [Installing the tree-sitter CLI](#installing-the-tree-sitter-cli) above), then **restart Neovim**.
+
+### `async.lua: timeout` / `Failed to run config for kulala.nvim`
+
+Same root cause — nvim-treesitter timed out waiting for `tree-sitter build` to complete because the binary was not found.
+
+**Fix:** same as above — install the tree-sitter CLI, then **restart Neovim**.
+
+### All keymaps (`,r` `,l` `,o` `,e`) do nothing after the error
+
+When kulala's `setup()` errors (either due to the missing CLI or the timeout), the UI layer is never initialized. Every keymap that calls into the UI — including `,o` (open result pane) — will silently fail or show `nil` errors until kulala initializes successfully.
+
+**Fix:** install the tree-sitter CLI, restart Neovim, and open an `.http` file. The grammar is compiled once on this first successful launch; subsequent starts will use the cached parser and load instantly.
 
 ## Configuration
 
-rest.nvim is configured via `vim.g.rest_nvim`. The defaults are sensible for most use cases. To customise, add options in `lua/plugins/rest.lua`:
+kulala.nvim is configured via `opts` in `lua/plugins/rest.lua`. The defaults are sensible for most use cases. To customise:
 
 ```lua
-vim.g.rest_nvim = {
-  request = {
-    skip_ssl_verification = false,
-  },
-  response = {
-    hooks = {
-      format = true,   -- auto-format response body with gq
+return {
+  {
+    "mistweaverco/kulala.nvim",
+    ft = { "http" },
+    opts = {
+      default_env = "dev",
+      debug = false,
     },
   },
 }
 ```
 
-See `:h rest-nvim.config` for all available options.
+See the [kulala.nvim documentation](https://neovim.getkulala.net/docs/getting-started/configuration-options) for all available options.

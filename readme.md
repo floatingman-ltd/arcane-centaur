@@ -201,18 +201,20 @@ Git integration is provided by two complementary plugins:
 > buffers (buffer-local, so it takes priority there). Use the fugitive status
 > window to stage changes while editing Haskell files.
 
-## Working with REST APIs (rest.nvim)
+## Working with REST APIs (kulala.nvim)
 
 → See **[docs/guides/rest.md](docs/guides/rest.md)** for the full guide: writing `.http` files, environment variables, and typical workflow.
 
-Write HTTP requests in `.http` files and run them directly from Neovim with the [rest.nvim](https://github.com/rest-nvim/rest.nvim) plugin.
+Write HTTP requests in `.http` files and run them directly from Neovim with the [kulala.nvim](https://github.com/mistweaverco/kulala.nvim) plugin.
+
+> **Prerequisite:** the `tree-sitter` CLI must be on your `PATH`. kulala.nvim compiles a custom `kulala_http` grammar on first launch. Install it with `npm install -g tree-sitter-cli` (or `cargo install tree-sitter-cli`). See [docs/guides/rest.md](docs/guides/rest.md) for full install instructions.
 
 | Keys | Action |
 |---|---|
 | `,r` | Run request under cursor |
 | `,l` | Re-run last request |
 | `,o` | Open result pane |
-| `,e` | Select environment file |
+| `,e` | Select environment |
 
 ## LSP Support
 
@@ -365,7 +367,7 @@ Plugins are managed by [lazy.nvim](https://github.com/folke/lazy.nvim) and organ
 | `nvim-cmp.lua` | nvim-cmp + completion sources | [completion.md](docs/cheatsheets/completion.md) |
 | `nvim-tree.lua` | File explorer tree | [file-tree.md](docs/cheatsheets/file-tree.md) |
 | `plantuml.lua` | plantuml-syntax + `:PumlPreview` command (browser preview via Docker server) | [plantuml.md](docs/cheatsheets/plantuml.md) |
-| `rest.lua` | rest.nvim HTTP client (run requests from `.http` files) | [rest.md](docs/cheatsheets/rest.md) |
+| `rest.lua` | kulala.nvim HTTP client (run requests from `.http` files) | [rest.md](docs/cheatsheets/rest.md) |
 | `treesitter.lua` | nvim-treesitter | — |
 | `vim-commentary.lua` | Toggle comments with `gcc` | [comments.md](docs/cheatsheets/comments.md) |
 
@@ -401,7 +403,7 @@ lua/
     nvim-cmp.lua            # Completion engine + sources
     nvim-tree.lua           # File tree
     plantuml.lua            # plantuml-syntax + PumlPreview command
-    rest.lua                # rest.nvim HTTP client (run requests from .http files)
+    rest.lua                # kulala.nvim HTTP client (run requests from .http files)
     treesitter.lua          # nvim-treesitter
     vim-commentary.lua      # Comment toggling
 after/ftplugin/
@@ -437,7 +439,7 @@ docs/
     markdown.md             # Markdown preview + MARP + markserv
     navigation.md           # Window navigation & terminal
     plantuml.md             # PlantUML preview
-    rest.md                 # REST client (rest.nvim)
+    rest.md                 # REST client (kulala.nvim)
   guides/
     diagrams.md             # Markdown + PlantUML diagram guide
     fsharp.md               # F# guide
@@ -445,5 +447,5 @@ docs/
     lisp.md                 # Lisp / Clojure / Scheme / Fennel guide
     markdown.md             # Markdown preview guide (markserv, cross-page links)
     presentations.md        # MARP presentation guide
-    rest.md                 # REST client guide (rest.nvim, .http files)
+    rest.md                 # REST client guide (kulala.nvim, .http files)
 ```
