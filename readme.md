@@ -360,8 +360,9 @@ Plugins are managed by [lazy.nvim](https://github.com/folke/lazy.nvim) and organ
 | `git.lua` | vim-fugitive (`:Git` commands) + gitsigns.nvim (hunk signs & staging) | [git.md](docs/cheatsheets/git.md) |
 | `haskell.lua` | haskell-tools.nvim (GHCi REPL + HLS integration) | [haskell.md](docs/cheatsheets/haskell.md) |
 | `html.lua` | Bracey HTML live preview | [html.md](docs/cheatsheets/html.md) |
-| `init.lua` | vim-repeat, vim-sensible, vim-surround, vim-unimpaired, airline, lspconfig | [lsp.md](docs/cheatsheets/lsp.md) |
+| `init.lua` | vim-repeat, vim-surround, vim-unimpaired, lspconfig | [lsp.md](docs/cheatsheets/lsp.md) |
 | `lisp.lua` | Conjure, vim-sexp, nvim-parinfer, rainbow-delimiters | [lisp.md](docs/cheatsheets/lisp.md) |
+| `lualine.lua` | lualine.nvim status line (mode, branch, diagnostics, filetype) — no keybindings | — |
 | `markdown.lua` | markdown-preview.nvim (browser preview, PlantUML via Docker server); `:MdToPdf` PDF export | [markdown.md](docs/cheatsheets/markdown.md) |
 | `mkdnflow.lua` | mkdnflow.nvim (cross-page link navigation: `<CR>` follow, `<BS>` back) | [markdown.md](docs/cheatsheets/markdown.md) |
 | `nvim-cmp.lua` | nvim-cmp + completion sources | [completion.md](docs/cheatsheets/completion.md) |
@@ -396,8 +397,9 @@ lua/
     git.lua                 # Git (vim-fugitive + gitsigns.nvim)
     haskell.lua             # haskell-tools.nvim (GHCi REPL + HLS)
     html.lua                # Bracey HTML live preview
-    init.lua                # Bare-string plugins (tpope, airline, lspconfig)
+    init.lua                # Misc plugins (tpope utilities, lspconfig)
     lisp.lua                # Lisp ecosystem plugins
+    lualine.lua             # Lualine statusline
     markdown.lua            # markdown-preview.nvim (browser preview)
     mkdnflow.lua            # mkdnflow.nvim (cross-page link navigation)
     nvim-cmp.lua            # Completion engine + sources

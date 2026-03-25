@@ -3,10 +3,8 @@ return {
     "mistweaverco/kulala.nvim",
     ft = { "http" },
     opts = {
-      -- Use Neovim's built-in vim.ui.select instead of the standalone fzf binary.
-      -- The fzf-lua plugin (ibhagwan/fzf-lua) provides the fuzzy-finder UI but
-      -- does not place an `fzf` executable on PATH, so the default "fzf"
-      -- display_mode would error with "'fzf' is not a valid executable".
+      -- vim.ui.select avoids requiring a standalone fzf binary on PATH
+      -- (fzf-lua is a Neovim plugin, not the system fzf executable).
       display_mode = "vim_ui_select",
     },
   },
