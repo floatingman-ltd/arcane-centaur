@@ -12,9 +12,7 @@
 The following are installed automatically by lazy.nvim on first launch:
 
 - **`http` tree-sitter grammar** — via nvim-treesitter (`:TSUpdate`)
-- **nvim-nio** — async I/O library ([nvim-lua/nvim-nio](https://github.com/nvim-lua/nvim-nio))
-- **fidget.nvim** — progress notifications ([j-hui/fidget.nvim](https://github.com/j-hui/fidget.nvim))
-- **mimetypes** and **xml2lua** — pure-Lua MIME and XML libraries installed via LuaRocks
+- **nvim-nio**, **mimetypes**, and **xml2lua** — installed via LuaRocks from rest.nvim's rockspec (requires lazy.nvim ≥ v11)
 
 ## Quick Start
 
