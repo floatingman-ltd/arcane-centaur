@@ -26,7 +26,7 @@ All four plugins lazy-load only when you open a **Lisp**, **Clojure**, **Scheme*
 
 ## LSP
 
-The `cl_lsp` server is configured in `lua/config/lsp.lua` for Common Lisp. Install it via Quicklisp: `(ql:quickload :cl-lsp)`. See [readme.md](../../readme.md#lsp-support) for the shared LSP keybindings.
+Common Lisp does not currently have a configured LSP server in this setup. REPL-driven development via Conjure + Swank is the recommended workflow. See [readme.md](../../readme.md#lsp-support) for the shared LSP keybindings available in F# and Markdown buffers.
 
 ## Quick Start
 

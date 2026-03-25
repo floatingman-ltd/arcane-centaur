@@ -7,7 +7,7 @@
 ## LSP Keybindings (all LSP-enabled buffers)
 
 These keymaps are active in any buffer where an LSP server has attached
-(Common Lisp, F#, Markdown, Haskell).
+(F#, Markdown, Haskell).
 
 | Keys | Mode | Action |
 |---|---|---|
@@ -24,11 +24,10 @@ These keymaps are active in any buffer where an LSP server has attached
 
 | Server | Language | Install |
 |---|---|---|
-| `cl_lsp` | Common Lisp | via Quicklisp: `(ql:quickload :cl-lsp)` |
 | `fsautocomplete` | F# | `dotnet tool install -g fsautocomplete` |
 | `marksman` | Markdown | `sudo apt install marksman` |
 | `haskell-language-server` | Haskell | `ghcup install hls` (managed by haskell-tools.nvim) |
 
 ---
 
-*Keymaps defined in `lua/config/lsp.lua`.*
+*Keymaps defined in `lua/config/lsp.lua` via `LspAttach` autocmd.*
