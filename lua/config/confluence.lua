@@ -28,8 +28,21 @@ local function find_git_root(dir)
   return result[1]
 end
 
---- Locate the confluence_publish.py script in the repository.
+--- Locate the confluence_publish.py script.
+-- Checks CONFLUENCE_PUBLISH_SCRIPT env var first, then falls back to
+-- scripts/confluence_publish.py in the repository root.
 local function find_publish_script(git_root)
+  local env_path = os.getenv("CONFLUENCE_PUBLISH_SCRIPT")
+  if env_path and env_path ~= "" then
+    if vim.fn.filereadable(env_path) == 1 then
+      return env_path
+    end
+    vim.notify(
+      "Confluence: CONFLUENCE_PUBLISH_SCRIPT is set but file not readable:\n" .. env_path,
+      vim.log.levels.ERROR
+    )
+    return nil
+  end
   local path = git_root .. "/scripts/confluence_publish.py"
   if vim.fn.filereadable(path) == 1 then
     return path
@@ -75,7 +88,8 @@ function M.publish()
   if not script then
     vim.notify(
       "Confluence: publish script not found.\n"
-        .. "Expected: " .. git_root .. "/scripts/confluence_publish.py",
+        .. "Set CONFLUENCE_PUBLISH_SCRIPT to the full path of confluence_publish.py,\n"
+        .. "or place the script at: " .. git_root .. "/scripts/confluence_publish.py",
       vim.log.levels.ERROR
     )
     return

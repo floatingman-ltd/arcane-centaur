@@ -8,10 +8,12 @@ The publisher converts the markdown to Confluence storage format via pandoc, ren
 
 ## Prerequisites
 
+> **Required:** `pandoc` must be installed before `,cc` will work. Install with `sudo apt install pandoc` (Debian/Ubuntu) or `brew install pandoc` (macOS). The command will fail with a Python traceback if pandoc is missing.
+
 | Dependency | Purpose | Install hint |
 |---|---|---|
-| **pandoc** | Markdown → HTML conversion | `sudo apt install pandoc` |
-| **python3** | Runs the publish script | Pre-installed on most systems |
+| **pandoc** *(required)* | Markdown → Confluence storage format | `sudo apt install pandoc` |
+| **python3** *(required)* | Runs the publish script | Pre-installed on most systems |
 | **PlantUML server** *(optional)* | Renders diagrams to PNG | See [diagrams.md](diagrams.md) |
 | **CONFLUENCE_EMAIL** env var | Atlassian account email | See [Authentication](#authentication) |
 | **CONFLUENCE_API_TOKEN** env var | Atlassian API token | See [Authentication](#authentication) |
@@ -84,9 +86,22 @@ export PLANTUML_SERVER="http://localhost:8080"
 
 ---
 
-## Publish script
+## Publish script location
 
-The conversion and upload logic lives in `scripts/confluence_publish.py` at the repository root. It can also be run directly from the terminal:
+The Lua module looks for the publish script in two places, in order:
+
+1. The path in the `CONFLUENCE_PUBLISH_SCRIPT` environment variable (use this for repos that do not contain the script themselves, such as this nvim config repo)
+2. `scripts/confluence_publish.py` at the git root of the open file
+
+Add this to your shell profile if you work across multiple repos:
+
+```sh
+export CONFLUENCE_PUBLISH_SCRIPT="/home/walt/src/rmv/drive-api/scripts/confluence_publish.py"
+```
+
+---
+
+## Publish script (command-line use)
 
 ```sh
 CONFLUENCE_EMAIL="..." CONFLUENCE_API_TOKEN="..." \
@@ -100,8 +115,9 @@ CONFLUENCE_EMAIL="..." CONFLUENCE_API_TOKEN="..." \
 | Symptom | Cause | Fix |
 |---|---|---|
 | `CONFLUENCE_EMAIL and CONFLUENCE_API_TOKEN must be set` | Env vars missing | Add to shell profile; relaunch Neovim |
+| `publish script not found` | Script not in repo and `CONFLUENCE_PUBLISH_SCRIPT` not set | Set `CONFLUENCE_PUBLISH_SCRIPT` to the full path of `confluence_publish.py` |
 | `not found in confluence-page-map.md` | File not in page map | Add an entry to `docs/confluence-page-map.md` |
 | `GET .../content/... → 401` | Invalid credentials | Regenerate API token at id.atlassian.com |
 | `GET .../content/... → 403` | Token lacks page edit permission | Check Confluence space permissions |
-| `pandoc failed` | pandoc not installed | `sudo apt install pandoc` |
+| `pandoc failed` or `FileNotFoundError: pandoc` | pandoc not installed | `sudo apt install pandoc` |
 | Diagrams appear as code blocks | PlantUML server not running | Start the PlantUML Docker container |
