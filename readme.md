@@ -151,6 +151,11 @@ vim.g.have_nerd_font = true   -- or false
 - **`,p`** — toggle `markdown-preview.nvim` (single file with PlantUML/Mermaid)
 - **`,sp`** — open in markserv Docker server — cross-page links and PlantUML/Mermaid diagrams rendered
 - **`<CR>`** — follow a link to another `.md` file in the editor (mkdnflow.nvim)
+- **`,cc`** — publish current file to Confluence (`MdToConfluence`)
+
+## Working with Confluence
+
+→ See **[docs/guides/confluence.md](docs/guides/confluence.md)** for the full guide: authentication, page map setup, diagram rendering, and troubleshooting.
 
 ## Working with Diagrams
 
@@ -380,6 +385,7 @@ lua/
   keymaps.lua               # Global keybindings
   loader/init.lua           # lazy.nvim bootstrap
   config/
+    confluence.lua          # Confluence publish command (MdToConfluence)
     lsp.lua                 # LSP server setup (cl_lsp, fsautocomplete, marksman)
     marp.lua                # MARP presentation commands (preview + export)
     mdpdf.lua               # Markdown → PDF export command (MdToPdf)
@@ -412,7 +418,7 @@ after/ftplugin/
   haskell.lua               # Haskell-tools keybindings
   http.lua                  # REST client localleader & keymaps
   lisp.lua                  # Lisp indent settings & lispwords
-  markdown.lua              # Markdown localleader, preview keymap, MARP commands, MdToPdf, MdServerPreview
+  markdown.lua              # Markdown localleader, preview keymap, MARP commands, MdToPdf, MdServerPreview, MdToConfluence
   plantuml.lua              # PlantUML localleader & PumlPreview keymap
   scheme.lua                # Scheme indent settings
 docker/
@@ -436,11 +442,12 @@ docs/
     index.md              # Main keybinding reference (links to plugin sheets)
     lisp.md                 # Conjure + vim-sexp
     lsp.md                  # LSP keybindings
-    markdown.md             # Markdown preview + MARP + markserv
+    markdown.md             # Markdown preview + MARP + markserv + Confluence
     navigation.md           # Window navigation & terminal
     plantuml.md             # PlantUML preview
     rest.md                 # REST client (kulala.nvim)
   guides/
+    confluence.md           # Confluence publishing guide (MdToConfluence)
     diagrams.md             # Markdown + PlantUML diagram guide
     fsharp.md               # F# guide
     haskell.md              # Haskell guide

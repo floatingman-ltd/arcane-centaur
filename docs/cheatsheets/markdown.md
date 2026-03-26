@@ -1,8 +1,8 @@
-# Markdown Cheatsheet (markdown-preview + mkdnflow + markserv + MARP)
+# Markdown Cheatsheet (markdown-preview + mkdnflow + markserv + MARP + Confluence)
 
 **LocalLeader** = `,` in Markdown buffers
 
-→ Back to [main cheatsheet](index.md) · Markdown guide: [../guides/markdown.md](../guides/markdown.md) · Diagrams guide: [../guides/diagrams.md](../guides/diagrams.md) · Presentations guide: [../guides/presentations.md](../guides/presentations.md)
+→ Back to [main cheatsheet](index.md) · Markdown guide: [../guides/markdown.md](../guides/markdown.md) · Diagrams guide: [../guides/diagrams.md](../guides/diagrams.md) · Presentations guide: [../guides/presentations.md](../guides/presentations.md) · Confluence guide: [../guides/confluence.md](../guides/confluence.md)
 
 ## Cross-page Link Navigation (mkdnflow.nvim)
 
@@ -82,6 +82,14 @@ The MARP preview server runs at `http://localhost:8880` via Docker Compose
 docker compose -f ~/.config/nvim/docker/marp/docker-compose.yml up -d
 ```
 
+## Confluence Publishing (requires env vars + python3 + pandoc)
+
+| Keys | Mode | Action |
+|---|---|---|
+| `,cc` | Normal | Publish current file to Confluence (`MdToConfluence`) |
+
+Requires `CONFLUENCE_EMAIL` and `CONFLUENCE_API_TOKEN` environment variables and a `docs/confluence-page-map.md` page map in the repository root. See [../guides/confluence.md](../guides/confluence.md) for full setup instructions.
+
 ## User Commands
 
 | Command | Description |
@@ -93,7 +101,8 @@ docker compose -f ~/.config/nvim/docker/marp/docker-compose.yml up -d
 | `:MarpToPptx` | Export to PowerPoint (`.pptx`) |
 | `:MarpToHtml` | Export to HTML |
 | `:MarpToPdf` | Export to PDF (MARP slides only — no PlantUML rendering) |
+| `:MdToConfluence` | Publish current file to its Confluence page |
 
 ---
 
-*Link navigation keymaps provided by mkdnflow.nvim (`lua/plugins/mkdnflow.lua`). Preview keymaps defined in `after/ftplugin/markdown.lua`. Markserv command defined in `lua/config/mdpreview.lua`. MARP commands defined in `lua/config/marp.lua`. PDF export command defined in `lua/config/mdpdf.lua`. Preview plugin configured in `lua/plugins/markdown.lua`.*
+*Link navigation keymaps provided by mkdnflow.nvim (`lua/plugins/mkdnflow.lua`). Preview keymaps defined in `after/ftplugin/markdown.lua`. Markserv command defined in `lua/config/mdpreview.lua`. MARP commands defined in `lua/config/marp.lua`. PDF export command defined in `lua/config/mdpdf.lua`. Confluence publish command defined in `lua/config/confluence.lua`. Preview plugin configured in `lua/plugins/markdown.lua`.*
