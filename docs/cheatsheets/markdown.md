@@ -82,7 +82,7 @@ The MARP preview server runs at `http://localhost:8880` via Docker Compose
 docker compose -f ~/.config/nvim/docker/marp/docker-compose.yml up -d
 ```
 
-## Confluence Publishing (requires env vars + python3 + pandoc)
+## Confluence Publishing (requires env vars + pandoc + curl)
 
 | Keys | Mode | Action |
 |---|---|---|
