@@ -18,7 +18,7 @@
 | HTML Live Preview (Bracey) | [html.md](html.md) |
 | Lisp / Clojure / Scheme (Conjure + vim-sexp) | [lisp.md](lisp.md) |
 | LSP | [lsp.md](lsp.md) |
-| Markdown Preview + MARP | [markdown.md](markdown.md) |
+| Markdown Preview + MARP + Confluence | [markdown.md](markdown.md) |
 | Navigation & Splits | [navigation.md](navigation.md) |
 | PlantUML Preview | [plantuml.md](plantuml.md) |
 | REST Client (kulala.nvim) | [rest.md](rest.md) |
@@ -272,8 +272,9 @@ LocalLeader is `,` in Markdown buffers.
 | `,mx` | MARP: export to PowerPoint (`.pptx`) |
 | `,mh` | MARP: export to HTML |
 | `,md` | MARP: export to PDF |
+| `,cc` | Publish current file to Confluence |
 
-→ [Full reference](markdown.md) · [Diagrams guide](../guides/diagrams.md) · [Presentations guide](../guides/presentations.md)
+→ [Full reference](markdown.md) · [Diagrams guide](../guides/diagrams.md) · [Presentations guide](../guides/presentations.md) · [Confluence guide](../guides/confluence.md)
 
 ---
 
