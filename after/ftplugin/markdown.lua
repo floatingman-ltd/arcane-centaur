@@ -15,3 +15,7 @@ vim.keymap.set("n", "<localleader>md", "<cmd>MarpToPdf<cr>", { buffer = true, de
 -- Markdown → PDF with PlantUML diagrams (requires Docker; see docs/guides/diagrams.md)
 require("config.mdpdf").setup()
 vim.keymap.set("n", "<localleader>dp", "<cmd>MdToPdf<cr>", { buffer = true, desc = "Export markdown to PDF with PlantUML diagrams" })
+
+-- Confluence publish (requires CONFLUENCE_EMAIL + CONFLUENCE_API_TOKEN env vars; see docs/guides/confluence.md)
+require("config.confluence").setup()
+vim.keymap.set("n", "<localleader>cc", "<cmd>MdToConfluence<cr>", { buffer = true, desc = "Publish to Confluence" })
