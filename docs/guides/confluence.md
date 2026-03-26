@@ -2,19 +2,18 @@
 
 Publish a local markdown file directly to its Confluence page with `,cc` (or `:MdToConfluence`).
 
-The publisher converts the markdown to Confluence storage format via pandoc, renders PlantUML diagrams to inline PNG images via the local PlantUML server, and updates the Confluence page via the REST API.
+The publisher converts the markdown to an HTML fragment via pandoc and updates the Confluence page via the REST API. The entire pipeline is implemented in pure Lua — no Python required.
 
 ---
 
 ## Prerequisites
 
-> **Required:** `pandoc` must be installed before `,cc` will work. Install with `sudo apt install pandoc` (Debian/Ubuntu) or `brew install pandoc` (macOS). The command will fail with a Python traceback if pandoc is missing.
+> **Required:** `pandoc` and `curl` must be installed before `,cc` will work.
 
 | Dependency | Purpose | Install hint |
 |---|---|---|
-| **pandoc** *(required)* | Markdown → Confluence storage format | `sudo apt install pandoc` |
-| **python3** *(required)* | Runs the publish script | Pre-installed on most systems |
-| **PlantUML server** *(optional)* | Renders diagrams to PNG | See [diagrams.md](diagrams.md) |
+| **pandoc** *(required)* | Markdown → HTML fragment | `sudo apt install pandoc` · `brew install pandoc` |
+| **curl** *(required)* | REST API calls | Pre-installed on most systems |
 | **CONFLUENCE_EMAIL** env var | Atlassian account email | See [Authentication](#authentication) |
 | **CONFLUENCE_API_TOKEN** env var | Atlassian API token | See [Authentication](#authentication) |
 
@@ -72,52 +71,14 @@ Progress messages appear in the notification area. The final message includes th
 
 ---
 
-## Diagram rendering
-
-PlantUML fenced blocks are rendered to PNG via the local PlantUML server (`http://localhost:8080` by default) and embedded as inline base64 images in the Confluence page.
-
-If the PlantUML server is not running, the block falls back to a Confluence code macro — the diagram source is preserved but not rendered.
-
-To override the server URL:
-
-```sh
-export PLANTUML_SERVER="http://localhost:8080"
-```
-
----
-
-## Publish script location
-
-The Lua module looks for the publish script in two places, in order:
-
-1. The path in the `CONFLUENCE_PUBLISH_SCRIPT` environment variable (use this for repos that do not contain the script themselves, such as this nvim config repo)
-2. `scripts/confluence_publish.py` at the git root of the open file
-
-Add this to your shell profile if you work across multiple repos:
-
-```sh
-export CONFLUENCE_PUBLISH_SCRIPT="/home/walt/src/rmv/drive-api/scripts/confluence_publish.py"
-```
-
----
-
-## Publish script (command-line use)
-
-```sh
-CONFLUENCE_EMAIL="..." CONFLUENCE_API_TOKEN="..." \
-  python3 scripts/confluence_publish.py docs/lld/0015/0015a_licence-data-persistence-and-synchronisation.md
-```
-
----
-
 ## Troubleshooting
 
 | Symptom | Cause | Fix |
 |---|---|---|
 | `CONFLUENCE_EMAIL and CONFLUENCE_API_TOKEN must be set` | Env vars missing | Add to shell profile; relaunch Neovim |
-| `publish script not found` | Script not in repo and `CONFLUENCE_PUBLISH_SCRIPT` not set | Set `CONFLUENCE_PUBLISH_SCRIPT` to the full path of `confluence_publish.py` |
 | `not found in confluence-page-map.md` | File not in page map | Add an entry to `docs/confluence-page-map.md` |
+| `cannot open page map` | `docs/confluence-page-map.md` missing | Create the file in the project repository root |
+| `pandoc failed` | pandoc not installed | `sudo apt install pandoc` · `brew install pandoc` |
 | `GET .../content/... → 401` | Invalid credentials | Regenerate API token at id.atlassian.com |
 | `GET .../content/... → 403` | Token lacks page edit permission | Check Confluence space permissions |
-| `pandoc failed` or `FileNotFoundError: pandoc` | pandoc not installed | `sudo apt install pandoc` |
-| Diagrams appear as code blocks | PlantUML server not running | Start the PlantUML Docker container |
+| `cannot parse Confluence URL` | Malformed URL in page map | Ensure the URL contains `/pages/<numeric-id>/` |
