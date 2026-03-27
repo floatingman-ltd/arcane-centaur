@@ -72,7 +72,29 @@ local function find_page_entry(page_map_path, rel_path)
   return nil, "'" .. rel_path .. "' not found in confluence-page-map.md"
 end
 
---- Extract the base URL and numeric page ID from a Confluence page URL.
+--- Find the pandoc Lua filter.
+-- Checks CONFLUENCE_FILTER_LUA env var first, then looks beside the
+-- CONFLUENCE_PUBLISH_SCRIPT if set, then in the git root of the open file.
+local function find_filter(git_root)
+  local env_filter = os.getenv("CONFLUENCE_FILTER_LUA")
+  if env_filter and env_filter ~= "" and vim.fn.filereadable(env_filter) == 1 then
+    return env_filter
+  end
+  local script = os.getenv("CONFLUENCE_PUBLISH_SCRIPT") or ""
+  if script ~= "" then
+    local sibling = script:gsub("[^/]+$", "confluence_filter.lua")
+    if vim.fn.filereadable(sibling) == 1 then
+      return sibling
+    end
+  end
+  local default = git_root .. "/scripts/confluence_filter.lua"
+  if vim.fn.filereadable(default) == 1 then
+    return default
+  end
+  return nil
+end
+
+
 -- e.g. https://acme.atlassian.net/wiki/spaces/TEAM/pages/123456/Title
 -- returns "https://acme.atlassian.net", "123456"
 local function parse_confluence_url(url)
@@ -147,12 +169,31 @@ function M.publish()
 
   vim.notify("Confluence: publishing " .. filename .. "…", vim.log.levels.INFO)
 
-  -- Step 1: convert markdown → HTML fragment via pandoc.
-  -- Omitting --standalone produces only the body content (no <html>/<head>
-  -- wrapper), which is what the Confluence storage-format body field expects.
+  -- Build pandoc command. Use the Lua filter when available for link
+  -- substitution, code macros, and PlantUML rendering.
+  local filter    = find_filter(git_root)
+  local pandoc_cmd = { "pandoc", "--from", "markdown", "--to", "html5", "--wrap=none" }
+  if filter then
+    table.insert(pandoc_cmd, "--lua-filter")
+    table.insert(pandoc_cmd, filter)
+  end
+  table.insert(pandoc_cmd, file)
+
+  local pandoc_env = nil
+  if filter then
+    pandoc_env = {
+      CONFLUENCE_PAGE_MAP   = page_map_path,
+      CONFLUENCE_SELF_URL   = entry.url,
+      CONFLUENCE_DOCS_DIR   = git_root .. "/docs",
+      CONFLUENCE_FILE_PATH  = file,
+      PLANTUML_SERVER       = os.getenv("PLANTUML_SERVER") or "http://localhost:8080",
+    }
+  end
+
+  -- Step 1: convert markdown → HTML fragment via pandoc (+filter when available).
   vim.system(
-    { "pandoc", "--from", "markdown", "--to", "html5", file },
-    { text = true },
+    pandoc_cmd,
+    { text = true, env = pandoc_env },
     function(pandoc_obj)
       if pandoc_obj.code ~= 0 then
         vim.schedule(function()
