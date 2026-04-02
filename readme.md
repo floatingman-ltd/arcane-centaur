@@ -155,7 +155,13 @@ vim.g.have_nerd_font = true   -- or false
 
 ## Working with Confluence
 
-→ See **[docs/guides/confluence.md](docs/guides/confluence.md)** for the full guide: authentication, page map setup, diagram rendering, and troubleshooting.
+→ See **[docs/guides/confluence.md](docs/guides/confluence.md)** for the full guide: authentication, page map setup, diagram rendering, conflict detection, and troubleshooting.
+
+| Keys | Action |
+|---|---|
+| `,cc` | Publish current file to Confluence (`MdToConfluence`) |
+| `,cf` | Pull current Confluence page back to local file (`MdFromConfluence`) |
+| `,ck` | Fetch Confluence page comments to sidecar file (`MdConfluenceComments`) |
 
 ## Working with Diagrams
 
@@ -365,9 +371,9 @@ Plugins are managed by [lazy.nvim](https://github.com/folke/lazy.nvim) and organ
 | `git.lua` | vim-fugitive (`:Git` commands) + gitsigns.nvim (hunk signs & staging) | [git.md](docs/cheatsheets/git.md) |
 | `haskell.lua` | haskell-tools.nvim (GHCi REPL + HLS integration) | [haskell.md](docs/cheatsheets/haskell.md) |
 | `html.lua` | Bracey HTML live preview | [html.md](docs/cheatsheets/html.md) |
-| `init.lua` | vim-repeat, vim-sensible, vim-surround, vim-unimpaired, airline, lspconfig | [lsp.md](docs/cheatsheets/lsp.md) |
+| `init.lua` | vim-repeat, vim-sensible, vim-surround, vim-unimpaired, airline, lspconfig | [lsp.md](docs/cheatsheets/lsp.md) · [surround.md](docs/cheatsheets/surround.md) · [unimpaired.md](docs/cheatsheets/unimpaired.md) |
 | `lisp.lua` | Conjure, vim-sexp, nvim-parinfer, rainbow-delimiters | [lisp.md](docs/cheatsheets/lisp.md) |
-| `markdown.lua` | markdown-preview.nvim (browser preview, PlantUML via Docker server); `:MdToPdf` PDF export | [markdown.md](docs/cheatsheets/markdown.md) |
+| `markdown.lua` | markdown-preview.nvim (browser preview, PlantUML via Docker server); `:MdToPdf` PDF export; `:MdToConfluence` / `:MdFromConfluence` / `:MdConfluenceComments` | [markdown.md](docs/cheatsheets/markdown.md) |
 | `mkdnflow.lua` | mkdnflow.nvim (cross-page link navigation: `<CR>` follow, `<BS>` back) | [markdown.md](docs/cheatsheets/markdown.md) |
 | `nvim-cmp.lua` | nvim-cmp + completion sources | [completion.md](docs/cheatsheets/completion.md) |
 | `nvim-tree.lua` | File explorer tree | [file-tree.md](docs/cheatsheets/file-tree.md) |

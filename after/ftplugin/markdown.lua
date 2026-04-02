@@ -16,6 +16,8 @@ vim.keymap.set("n", "<localleader>md", "<cmd>MarpToPdf<cr>", { buffer = true, de
 require("config.mdpdf").setup()
 vim.keymap.set("n", "<localleader>dp", "<cmd>MdToPdf<cr>", { buffer = true, desc = "Export markdown to PDF with PlantUML diagrams" })
 
--- Confluence publish (requires CONFLUENCE_EMAIL + CONFLUENCE_API_TOKEN env vars; see docs/guides/confluence.md)
+-- Confluence publish/pull/comments (requires CONFLUENCE_EMAIL + CONFLUENCE_API_TOKEN env vars; see docs/guides/confluence.md)
 require("config.confluence").setup()
-vim.keymap.set("n", "<localleader>cc", "<cmd>MdToConfluence<cr>", { buffer = true, desc = "Publish to Confluence" })
+vim.keymap.set("n", "<localleader>cc", "<cmd>MdToConfluence<cr>",       { buffer = true, desc = "Confluence: publish current file" })
+vim.keymap.set("n", "<localleader>cf", "<cmd>MdFromConfluence<cr>",     { buffer = true, desc = "Confluence: pull page to local file" })
+vim.keymap.set("n", "<localleader>ck", "<cmd>MdConfluenceComments<cr>", { buffer = true, desc = "Confluence: fetch comments to sidecar file" })

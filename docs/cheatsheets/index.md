@@ -22,6 +22,8 @@
 | Navigation & Splits | [navigation.md](navigation.md) |
 | PlantUML Preview | [plantuml.md](plantuml.md) |
 | REST Client (kulala.nvim) | [rest.md](rest.md) |
+| Surround (vim-surround) | [surround.md](surround.md) |
+| Unimpaired (vim-unimpaired) | [unimpaired.md](unimpaired.md) |
 | Visual Editing | [editing.md](editing.md) |
 
 ---
@@ -273,6 +275,8 @@ LocalLeader is `,` in Markdown buffers.
 | `,mh` | MARP: export to HTML |
 | `,md` | MARP: export to PDF |
 | `,cc` | Publish current file to Confluence |
+| `,cf` | Pull current Confluence page to local file |
+| `,ck` | Fetch Confluence comments to sidecar file |
 
 → [Full reference](markdown.md) · [Diagrams guide](../guides/diagrams.md) · [Presentations guide](../guides/presentations.md) · [Confluence guide](../guides/confluence.md)
 

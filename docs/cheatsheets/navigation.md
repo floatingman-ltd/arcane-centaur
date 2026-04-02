@@ -27,6 +27,12 @@
 The terminal toggle reuses the same terminal buffer across open/close cycles.
 Press `<C-k>` after `Esc` to jump back to the editor window.
 
+## Copilot Chat Window
+
+| Keys | Mode | Action |
+|---|---|---|
+| `<leader>c` | Normal | Move focus to left window (jump back from Copilot chat panel) |
+
 ---
 
 *Defined in `lua/keymaps.lua`.*

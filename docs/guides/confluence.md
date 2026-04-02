@@ -64,12 +64,40 @@ If the current file is not in the page map, the command reports an error and doe
 
 Open any markdown file that is listed in the page map, then:
 
+### Publishing
+
 | Method | Action |
 |---|---|
 | `,cc` | Publish current file to Confluence |
 | `:MdToConfluence` | Same, via command |
 
 Progress messages appear in the notification area. The final message includes the published page URL.
+
+### Pulling from Confluence
+
+| Method | Action |
+|---|---|
+| `,cf` | Pull the current Confluence page back to the local markdown file |
+| `:MdFromConfluence` | Same, via command |
+
+The local file is overwritten with the Confluence content (converted back to Markdown via pandoc). A `.bak` backup of the previous local file is created automatically before overwriting.
+
+### Fetching comments
+
+| Method | Action |
+|---|---|
+| `,ck` | Fetch all Confluence page comments to a sidecar file |
+| `:MdConfluenceComments` | Same, via command |
+
+Comments are written to `<filename>.comments.md` in the same directory as the source file. Existing comment files are overwritten.
+
+---
+
+## Conflict detection
+
+The publisher tracks the last-published Confluence page version in `docs/.confluence-state.json` (relative to the git root). When you run `,cc`, if the live Confluence version is newer than the stored value, someone has edited the page directly on Confluence since your last publish — a confirmation dialog is shown so you can choose whether to overwrite those changes.
+
+Commit `docs/.confluence-state.json` to your repository so the whole team benefits from conflict detection.
 
 ---
 

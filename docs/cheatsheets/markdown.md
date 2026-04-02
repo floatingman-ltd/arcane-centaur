@@ -87,6 +87,8 @@ docker compose -f ~/.config/nvim/docker/marp/docker-compose.yml up -d
 | Keys | Mode | Action |
 |---|---|---|
 | `,cc` | Normal | Publish current file to Confluence (`MdToConfluence`) |
+| `,cf` | Normal | Pull current Confluence page to local file (`MdFromConfluence`) |
+| `,ck` | Normal | Fetch Confluence page comments to sidecar file (`MdConfluenceComments`) |
 
 Requires `CONFLUENCE_EMAIL` and `CONFLUENCE_API_TOKEN` environment variables and a `docs/confluence-page-map.md` page map in the repository root. See [../guides/confluence.md](../guides/confluence.md) for full setup instructions.
 
@@ -102,6 +104,8 @@ Requires `CONFLUENCE_EMAIL` and `CONFLUENCE_API_TOKEN` environment variables and
 | `:MarpToHtml` | Export to HTML |
 | `:MarpToPdf` | Export to PDF (MARP slides only — no PlantUML rendering) |
 | `:MdToConfluence` | Publish current file to its Confluence page |
+| `:MdFromConfluence` | Pull the current Confluence page back to the local file (`.bak` backup created) |
+| `:MdConfluenceComments` | Fetch Confluence page comments to `<file>.comments.md` |
 
 ---
 
