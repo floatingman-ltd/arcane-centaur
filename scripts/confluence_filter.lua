@@ -134,6 +134,22 @@ local function render_plantuml(source)
   return nil
 end
 
+-- Base64-encode source text for safe embedding in an HTML comment.
+-- Runs the system `base64` tool via a temp file to avoid shell-escaping issues.
+local function encode_b64(source)
+  local tmp = os.tmpname()
+  local f   = io.open(tmp, "w")
+  if not f then return nil end
+  f:write(source)
+  f:close()
+  local handle = io.popen("base64 -w 0 < " .. tmp)
+  local result = handle and handle:read("*a") or ""
+  if handle then handle:close() end
+  os.remove(tmp)
+  result = result:match("^(.-)%s*$")  -- trim trailing whitespace
+  return result ~= "" and result or nil
+end
+
 local function confluence_code_macro(lang, code)
   local conf_lang = lang_map[lang:lower()] or (lang ~= "" and lang:lower() or "none")
   local safe_code = code:gsub("%]%]>", "]] >")
@@ -150,12 +166,19 @@ end
 function CodeBlock(el)
   local lang = (el.classes[1] or ""):gsub("^language%-", "")
 
-  -- PlantUML: try inline PNG, fall back to code macro
+  -- PlantUML: try inline PNG, fall back to code macro.
+  -- When rendering succeeds the source is stashed in an HTML comment immediately
+  -- before the <img> tag so that confluence_preproc.py can recover the fenced
+  -- block when pulling the page back (round-trip).
   if lang:lower() == "plantuml" or lang:lower() == "puml" then
     local b64 = render_plantuml(el.text)
     if b64 then
+      local src_b64 = encode_b64(el.text)
+      local comment = src_b64
+        and string.format("<!-- plantuml_src_b64: %s -->", src_b64)
+        or  ""
       return pandoc.RawBlock("html",
-        string.format('<p><img src="data:image/png;base64,%s" /></p>', b64))
+        string.format('%s<p><img src="data:image/png;base64,%s" /></p>', comment, b64))
     end
     return pandoc.RawBlock("html", confluence_code_macro("none", el.text))
   end

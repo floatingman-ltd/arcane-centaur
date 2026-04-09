@@ -18,4 +18,6 @@ vim.keymap.set("n", "<localleader>dp", "<cmd>MdToPdf<cr>", { buffer = true, desc
 
 -- Confluence publish (requires CONFLUENCE_EMAIL + CONFLUENCE_API_TOKEN env vars; see docs/guides/confluence.md)
 require("config.confluence").setup()
-vim.keymap.set("n", "<localleader>cc", "<cmd>MdToConfluence<cr>", { buffer = true, desc = "Publish to Confluence" })
+vim.keymap.set("n", "<localleader>cc", "<cmd>MdToConfluence<cr>",       { buffer = true, desc = "Confluence: publish to Confluence" })
+vim.keymap.set("n", "<localleader>cp", "<cmd>MdFromConfluence<cr>",     { buffer = true, desc = "Confluence: pull from Confluence" })
+vim.keymap.set("n", "<localleader>cv", "<cmd>MdConfluenceComments<cr>", { buffer = true, desc = "Confluence: fetch comments to .comments.md" })

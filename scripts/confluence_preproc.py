@@ -20,6 +20,7 @@ Transformations applied (in order):
 import re
 import sys
 import html as htmlmod
+import base64
 
 
 def convert_code_macro(m: re.Match) -> str:
@@ -50,7 +51,22 @@ def unwrap_expand(m: re.Match) -> str:
     return bm.group(1).strip() if bm else ""
 
 
+def recover_plantuml(m: re.Match) -> str:
+    """Recover a plantuml fenced block from the base64 source stashed on publish."""
+    try:
+        src = base64.b64decode(m.group(1)).decode("utf-8")
+    except Exception:
+        return m.group(0)  # leave untouched if decoding fails
+    return '<pre><code class="language-plantuml">{}</code></pre>'.format(htmlmod.escape(src))
+
+
 def preprocess(text: str) -> str:
+    # PlantUML round-trip: recover source from the HTML comment stashed during publish.
+    # Pattern: <!-- plantuml_src_b64: BASE64 --><p><img ...></p>  (whitespace-tolerant)
+    text = re.sub(
+        r'<!-- plantuml_src_b64: ([A-Za-z0-9+/=]+) -->\s*<p><img[^>]*/></p>',
+        recover_plantuml, text)
+
     # Code macros first — extract CDATA before the global CDATA sweep
     text = re.sub(
         r'<ac:structured-macro\s+ac:name=["\']?code["\']?[^>]*>.*?</ac:structured-macro>',

@@ -152,10 +152,12 @@ vim.g.have_nerd_font = true   -- or false
 - **`,sp`** — open in markserv Docker server — cross-page links and PlantUML/Mermaid diagrams rendered
 - **`<CR>`** — follow a link to another `.md` file in the editor (mkdnflow.nvim)
 - **`,cc`** — publish current file to Confluence (`MdToConfluence`)
+- **`,cp`** — pull current Confluence page back to local file (`MdFromConfluence`)
+- **`,cv`** — fetch Confluence page comments to `.comments.md` (`MdConfluenceComments`)
 
 ## Working with Confluence
 
-→ See **[docs/guides/confluence.md](docs/guides/confluence.md)** for the full guide: authentication, page map setup, diagram rendering, and troubleshooting.
+→ See **[docs/guides/confluence.md](docs/guides/confluence.md)** for the full guide: authentication, page map setup, diagram round-trip (PlantUML + Mermaid), pull/comments workflows, and troubleshooting.
 
 ## Working with Diagrams
 
@@ -385,7 +387,7 @@ lua/
   keymaps.lua               # Global keybindings
   loader/init.lua           # lazy.nvim bootstrap
   config/
-    confluence.lua          # Confluence publish command (MdToConfluence)
+    confluence.lua          # Confluence commands — pure Lua: publish, pull, comments (no Python/shell script)
     lsp.lua                 # LSP server setup (cl_lsp, fsautocomplete, marksman)
     marp.lua                # MARP presentation commands (preview + export)
     mdpdf.lua               # Markdown → PDF export command (MdToPdf)
@@ -418,7 +420,7 @@ after/ftplugin/
   haskell.lua               # Haskell-tools keybindings
   http.lua                  # REST client localleader & keymaps
   lisp.lua                  # Lisp indent settings & lispwords
-  markdown.lua              # Markdown localleader, preview keymap, MARP commands, MdToPdf, MdServerPreview, MdToConfluence
+  markdown.lua              # Markdown localleader, preview keymap, MARP commands, MdToPdf, MdServerPreview, MdToConfluence/MdFromConfluence/MdConfluenceComments
   plantuml.lua              # PlantUML localleader & PumlPreview keymap
   scheme.lua                # Scheme indent settings
 docker/
@@ -447,7 +449,7 @@ docs/
     plantuml.md             # PlantUML preview
     rest.md                 # REST client (kulala.nvim)
   guides/
-    confluence.md           # Confluence publishing guide (MdToConfluence)
+    confluence.md           # Confluence guide (publish, pull, comments, diagram round-trip)
     diagrams.md             # Markdown + PlantUML diagram guide
     fsharp.md               # F# guide
     haskell.md              # Haskell guide

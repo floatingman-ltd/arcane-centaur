@@ -36,7 +36,7 @@
 #   pandoc   sudo apt install pandoc     (required for publish and --pull)
 #   curl     sudo apt install curl
 #   jq       sudo apt install jq
-#   python3  (pre-installed on most systems; required for --pull)
+#   lua      sudo apt install lua5.4  (required for --pull and --comments)
 #
 # The Confluence page ID is resolved from docs/confluence-page-map.md at the
 # git repository root of the target file.
@@ -96,9 +96,15 @@ fi
 
 if [[ "$MODE" == "pull" ]]; then
   command -v pandoc  >/dev/null || die "pandoc is not installed. Run: sudo apt install pandoc"
-  command -v python3 >/dev/null || die "python3 is required for --pull"
-  [[ -f "$SCRIPT_DIR/confluence_preproc.py" ]] \
-    || die "confluence_preproc.py not found alongside this script"
+  command -v lua     >/dev/null || die "lua is not installed. Run: sudo apt install lua5.4"
+  [[ -f "$SCRIPT_DIR/confluence_preproc.lua" ]] \
+    || die "confluence_preproc.lua not found alongside this script"
+fi
+
+if $FETCH_COMMENTS; then
+  command -v lua >/dev/null || die "lua is not installed. Run: sudo apt install lua5.4"
+  [[ -f "$SCRIPT_DIR/confluence_html_to_md.lua" ]] \
+    || die "confluence_html_to_md.lua not found alongside this script"
 fi
 
 MD_FILE="$(realpath "$1")"
@@ -194,22 +200,7 @@ fetch_comments() {
       "---\n\n**" + (.version.by.displayName // "Unknown") +
       "** · " + ((.version.when // "") | split("T")[0]) + "\n\n" +
       (.body.view.value // "")
-    ' "$CURL_TMP" | python3 -c "
-import sys, re
-
-text = sys.stdin.read()
-text = re.sub(r'<br\s*/?>', '\n', text)
-text = re.sub(r'</?p[^>]*>', '\n', text)
-text = re.sub(r'<strong[^>]*>(.*?)</strong>', r'**\1**', text, flags=re.DOTALL)
-text = re.sub(r'<em[^>]*>(.*?)</em>', r'*\1*', text, flags=re.DOTALL)
-text = re.sub(r'<code[^>]*>(.*?)</code>', r'\`\1\`', text, flags=re.DOTALL)
-text = re.sub(r'<a[^>]+href=[\"\'](.*?)[\"\'][^>]*>(.*?)</a>', r'[\2](\1)', text, flags=re.DOTALL)
-text = re.sub(r'<[^>]+>', '', text)
-for ent, char in [('&amp;','&'),('&lt;','<'),('&gt;','>'),('&quot;','\"'),('&#39;',\"'\")]:
-    text = text.replace(ent, char)
-text = re.sub(r'\n{3,}', '\n\n', text)
-print(text.strip())
-"
+    ' "$CURL_TMP" | lua "$SCRIPT_DIR/confluence_html_to_md.lua"
   } > "$comments_file"
 
   echo "  Written     $comments_file"
@@ -246,7 +237,7 @@ if [[ "$MODE" == "pull" ]]; then
   STORAGE_BODY="$(echo "$PAGE_INFO" | jq -r '.body.storage.value')"
 
   MD_OUT="$(echo "$STORAGE_BODY" \
-    | python3 "$SCRIPT_DIR/confluence_preproc.py" \
+    | lua "$SCRIPT_DIR/confluence_preproc.lua" \
     | pandoc --from=html --to=commonmark --wrap=none)"
 
   cp "$MD_FILE" "${MD_FILE}.bak"

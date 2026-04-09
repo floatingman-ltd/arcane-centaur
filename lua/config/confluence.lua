@@ -12,17 +12,12 @@
 --   :MdConfluenceComments  Fetch all page comments and write them to
 --                          <file>.comments.md alongside the markdown file.
 --
--- Requires:
+-- All three commands are implemented in pure Lua — no shell scripts or Python
+-- required.  External dependencies:
 --   CONFLUENCE_EMAIL       env var  — your Atlassian account email
 --   CONFLUENCE_API_TOKEN   env var  — your Atlassian API token
---   pandoc                          — markdown → HTML fragment conversion
+--   pandoc                          — markdown ↔ HTML conversion (publish + pull)
 --   curl                            — REST API calls
---
--- Script resolution (first match wins):
---   confluence_publish.sh and confluence_filter.lua are resolved from:
---     1. CONFLUENCE_PUBLISH_SCRIPT / CONFLUENCE_FILTER_LUA env vars
---     2. ~/.config/nvim/scripts/   (standard location — no project setup needed)
---     3. <git-root>/scripts/       (project-local override)
 --
 -- Conflict detection:
 --   The last-published Confluence version is stored in
@@ -93,8 +88,7 @@ end
 -- Search order:
 --   1. CONFLUENCE_FILTER_LUA env var
 --   2. scripts/ inside the nvim config directory (~/.config/nvim/scripts/)
---   3. Beside CONFLUENCE_PUBLISH_SCRIPT if set
---   4. scripts/ in the project git root (project-local override)
+--   3. scripts/ in the project git root (project-local override)
 local function find_filter(git_root)
   local env_filter = os.getenv("CONFLUENCE_FILTER_LUA")
   if env_filter and env_filter ~= "" and vim.fn.filereadable(env_filter) == 1 then
@@ -104,13 +98,6 @@ local function find_filter(git_root)
   if vim.fn.filereadable(nvim_filter) == 1 then
     return nvim_filter
   end
-  local script = os.getenv("CONFLUENCE_PUBLISH_SCRIPT") or ""
-  if script ~= "" then
-    local sibling = script:gsub("[^/]+$", "confluence_filter.lua")
-    if vim.fn.filereadable(sibling) == 1 then
-      return sibling
-    end
-  end
   local default = git_root .. "/scripts/confluence_filter.lua"
   if vim.fn.filereadable(default) == 1 then
     return default
@@ -118,25 +105,114 @@ local function find_filter(git_root)
   return nil
 end
 
---- Find confluence_publish.sh (used by pull and comments modes).
--- Search order:
---   1. CONFLUENCE_PUBLISH_SCRIPT env var
---   2. scripts/ inside the nvim config directory (~/.config/nvim/scripts/)
---   3. scripts/ in the project git root (project-local override)
-local function find_publish_script(git_root)
-  local env_script = os.getenv("CONFLUENCE_PUBLISH_SCRIPT") or ""
-  if env_script ~= "" and vim.fn.filereadable(env_script) == 1 then
-    return env_script
+-- ── Confluence storage-format preprocessing (used by M.pull) ─────────────────
+-- These functions port the logic of confluence_preproc.lua into Neovim so that
+-- the pull pipeline is pure Lua with no external script dependencies.
+
+local function html_escape(s)
+  return (s:gsub("&", "&amp;"):gsub("<", "&lt;"):gsub(">", "&gt;"):gsub('"', "&quot;"))
+end
+
+local function trim(s)
+  return s:match("^%s*(.-)%s*$")
+end
+
+-- Decode a base64 string using the system `base64` command.
+-- Uses io.popen (blocking, safe to call from a vim.system callback thread).
+local function b64_decode_sync(b64)
+  local tmp = os.tmpname()
+  local f   = io.open(tmp, "w")
+  if not f then return nil end
+  f:write(b64)
+  f:close()
+  local handle = io.popen("base64 -d < " .. tmp .. " 2>/dev/null")
+  local result = handle and handle:read("*a") or ""
+  if handle then handle:close() end
+  os.remove(tmp)
+  return result ~= "" and result or nil
+end
+
+--- Pre-process Confluence storage-format HTML into plain HTML for pandoc.
+-- Handles ac:structured-macro elements (code, panels, expand), CDATA sections,
+-- ac:/ri: namespace tags, and PlantUML source comment recovery.
+-- @param text  string — raw Confluence storage-format HTML
+-- @return string — cleaned HTML ready for pandoc --from=html
+local function preprocess_storage(text)
+  -- PlantUML round-trip: recover source from the HTML comment stashed on publish.
+  text = text:gsub(
+    "<!%-%- plantuml_src_b64: ([A-Za-z0-9+/=]+) %-%->[%s]*<p><img[^>]-/></p>",
+    function(b64)
+      local src = b64_decode_sync(b64)
+      if not src then return "" end
+      return '<pre><code class="language-plantuml">' .. html_escape(src) .. "</code></pre>"
+    end)
+
+  -- Code macros — must run before the global CDATA sweep.
+  text = text:gsub(
+    '<ac:structured%-macro[^>]*ac:name="code"[^>]*>[%s%S]-</ac:structured%-macro>',
+    function(block)
+      local lang = block:match('ac:name="language"[^>]*>([^<]*)</ac:parameter>') or ""
+      local body = block:match("<!%[CDATA%[([%s%S]-)%]%]>")
+                or block:match("<ac:plain%-text%-body>([%s%S]-)</ac:plain%-text%-body>")
+                or ""
+      return '<pre><code class="language-' .. trim(lang) .. '">'
+          .. html_escape(trim(body)) .. "</code></pre>"
+    end)
+
+  -- Panel macros (info / note / warning / tip).
+  for _, t in ipairs({ "info", "warning", "note", "tip" }) do
+    text = text:gsub(
+      '<ac:structured%-macro[^>]*ac:name="' .. t .. '"[^>]*>[%s%S]-</ac:structured%-macro>',
+      function(block)
+        local body = block:match("<ac:rich%-text%-body>([%s%S]-)</ac:rich%-text%-body>") or ""
+        return "<blockquote><p><strong>" .. t:upper() .. ":</strong></p>\n"
+            .. trim(body) .. "\n</blockquote>"
+      end)
   end
-  local nvim_script = vim.fn.stdpath("config") .. "/scripts/confluence_publish.sh"
-  if vim.fn.filereadable(nvim_script) == 1 then
-    return nvim_script
-  end
-  local default = git_root .. "/scripts/confluence_publish.sh"
-  if vim.fn.filereadable(default) == 1 then
-    return default
-  end
-  return nil
+
+  -- Expand / collapsible — keep the rich-text body.
+  text = text:gsub(
+    '<ac:structured%-macro[^>]*ac:name="expand"[^>]*>[%s%S]-</ac:structured%-macro>',
+    function(block)
+      return block:match("<ac:rich%-text%-body>([%s%S]-)</ac:rich%-text%-body>") or ""
+    end)
+
+  -- Drop remaining structured macros (TOC, status, Jira, etc.).
+  text = text:gsub('<ac:structured%-macro[^>]*>[%s%S]-</ac:structured%-macro>', "")
+
+  -- Remaining CDATA sections → HTML-escaped text.
+  text = text:gsub("<!%[CDATA%[([%s%S]-)%]%]>", function(c) return html_escape(c) end)
+
+  -- Strip ac: and ri: namespace tags (keep any inner text content).
+  text = text:gsub("<ac:[^>]-/>", "")
+  text = text:gsub("</?ac:[^>]->", "")
+  text = text:gsub("<ri:[^>]-/>", "")
+  text = text:gsub("</?ri:[^>]->", "")
+
+  return text
+end
+
+--- Convert lightweight HTML (Confluence comment body) to plain markdown.
+local function html_to_md(text)
+  text = text:gsub("<br%s*/?>", "\n")
+  text = text:gsub("</?p[^>]*>", "\n")
+  text = text:gsub("<strong[^>]*>([%s%S]-)</strong>",
+    function(c) return "**" .. c .. "**" end)
+  text = text:gsub("<em[^>]*>([%s%S]-)</em>",
+    function(c) return "*" .. c .. "*" end)
+  text = text:gsub("<code[^>]*>([%s%S]-)</code>",
+    function(c) return "`" .. c .. "`" end)
+  text = text:gsub('<a[^>]*href="([^"]*)"[^>]*>([%s%S]-)</a>',
+    function(href, content) return "[" .. content .. "](" .. href .. ")" end)
+  text = text:gsub("<[^>]+>", "")
+  text = text:gsub("&amp;",  "&")
+  text = text:gsub("&lt;",   "<")
+  text = text:gsub("&gt;",   ">")
+  text = text:gsub("&quot;", '"')
+  text = text:gsub("&#39;",  "'")
+  text = text:gsub("&nbsp;", " ")
+  text = text:gsub("\n\n\n+", "\n\n")
+  return trim(text)
 end
 
 -- e.g. https://acme.atlassian.net/wiki/spaces/TEAM/pages/123456/Title
@@ -450,12 +526,12 @@ end
 
 --- Pull the current Confluence page back to the local markdown file.
 --
--- Delegates to confluence_publish.sh --pull, which:
---   • fetches the Confluence storage-format body
---   • pre-processes it with confluence_preproc.py
---   • converts to CommonMark via pandoc
---   • backs up the existing file to <file>.bak before overwriting
---   • records the pulled version in .confluence-state.json
+-- Pure-Lua async pipeline:
+--   1. curl GET  — fetch page version and storage-format body
+--   2. preprocess_storage() — convert Confluence macros to plain HTML (Lua)
+--   3. pandoc     — convert HTML → CommonMark (via stdin)
+--   4. write file — backup existing → overwrite → reload buffer
+--   5. state_write — record the pulled version in .confluence-state.json
 function M.pull()
   local file     = vim.fn.expand("%:p")
   local dir      = vim.fn.expand("%:p:h")
@@ -483,51 +559,141 @@ function M.pull()
     return
   end
 
-  local script = find_publish_script(git_root)
-  if not script then
-    vim.notify(
-      "Confluence: confluence_publish.sh not found.\n"
-        .. "Set CONFLUENCE_PUBLISH_SCRIPT or ensure scripts/confluence_publish.sh exists.",
-      vim.log.levels.ERROR
-    )
+  local rel_path      = file:sub(#git_root + 2)
+  local page_map_path = git_root .. "/docs/confluence-page-map.md"
+  local entry, map_err = find_page_entry(page_map_path, rel_path)
+  if not entry then
+    vim.notify("Confluence: " .. (map_err or "file not in page map"), vim.log.levels.ERROR)
+    return
+  end
+  if not entry.url then
+    vim.notify("Confluence: no Confluence URL found in page map for this file", vim.log.levels.ERROR)
+    return
+  end
+
+  local base_url, page_id = parse_confluence_url(entry.url)
+  if not base_url or not page_id then
+    vim.notify("Confluence: cannot parse Confluence URL: " .. entry.url, vim.log.levels.ERROR)
     return
   end
 
   vim.notify("Confluence: pulling " .. filename .. "…", vim.log.levels.INFO)
 
+  local get_url = base_url
+    .. "/wiki/rest/api/content/" .. page_id
+    .. "?expand=version,body.storage"
+
+  -- Step 1: fetch current version and storage body.
   vim.system(
-    { script, "--pull", file },
-    {
-      text = true,
-      env  = {
-        CONFLUENCE_EMAIL     = email,
-        CONFLUENCE_API_TOKEN = token,
-        PLANTUML_SERVER      = os.getenv("PLANTUML_SERVER") or "http://localhost:8080",
-      },
-    },
-    function(result)
-      vim.schedule(function()
-        if result.code ~= 0 then
+    { "curl", "-s", "-w", "\n%{http_code}", "-u", email .. ":" .. token,
+      "-H", "Accept: application/json", get_url },
+    { text = true },
+    function(get_obj)
+      if get_obj.code ~= 0 then
+        vim.schedule(function()
           vim.notify(
-            "Confluence: pull failed:\n" .. (result.stderr or result.stdout or "unknown error"),
+            "Confluence: GET " .. get_url .. " failed (exit " .. get_obj.code .. "): "
+              .. (get_obj.stderr or ""),
             vim.log.levels.ERROR
           )
-          return
+        end)
+        return
+      end
+
+      local raw = get_obj.stdout or ""
+      local body_str, http_code_str = raw:match("^(.*)\n(%d%d%d)$")
+      local http_code = tonumber(http_code_str) or 0
+      if http_code < 200 or http_code >= 300 then
+        vim.schedule(function()
+          vim.notify(
+            "Confluence: GET " .. get_url .. " returned HTTP " .. http_code .. ":\n"
+              .. (body_str or raw),
+            vim.log.levels.ERROR
+          )
+        end)
+        return
+      end
+
+      local ok, data = pcall(vim.json.decode, body_str or raw)
+      if not ok or not (data.version and data.body and data.body.storage) then
+        vim.schedule(function()
+          vim.notify(
+            "Confluence: unexpected GET response for " .. filename,
+            vim.log.levels.ERROR
+          )
+        end)
+        return
+      end
+
+      local version      = data.version.number
+      local storage_html = data.body.storage.value or ""
+
+      -- Step 2: pre-process Confluence storage format → plain HTML (synchronous Lua).
+      local clean_html = preprocess_storage(storage_html)
+
+      -- Step 3: pandoc converts plain HTML → CommonMark (stdin → stdout).
+      vim.system(
+        { "pandoc", "--from=html", "--to=commonmark", "--wrap=none" },
+        { text = true, stdin = clean_html },
+        function(pandoc_obj)
+          if pandoc_obj.code ~= 0 then
+            vim.schedule(function()
+              vim.notify(
+                "Confluence: pandoc failed (exit " .. pandoc_obj.code .. "): "
+                  .. (pandoc_obj.stderr or ""),
+                vim.log.levels.ERROR
+              )
+            end)
+            return
+          end
+
+          local md_content = pandoc_obj.stdout or ""
+
+          -- Step 4: backup, write, reload — on the main thread.
+          vim.schedule(function()
+            -- Backup existing file.
+            local bak   = file .. ".bak"
+            local src_f = io.open(file, "r")
+            if src_f then
+              local old = src_f:read("*a")
+              src_f:close()
+              local dst_f = io.open(bak, "w")
+              if dst_f then
+                dst_f:write(old)
+                dst_f:close()
+              end
+            end
+
+            -- Write new content.
+            local out = io.open(file, "w")
+            if not out then
+              vim.notify("Confluence: cannot write to " .. file, vim.log.levels.ERROR)
+              return
+            end
+            out:write(md_content)
+            out:close()
+
+            -- Step 5: record pulled version and reload.
+            state_write(git_root, rel_path, version)
+            vim.cmd("e!")
+            vim.notify(
+              "Confluence: " .. filename .. " updated from Confluence (v" .. version .. ").\n"
+                .. "Original backed up as " .. filename .. ".bak",
+              vim.log.levels.INFO
+            )
+          end)
         end
-        vim.cmd("e!")
-        vim.notify(
-          "Confluence: " .. filename .. " updated from Confluence.\n"
-            .. "Original backed up as " .. filename .. ".bak",
-          vim.log.levels.INFO
-        )
-      end)
+      )
     end
   )
 end
 
 --- Fetch all comments for the current page and write them to <file>.comments.md.
 --
--- Delegates to confluence_publish.sh --comments.
+-- Pure-Lua async pipeline:
+--   1. curl GET — fetch all comments (body.view, version, history)
+--   2. html_to_md() — strip HTML from comment bodies (Lua)
+--   3. write <file>.comments.md
 function M.fetch_comments()
   local file     = vim.fn.expand("%:p")
   local dir      = vim.fn.expand("%:p:h")
@@ -555,39 +721,119 @@ function M.fetch_comments()
     return
   end
 
-  local script = find_publish_script(git_root)
-  if not script then
-    vim.notify(
-      "Confluence: confluence_publish.sh not found.\n"
-        .. "Set CONFLUENCE_PUBLISH_SCRIPT or ensure scripts/confluence_publish.sh exists.",
-      vim.log.levels.ERROR
-    )
+  local rel_path      = file:sub(#git_root + 2)
+  local page_map_path = git_root .. "/docs/confluence-page-map.md"
+  local entry, map_err = find_page_entry(page_map_path, rel_path)
+  if not entry then
+    vim.notify("Confluence: " .. (map_err or "file not in page map"), vim.log.levels.ERROR)
+    return
+  end
+  if not entry.url then
+    vim.notify("Confluence: no Confluence URL found in page map for this file", vim.log.levels.ERROR)
+    return
+  end
+
+  local base_url, page_id = parse_confluence_url(entry.url)
+  if not base_url or not page_id then
+    vim.notify("Confluence: cannot parse Confluence URL: " .. entry.url, vim.log.levels.ERROR)
     return
   end
 
   vim.notify("Confluence: fetching comments for " .. filename .. "…", vim.log.levels.INFO)
 
+  local comments_url = base_url
+    .. "/wiki/rest/api/content/" .. page_id
+    .. "/child/comment?expand=body.view,version,history&limit=100&depth=all"
+
+  -- Step 1: fetch comments.
   vim.system(
-    { script, "--comments", file },
-    {
-      text = true,
-      env  = {
-        CONFLUENCE_EMAIL     = email,
-        CONFLUENCE_API_TOKEN = token,
-      },
-    },
-    function(result)
-      vim.schedule(function()
-        if result.code ~= 0 then
+    { "curl", "-s", "-w", "\n%{http_code}", "-u", email .. ":" .. token,
+      "-H", "Accept: application/json", comments_url },
+    { text = true },
+    function(get_obj)
+      if get_obj.code ~= 0 then
+        vim.schedule(function()
           vim.notify(
-            "Confluence: comment fetch failed:\n" .. (result.stderr or result.stdout or ""),
+            "Confluence: GET comments failed (exit " .. get_obj.code .. "): "
+              .. (get_obj.stderr or ""),
             vim.log.levels.ERROR
           )
+        end)
+        return
+      end
+
+      local raw = get_obj.stdout or ""
+      local body_str, http_code_str = raw:match("^(.*)\n(%d%d%d)$")
+      local http_code = tonumber(http_code_str) or 0
+      if http_code < 200 or http_code >= 300 then
+        vim.schedule(function()
+          vim.notify(
+            "Confluence: GET comments returned HTTP " .. http_code,
+            vim.log.levels.ERROR
+          )
+        end)
+        return
+      end
+
+      local ok, data = pcall(vim.json.decode, body_str or raw)
+      if not ok or type(data.results) ~= "table" then
+        vim.schedule(function()
+          vim.notify("Confluence: unexpected comments response", vim.log.levels.ERROR)
+        end)
+        return
+      end
+
+      local count = #data.results
+      if count == 0 then
+        vim.schedule(function()
+          vim.notify("Confluence: no comments found for " .. filename, vim.log.levels.INFO)
+        end)
+        return
+      end
+
+      -- Step 2: format comments as markdown.
+      local title        = entry.title or filename
+      local comments_file = file:gsub("%.md$", ".comments.md")
+      local cf_name       = vim.fn.fnamemodify(comments_file, ":t")
+      local now           = os.date("!%Y-%m-%d %H:%M UTC")
+
+      local lines = {
+        "# Confluence Comments: " .. title,
+        "",
+        "> Auto-generated by :MdConfluenceComments — do not edit manually.",
+        "> Source: " .. entry.url,
+        "> Fetched: " .. now,
+        "",
+      }
+
+      for _, comment in ipairs(data.results) do
+        local author = (comment.version and comment.version.by
+                         and comment.version.by.displayName) or "Unknown"
+        local when   = (comment.version and comment.version.when) or ""
+        local date   = when:match("^(%d%d%d%d%-%d%d%-%d%d)") or when
+        local body_v = comment.body and comment.body.view
+                       and comment.body.view.value or ""
+        local md_body = html_to_md(body_v)
+
+        table.insert(lines, "---")
+        table.insert(lines, "")
+        table.insert(lines, "**" .. author .. "** · " .. date)
+        table.insert(lines, "")
+        table.insert(lines, md_body)
+        table.insert(lines, "")
+      end
+
+      -- Step 3: write the comments file on the main thread.
+      vim.schedule(function()
+        local out = io.open(comments_file, "w")
+        if not out then
+          vim.notify("Confluence: cannot write " .. cf_name, vim.log.levels.ERROR)
           return
         end
-        local comments_file = filename:gsub("%.md$", ".comments.md")
+        out:write(table.concat(lines, "\n"))
+        out:close()
         vim.notify(
-          "Confluence: comments saved to " .. comments_file,
+          "Confluence: " .. count .. " comment(s) saved to " .. cf_name,
           vim.log.levels.INFO
         )
       end)
@@ -616,245 +862,6 @@ function M.setup()
     "MdConfluenceComments",
     M.fetch_comments,
     { desc = "Fetch Confluence page comments to a sidecar .comments.md file" }
-  )
-end
-
-return M
-
-  if file == "" then
-    vim.notify("Confluence: buffer has no file", vim.log.levels.WARN)
-    return
-  end
-
-  if not file:match("%.md$") then
-    vim.notify("Confluence: not a markdown file", vim.log.levels.WARN)
-    return
-  end
-
-  local email = os.getenv("CONFLUENCE_EMAIL")
-  local token = os.getenv("CONFLUENCE_API_TOKEN")
-  if not email or email == "" or not token or token == "" then
-    vim.notify(
-      "Confluence: CONFLUENCE_EMAIL and CONFLUENCE_API_TOKEN must be set.\n"
-        .. "See docs/guides/confluence.md for setup instructions.",
-      vim.log.levels.ERROR
-    )
-    return
-  end
-
-  local git_root = find_git_root(dir)
-  if not git_root then
-    vim.notify("Confluence: file is not inside a git repository", vim.log.levels.ERROR)
-    return
-  end
-
-  -- Path relative to git root (e.g. "docs/lld/x.md").
-  local rel_path = file:sub(#git_root + 2)
-
-  local page_map_path = git_root .. "/docs/confluence-page-map.md"
-  local entry, map_err = find_page_entry(page_map_path, rel_path)
-  if not entry then
-    vim.notify("Confluence: " .. (map_err or "file not in page map"), vim.log.levels.ERROR)
-    return
-  end
-
-  if not entry.url then
-    vim.notify(
-      "Confluence: no Confluence URL found in page map for this file",
-      vim.log.levels.ERROR
-    )
-    return
-  end
-
-  local base_url, page_id = parse_confluence_url(entry.url)
-  if not base_url or not page_id then
-    vim.notify("Confluence: cannot parse Confluence URL: " .. entry.url, vim.log.levels.ERROR)
-    return
-  end
-
-  vim.notify("Confluence: publishing " .. filename .. "…", vim.log.levels.INFO)
-
-  -- Build pandoc command. Use the Lua filter when available for link
-  -- substitution, code macros, and PlantUML rendering.
-  local filter    = find_filter(git_root)
-  local pandoc_cmd = { "pandoc", "--from", "markdown", "--to", "html5", "--wrap=none" }
-  if filter then
-    table.insert(pandoc_cmd, "--lua-filter")
-    table.insert(pandoc_cmd, filter)
-  end
-  table.insert(pandoc_cmd, file)
-
-  local pandoc_env = nil
-  if filter then
-    pandoc_env = {
-      CONFLUENCE_PAGE_MAP   = page_map_path,
-      CONFLUENCE_SELF_URL   = entry.url,
-      CONFLUENCE_DOCS_DIR   = git_root .. "/docs",
-      CONFLUENCE_FILE_PATH  = file,
-      PLANTUML_SERVER       = os.getenv("PLANTUML_SERVER") or "http://localhost:8080",
-    }
-  end
-
-  -- Step 1: convert markdown → HTML fragment via pandoc (+filter when available).
-  vim.system(
-    pandoc_cmd,
-    { text = true, env = pandoc_env },
-    function(pandoc_obj)
-      if pandoc_obj.code ~= 0 then
-        vim.schedule(function()
-          vim.notify(
-            "Confluence: pandoc failed (exit " .. pandoc_obj.code .. "): "
-              .. (pandoc_obj.stderr or ""),
-            vim.log.levels.ERROR
-          )
-        end)
-        return
-      end
-
-      local html = pandoc_obj.stdout
-
-      -- Step 2: fetch the current page version and title.
-      local get_url = base_url
-        .. "/wiki/rest/api/content/"
-        .. page_id
-        .. "?expand=version,title"
-
-      vim.system(
-        { "curl", "-s", "-w", "\n%{http_code}", "-u", email .. ":" .. token,
-          "-H", "Accept: application/json", get_url },
-        { text = true },
-        function(get_obj)
-          if get_obj.code ~= 0 then
-            vim.schedule(function()
-              vim.notify(
-                "Confluence: GET " .. get_url .. " failed (exit " .. get_obj.code .. "): "
-                  .. (get_obj.stderr or ""),
-                vim.log.levels.ERROR
-              )
-            end)
-            return
-          end
-
-          local raw = get_obj.stdout or ""
-          local body, http_code_str = raw:match("^(.*)\n(%d%d%d)$")
-          local http_code = tonumber(http_code_str) or 0
-          if http_code < 200 or http_code >= 300 then
-            vim.schedule(function()
-              vim.notify(
-                "Confluence: GET " .. get_url .. " returned HTTP " .. http_code .. ":\n"
-                  .. (body or raw),
-                vim.log.levels.ERROR
-              )
-            end)
-            return
-          end
-
-          local ok, data = pcall(vim.json.decode, body or raw)
-          if not ok or not (data.version and data.version.number) then
-            vim.schedule(function()
-              vim.notify(
-                "Confluence: unexpected API response: " .. (get_obj.stdout or ""),
-                vim.log.levels.ERROR
-              )
-            end)
-            return
-          end
-
-          local version = data.version.number
-          local title   = data.title or entry.title or filename
-
-          -- Step 3: write the JSON payload and PUT the updated page.
-          local payload = vim.json.encode({
-            id      = page_id,
-            type    = "page",
-            title   = title,
-            version = { number = version + 1 },
-            body    = {
-              storage = {
-                value          = html,
-                representation = "storage",
-              },
-            },
-          })
-
-          local pf = io.open(tmpfile, "w")
-          if not pf then
-            vim.schedule(function()
-              vim.notify("Confluence: cannot write temp file " .. tmpfile, vim.log.levels.ERROR)
-            end)
-            return
-          end
-          pf:write(payload)
-          pf:close()
-
-          local put_url = base_url .. "/wiki/rest/api/content/" .. page_id
-
-          vim.system(
-            { "curl", "-s", "-w", "\n%{http_code}", "-X", "PUT",
-              "-u", email .. ":" .. token,
-              "-H", "Content-Type: application/json",
-              "-d", "@" .. tmpfile,
-              put_url },
-            { text = true },
-            function(put_obj)
-              os.remove(tmpfile)
-
-              if put_obj.code ~= 0 then
-                vim.schedule(function()
-                  vim.notify(
-                    "Confluence: PUT " .. put_url .. " failed (exit " .. put_obj.code .. "): "
-                      .. (put_obj.stderr or ""),
-                    vim.log.levels.ERROR
-                  )
-                end)
-                return
-              end
-
-              local raw2 = put_obj.stdout or ""
-              local body2, http_code_str2 = raw2:match("^(.*)\n(%d%d%d)$")
-              local http_code2 = tonumber(http_code_str2) or 0
-              if http_code2 < 200 or http_code2 >= 300 then
-                vim.schedule(function()
-                  vim.notify(
-                    "Confluence: PUT " .. put_url .. " returned HTTP " .. http_code2 .. ":\n"
-                      .. (body2 or raw2),
-                    vim.log.levels.ERROR
-                  )
-                end)
-                return
-              end
-
-              local ok2, resp = pcall(vim.json.decode, body2 or raw2)
-              local page_url  = put_url
-              if ok2 and resp._links and resp._links.base and resp._links.webui then
-                page_url = resp._links.base .. resp._links.webui
-              end
-
-              vim.schedule(function()
-                vim.notify(
-                  "Confluence: " .. filename .. " published successfully.\n" .. page_url,
-                  vim.log.levels.INFO
-                )
-              end)
-            end
-          )
-        end
-      )
-    end
-  )
-end
-
---- Register the MdToConfluence user command. Safe to call multiple times.
-function M.setup()
-  if M._loaded then
-    return
-  end
-  M._loaded = true
-
-  vim.api.nvim_create_user_command(
-    "MdToConfluence",
-    M.publish,
-    { desc = "Publish current markdown file to its Confluence page" }
   )
 end
 

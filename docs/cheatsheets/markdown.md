@@ -87,8 +87,12 @@ docker compose -f ~/.config/nvim/docker/marp/docker-compose.yml up -d
 | Keys | Mode | Action |
 |---|---|---|
 | `,cc` | Normal | Publish current file to Confluence (`MdToConfluence`) |
+| `,cp` | Normal | Pull current Confluence page back to local file (`MdFromConfluence`) |
+| `,cv` | Normal | Fetch all page comments to `<file>.comments.md` (`MdConfluenceComments`) |
 
-Requires `CONFLUENCE_EMAIL` and `CONFLUENCE_API_TOKEN` environment variables and a `docs/confluence-page-map.md` page map in the repository root. See [../guides/confluence.md](../guides/confluence.md) for full setup instructions.
+Requires `CONFLUENCE_EMAIL` and `CONFLUENCE_API_TOKEN` environment variables and a `docs/confluence-page-map.md` page map in the repository root. Pull and comments also require `jq` and `python3`. See [../guides/confluence.md](../guides/confluence.md) for full setup instructions.
+
+**Diagram round-trip:** PlantUML fences publish as PNG images (with source stashed in a hidden comment) and are recovered as ` ```plantuml ` blocks on pull. Mermaid fences round-trip via code macros.
 
 ## User Commands
 
@@ -102,7 +106,9 @@ Requires `CONFLUENCE_EMAIL` and `CONFLUENCE_API_TOKEN` environment variables and
 | `:MarpToHtml` | Export to HTML |
 | `:MarpToPdf` | Export to PDF (MARP slides only — no PlantUML rendering) |
 | `:MdToConfluence` | Publish current file to its Confluence page |
+| `:MdFromConfluence` | Pull current Confluence page back to local markdown (creates `.bak` backup) |
+| `:MdConfluenceComments` | Fetch Confluence page comments to a sidecar `.comments.md` file |
 
 ---
 
-*Link navigation keymaps provided by mkdnflow.nvim (`lua/plugins/mkdnflow.lua`). Preview keymaps defined in `after/ftplugin/markdown.lua`. Markserv command defined in `lua/config/mdpreview.lua`. MARP commands defined in `lua/config/marp.lua`. PDF export command defined in `lua/config/mdpdf.lua`. Confluence publish command defined in `lua/config/confluence.lua`. Preview plugin configured in `lua/plugins/markdown.lua`.*
+*Link navigation keymaps provided by mkdnflow.nvim (`lua/plugins/mkdnflow.lua`). Preview keymaps defined in `after/ftplugin/markdown.lua`. Markserv command defined in `lua/config/mdpreview.lua`. MARP commands defined in `lua/config/marp.lua`. PDF export command defined in `lua/config/mdpdf.lua`. Confluence commands defined in `lua/config/confluence.lua`. Preview plugin configured in `lua/plugins/markdown.lua`.*

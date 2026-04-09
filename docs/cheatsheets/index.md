@@ -273,6 +273,8 @@ LocalLeader is `,` in Markdown buffers.
 | `,mh` | MARP: export to HTML |
 | `,md` | MARP: export to PDF |
 | `,cc` | Publish current file to Confluence |
+| `,cp` | Pull current Confluence page back to local file |
+| `,cv` | Fetch Confluence page comments to `.comments.md` |
 
 → [Full reference](markdown.md) · [Diagrams guide](../guides/diagrams.md) · [Presentations guide](../guides/presentations.md) · [Confluence guide](../guides/confluence.md)
 
