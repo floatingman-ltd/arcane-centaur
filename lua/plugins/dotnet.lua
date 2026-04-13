@@ -1,11 +1,18 @@
+-- .NET REPL (F# and C#) via iron.nvim.
+-- C# LSP is provided by roslyn.nvim (official Microsoft Roslyn language server).
+--
+-- Prerequisites:
+--   dotnet tool install -g csharpier    (C# formatter)
+--   dotnet tool install -g csharprepl   (C# REPL)
+--   Roslyn server binary on $PATH       (see docs/guides/dotnet.md)
 return {
-  -- Iron.nvim: REPL interaction for F# Interactive (dotnet fsi)
+  -- iron.nvim: REPL interaction for F# Interactive (dotnet fsi) and C# (csharprepl)
   -- Usage: <localleader>sl  send line   <localleader>sc  send motion/selection
   --        <localleader>sp  send paragraph  <localleader>sf  send file
   --        <localleader>si  interrupt       <localleader>sq  quit REPL
   {
     "Vigemus/iron.nvim",
-    ft = { "fsharp" },
+    ft = { "fsharp", "cs" },
     config = function()
       local iron = require("iron.core")
       iron.setup({
@@ -15,8 +22,10 @@ return {
             fsharp = {
               command = { "dotnet", "fsi", "--stdin" },
             },
+            cs = {
+              command = { "csharprepl" },
+            },
           },
-          -- Open REPL in a horizontal split at the bottom, 40% height
           repl_open_cmd = require("iron.view").bottom(40),
         },
         keymaps = {
@@ -34,5 +43,14 @@ return {
         ignore_blank_lines = true,
       })
     end,
+  },
+
+  -- roslyn.nvim: official Microsoft Roslyn C# language server.
+  -- The server binary must be installed separately — see docs/guides/dotnet.md.
+  -- LSP keymaps (gd, K, gr, etc.) are attached via vim.lsp.config in lua/config/lsp.lua.
+  {
+    "seblyng/roslyn.nvim",
+    ft = { "cs" },
+    opts = {},
   },
 }
