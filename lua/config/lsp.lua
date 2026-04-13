@@ -21,3 +21,7 @@ lspconfig.fsautocomplete.setup{ on_attach = on_attach }
 
 -- Markdown LSP (requires: marksman on $PATH)
 lspconfig.marksman.setup{ on_attach = on_attach }
+
+-- C# LSP (roslyn.nvim manages the server; we attach shared keymaps here)
+-- Requires the Roslyn server binary on $PATH — see docs/guides/dotnet.md.
+vim.lsp.config("roslyn", { on_attach = on_attach })
