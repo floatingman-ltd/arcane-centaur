@@ -50,12 +50,20 @@ end
 ---@param title string    Label for the split header.
 local function run_and_show(cmd, title)
   local output = vim.fn.system(cmd)
+  local exit_code = vim.v.shell_error
   -- Strip ANSI escape sequences for clean display.
   output = output:gsub("\27%[[%d;]*m", "")
   local lines = vim.split(output, "\n", { plain = true })
   -- Trim trailing blank lines.
   while #lines > 0 and lines[#lines] == "" do
     table.remove(lines)
+  end
+  if exit_code ~= 0 then
+    vim.notify(
+      table.concat(cmd, " ") .. " failed (exit " .. exit_code .. ")",
+      vim.log.levels.ERROR
+    )
+    table.insert(lines, 1, "ERROR: exit code " .. exit_code)
   end
   open_split(title, lines)
 end
@@ -88,7 +96,7 @@ function M.setup()
       title = "openspec status"
     end
     run_and_show(cmd, title)
-  end, { nargs = "?", desc = "Show OpenSpec change status", complete = "customlist,v:lua.require'config.openspec'._complete_changes" })
+  end, { nargs = "?", desc = "Show OpenSpec change status" })
 
   -- :OpenspecList
   vim.api.nvim_create_user_command("OpenspecList", function(_)

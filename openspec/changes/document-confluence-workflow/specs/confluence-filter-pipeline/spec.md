@@ -1,7 +1,7 @@
 ## ADDED Requirements
 
 ### Requirement: Filter pipeline enhances pandoc output when confluence_filter.lua is present
-When `confluence_filter.lua` is found (via `CONFLUENCE_FILTER_LUA` env var, `~/.config/nvim/scripts/`, or `<git-root>/scripts/`), the system SHALL pass it to pandoc as a Lua filter during publish, enabling link substitution, code-macro conversion, and PlantUML rendering. If the filter is not found, publish SHALL proceed with basic pandoc conversion only.
+When `confluence_filter.lua` is found (via `CONFLUENCE_FILTER_LUA` env var, `~/.config/nvim/scripts/`, beside `CONFLUENCE_PUBLISH_SCRIPT` when that env var is set, or `<git-root>/scripts/`), the system SHALL pass it to pandoc as a Lua filter during publish, enabling link substitution, code-macro conversion, and PlantUML rendering. If the filter is not found, publish SHALL proceed with basic pandoc conversion only.
 
 #### Scenario: Filter applied when present
 - **WHEN** `confluence_filter.lua` is found in the standard location and `,cc` is run

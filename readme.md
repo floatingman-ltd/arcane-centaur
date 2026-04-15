@@ -372,6 +372,12 @@ You can also press **`<leader>t`** to open the built-in terminal split and run `
 
 → See **[docs/guides/ai-tools.md](docs/guides/ai-tools.md)** for the full guide including OpenSpec and Serena setup.
 
+> **Serena MCP server prerequisites:** Node.js 18+ is required. Install Serena with:
+> ```sh
+> npm install -g @oramasearch/serena
+> ```
+> Or run it without a global install via `npx @oramasearch/serena`.
+
 ## Plugin Overview
 
 Plugins are managed by [lazy.nvim](https://github.com/folke/lazy.nvim) and organized in `lua/plugins/`:

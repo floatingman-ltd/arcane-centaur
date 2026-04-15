@@ -19,31 +19,45 @@
 
 local M = {}
 
---- Extract text from the last visual selection, or the whole buffer when
---- there is no selection to use.
+--- Extract text from an explicit command range, the active visual selection,
+--- or the whole buffer when neither applies.
 --
--- Uses mark `'<` / `'>` which Neovim updates every time you leave Visual
--- mode, so this works correctly when a command is invoked with `:'<,'>`.
+-- `'<` / `'>` marks persist after leaving Visual mode, so they must not be
+-- treated as a real selection unless the command was invoked with a range or
+-- we are still currently in Visual mode.
 --
+---@param args? { range?: integer, line1?: integer, line2?: integer }
 ---@return string  Multi-line text ready to pass to the CLI.
-local function get_context_text()
-  local mode = vim.fn.mode()
-  -- When called from a visual-range command the mode is already "n", but the
-  -- '<,'> marks are still valid.  We distinguish by whether the command was
-  -- invoked with a range (args.range > 0) — handled at call-site by the
-  -- callers below.  Here we just read whatever the marks say if they exist.
-  local start_pos = vim.fn.getpos("'<")
-  local end_pos   = vim.fn.getpos("'>")
-
+local function get_context_text(args)
   local buf = vim.api.nvim_get_current_buf()
   local line_count = vim.api.nvim_buf_line_count(buf)
 
-  local sl = start_pos[2]
-  local el = end_pos[2]
+  local sl, el
 
-  -- Marks are valid when both are > 0 and within the buffer.
-  local has_selection = sl > 0 and el > 0 and sl <= line_count and el <= line_count
-  if has_selection and sl <= el then
+  if args and args.range and args.range > 0 then
+    sl = args.line1
+    el = args.line2
+  else
+    local mode = vim.fn.mode()
+    local is_visual_mode = mode == "v" or mode == "V" or mode == "\22"
+
+    if is_visual_mode then
+      local start_pos = vim.fn.getpos("'<")
+      local end_pos   = vim.fn.getpos("'>")
+      sl = start_pos[2]
+      el = end_pos[2]
+    end
+  end
+
+  local has_selection = sl ~= nil
+    and el ~= nil
+    and sl > 0
+    and el > 0
+    and sl <= el
+    and sl <= line_count
+    and el <= line_count
+
+  if has_selection then
     local lines = vim.api.nvim_buf_get_lines(buf, sl - 1, el, false)
     return table.concat(lines, "\n")
   end
@@ -103,8 +117,6 @@ local function run_copilot(subcommand, input)
 
   vim.notify("Copilot CLI: running `gh copilot " .. subcommand .. "` …", vim.log.levels.INFO)
 
-  local stdin_pipe = vim.uv.new_pipe()
-
   vim.system(
     { "gh", "copilot", subcommand },
     {
@@ -138,12 +150,12 @@ end
 --- Register :CopilotSuggest and :CopilotExplain commands.
 function M.setup()
   vim.api.nvim_create_user_command("CopilotSuggest", function(args)
-    local text = get_context_text()
+    local text = get_context_text(args)
     run_copilot("suggest", text)
   end, { range = true, desc = "Send selection/buffer to `gh copilot suggest`" })
 
   vim.api.nvim_create_user_command("CopilotExplain", function(args)
-    local text = get_context_text()
+    local text = get_context_text(args)
     run_copilot("explain", text)
   end, { range = true, desc = "Send selection/buffer to `gh copilot explain`" })
 end
