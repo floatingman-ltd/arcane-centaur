@@ -253,6 +253,7 @@ function M.create_issue(issue_type, pre_desc)
       local tmp_file = os.tmpname()
       local fh = io.open(tmp_file, "w")
       if not fh then
+        os.remove(tmp_file)
         vim.notify("Jira: failed to create temp file for request body", vim.log.levels.ERROR)
         return
       end
@@ -271,6 +272,7 @@ function M.create_issue(issue_type, pre_desc)
         },
         { text = true },
         function(obj)
+          -- Always clean up the temp file regardless of curl result.
           os.remove(tmp_file)
           vim.schedule(function()
             if obj.code ~= 0 then
