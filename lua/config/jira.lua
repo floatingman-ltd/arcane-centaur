@@ -99,18 +99,55 @@ end
 
 --- Get the visual selection as a string (called from normal mode after a visual op).
 -- Returns nil if no prior selection is available.
+-- Handles characterwise (v), linewise (V), and blockwise (^V) selections.
 local function get_visual_selection()
-  local start_pos = vim.fn.getpos("'<")
-  local end_pos   = vim.fn.getpos("'>")
+  local start_pos  = vim.fn.getpos("'<")
+  local end_pos    = vim.fn.getpos("'>")
+  local mode       = vim.fn.visualmode()
+
   local start_line = start_pos[2]
+  local start_col  = start_pos[3]
   local end_line   = end_pos[2]
+  local end_col    = end_pos[3]
+
   if start_line == 0 and end_line == 0 then
     return nil
   end
+
+  local function is_after(a_line, a_col, b_line, b_col)
+    return a_line > b_line or (a_line == b_line and a_col > b_col)
+  end
+
+  if is_after(start_line, start_col, end_line, end_col) then
+    start_line, end_line = end_line, start_line
+    start_col, end_col   = end_col, start_col
+  end
+
   local lines = vim.fn.getline(start_line, end_line)
   if type(lines) ~= "table" or #lines == 0 then
     return nil
   end
+
+  if mode == "V" then
+    return table.concat(lines, "\n")
+  end
+
+  if mode == "\22" then
+    local left  = math.min(start_col, end_col)
+    local right = math.max(start_col, end_col)
+    for i, line in ipairs(lines) do
+      lines[i] = line:sub(left, right)
+    end
+    return table.concat(lines, "\n")
+  end
+
+  if #lines == 1 then
+    lines[1] = lines[1]:sub(start_col, end_col)
+    return lines[1]
+  end
+
+  lines[1]       = lines[1]:sub(start_col)
+  lines[#lines]  = lines[#lines]:sub(1, end_col)
   return table.concat(lines, "\n")
 end
 
@@ -212,6 +249,16 @@ function M.create_issue(issue_type, pre_desc)
 
       local json_body = vim.json.encode(body)
 
+      -- Write the JSON body to a temp file to avoid OS command-line length limits.
+      local tmp_file = os.tmpname()
+      local fh = io.open(tmp_file, "w")
+      if not fh then
+        vim.notify("Jira: failed to create temp file for request body", vim.log.levels.ERROR)
+        return
+      end
+      fh:write(json_body)
+      fh:close()
+
       vim.system(
         {
           "curl", "-s", "-w", "\n%{http_code}",
@@ -219,11 +266,12 @@ function M.create_issue(issue_type, pre_desc)
           "-H", "Content-Type: application/json",
           "-H", "Accept: application/json",
           "-X", "POST",
-          "-d", json_body,
+          "-d", "@" .. tmp_file,
           api_url,
         },
         { text = true },
         function(obj)
+          os.remove(tmp_file)
           vim.schedule(function()
             if obj.code ~= 0 then
               vim.notify(
@@ -276,10 +324,10 @@ end
 
 --- Register :JiraCreateIssue and :JiraCreateStory user commands.
 function M.setup()
-  if vim.g._jira_setup_done then
+  if M._loaded then
     return
   end
-  vim.g._jira_setup_done = true
+  M._loaded = true
 
   vim.api.nvim_create_user_command("JiraCreateIssue", function()
     M.create_issue("Task", nil)
