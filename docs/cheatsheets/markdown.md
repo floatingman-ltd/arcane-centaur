@@ -1,8 +1,8 @@
-# Markdown Cheatsheet (markdown-preview + mkdnflow + markserv + MARP + Confluence)
+# Markdown Cheatsheet (markdown-preview + mkdnflow + markserv + MARP + Confluence + Jira)
 
 **LocalLeader** = `,` in Markdown buffers
 
-→ Back to [main cheatsheet](index.md) · Markdown guide: [../guides/markdown.md](../guides/markdown.md) · Diagrams guide: [../guides/diagrams.md](../guides/diagrams.md) · Presentations guide: [../guides/presentations.md](../guides/presentations.md) · Confluence guide: [../guides/confluence.md](../guides/confluence.md)
+→ Back to [main cheatsheet](index.md) · Markdown guide: [../guides/markdown.md](../guides/markdown.md) · Diagrams guide: [../guides/diagrams.md](../guides/diagrams.md) · Presentations guide: [../guides/presentations.md](../guides/presentations.md) · Confluence guide: [../guides/confluence.md](../guides/confluence.md) · Jira guide: [../guides/jira.md](../guides/jira.md)
 
 ## Cross-page Link Navigation (mkdnflow.nvim)
 
@@ -92,6 +92,17 @@ docker compose -f ~/.config/nvim/docker/marp/docker-compose.yml up -d
 
 Requires `CONFLUENCE_EMAIL` and `CONFLUENCE_API_TOKEN` environment variables and a `docs/confluence-page-map.md` page map in the repository root. See [../guides/confluence.md](../guides/confluence.md) for full setup instructions.
 
+## Jira Issue & Story Creation (requires env vars + curl)
+
+| Keys | Mode | Action |
+|---|---|---|
+| `,ji` | Normal | Create a Jira Task issue (`JiraCreateIssue`) |
+| `,js` | Normal | Create a Jira Story (`JiraCreateStory`) |
+| `,ji` | Visual | Create a Task — selection becomes description |
+| `,js` | Visual | Create a Story — selection becomes description |
+
+Requires `JIRA_EMAIL`, `JIRA_API_TOKEN`, and `JIRA_BASE_URL` environment variables and a `docs/jira-project-map.md` project map in the repository root. See [../guides/jira.md](../guides/jira.md) for full setup instructions.
+
 ## User Commands
 
 | Command | Description |
@@ -106,7 +117,11 @@ Requires `CONFLUENCE_EMAIL` and `CONFLUENCE_API_TOKEN` environment variables and
 | `:MdToConfluence` | Publish current file to its Confluence page |
 | `:MdFromConfluence` | Pull the current Confluence page back to the local file (`.bak` backup created) |
 | `:MdConfluenceComments` | Fetch Confluence page comments to `<file>.comments.md` |
+| `:JiraCreateIssue` | Create a Jira Task issue (prompts for summary + description) |
+| `:JiraCreateStory` | Create a Jira Story (prompts for summary + description) |
+| `:JiraCreateIssueFromSelection` | Create a Task using the last visual selection as description |
+| `:JiraCreateStoryFromSelection` | Create a Story using the last visual selection as description |
 
 ---
 
-*Link navigation keymaps provided by mkdnflow.nvim (`lua/plugins/mkdnflow.lua`). Preview keymaps defined in `after/ftplugin/markdown.lua`. Markserv command defined in `lua/config/mdpreview.lua`. MARP commands defined in `lua/config/marp.lua`. PDF export command defined in `lua/config/mdpdf.lua`. Confluence publish command defined in `lua/config/confluence.lua`. Preview plugin configured in `lua/plugins/markdown.lua`.*
+*Link navigation keymaps provided by mkdnflow.nvim (`lua/plugins/mkdnflow.lua`). Preview keymaps defined in `after/ftplugin/markdown.lua`. Markserv command defined in `lua/config/mdpreview.lua`. MARP commands defined in `lua/config/marp.lua`. PDF export command defined in `lua/config/mdpdf.lua`. Confluence publish command defined in `lua/config/confluence.lua`. Jira commands defined in `lua/config/jira.lua`. Preview plugin configured in `lua/plugins/markdown.lua`.*

@@ -20,7 +20,7 @@
 | HTML Live Preview (Bracey) | [html.md](html.md) |
 | Lisp / Clojure / Scheme (Conjure + vim-sexp) | [lisp.md](lisp.md) |
 | LSP | [lsp.md](lsp.md) |
-| Markdown Preview + MARP + Confluence | [markdown.md](markdown.md) |
+| Markdown Preview + MARP + Confluence + Jira | [markdown.md](markdown.md) |
 | Navigation & Splits | [navigation.md](navigation.md) |
 | PlantUML Preview | [plantuml.md](plantuml.md) |
 | REST Client (kulala.nvim) | [rest.md](rest.md) |
@@ -293,8 +293,10 @@ LocalLeader is `,` in Markdown buffers.
 | `,cc` | Publish current file to Confluence |
 | `,cf` | Pull current Confluence page to local file |
 | `,ck` | Fetch Confluence comments to sidecar file |
+| `,ji` | Create Jira Task issue (prompts for summary + description) |
+| `,js` | Create Jira Story (prompts for summary + description) |
 
-→ [Full reference](markdown.md) · [Diagrams guide](../guides/diagrams.md) · [Presentations guide](../guides/presentations.md) · [Confluence guide](../guides/confluence.md)
+→ [Full reference](markdown.md) · [Diagrams guide](../guides/diagrams.md) · [Presentations guide](../guides/presentations.md) · [Confluence guide](../guides/confluence.md) · [Jira guide](../guides/jira.md)
 
 ---
 
