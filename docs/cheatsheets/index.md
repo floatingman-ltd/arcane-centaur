@@ -8,12 +8,14 @@
 |---|---|
 | Auto-Completion (nvim-cmp) | [completion.md](completion.md) |
 | Comments (vim-commentary) | [comments.md](comments.md) |
+| C# / .NET (Roslyn + iron.nvim) | [dotnet.md](dotnet.md) |
 | F# REPL (iron.nvim) | [fsharp.md](fsharp.md) |
 | File Tree (nvim-tree) | [file-tree.md](file-tree.md) |
 | Formatting (conform.nvim) | [formatting.md](formatting.md) |
 | Fuzzy Finder (fzf-lua) | [fzf.md](fzf.md) |
 | Git (vim-fugitive + gitsigns) | [git.md](git.md) |
 | GitHub Copilot | [copilot.md](copilot.md) |
+| GitHub Copilot CLI + OpenSpec | [ai-tools.md](ai-tools.md) |
 | Haskell (haskell-tools) | [haskell.md](haskell.md) |
 | HTML Live Preview (Bracey) | [html.md](html.md) |
 | Lisp / Clojure / Scheme (Conjure + vim-sexp) | [lisp.md](lisp.md) |
@@ -117,8 +119,22 @@
 |---|---|---|
 | `Ctrl-j` | Insert | Accept full inline suggestion |
 | `Alt-f` | Insert | Accept next word of suggestion |
+| `<leader>gcs` | Normal / Visual | Copilot CLI: suggest (floating window) |
+| `<leader>gce` | Normal / Visual | Copilot CLI: explain (floating window) |
 
-→ [Full reference](copilot.md)
+→ [Full reference](copilot.md) · [AI Tools guide](ai-tools.md)
+
+---
+
+### OpenSpec
+
+| Keys | Mode | Action |
+|---|---|---|
+| `<leader>osn` | Normal | Create a new OpenSpec change |
+| `<leader>oss` | Normal | Show OpenSpec status |
+| `<leader>osl` | Normal | List all OpenSpec changes |
+
+→ [Full reference](ai-tools.md)
 
 ---
 
