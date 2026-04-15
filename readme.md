@@ -261,6 +261,11 @@ Leader key is **Space**.
 | `Alt-f` | Insert | Accept next word of Copilot suggestion |
 | `<leader>t` | Normal | Toggle terminal split |
 | `<leader>f` | Normal / Visual | Format buffer (or selection) |
+| `<leader>gcs` | Normal / Visual | Copilot CLI: suggest (send to `gh copilot suggest`) |
+| `<leader>gce` | Normal / Visual | Copilot CLI: explain (send to `gh copilot explain`) |
+| `<leader>osn` | Normal | OpenSpec: create new change |
+| `<leader>oss` | Normal | OpenSpec: show status |
+| `<leader>osl` | Normal | OpenSpec: list all changes |
 
 ## Auto-Completion
 
@@ -349,13 +354,23 @@ gh extension install github/gh-copilot
 
 ### Using from inside Neovim
 
-Press **`<leader>t`** to open the built-in terminal split, then run `gh copilot` commands directly in the shell:
+Use the built-in keymaps to drive Copilot CLI without leaving the editor:
 
-```sh
-gh copilot suggest "recursively delete all .DS_Store files"
-```
+| Keys | Action |
+|---|---|
+| `<leader>gcs` | Send current selection (or buffer) to `gh copilot suggest` |
+| `<leader>gce` | Send current selection (or buffer) to `gh copilot explain` |
 
-Press **`Esc`** to leave terminal insert mode, then `<C-k>` to jump back to your editor window.
+Results appear in a floating window. Close with `q` or `<Esc>`.
+
+You can also press **`<leader>t`** to open the built-in terminal split and run `gh copilot` commands directly in the shell.
+
+> **Prerequisites:** Install [GitHub CLI](https://cli.github.com/) and the Copilot extension:
+> ```sh
+> gh extension install github/gh-copilot
+> ```
+
+→ See **[docs/guides/ai-tools.md](docs/guides/ai-tools.md)** for the full guide including OpenSpec and Serena setup.
 
 ## Plugin Overview
 
@@ -365,13 +380,13 @@ Plugins are managed by [lazy.nvim](https://github.com/folke/lazy.nvim) and organ
 |---|---|---|
 | `colorscheme.lua` | TokyoNight theme (moon / storm / night / day variants) | — |
 | `conform.lua` | Formatting (format-on-save + `<leader>f`) for Lisp and F# filetypes | [formatting.md](docs/cheatsheets/formatting.md) |
-| `copilot.lua` | Copilot inline completions | [copilot.md](docs/cheatsheets/copilot.md) |
-| `fsharp.lua` | iron.nvim REPL integration for F# (`dotnet fsi`) | [fsharp.md](docs/cheatsheets/fsharp.md) |
+| `copilot.lua` | Copilot inline completions + Serena MCP server config | [copilot.md](docs/cheatsheets/copilot.md) · [ai-tools.md](docs/cheatsheets/ai-tools.md) |
+| `dotnet.lua` | iron.nvim REPL integration for F# (`dotnet fsi`) and C# (`csharprepl`); roslyn.nvim C# LSP | [fsharp.md](docs/cheatsheets/fsharp.md) · [dotnet.md](docs/cheatsheets/dotnet.md) |
 | `fzf-lua.lua` | Fuzzy finder | [fzf.md](docs/cheatsheets/fzf.md) |
 | `git.lua` | vim-fugitive (`:Git` commands) + gitsigns.nvim (hunk signs & staging) | [git.md](docs/cheatsheets/git.md) |
 | `haskell.lua` | haskell-tools.nvim (GHCi REPL + HLS integration) | [haskell.md](docs/cheatsheets/haskell.md) |
 | `html.lua` | Bracey HTML live preview | [html.md](docs/cheatsheets/html.md) |
-| `init.lua` | vim-repeat, vim-sensible, vim-surround, vim-unimpaired, airline, lspconfig | [lsp.md](docs/cheatsheets/lsp.md) · [surround.md](docs/cheatsheets/surround.md) · [unimpaired.md](docs/cheatsheets/unimpaired.md) |
+| `init.lua` | vim-repeat, vim-sensible, vim-surround, vim-unimpaired, vim-airline (statusline), lspconfig | [lsp.md](docs/cheatsheets/lsp.md) · [surround.md](docs/cheatsheets/surround.md) · [unimpaired.md](docs/cheatsheets/unimpaired.md) |
 | `lisp.lua` | Conjure, vim-sexp, nvim-parinfer, rainbow-delimiters | [lisp.md](docs/cheatsheets/lisp.md) |
 | `markdown.lua` | markdown-preview.nvim (browser preview, PlantUML via Docker server); `:MdToPdf` PDF export; `:MdToConfluence` / `:MdFromConfluence` / `:MdConfluenceComments` | [markdown.md](docs/cheatsheets/markdown.md) |
 | `mkdnflow.lua` | mkdnflow.nvim (cross-page link navigation: `<CR>` follow, `<BS>` back) | [markdown.md](docs/cheatsheets/markdown.md) |
@@ -392,18 +407,20 @@ lua/
   loader/init.lua           # lazy.nvim bootstrap
   config/
     confluence.lua          # Confluence publish command (MdToConfluence)
+    copilot_cli.lua         # CopilotSuggest / CopilotExplain commands (gh copilot)
     lsp.lua                 # LSP server setup (cl_lsp, fsautocomplete, marksman)
     marp.lua                # MARP presentation commands (preview + export)
     mdpdf.lua               # Markdown → PDF export command (MdToPdf)
     mdpreview.lua           # Markdown markserv server preview command (MdServerPreview)
+    openspec.lua            # OpenspecNew / OpenspecStatus / OpenspecList commands
     terminal.lua            # Terminal detection & capability flags
     treesitter.lua          # (config managed in plugins/treesitter.lua)
     util.lua                # Shared helpers (open_url: cross-platform browser opener)
   plugins/
     colorscheme.lua         # TokyoNight theme (moon/storm/night/day)
     conform.lua             # Formatting for Lisp and F# filetypes
-    copilot.lua             # Copilot inline completions + model setting
-    fsharp.lua              # F# REPL via iron.nvim (dotnet fsi)
+    copilot.lua             # Copilot inline completions + Serena MCP server config
+    dotnet.lua              # F# + C# REPLs via iron.nvim; roslyn.nvim C# LSP
     fzf-lua.lua             # Fuzzy finder
     git.lua                 # Git (vim-fugitive + gitsigns.nvim)
     haskell.lua             # haskell-tools.nvim (GHCi REPL + HLS)
