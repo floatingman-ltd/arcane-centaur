@@ -25,7 +25,7 @@ On first launch, [lazy.nvim](https://github.com/folke/lazy.nvim) will bootstrap 
 [Nerd Font]: https://www.nerdfonts.com/
 
 Language-specific prerequisites (LSP servers, REPLs, runtimes) are documented in each language guide:
-[Markdown](docs/guides/markdown.md) · [Diagrams](docs/guides/diagrams.md) · [Confluence](docs/guides/confluence.md) · [F#](docs/guides/fsharp.md) · [Haskell](docs/guides/haskell.md) · [Lisp / Clojure / Scheme](docs/guides/lisp.md) · [Presentations / MARP](docs/guides/presentations.md) · [REST Client](docs/guides/rest.md)
+[Markdown](docs/guides/markdown.md) · [Diagrams](docs/guides/diagrams.md) · [Confluence](docs/guides/confluence.md) · [Jira](docs/guides/jira.md) · [F#](docs/guides/fsharp.md) · [Haskell](docs/guides/haskell.md) · [Lisp / Clojure / Scheme](docs/guides/lisp.md) · [Presentations / MARP](docs/guides/presentations.md) · [REST Client](docs/guides/rest.md)
 
 ### Recommended Terminal — GNOME Terminal
 
@@ -162,6 +162,19 @@ vim.g.have_nerd_font = true   -- or false
 | `,cc` | Publish current file to Confluence (`MdToConfluence`) |
 | `,cf` | Pull current Confluence page back to local file (`MdFromConfluence`) |
 | `,ck` | Fetch Confluence page comments to sidecar file (`MdConfluenceComments`) |
+
+## Working with Jira
+
+→ See **[docs/guides/jira.md](docs/guides/jira.md)** for the full guide: authentication, project map setup, and troubleshooting.
+
+Requires `JIRA_EMAIL`, `JIRA_API_TOKEN`, and `JIRA_BASE_URL` environment variables.
+
+| Keys | Mode | Action |
+|---|---|---|
+| `,ji` | Normal | Create a Jira Task issue (`JiraCreateIssue`) |
+| `,js` | Normal | Create a Jira Story (`JiraCreateStory`) |
+| `,ji` | Visual | Create a Task with selection as description |
+| `,js` | Visual | Create a Story with selection as description |
 
 ## Working with Diagrams
 
@@ -394,7 +407,7 @@ Plugins are managed by [lazy.nvim](https://github.com/folke/lazy.nvim) and organ
 | `html.lua` | Bracey HTML live preview | [html.md](docs/cheatsheets/html.md) |
 | `init.lua` | vim-repeat, vim-sensible, vim-surround, vim-unimpaired, vim-airline (statusline), lspconfig | [lsp.md](docs/cheatsheets/lsp.md) · [surround.md](docs/cheatsheets/surround.md) · [unimpaired.md](docs/cheatsheets/unimpaired.md) |
 | `lisp.lua` | Conjure, vim-sexp, nvim-parinfer, rainbow-delimiters | [lisp.md](docs/cheatsheets/lisp.md) |
-| `markdown.lua` | markdown-preview.nvim (browser preview, PlantUML via Docker server); `:MdToPdf` PDF export; `:MdToConfluence` / `:MdFromConfluence` / `:MdConfluenceComments` | [markdown.md](docs/cheatsheets/markdown.md) |
+| `markdown.lua` | markdown-preview.nvim (browser preview, PlantUML via Docker server); `:MdToPdf` PDF export; `:MdToConfluence` / `:MdFromConfluence` / `:MdConfluenceComments`; `:JiraCreateIssue` / `:JiraCreateStory` | [markdown.md](docs/cheatsheets/markdown.md) |
 | `mkdnflow.lua` | mkdnflow.nvim (cross-page link navigation: `<CR>` follow, `<BS>` back) | [markdown.md](docs/cheatsheets/markdown.md) |
 | `nvim-cmp.lua` | nvim-cmp + completion sources | [completion.md](docs/cheatsheets/completion.md) |
 | `nvim-tree.lua` | File explorer tree | [file-tree.md](docs/cheatsheets/file-tree.md) |
@@ -413,6 +426,7 @@ lua/
   loader/init.lua           # lazy.nvim bootstrap
   config/
     confluence.lua          # Confluence publish command (MdToConfluence)
+    jira.lua                # Jira issue/story creation (JiraCreateIssue, JiraCreateStory)
     copilot_cli.lua         # CopilotSuggest / CopilotExplain commands (gh copilot)
     lsp.lua                 # LSP server setup (cl_lsp, fsautocomplete, marksman)
     marp.lua                # MARP presentation commands (preview + export)
@@ -447,7 +461,7 @@ after/ftplugin/
   haskell.lua               # Haskell-tools keybindings
   http.lua                  # REST client localleader & keymaps
   lisp.lua                  # Lisp indent settings & lispwords
-  markdown.lua              # Markdown localleader, preview keymap, MARP commands, MdToPdf, MdServerPreview, MdToConfluence
+  markdown.lua              # Markdown localleader, preview keymap, MARP commands, MdToPdf, MdServerPreview, MdToConfluence, JiraCreateIssue/Story
   plantuml.lua              # PlantUML localleader & PumlPreview keymap
   scheme.lua                # Scheme indent settings
 docker/
@@ -477,6 +491,7 @@ docs/
     rest.md                 # REST client (kulala.nvim)
   guides/
     confluence.md           # Confluence publishing guide (MdToConfluence)
+    jira.md                 # Jira issue/story creation guide
     diagrams.md             # Markdown + PlantUML diagram guide
     fsharp.md               # F# guide
     haskell.md              # Haskell guide
