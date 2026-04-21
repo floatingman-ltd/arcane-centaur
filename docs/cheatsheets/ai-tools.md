@@ -1,33 +1,8 @@
 # AI Tools Cheat Sheet
 
-Covers in-editor keymaps for **GitHub Copilot CLI** (`gh copilot`) and the **OpenSpec** workflow tool.
+Covers in-editor keymaps for the **OpenSpec** workflow tool.
 
 **Leader** = `Space`
-
----
-
-## GitHub Copilot CLI
-
-These commands send the current visual selection (or whole buffer when no selection is active) to the `gh copilot` CLI and display the response in a floating window.
-
-| Keys | Mode | Action |
-|---|---|---|
-| `<leader>gcs` | Normal / Visual | Send to `gh copilot suggest` |
-| `<leader>gce` | Normal / Visual | Send to `gh copilot explain` |
-
-### Commands
-
-| Command | Description |
-|---|---|
-| `:CopilotSuggest` | Send buffer/selection to `gh copilot suggest` |
-| `:CopilotExplain` | Send buffer/selection to `gh copilot explain` |
-
-### Floating window controls
-
-| Key | Action |
-|---|---|
-| `q` | Close result window |
-| `<Esc>` | Close result window |
 
 ---
 

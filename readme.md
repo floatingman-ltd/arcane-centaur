@@ -274,8 +274,6 @@ Leader key is **Space**.
 | `Alt-f` | Insert | Accept next word of Copilot suggestion |
 | `<leader>t` | Normal | Toggle terminal split |
 | `<leader>f` | Normal / Visual | Format buffer (or selection) |
-| `<leader>gcs` | Normal / Visual | Copilot CLI: suggest (send to `gh copilot suggest`) |
-| `<leader>gce` | Normal / Visual | Copilot CLI: explain (send to `gh copilot explain`) |
 | `<leader>osn` | Normal | OpenSpec: create new change |
 | `<leader>oss` | Normal | OpenSpec: show status |
 | `<leader>osl` | Normal | OpenSpec: list all changes |
@@ -344,45 +342,6 @@ end,
 
 Common values: `"gpt-4o"`, `"gpt-4.1"`, `"claude-sonnet-4-5"`.
 
-## GitHub Copilot CLI
-
-[`gh copilot`](https://github.com/github/gh-extension-copilot) is a separate CLI tool that brings Copilot assistance to your shell, complementing the in-editor plugins.
-
-### Installation
-
-```sh
-# Install the GitHub CLI (gh) — Ubuntu / WSL
-sudo apt install gh
-
-# Install the Copilot extension
-gh extension install github/gh-copilot
-```
-
-### Usage
-
-| Command | What it does |
-|---|---|
-| `gh copilot suggest "find files modified in last 7 days"` | Suggests a shell command; offers to run, copy, or revise it |
-| `gh copilot explain "tar -xzf archive.tar.gz --strip-components=1"` | Explains what a command does in plain English |
-
-### Using from inside Neovim
-
-Use the built-in keymaps to drive Copilot CLI without leaving the editor:
-
-| Keys | Action |
-|---|---|
-| `<leader>gcs` | Send current selection (or buffer) to `gh copilot suggest` |
-| `<leader>gce` | Send current selection (or buffer) to `gh copilot explain` |
-
-Results appear in a floating window. Close with `q` or `<Esc>`.
-
-You can also press **`<leader>t`** to open the built-in terminal split and run `gh copilot` commands directly in the shell.
-
-> **Prerequisites:** Install [GitHub CLI](https://cli.github.com/) and the Copilot extension:
-> ```sh
-> gh extension install github/gh-copilot
-> ```
-
 → See **[docs/guides/ai-tools.md](docs/guides/ai-tools.md)** for the full guide including OpenSpec and Serena setup.
 
 > **Serena MCP server prerequisites:** Node.js 18+ is required. Install Serena with:
@@ -427,7 +386,6 @@ lua/
   config/
     confluence.lua          # Confluence publish command (MdToConfluence)
     jira.lua                # Jira issue/story creation (JiraCreateIssue, JiraCreateStory)
-    copilot_cli.lua         # CopilotSuggest / CopilotExplain commands (gh copilot)
     lsp.lua                 # LSP server setup (cl_lsp, fsautocomplete, marksman)
     marp.lua                # MARP presentation commands (preview + export)
     mdpdf.lua               # Markdown → PDF export command (MdToPdf)

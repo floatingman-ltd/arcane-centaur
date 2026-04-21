@@ -84,12 +84,6 @@ vim.api.nvim_set_keymap("i", "<C-J>", 'copilot#Accept("<CR>")', { silent = true,
 vim.api.nvim_set_keymap("i", "<M-f>", 'copilot#AcceptWord()', { silent = true, expr = true })
 vim.api.nvim_set_keymap("n", "<leader>c", "<C-w> h", {noremap = true, silent = true})
 
--- Copilot CLI
-vim.keymap.set({ "n", "v" }, "<leader>gcs", "<cmd>CopilotSuggest<CR>",
-  { noremap = true, silent = true, desc = "Copilot CLI: suggest" })
-vim.keymap.set({ "n", "v" }, "<leader>gce", "<cmd>CopilotExplain<CR>",
-  { noremap = true, silent = true, desc = "Copilot CLI: explain" })
-
 -- OpenSpec
 vim.keymap.set("n", "<leader>osn", "<cmd>OpenspecNew<CR>",
   { noremap = true, silent = true, desc = "OpenSpec: new change" })
