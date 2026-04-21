@@ -121,6 +121,8 @@
 | `Alt-f` | Insert | Accept next word of suggestion |
 | `<leader>gcs` | Normal / Visual | Copilot CLI: suggest (floating window) |
 | `<leader>gce` | Normal / Visual | Copilot CLI: explain (floating window) |
+| `<leader>gcs` | Normal / Visual | Copilot CLI: suggest (floating window) |
+| `<leader>gce` | Normal / Visual | Copilot CLI: explain (floating window) |
 
 → [Full reference](copilot.md) · [AI Tools guide](ai-tools.md)
 

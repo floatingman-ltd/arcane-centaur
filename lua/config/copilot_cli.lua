@@ -1,21 +1,21 @@
 -- lua/config/copilot_cli.lua
 --
--- In-editor integration for the GitHub Copilot CLI (`gh copilot`).
+-- In-editor integration for the GitHub Copilot CLI (`copilot`).
 --
 -- Commands registered by M.setup():
 --   :CopilotSuggest   Send the current visual selection (or whole buffer) to
---                     `gh copilot suggest` and show the response in a floating
---                     scratch window.
+--                     `copilot` with a "suggest a shell command" prompt and
+--                     show the response in a floating scratch window.
 --   :CopilotExplain   Send the current visual selection (or whole buffer) to
---                     `gh copilot explain` and show the explanation in a
---                     floating scratch window.
+--                     `copilot` with an "explain this code" prompt and show
+--                     the explanation in a floating scratch window.
 --
 -- Keymaps (set in lua/keymaps.lua):
 --   <leader>gcs  — CopilotSuggest (normal + visual)
 --   <leader>gce  — CopilotExplain (normal + visual)
 --
 -- Requires:
---   gh   — GitHub CLI with the `copilot` extension installed
+--   copilot  — GitHub Copilot CLI (npm install -g @github/copilot, Node 22+)
 
 local M = {}
 
@@ -100,34 +100,40 @@ local function open_float(title, lines)
   vim.keymap.set("n", "<Esc>", "<cmd>close<CR>", close_opts)
 end
 
---- Run a `gh copilot <subcommand>` with `input` piped via stdin.
+--- Run the GitHub Copilot CLI non-interactively with `input` piped via stdin.
+--- The `-s` flag suppresses usage information so only the AI response is shown.
 --- Displays the result in a floating window on success; notifies on error.
 --
----@param subcommand string  "suggest" or "explain"
----@param input      string  Text to pipe as stdin.
+---@param subcommand string  "suggest" or "explain" (used for the prompt and window title).
+---@param input      string  Code or context text to pipe as stdin.
 local function run_copilot(subcommand, input)
-  if vim.fn.executable("gh") ~= 1 then
+  if vim.fn.executable("copilot") ~= 1 then
     vim.notify(
-      "copilot_cli: `gh` not found on $PATH.\n"
-        .. "Install the GitHub CLI: https://cli.github.com/",
+      "copilot_cli: `copilot` not found on $PATH.\n"
+        .. "Install GitHub Copilot CLI: npm install -g @github/copilot  (Node 22+ required)",
       vim.log.levels.ERROR
     )
     return
   end
 
-  vim.notify("Copilot CLI: running `gh copilot " .. subcommand .. "` …", vim.log.levels.INFO)
+  local prompt
+  if subcommand == "suggest" then
+    prompt = "Suggest a shell command for the following context:\n\n" .. input
+  else
+    prompt = "Explain the following code:\n\n" .. input
+  end
+
+  vim.notify("Copilot CLI: running `copilot -sp ...` …", vim.log.levels.INFO)
 
   vim.system(
-    { "gh", "copilot", subcommand },
-    {
-      stdin = input,
-    },
+    { "copilot", "-sp", prompt },
+    {},
     function(result)
       vim.schedule(function()
         if result.code ~= 0 then
           local err = result.stderr or "(no stderr)"
           vim.notify(
-            "gh copilot " .. subcommand .. " failed (exit " .. result.code .. "):\n" .. err,
+            "copilot -sp failed (exit " .. result.code .. "):\n" .. err,
             vim.log.levels.ERROR
           )
           return
@@ -140,7 +146,7 @@ local function run_copilot(subcommand, input)
           table.remove(lines)
         end
 
-        local title = "gh copilot " .. subcommand
+        local title = "copilot " .. subcommand
         open_float(title, lines)
       end)
     end
@@ -152,12 +158,12 @@ function M.setup()
   vim.api.nvim_create_user_command("CopilotSuggest", function(args)
     local text = get_context_text(args)
     run_copilot("suggest", text)
-  end, { range = true, desc = "Send selection/buffer to `gh copilot suggest`" })
+  end, { range = true, desc = "Send selection/buffer to `copilot` for a shell command suggestion" })
 
   vim.api.nvim_create_user_command("CopilotExplain", function(args)
     local text = get_context_text(args)
     run_copilot("explain", text)
-  end, { range = true, desc = "Send selection/buffer to `gh copilot explain`" })
+  end, { range = true, desc = "Send selection/buffer to `copilot` for a code explanation" })
 end
 
 return M

@@ -4,7 +4,7 @@ This guide covers three AI / workflow tools that are integrated directly into Ne
 
 | Tool | What it does |
 |---|---|
-| **GitHub Copilot CLI** | Ask Copilot to suggest or explain shell commands without leaving the editor |
+| **GitHub Copilot CLI** | Ask Copilot to suggest shell commands or explain code without leaving the editor |
 | **OpenSpec** | Drive the in-repo OpenSpec change workflow from Neovim keymaps |
 | **Serena MCP server** | Provides symbol-aware code intelligence to GitHub Copilot chat and completions |
 
@@ -14,20 +14,15 @@ This guide covers three AI / workflow tools that are integrated directly into Ne
 
 ### Prerequisites
 
-1. Install [GitHub CLI](https://cli.github.com/):
+1. Install [Node.js 22+](https://nodejs.org/).
+2. Install the GitHub Copilot CLI:
    ```sh
-   # Debian / Ubuntu
-   sudo apt install gh
-   # macOS
-   brew install gh
+   npm install -g @github/copilot
    ```
-2. Authenticate:
+3. Authenticate (first run only):
    ```sh
-   gh auth login
-   ```
-3. Install the Copilot extension:
-   ```sh
-   gh extension install github/gh-copilot
+   copilot
+   # then enter: /login
    ```
 
 ### Usage
@@ -37,7 +32,7 @@ Select code in visual mode (or stay in normal mode to use the whole buffer), the
 | Keys | Action |
 |---|---|
 | `<leader>gcs` | Ask Copilot to **suggest** a shell command based on context |
-| `<leader>gce` | Ask Copilot to **explain** the selected code or command |
+| `<leader>gce` | Ask Copilot to **explain** the selected code |
 
 The response appears in a floating window.  Press `q` or `<Esc>` to close it.
 
@@ -47,7 +42,7 @@ You can also run the commands directly:
 
 ### How it works
 
-`lua/config/copilot_cli.lua` uses `vim.system()` to call `gh copilot <subcommand>` asynchronously with the buffer text piped as stdin.  The result is rendered in a scratch buffer inside a `nvim_open_win` floating window.
+`lua/config/copilot_cli.lua` uses `vim.system()` to invoke `copilot -sp "<prompt>"` non-interactively.  The `-s` flag suppresses usage metadata so only the AI response is captured.  The result is rendered in a scratch buffer inside a `nvim_open_win` floating window.
 
 ---
 
