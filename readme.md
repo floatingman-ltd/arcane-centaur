@@ -274,6 +274,8 @@ Leader key is **Space**.
 | `Alt-f` | Insert | Accept next word of Copilot suggestion |
 | `<leader>t` | Normal | Toggle terminal split |
 | `<leader>f` | Normal / Visual | Format buffer (or selection) |
+| `<leader>gcs` | Normal / Visual | Copilot CLI: suggest (send to `copilot`) |
+| `<leader>gce` | Normal / Visual | Copilot CLI: explain (send to `copilot`) |
 | `<leader>osn` | Normal | OpenSpec: create new change |
 | `<leader>oss` | Normal | OpenSpec: show status |
 | `<leader>osl` | Normal | OpenSpec: list all changes |
@@ -342,6 +344,32 @@ end,
 
 Common values: `"gpt-4o"`, `"gpt-4.1"`, `"claude-sonnet-4-5"`.
 
+## GitHub Copilot CLI
+
+The [GitHub Copilot CLI](https://github.com/github/copilot-cli) (`@github/copilot` npm package) brings Copilot AI assistance to your terminal and is integrated directly into Neovim.
+
+### Installation
+
+```sh
+# Requires Node.js 22+
+npm install -g @github/copilot
+
+# Authenticate on first use
+copilot
+# then enter: /login
+```
+
+### In-editor usage
+
+| Keys | Action |
+|---|---|
+| `<leader>gcs` | Send current selection (or buffer) to `copilot` for a shell command suggestion |
+| `<leader>gce` | Send current selection (or buffer) to `copilot` for a code explanation |
+
+Results appear in a floating window. Close with `q` or `<Esc>`.
+
+You can also press **`<leader>t`** to open the built-in terminal split and use `copilot` interactively.
+
 → See **[docs/guides/ai-tools.md](docs/guides/ai-tools.md)** for the full guide including OpenSpec and Serena setup.
 
 > **Serena MCP server prerequisites:** Node.js 18+ is required. Install Serena with:
@@ -386,6 +414,7 @@ lua/
   config/
     confluence.lua          # Confluence publish command (MdToConfluence)
     jira.lua                # Jira issue/story creation (JiraCreateIssue, JiraCreateStory)
+    copilot_cli.lua         # CopilotSuggest / CopilotExplain commands (copilot CLI)
     lsp.lua                 # LSP server setup (cl_lsp, fsautocomplete, marksman)
     marp.lua                # MARP presentation commands (preview + export)
     mdpdf.lua               # Markdown → PDF export command (MdToPdf)

@@ -1,11 +1,48 @@
 # AI Tools Guide
 
-This guide covers two AI / workflow tools that are integrated directly into Neovim:
+This guide covers three AI / workflow tools that are integrated directly into Neovim:
 
 | Tool | What it does |
 |---|---|
+| **GitHub Copilot CLI** | Ask Copilot to suggest shell commands or explain code without leaving the editor |
 | **OpenSpec** | Drive the in-repo OpenSpec change workflow from Neovim keymaps |
 | **Serena MCP server** | Provides symbol-aware code intelligence to GitHub Copilot chat and completions |
+
+---
+
+## GitHub Copilot CLI
+
+### Prerequisites
+
+1. Install [Node.js 22+](https://nodejs.org/).
+2. Install the GitHub Copilot CLI:
+   ```sh
+   npm install -g @github/copilot
+   ```
+3. Authenticate (first run only):
+   ```sh
+   copilot
+   # then enter: /login
+   ```
+
+### Usage
+
+Select code in visual mode (or stay in normal mode to use the whole buffer), then:
+
+| Keys | Action |
+|---|---|
+| `<leader>gcs` | Ask Copilot to **suggest** a shell command based on context |
+| `<leader>gce` | Ask Copilot to **explain** the selected code |
+
+The response appears in a floating window.  Press `q` or `<Esc>` to close it.
+
+You can also run the commands directly:
+- `:CopilotSuggest` — suggest
+- `:CopilotExplain` — explain
+
+### How it works
+
+`lua/config/copilot_cli.lua` uses `vim.system()` to invoke `copilot -sp "<prompt>"` non-interactively.  The `-s` flag suppresses usage metadata so only the AI response is captured.  The result is rendered in a scratch buffer inside a `nvim_open_win` floating window.
 
 ---
 
