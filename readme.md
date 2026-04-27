@@ -25,7 +25,7 @@ On first launch, [lazy.nvim](https://github.com/folke/lazy.nvim) will bootstrap 
 [Nerd Font]: https://www.nerdfonts.com/
 
 Language-specific prerequisites (LSP servers, REPLs, runtimes) are documented in each language guide:
-[Markdown](docs/guides/markdown.md) · [Diagrams](docs/guides/diagrams.md) · [Confluence](docs/guides/confluence.md) · [Jira](docs/guides/jira.md) · [F#](docs/guides/fsharp.md) · [Haskell](docs/guides/haskell.md) · [Lisp / Clojure / Scheme](docs/guides/lisp.md) · [Presentations / MARP](docs/guides/presentations.md) · [REST Client](docs/guides/rest.md)
+[Markdown](docs/guides/markdown.md) · [Diagrams](docs/guides/diagrams.md) · [Confluence](docs/guides/confluence.md) · [Jira](docs/guides/jira.md) · [F#](docs/guides/fsharp.md) · [Haskell](docs/guides/haskell.md) · [Janet](docs/guides/janet.md) · [Lisp / Clojure / Scheme](docs/guides/lisp.md) · [Presentations / MARP](docs/guides/presentations.md) · [REST Client](docs/guides/rest.md)
 
 ### Recommended Terminal — GNOME Terminal
 
@@ -190,6 +190,10 @@ Mermaid fenced code blocks (`` ```mermaid `` … `` ``` ``) render natively in t
 
 → See **[docs/guides/haskell.md](docs/guides/haskell.md)** for the full guide: haskell-tools.nvim, hls LSP, and GHCi REPL keybindings.
 
+## Working with Janet
+
+→ See **[docs/guides/janet.md](docs/guides/janet.md)** for the full guide: Conjure REPL, vim-sexp structural editing, janet-lsp, Quick Start, and Typical Workflow.
+
 ## Working with Lisp
 
 → See **[docs/guides/lisp.md](docs/guides/lisp.md)** for the full guide: Conjure, vim-sexp, parinfer, rainbow-delimiters, Quick Start, and Typical Workflow.
@@ -322,6 +326,7 @@ Press **`Ctrl+e`** to dismiss the completion menu and return to normal typing.
 | Fennel | — | — | ✅ (Conjure) | ✅ parinfer | [docs/guides/lisp.md](docs/guides/lisp.md) |
 | Haskell | — | ✅ haskell-tools | ✅ GHCi | — | [docs/guides/haskell.md](docs/guides/haskell.md) |
 | HTTP | ✅ | — | — | — | [docs/guides/rest.md](docs/guides/rest.md) |
+| Janet | — | ✅ janet_lsp | ✅ (Conjure) | ✅ vim-sexp + parinfer | [docs/guides/janet.md](docs/guides/janet.md) |
 | Lua | ✅ | — | — | — | — |
 | Markdown | ✅ | ✅ marksman | — | — | [docs/guides/markdown.md](docs/guides/markdown.md) |
 | Mermaid *(in Markdown)* | ✅ *(markdown)* | — | — | — | [docs/guides/diagrams.md](docs/guides/diagrams.md) |
@@ -385,7 +390,7 @@ Plugins are managed by [lazy.nvim](https://github.com/folke/lazy.nvim) and organ
 | File | Plugins | Cheatsheet |
 |---|---|---|
 | `colorscheme.lua` | TokyoNight theme (moon / storm / night / day variants) | — |
-| `conform.lua` | Formatting (format-on-save + `<leader>f`) for Lisp and F# filetypes | [formatting.md](docs/cheatsheets/formatting.md) |
+| `conform.lua` | Formatting (format-on-save + `<leader>f`) for Lisp, Janet, and F# filetypes | [formatting.md](docs/cheatsheets/formatting.md) |
 | `copilot.lua` | Copilot inline completions + Serena MCP server config | [copilot.md](docs/cheatsheets/copilot.md) · [ai-tools.md](docs/cheatsheets/ai-tools.md) |
 | `dotnet.lua` | iron.nvim REPL integration for F# (`dotnet fsi`) and C# (`csharprepl`); roslyn.nvim C# LSP | [fsharp.md](docs/cheatsheets/fsharp.md) · [dotnet.md](docs/cheatsheets/dotnet.md) |
 | `fzf-lua.lua` | Fuzzy finder | [fzf.md](docs/cheatsheets/fzf.md) |
@@ -393,7 +398,7 @@ Plugins are managed by [lazy.nvim](https://github.com/folke/lazy.nvim) and organ
 | `haskell.lua` | haskell-tools.nvim (GHCi REPL + HLS integration) | [haskell.md](docs/cheatsheets/haskell.md) |
 | `html.lua` | Bracey HTML live preview | [html.md](docs/cheatsheets/html.md) |
 | `init.lua` | vim-repeat, vim-sensible, vim-surround, vim-unimpaired, vim-airline (statusline), lspconfig | [lsp.md](docs/cheatsheets/lsp.md) · [surround.md](docs/cheatsheets/surround.md) · [unimpaired.md](docs/cheatsheets/unimpaired.md) |
-| `lisp.lua` | Conjure, vim-sexp, nvim-parinfer, rainbow-delimiters | [lisp.md](docs/cheatsheets/lisp.md) |
+| `lisp.lua` | Conjure, vim-sexp, nvim-parinfer, rainbow-delimiters | [lisp.md](docs/cheatsheets/lisp.md) · [janet.md](docs/cheatsheets/janet.md) |
 | `markdown.lua` | markdown-preview.nvim (browser preview, PlantUML via Docker server); `:MdToPdf` PDF export; `:MdToConfluence` / `:MdFromConfluence` / `:MdConfluenceComments`; `:JiraCreateIssue` / `:JiraCreateStory` | [markdown.md](docs/cheatsheets/markdown.md) |
 | `mkdnflow.lua` | mkdnflow.nvim (cross-page link navigation: `<CR>` follow, `<BS>` back) | [markdown.md](docs/cheatsheets/markdown.md) |
 | `nvim-cmp.lua` | nvim-cmp + completion sources | [completion.md](docs/cheatsheets/completion.md) |
@@ -415,7 +420,7 @@ lua/
     confluence.lua          # Confluence publish command (MdToConfluence)
     jira.lua                # Jira issue/story creation (JiraCreateIssue, JiraCreateStory)
     copilot_cli.lua         # CopilotSuggest / CopilotExplain commands (copilot CLI)
-    lsp.lua                 # LSP server setup (cl_lsp, fsautocomplete, marksman)
+    lsp.lua                 # LSP server setup (cl_lsp, fsautocomplete, janet_lsp, marksman)
     marp.lua                # MARP presentation commands (preview + export)
     mdpdf.lua               # Markdown → PDF export command (MdToPdf)
     mdpreview.lua           # Markdown markserv server preview command (MdServerPreview)
@@ -444,9 +449,11 @@ lua/
     vim-commentary.lua      # Comment toggling
 after/ftplugin/
   clojure.lua               # Clojure indent settings
+  cs.lua                    # C# indent settings
   fsharp.lua                # F# indent settings (4-space) & localleader
   haskell.lua               # Haskell-tools keybindings
   http.lua                  # REST client localleader & keymaps
+  janet.lua                 # Janet indent settings & localleader
   lisp.lua                  # Lisp indent settings & lispwords
   markdown.lua              # Markdown localleader, preview keymap, MARP commands, MdToPdf, MdServerPreview, MdToConfluence, JiraCreateIssue/Story
   plantuml.lua              # PlantUML localleader & PumlPreview keymap
@@ -470,6 +477,7 @@ docs/
     haskell.md              # haskell-tools REPL & HLS
     html.md                 # Bracey HTML live preview
     index.md              # Main keybinding reference (links to plugin sheets)
+    janet.md                # Conjure + vim-sexp (Janet)
     lisp.md                 # Conjure + vim-sexp
     lsp.md                  # LSP keybindings
     markdown.md             # Markdown preview + MARP + markserv + Confluence
@@ -482,6 +490,7 @@ docs/
     diagrams.md             # Markdown + PlantUML diagram guide
     fsharp.md               # F# guide
     haskell.md              # Haskell guide
+    janet.md                # Janet guide
     lisp.md                 # Lisp / Clojure / Scheme / Fennel guide
     markdown.md             # Markdown preview guide (markserv, cross-page links)
     presentations.md        # MARP presentation guide

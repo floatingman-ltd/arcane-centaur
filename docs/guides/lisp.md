@@ -11,6 +11,8 @@ This configuration is built around an interactive, REPL-driven Lisp workflow. Fo
 
 All four plugins lazy-load only when you open a **Lisp**, **Clojure**, **Scheme**, or **Fennel** file.
 
+> **Janet** shares the same plugin set (Conjure, vim-sexp, parinfer, rainbow-delimiters). See [janet.md](janet.md) for the Janet-specific guide.
+
 [conform.nvim](https://github.com/stevearc/conform.nvim) is also loaded for these filetypes and provides **format-on-save** as well as a manual **`<leader>f`** keybinding (normal and visual mode) to reformat the current buffer or selection.
 
 ## Prerequisites
