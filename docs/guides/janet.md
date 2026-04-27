@@ -32,20 +32,22 @@ janet -v
 
 ### Installing jpm (Janet Package Manager)
 
-`jpm` is required to install the LSP server and manage Janet projects.
+`jpm` is required to install the LSP server and manage Janet projects. It is typically bundled with Janet installations. If it is not available, build it from source:
 
 ```sh
-sudo jpm install jpm
+git clone https://github.com/janet-lang/jpm.git
+cd jpm
+janet bootstrap.janet
 ```
 
-Or follow the instructions at [janet-lang/jpm](https://github.com/janet-lang/jpm).
+See [janet-lang/jpm](https://github.com/janet-lang/jpm) for full instructions.
 
 ## LSP
 
 The `janet_lsp` server is configured in `lua/config/lsp.lua`. Install it via jpm:
 
 ```sh
-jpm install https://github.com/janet-lang/janet-lsp.git
+jpm install janet-lsp
 ```
 
 Make sure `janet-lsp` is on your `$PATH` (typically `~/.jpm/bin/`). See [readme.md](../../readme.md#lsp-support) for the shared LSP keybindings.

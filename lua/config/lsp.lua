@@ -22,7 +22,7 @@ lspconfig.fsautocomplete.setup{ on_attach = on_attach }
 -- Markdown LSP (requires: marksman on $PATH)
 lspconfig.marksman.setup{ on_attach = on_attach }
 
--- Janet LSP (requires: jpm install https://github.com/janet-lang/janet-lsp.git)
+-- Janet LSP (requires: jpm install janet-lsp)
 lspconfig.janet_lsp.setup{ on_attach = on_attach }
 
 -- C# LSP (roslyn.nvim manages the server; we attach shared keymaps here)
