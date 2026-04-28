@@ -1,8 +1,8 @@
-# Lisp Cheatsheet (Conjure + vim-sexp)
+# Janet Cheatsheet (Conjure + vim-sexp)
 
-**LocalLeader** = `,` in Lisp / Clojure / Scheme / Fennel buffers
+**LocalLeader** = `,` in Janet buffers
 
-→ Back to [main cheatsheet](index.md) · Full guide: [../guides/lisp.md](../guides/lisp.md) · Janet-specific: [janet.md](janet.md)
+→ Back to [main cheatsheet](index.md) · Full guide: [../guides/janet.md](../guides/janet.md)
 
 ## Conjure — Evaluation
 
@@ -12,7 +12,6 @@
 | `,er` | Evaluate root (outermost) form |
 | `,eb` | Evaluate entire buffer |
 | `,e!` | Replace form with its evaluated result |
-| `,cc` | Connect to REPL manually |
 
 ## Conjure — REPL Log
 
@@ -38,15 +37,15 @@
 | `cse[` or `cse]` | Surround element with `[]` |
 | `dsf` | Delete surrounding function call (splice) |
 
-> See [../guides/lisp.md](../guides/lisp.md#structural-editing-slurp--barf) for step-by-step examples of each slurp/barf operation.
+> See [../guides/janet.md](../guides/janet.md) for step-by-step examples and setup instructions.
 
 ## Other Active Plugins
 
 - **nvim-parinfer** — keeps parentheses balanced as you edit indentation (no keymaps)
 - **rainbow-delimiters.nvim** — color-codes matching delimiters by depth (no keymaps)
-- **LSP** (`cl_lsp` for Common Lisp) — see [lsp.md](lsp.md)
+- **LSP** (`janet_lsp`) — see [lsp.md](lsp.md)
 - **Formatting** (conform.nvim, format-on-save) — see [formatting.md](formatting.md)
 
 ---
 
-*Conjure prefix configured in `lua/plugins/lisp.lua`. vim-sexp keymaps from `tpope/vim-sexp-mappings-for-regular-people`. LocalLeader set in `after/ftplugin/lisp.lua`, `clojure.lua`, and `scheme.lua`.*
+*Conjure prefix configured in `lua/plugins/lisp.lua`. vim-sexp keymaps from `tpope/vim-sexp-mappings-for-regular-people`. LocalLeader set in `after/ftplugin/janet.lua`.*

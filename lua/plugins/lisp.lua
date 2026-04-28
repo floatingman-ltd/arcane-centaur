@@ -2,7 +2,7 @@ return {
   -- Conjure: interactive REPL-driven development for Lisp, Clojure, Scheme
   {
     "Olical/conjure",
-    ft = { "lisp", "clojure", "scheme", "fennel" },
+    ft = { "lisp", "clojure", "scheme", "fennel", "janet" },
     dependencies = {
       "PaterJason/cmp-conjure",
     },
@@ -33,7 +33,7 @@ return {
   -- Ergonomic keybindings for vim-sexp
   {
     "tpope/vim-sexp-mappings-for-regular-people",
-    ft = { "lisp", "clojure", "scheme" },
+    ft = { "lisp", "clojure", "scheme", "janet" },
     dependencies = {
       "guns/vim-sexp",
     },
@@ -42,13 +42,13 @@ return {
   -- Automatic parenthesis balancing via indentation
   {
     "gpanders/nvim-parinfer",
-    ft = { "lisp", "clojure", "scheme", "fennel" },
+    ft = { "lisp", "clojure", "scheme", "fennel", "janet" },
   },
 
   -- Rainbow-colored parentheses for visual nesting
   {
     "HiPhish/rainbow-delimiters.nvim",
-    ft = { "lisp", "clojure", "scheme", "fennel" },
+    ft = { "lisp", "clojure", "scheme", "fennel", "janet" },
     config = function()
       local rainbow_delimiters = require("rainbow-delimiters")
       -- Empty string key "" sets the default for all filetypes

@@ -1,6 +1,6 @@
 return {
   "stevearc/conform.nvim",
-  ft = { "lisp", "clojure", "scheme", "fennel", "fsharp" },
+  ft = { "lisp", "clojure", "scheme", "fennel", "fsharp", "janet" },
   opts = {
     formatters_by_ft = {
       lisp    = { lsp_format = "prefer" },
@@ -8,6 +8,7 @@ return {
       scheme  = { lsp_format = "prefer" },
       fennel  = { lsp_format = "prefer" },
       fsharp  = { lsp_format = "prefer" },
+      janet   = { lsp_format = "prefer" },
     },
     format_on_save = {
       timeout_ms = 2000,

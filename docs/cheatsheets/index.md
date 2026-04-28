@@ -17,8 +17,9 @@
 | GitHub Copilot | [copilot.md](copilot.md) |
 | GitHub Copilot CLI + OpenSpec | [ai-tools.md](ai-tools.md) |
 | Haskell (haskell-tools) | [haskell.md](haskell.md) |
+| Janet (Conjure + vim-sexp) | [janet.md](janet.md) |
 | HTML Live Preview (Bracey) | [html.md](html.md) |
-| Lisp / Clojure / Scheme (Conjure + vim-sexp) | [lisp.md](lisp.md) |
+| Lisp / Clojure / Scheme / Janet (Conjure + vim-sexp) | [lisp.md](lisp.md) |
 | LSP | [lsp.md](lsp.md) |
 | Markdown Preview + MARP + Confluence + Jira | [markdown.md](markdown.md) |
 | Navigation & Splits | [navigation.md](navigation.md) |
@@ -107,7 +108,7 @@
 |---|---|---|
 | `<leader>f` | Normal / Visual | Format buffer or selection (LSP-preferred) |
 
-*Format-on-save is enabled for Lisp, Clojure, Scheme, Fennel, and F# buffers.*
+*Format-on-save is enabled for Lisp, Clojure, Scheme, Fennel, Janet, and F# buffers.*
 
 → [Full reference](formatting.md)
 
@@ -229,9 +230,9 @@ LocalLeader is `,` in F# buffers.
 
 ---
 
-### Lisp / Clojure / Scheme — Conjure
+### Lisp / Clojure / Scheme / Janet — Conjure
 
-LocalLeader is `,` in Lisp/Clojure/Scheme/Fennel buffers.
+LocalLeader is `,` in Lisp/Clojure/Scheme/Fennel/Janet buffers.
 
 #### Evaluation
 
