@@ -21,8 +21,10 @@ On first launch, [lazy.nvim](https://github.com/folke/lazy.nvim) will bootstrap 
 | **Lua ≥ 5.1** *(5.4 recommended)* | Required by lazy.nvim's LuaRocks support | `sudo apt install lua5.4` |
 | **LuaRocks** | Plugin dependency manager used by lazy.nvim | `sudo apt install luarocks` |
 | **A [Nerd Font][]** *(optional)* | File-type icons in the tree and fuzzy-finder | See below |
+| **[glow][]** *(optional)* | CLI markdown preview in terminal (`,gp`) | `sudo snap install glow` or `brew install glow` |
 
 [Nerd Font]: https://www.nerdfonts.com/
+[glow]: https://github.com/charmbracelet/glow
 
 Language-specific prerequisites (LSP servers, REPLs, runtimes) are documented in each language guide:
 [Markdown](docs/guides/markdown.md) · [Diagrams](docs/guides/diagrams.md) · [Confluence](docs/guides/confluence.md) · [Jira](docs/guides/jira.md) · [F#](docs/guides/fsharp.md) · [Haskell](docs/guides/haskell.md) · [Lisp / Clojure / Scheme](docs/guides/lisp.md) · [Presentations / MARP](docs/guides/presentations.md) · [REST Client](docs/guides/rest.md)
@@ -148,6 +150,7 @@ vim.g.have_nerd_font = true   -- or false
 
 → See **[docs/guides/markdown.md](docs/guides/markdown.md)** for the full guide: single-file browser preview, markserv Docker server for cross-page links, in-editor navigation, and PDF export.
 
+- **`,gp`** — preview in terminal via [glow](https://github.com/charmbracelet/glow) (no browser or Docker — works over SSH and on TTY consoles)
 - **`,p`** — toggle `markdown-preview.nvim` (single file with PlantUML/Mermaid)
 - **`,sp`** — open in markserv Docker server — cross-page links and PlantUML/Mermaid diagrams rendered
 - **`<CR>`** — follow a link to another `.md` file in the editor (mkdnflow.nvim)
@@ -394,7 +397,7 @@ Plugins are managed by [lazy.nvim](https://github.com/folke/lazy.nvim) and organ
 | `html.lua` | Bracey HTML live preview | [html.md](docs/cheatsheets/html.md) |
 | `init.lua` | vim-repeat, vim-sensible, vim-surround, vim-unimpaired, vim-airline (statusline), lspconfig | [lsp.md](docs/cheatsheets/lsp.md) · [surround.md](docs/cheatsheets/surround.md) · [unimpaired.md](docs/cheatsheets/unimpaired.md) |
 | `lisp.lua` | Conjure, vim-sexp, nvim-parinfer, rainbow-delimiters | [lisp.md](docs/cheatsheets/lisp.md) |
-| `markdown.lua` | markdown-preview.nvim (browser preview, PlantUML via Docker server); `:MdToPdf` PDF export; `:MdToConfluence` / `:MdFromConfluence` / `:MdConfluenceComments`; `:JiraCreateIssue` / `:JiraCreateStory` | [markdown.md](docs/cheatsheets/markdown.md) |
+| `markdown.lua` | markdown-preview.nvim (browser preview, PlantUML via Docker server); glow CLI terminal preview (`:GlowPreview`); `:MdToPdf` PDF export; `:MdToConfluence` / `:MdFromConfluence` / `:MdConfluenceComments`; `:JiraCreateIssue` / `:JiraCreateStory` | [markdown.md](docs/cheatsheets/markdown.md) |
 | `mkdnflow.lua` | mkdnflow.nvim (cross-page link navigation: `<CR>` follow, `<BS>` back) | [markdown.md](docs/cheatsheets/markdown.md) |
 | `nvim-cmp.lua` | nvim-cmp + completion sources | [completion.md](docs/cheatsheets/completion.md) |
 | `nvim-tree.lua` | File explorer tree | [file-tree.md](docs/cheatsheets/file-tree.md) |
@@ -415,6 +418,7 @@ lua/
     confluence.lua          # Confluence publish command (MdToConfluence)
     jira.lua                # Jira issue/story creation (JiraCreateIssue, JiraCreateStory)
     copilot_cli.lua         # CopilotSuggest / CopilotExplain commands (copilot CLI)
+    glowpreview.lua         # Glow CLI terminal preview command (GlowPreview)
     lsp.lua                 # LSP server setup (cl_lsp, fsautocomplete, marksman)
     marp.lua                # MARP presentation commands (preview + export)
     mdpdf.lua               # Markdown → PDF export command (MdToPdf)
@@ -448,7 +452,7 @@ after/ftplugin/
   haskell.lua               # Haskell-tools keybindings
   http.lua                  # REST client localleader & keymaps
   lisp.lua                  # Lisp indent settings & lispwords
-  markdown.lua              # Markdown localleader, preview keymap, MARP commands, MdToPdf, MdServerPreview, MdToConfluence, JiraCreateIssue/Story
+  markdown.lua              # Markdown localleader, glow CLI preview, browser preview keymap, MARP commands, MdToPdf, MdServerPreview, MdToConfluence, JiraCreateIssue/Story
   plantuml.lua              # PlantUML localleader & PumlPreview keymap
   scheme.lua                # Scheme indent settings
 docker/

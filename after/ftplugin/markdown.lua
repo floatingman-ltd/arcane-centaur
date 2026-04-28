@@ -1,6 +1,10 @@
 vim.b.maplocalleader = ","
 vim.keymap.set("n", "<localleader>p", "<cmd>MarkdownPreviewToggle<cr>", { buffer = true, desc = "Toggle markdown preview" })
 
+-- CLI terminal preview via glow (no browser/Docker required; see docs/guides/markdown.md)
+require("config.glowpreview").setup()
+vim.keymap.set("n", "<localleader>gp", "<cmd>GlowPreview<cr>", { buffer = true, desc = "Preview markdown in terminal via glow" })
+
 -- Markserv server preview (requires Docker; see docs/guides/markdown.md)
 require("config.mdpreview").setup()
 vim.keymap.set("n", "<localleader>sp", "<cmd>MdServerPreview<cr>", { buffer = true, desc = "Open in markserv Docker preview server (cross-page links)" })

@@ -2,6 +2,7 @@
 
 This guide covers all preview and export options for Markdown files:
 
+- **`glow` CLI preview** — rich terminal-based markdown preview, no browser or Docker required
 - **`markdown-preview.nvim`** — single-file browser preview with PlantUML and Mermaid diagram rendering
 - **`markserv` Docker server** — project-wide directory preview where cross-page links between `.md` files resolve correctly
 - **`mkdnflow.nvim`** — in-editor cross-page link navigation
@@ -13,6 +14,15 @@ For MARP presentation slides, see **[presentations.md](presentations.md)**.
 ---
 
 ## Quick Start
+
+### CLI terminal preview — glow (no browser or Docker required)
+
+1. Install [glow](https://github.com/charmbracelet/glow): `sudo snap install glow` or `brew install glow`.
+2. Open any `.md` file in Neovim.
+3. Press `,gp` to render a terminal preview using glow.
+4. Press `q` or `Esc` to close the preview split.
+
+This is the fastest preview option and works over SSH, on TTY consoles, and anywhere a browser is unavailable.
 
 ### Single-file preview (no Docker required)
 
@@ -59,6 +69,46 @@ docker compose -f ~/.config/nvim/docker/plantuml-server/docker-compose.yml up -d
 
 The PlantUML server is stateless and starts instantly.  You can leave it running
 permanently.  See [diagrams.md](diagrams.md) for the full guide.
+
+---
+
+## Glow CLI Preview (`,gp`)
+
+[glow](https://github.com/charmbracelet/glow) is a terminal-based markdown
+renderer from Charm.  It renders the current file in a Neovim terminal split,
+providing syntax-highlighted headings, tables, code blocks, and links — all
+without a browser or Docker.
+
+### Prerequisites
+
+Install glow via any of these methods:
+
+```sh
+# snap (Ubuntu/Linux)
+sudo snap install glow
+
+# Homebrew (macOS / Linuxbrew)
+brew install glow
+
+# Go
+go install github.com/charmbracelet/glow@latest
+```
+
+### Usage
+
+Press `,gp` in any markdown buffer.  A horizontal terminal split opens with the
+rendered preview.  Press `q` to close the pager, then `:q` or `Ctrl-w c` to
+close the split.
+
+### When to use glow
+
+| Situation | Use glow? |
+|-----------|-----------|
+| SSH session with no graphical browser | ✅ Yes |
+| TTY console / headless server | ✅ Yes |
+| Quick syntax-highlighted read of a single file | ✅ Yes |
+| Diagrams (PlantUML, Mermaid) | ❌ Use `,p` or `,sp` (browser) |
+| Cross-page link navigation in browser | ❌ Use `,sp` (markserv) |
 
 ---
 
@@ -161,6 +211,7 @@ LocalLeader is `,` in Markdown buffers.
 
 | Keys | Action |
 |------|--------|
+| `,gp` | Preview in terminal via glow (`GlowPreview` — no browser/Docker needed) |
 | `,p` | Toggle `markdown-preview.nvim` single-file browser preview |
 | `,sp` | Open current file in markserv Docker server preview (`MdServerPreview`) |
 | `<CR>` | Follow link under cursor (mkdnflow — in-editor navigation) |
@@ -181,6 +232,7 @@ LocalLeader is `,` in Markdown buffers.
 
 | Situation | Recommended tool |
 |-----------|-----------------|
+| Quick CLI preview, SSH, headless, no browser | `,gp` — glow terminal preview |
 | Single file, diagrams, cursor sync | `,p` — markdown-preview.nvim |
 | Multi-file project, cross-page links, diagrams | `,sp` — markserv Docker server |
 | Navigate between linked files in editor | `<CR>` — mkdnflow.nvim |

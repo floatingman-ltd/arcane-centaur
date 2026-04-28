@@ -1,4 +1,4 @@
-# Markdown Cheatsheet (markdown-preview + mkdnflow + markserv + MARP + Confluence + Jira)
+# Markdown Cheatsheet (markdown-preview + mkdnflow + markserv + glow + MARP + Confluence + Jira)
 
 **LocalLeader** = `,` in Markdown buffers
 
@@ -14,6 +14,16 @@
 | `<S-Tab>` | Normal | Jump to the previous link in the buffer |
 
 Use `<CR>` to follow a `[text](other-file.md)` link directly in the editor, then press `,p` or `,sp` to open the browser preview for that file. Press `<BS>` to return to the original file.
+
+## CLI Terminal Preview — glow (no browser or Docker required)
+
+| Keys | Mode | Action |
+|---|---|---|
+| `,gp` | Normal | Preview markdown in terminal via glow (`GlowPreview`) |
+
+Renders the current file in a terminal split using [glow](https://github.com/charmbracelet/glow). Ideal for SSH sessions, TTY consoles, and headless servers. Press `q` to close the glow pager, then `:q` to close the split.
+
+Install glow: `sudo snap install glow` or `brew install glow`.
 
 ## Markdown Preview (markdown-preview.nvim)
 
@@ -107,6 +117,7 @@ Requires `JIRA_EMAIL`, `JIRA_API_TOKEN`, and `JIRA_BASE_URL` environment variabl
 
 | Command | Description |
 |---|---|
+| `:GlowPreview` | Preview markdown in terminal via glow (no browser/Docker) |
 | `:MarkdownPreviewToggle` | Toggle browser Markdown preview (single file) |
 | `:MdServerPreview` | Open current file in markserv Docker server (cross-page links) |
 | `:MdToPdf` | Export to PDF, rendering PlantUML and Mermaid diagrams via Docker |
@@ -124,4 +135,4 @@ Requires `JIRA_EMAIL`, `JIRA_API_TOKEN`, and `JIRA_BASE_URL` environment variabl
 
 ---
 
-*Link navigation keymaps provided by mkdnflow.nvim (`lua/plugins/mkdnflow.lua`). Preview keymaps defined in `after/ftplugin/markdown.lua`. Markserv command defined in `lua/config/mdpreview.lua`. MARP commands defined in `lua/config/marp.lua`. PDF export command defined in `lua/config/mdpdf.lua`. Confluence publish command defined in `lua/config/confluence.lua`. Jira commands defined in `lua/config/jira.lua`. Preview plugin configured in `lua/plugins/markdown.lua`.*
+*Link navigation keymaps provided by mkdnflow.nvim (`lua/plugins/mkdnflow.lua`). Preview keymaps defined in `after/ftplugin/markdown.lua`. Glow preview command defined in `lua/config/glowpreview.lua`. Markserv command defined in `lua/config/mdpreview.lua`. MARP commands defined in `lua/config/marp.lua`. PDF export command defined in `lua/config/mdpdf.lua`. Confluence publish command defined in `lua/config/confluence.lua`. Jira commands defined in `lua/config/jira.lua`. Preview plugin configured in `lua/plugins/markdown.lua`.*
