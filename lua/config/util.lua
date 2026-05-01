@@ -17,6 +17,14 @@ local M = {}
 --
 ---@param url string  The URL to open.
 function M.open_url(url)
+  -- In a console environment there is no graphical browser; surface the URL
+  -- as an INFO notification so the user can act on it (copy, open manually).
+  local term = require("config.terminal")
+  if term.is_console then
+    vim.notify("open_url: " .. url, vim.log.levels.INFO)
+    return
+  end
+
   local openers = { "xdg-open", "open", "wslview", "explorer.exe" }
   for _, cmd in ipairs(openers) do
     if vim.fn.executable(cmd) == 1 then

@@ -1,5 +1,22 @@
 vim.b.maplocalleader = ","
-vim.keymap.set("n", "<localleader>p", "<cmd>MarkdownPreviewToggle<cr>", { buffer = true, desc = "Toggle markdown preview" })
+
+-- Route preview keymap to glow (console) or markdown-preview (GUI).
+local term = require("config.terminal")
+
+vim.keymap.set("n", "<localleader>p", function()
+  if term.is_console then
+    if vim.fn.executable("glow") ~= 1 then
+      vim.notify(
+        "glow not found — install with: sudo apt install glow  OR  snap install glow",
+        vim.log.levels.WARN
+      )
+      return
+    end
+    vim.cmd("Glow")
+  else
+    vim.cmd("MarkdownPreviewToggle")
+  end
+end, { buffer = true, desc = "Toggle markdown preview" })
 
 -- Markserv server preview (requires Docker; see docs/guides/markdown.md)
 require("config.mdpreview").setup()
