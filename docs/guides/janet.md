@@ -19,10 +19,10 @@ All four plugins lazy-load only when you open a **Janet** file (`.janet`).
 
 | Platform | Command |
 |---|---|
-| **macOS (Homebrew)** | `brew install janet` |
 | **Ubuntu / Debian** | Build from source — see [janet-lang.org](https://janet-lang.org/) |
 | **Arch Linux** | `sudo pacman -S janet` |
 | **Windows** | Download from [janet-lang.org](https://janet-lang.org/) |
+| **macOS (Homebrew)** | `brew install janet` |
 
 Verify the installation:
 
