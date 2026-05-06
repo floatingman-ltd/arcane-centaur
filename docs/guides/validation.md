@@ -35,21 +35,21 @@ which nvim glow python3 curl pandoc docker luac
 Verify all Lua files are syntactically valid.
 
 ```sh
-$ find ~/.config/nvim -name '*.lua' \
+find ~/.config/nvim -name '*.lua' \
     -not -path '*/lazy/*' \
     -not -path '*/.serena/*' \
     -print0 | xargs -0 luac -p && echo "All OK"
 ```
 
-- [ ] 1.1 **Expected:** `All OK` — no output before it, exit code 0.
+- [x] 1.1 **Expected:** `All OK` — no output before it, exit code 0.
 
 ---
 
 ## 2. Startup and Plugin Loading
 
-- [ ] 2.1 Open Neovim with no file argument:
+- [x] 2.1 Open Neovim with no file argument:
   ```sh
-  $ nvim
+  nvim
   ```
   **Expected:** starts without any error or warning notifications.
 
@@ -59,7 +59,7 @@ $ find ~/.config/nvim -name '*.lua' \
   ```
   **Expected:** all plugins show `✓ loaded` or `○ not loaded` (lazy). None show `✗ error`.
 
-- [ ] 2.3 Confirm leader keys:
+- [x] 2.3 Confirm leader keys:
   ```
   :lua print(vim.g.mapleader, vim.g.maplocalleader)
   ```
@@ -75,16 +75,16 @@ $ find ~/.config/nvim -name '*.lua' \
   ```
   **Expected:** `false`
 
-- [ ] 3.2 In a headless/console session (no `$DISPLAY` or `$WAYLAND_DISPLAY`):
+- [x] 3.2 In a headless/console session (no `$DISPLAY` or `$WAYLAND_DISPLAY`):
   ```sh
-  $ env -u DISPLAY -u WAYLAND_DISPLAY nvim
+  env -u DISPLAY -u WAYLAND_DISPLAY nvim
   ```
   ```
   :lua print(require("config.terminal").is_console)
   ```
   **Expected:** `true`
 
-- [ ] 3.3 Confirm WSL detection (WSL sessions only):
+- [x] 3.3 Confirm WSL detection (WSL sessions only):
   ```
   :lua print(require("config.terminal").is_wsl)
   ```
@@ -96,18 +96,17 @@ $ find ~/.config/nvim -name '*.lua' \
 
 **Precondition:** `glow` is on `$PATH`. Launch in console mode:
 ```sh
-$ env -u DISPLAY -u WAYLAND_DISPLAY nvim /tmp/test.md
+env -u DISPLAY -u WAYLAND_DISPLAY nvim /tmp/test.md
 ```
 
 Add content to the buffer:
 ```
-i# Test Heading
+# Test Heading
 
 This is **bold** and _italic_ text.
 
 - item one
 - item two
-<Esc>:w<CR>
 ```
 
 - [ ] 4.1 Confirm `glow.nvim` loaded and `markdown-preview.nvim` did not:
@@ -124,13 +123,26 @@ This is **bold** and _italic_ text.
 
 - [ ] 4.3 Close popup with `q` or `<Esc>`. **Expected:** popup closes, cursor returns to source buffer.
 
-- [ ] 4.4 Open via command directly:
+- [ ] 4.4 **Orphaned popup recovery** — navigate away from the popup without closing it:
+  Open the popup with `,p`, then jump to another window with `<C-w>w` until the glow
+  buffer loses focus.  Now close it:
+  1. Press `<C-w>w` until the glow buffer is active again.
+  2. Press `q`.
+  **Expected:** popup closes cleanly.
+
+- [ ] 4.5 **Force-close all floats** — if step 4.4 fails, run the nuclear option:
+  ```
+  :lua for _, w in ipairs(vim.api.nvim_list_wins()) do if vim.api.nvim_win_get_config(w).relative ~= "" then vim.api.nvim_win_close(w, true) end end
+  ```
+  **Expected:** all floating windows are closed. Main editing windows remain.
+
+- [ ] 4.6 Open via command directly:
   ```
   :Glow
   ```
   **Expected:** same floating popup behaviour.
 
-- [ ] 4.5 Remove `glow` from PATH temporarily and confirm warning:
+- [ ] 4.7 Remove `glow` from PATH temporarily and confirm warning:
   ```
   :lua vim.env.PATH = ""
   ,p
@@ -145,7 +157,7 @@ This is **bold** and _italic_ text.
 **Precondition:** running in a GUI session with `$DISPLAY` or `$WAYLAND_DISPLAY` set.
 
 ```sh
-$ nvim /tmp/test.md
+nvim /tmp/test.md
 ```
 
 - [ ] 5.1 Confirm `markdown-preview.nvim` loaded and `glow.nvim` did not:
@@ -173,12 +185,12 @@ $ nvim /tmp/test.md
 **Precondition:** Docker is running.
 
 ```sh
-$ docker compose -f ~/.config/nvim/docker/markserv/docker-compose.yml up -d
+docker compose -f ~/.config/nvim/docker/markserv/docker-compose.yml up -d
 ```
 
 - [ ] 6.1 Verify the server started:
   ```sh
-  $ curl -s http://localhost:8090/ | head -5
+  curl -s http://localhost:8090/ | head -5
   ```
   **Expected:** HTML content, no connection refused.
 
@@ -190,7 +202,7 @@ $ docker compose -f ~/.config/nvim/docker/markserv/docker-compose.yml up -d
 
 - [ ] 6.3 Stop the service when done:
   ```sh
-  $ docker compose -f ~/.config/nvim/docker/markserv/docker-compose.yml down
+  docker compose -f ~/.config/nvim/docker/markserv/docker-compose.yml down
   ```
 
 ---
@@ -200,18 +212,18 @@ $ docker compose -f ~/.config/nvim/docker/markserv/docker-compose.yml up -d
 **Precondition:** Docker is running. This server is required for sections 8 and 9.
 
 ```sh
-$ docker compose -f ~/.config/nvim/docker/plantuml-server/docker-compose.yml up -d
+docker compose -f ~/.config/nvim/docker/plantuml-server/docker-compose.yml up -d
 ```
 
 - [ ] 7.1 Verify the server responds:
   ```sh
-  $ curl -s http://localhost:8080/txt/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IW80 | head -3
+  curl -s http://localhost:8080/txt/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IW80 | head -3
   ```
   **Expected:** ASCII diagram output (lines with `-`, `|`, `>`).
 
 Create a test PlantUML file:
 ```sh
-$ cat > /tmp/test.puml << 'EOF'
+cat > /tmp/test.puml << 'EOF'
 @startuml
 Alice -> Bob: Hello
 Bob --> Alice: Hi
@@ -226,7 +238,7 @@ EOF
 **Precondition:** PlantUML server from section 7 is running.
 
 ```sh
-$ nvim /tmp/test.puml
+nvim /tmp/test.puml
 ```
 
 - [ ] 8.1 Run ASCII preview command:
@@ -251,7 +263,7 @@ $ nvim /tmp/test.puml
 
 - [ ] 8.5 Verify `:PumlPreview` routes to ASCII in console mode:
   ```sh
-  $ env -u DISPLAY -u WAYLAND_DISPLAY nvim /tmp/test.puml
+  env -u DISPLAY -u WAYLAND_DISPLAY nvim /tmp/test.puml
   ```
   ```
   :PumlPreview
@@ -260,7 +272,7 @@ $ nvim /tmp/test.puml
 
 - [ ] 8.6 Verify `:PumlPreview` routes to PNG in GUI mode:
   ```sh
-  $ nvim /tmp/test.puml
+  nvim /tmp/test.puml
   ```
   ```
   :PumlPreview
@@ -275,7 +287,7 @@ $ nvim /tmp/test.puml
 
 Create a test file:
 ```sh
-$ cat > /tmp/test-diagrams.md << 'EOF'
+cat > /tmp/test-diagrams.md << 'EOF'
 # Test PDF
 
 Some text.
@@ -289,7 +301,7 @@ EOF
 ```
 
 ```sh
-$ nvim /tmp/test-diagrams.md
+nvim /tmp/test-diagrams.md
 ```
 
 - [ ] 9.1 Run export:
@@ -300,7 +312,7 @@ $ nvim /tmp/test-diagrams.md
 
 - [ ] 9.2 Verify the file exists:
   ```sh
-  $ ls -la /tmp/test-diagrams.pdf
+  ls -la /tmp/test-diagrams.pdf
   ```
   **Expected:** file exists with non-zero size.
 
@@ -312,7 +324,7 @@ $ nvim /tmp/test-diagrams.md
 
 Create a test MARP file:
 ```sh
-$ cat > /tmp/test.md << 'EOF'
+cat > /tmp/test.md << 'EOF'
 ---
 marp: true
 ---
@@ -330,7 +342,7 @@ EOF
 ```
 
 ```sh
-$ nvim /tmp/test.md
+nvim /tmp/test.md
 ```
 
 - [ ] 10.1 Start MARP preview:
@@ -365,16 +377,16 @@ $ nvim /tmp/test.md
 
 ```sh
 # Step 1 — start the container
-$ docker compose -f ~/.config/nvim/docker/ollama/docker-compose.yml up -d
+docker compose -f ~/.config/nvim/docker/ollama/docker-compose.yml up -d
 
 # Step 2 — pull the model (one-time, ~4 GB)
-$ docker compose -f ~/.config/nvim/docker/ollama/docker-compose.yml \
+docker compose -f ~/.config/nvim/docker/ollama/docker-compose.yml \
     exec ollama ollama pull llama3.1:8b
 ```
 
 Verify ollama is reachable:
 ```sh
-$ curl -s http://127.0.0.1:11434/ 
+curl -s http://127.0.0.1:11434/ 
 ```
 **Expected:** `Ollama is running`
 
@@ -393,12 +405,12 @@ $ curl -s http://127.0.0.1:11434/
 
 - [ ] 11.4 Test graceful failure — stop ollama then ask a question:
   ```sh
-  $ docker compose -f ~/.config/nvim/docker/ollama/docker-compose.yml stop
+  docker compose -f ~/.config/nvim/docker/ollama/docker-compose.yml stop
   ```
   Press `<leader>ao`, type a question, submit.
   **Expected:** HTTP error appears **inside** the avante buffer. Neovim remains fully functional.
   ```sh
-  $ docker compose -f ~/.config/nvim/docker/ollama/docker-compose.yml start
+  docker compose -f ~/.config/nvim/docker/ollama/docker-compose.yml start
   ```
 
 ---
@@ -444,7 +456,7 @@ $ curl -s http://127.0.0.1:11434/
 
 - [ ] 14.1 Open a Lua file with a known function:
   ```sh
-  $ nvim ~/.config/nvim/lua/config/terminal.lua
+  nvim ~/.config/nvim/lua/config/terminal.lua
   ```
 
 - [ ] 14.2 Place cursor on a symbol and check hover:
@@ -534,11 +546,11 @@ $ curl -s http://127.0.0.1:11434/
 **Precondition:** a `.http` file with a valid request.
 
 ```sh
-$ cat > /tmp/test.http << 'EOF'
+cat > /tmp/test.http << 'EOF'
 GET https://httpbin.org/get
 
 EOF
-$ nvim /tmp/test.http
+nvim /tmp/test.http
 ```
 
 - [ ] 18.1 Run request under cursor:
@@ -566,14 +578,14 @@ $ nvim /tmp/test.http
 **Precondition:** Docker is running.
 
 ```sh
-$ docker compose -f ~/.config/nvim/docker/sbcl-swank/docker-compose.yml up -d
+docker compose -f ~/.config/nvim/docker/sbcl-swank/docker-compose.yml up -d
 # Wait a few seconds for Swank to start, then verify:
-$ nc -z localhost 4005 && echo "Swank ready"
+nc -z localhost 4005 && echo "Swank ready"
 ```
 
 - [ ] 19.1 Open a `.lisp` file:
   ```sh
-  $ echo '(+ 1 2)' > /tmp/test.lisp && nvim /tmp/test.lisp
+  echo '(+ 1 2)' > /tmp/test.lisp && nvim /tmp/test.lisp
   ```
 
 - [ ] 19.2 Connect Conjure to Swank:
@@ -595,7 +607,7 @@ $ nc -z localhost 4005 && echo "Swank ready"
 **Precondition:** `dotnet` CLI is installed (`which dotnet`).
 
 ```sh
-$ echo 'printfn "Hello"' > /tmp/test.fsx && nvim /tmp/test.fsx
+echo 'printfn "Hello"' > /tmp/test.fsx && nvim /tmp/test.fsx
 ```
 
 - [ ] 20.1 Start the REPL:
@@ -617,7 +629,7 @@ $ echo 'printfn "Hello"' > /tmp/test.fsx && nvim /tmp/test.fsx
 **Precondition:** `ghc` and `haskell-language-server` are installed.
 
 ```sh
-$ echo 'main = putStrLn "hi"' > /tmp/Test.hs && nvim /tmp/Test.hs
+echo 'main = putStrLn "hi"' > /tmp/Test.hs && nvim /tmp/Test.hs
 ```
 
 - [ ] 21.1 Confirm LSP attaches:
@@ -640,7 +652,7 @@ $ echo 'main = putStrLn "hi"' > /tmp/Test.hs && nvim /tmp/Test.hs
 See `docs/guides/confluence.md` for setup.
 
 ```sh
-$ nvim /tmp/test.md
+nvim /tmp/test.md
 ```
 
 - [ ] 22.1 Confirm commands are registered:
@@ -669,7 +681,7 @@ $ nvim /tmp/test.md
 See `docs/guides/jira.md` for setup.
 
 ```sh
-$ nvim /tmp/test.md
+nvim /tmp/test.md
 ```
 
 - [ ] 23.1 Confirm commands are registered:
@@ -741,6 +753,106 @@ $ nvim /tmp/test.md
 
 ---
 
+---
+
+## 27. System Clipboard
+
+These tests verify the clipboard provider is correctly selected and that the
+`<leader>` shortcuts work.  Run in the environment that matches the platform
+you want to verify.
+
+### 27.1 Identify the active provider
+
+```vim
+:lua print(vim.g.clipboard and vim.g.clipboard.name or "unnamedplus (auto)")
+```
+
+| Environment | Expected output |
+|---|---|
+| WSL + win32yank.exe | `win32yank-wsl` |
+| SSH / TTY / console | `OSC 52` |
+| GUI Linux | `unnamedplus (auto)` |
+
+### GUI Linux — xclip / xsel / wl-clipboard
+
+- [ ] 27.2 Confirm `:checkhealth clipboard` shows a provider found (xclip, xsel, or wl-copy):
+  ```vim
+  :checkhealth
+  ```
+  Scroll to the **clipboard** section.
+  **Expected:** `OK: Clipboard tool found: xclip` (or xsel / wl-copy). No `WARNING: No provider found`.
+
+- [ ] 27.3 Yank a word to the system clipboard and paste it in a separate application:
+  Open a file, position cursor on a word, press `<leader>y`.
+  Switch to a text editor or browser address bar and paste.
+  **Expected:** the yanked word appears.
+
+- [ ] 27.4 Cut a line with `<leader>d<leader>d` and verify it lands in the system clipboard.
+  **Expected:** pasting in an external application shows the deleted line.
+
+- [ ] 27.5 Copy something in an external application, switch to Neovim, press `<leader>p`.
+  **Expected:** the external text is pasted after the cursor.
+
+### WSL — win32yank.exe
+
+- [ ] 27.6 Verify `win32yank.exe` is on `$PATH`:
+  ```sh
+  which win32yank.exe
+  ```
+  **Expected:** prints a `/mnt/c/...` path.
+
+- [ ] 27.7 Confirm the provider name inside Neovim:
+  ```vim
+  :lua print(vim.g.clipboard.name)
+  ```
+  **Expected:** `win32yank-wsl`
+
+- [ ] 27.8 Yank a word with `<leader>y` and paste it in a Windows application (e.g. Notepad).
+  **Expected:** the word appears in Notepad.
+
+- [ ] 27.9 Copy text in Notepad, then paste in Neovim with `<leader>p`.
+  **Expected:** the Windows clipboard text is pasted.
+
+### SSH / Console — OSC 52
+
+**Precondition:** connect via SSH from a terminal that supports OSC 52 (Windows
+Terminal, Alacritty, kitty, WezTerm, Ghostty).  Or simulate console mode:
+```sh
+env -u DISPLAY -u WAYLAND_DISPLAY nvim /tmp/test.md
+```
+
+- [ ] 27.10 Confirm OSC 52 provider is active:
+  ```vim
+  :lua print(vim.g.clipboard.name)
+  ```
+  **Expected:** `OSC 52`
+
+- [ ] 27.11 Yank a word with `<leader>y`, then paste in a **local** application on the machine
+  running the terminal.
+  **Expected:** the word from the remote Neovim session appears locally.
+
+- [ ] 27.12 Test `<leader>p` (paste from terminal clipboard).
+  **Expected:** either the local clipboard content is pasted, OR nothing is pasted (terminals
+  that block OSC 52 read for security). This is acceptable — use `Shift+Insert` or
+  `Ctrl+Shift+V` as the fallback.
+
+### Keymaps — all platforms
+
+- [ ] 27.13 In visual mode, select text and press `<leader>y`.
+  **Expected:** selection is copied to the system clipboard without leaving visual mode prematurely.
+
+- [ ] 27.14 Press `<leader>Y` in normal mode.
+  **Expected:** the entire current line is copied to the system clipboard.
+
+- [ ] 27.15 Press `<leader>P` in normal mode (paste before cursor).
+  **Expected:** clipboard content is pasted before the cursor position.
+
+- [ ] 27.16 In visual mode, press `<leader>p`.
+  **Expected:** pastes replacement text *without* overwriting the clipboard (the
+  replaced text goes to the black-hole register, clipboard is preserved).
+
+---
+
 ## Summary Checklist
 
 | Section | Feature | Tested |
@@ -748,7 +860,7 @@ $ nvim /tmp/test.md
 | 1 | Lua syntax check | [ ] |
 | 2 | Startup / plugin loading | [ ] |
 | 3 | Console detection | [ ] |
-| 4 | Glow markdown preview (console) | [ ] |
+| 4 | Glow markdown preview (console) + orphaned popup | [ ] |
 | 5 | markdown-preview.nvim (GUI) | [ ] |
 | 6 | Markserv cross-page preview | [ ] |
 | 7 | PlantUML Docker server | [ ] |
@@ -771,3 +883,4 @@ $ nvim /tmp/test.md
 | 24 | OpenSpec workflow | [ ] |
 | 25 | Terminal toggle | [ ] |
 | 26 | Formatting (conform.nvim) | [ ] |
+| 27 | System clipboard (GUI / WSL / OSC 52 / keymaps) | [ ] |
