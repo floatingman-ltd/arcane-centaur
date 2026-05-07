@@ -16,7 +16,7 @@ On first launch, [lazy.nvim](https://github.com/folke/lazy.nvim) will bootstrap 
 
 | Dependency | Purpose | Install hint |
 |---|---|---|
-| **Neovim ≥ 0.9** | Editor | `sudo snap install nvim --classic` |
+| **Neovim ≥ 0.12** | Editor | AppImage or tarball from [github.com/neovim/neovim/releases](https://github.com/neovim/neovim/releases) |
 | **build-essential, tree** | General tooling | `sudo apt install build-essential tree -y` |
 | **Lua ≥ 5.1** *(5.4 recommended)* | Required by lazy.nvim's LuaRocks support | `sudo apt install lua5.4` |
 | **LuaRocks** | Plugin dependency manager used by lazy.nvim | `sudo apt install luarocks` |
