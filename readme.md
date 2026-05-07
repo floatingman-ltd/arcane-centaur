@@ -273,6 +273,9 @@ Leader key is **Space**.
 | `Ctrl-h/j/k/l` | Normal | Navigate between splits |
 | `Ctrl-↑/↓/←/→` | Normal | Resize splits |
 | `<` / `>` | Visual | Indent/outdent and reselect |
+| `<Tab>` / `<S-Tab>` | Visual | Indent/outdent selection and reselect |
+| `<S-Down>` / `<S-Up>` | Visual | Move selected block down/up |
+| `<leader>p` | Visual | Paste without overwriting clipboard |
 | `<leader>n` or `Ctrl-n` | Normal | Open file tree |
 | `Ctrl-t` | Normal | Toggle file tree |
 | `Ctrl-f` | Normal | Find current file in tree |

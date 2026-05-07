@@ -12,8 +12,8 @@
 | `>` | Visual | Indent selection and reselect |
 | `<Tab>` | Visual | Indent selection |
 | `<S-Tab>` | Visual | Outdent selection |
-| `Shift-↓` | Visual | Move selected block down |
-| `Shift-↑` | Visual | Move selected block up |
+| `<S-Down>` | Visual | Move selected block down |
+| `<S-Up>` | Visual | Move selected block up |
 | `<leader>p` | Visual | Paste without overwriting clipboard |
 
 ## System Clipboard
