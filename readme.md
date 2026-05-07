@@ -16,7 +16,7 @@ On first launch, [lazy.nvim](https://github.com/folke/lazy.nvim) will bootstrap 
 
 | Dependency | Purpose | Install hint |
 |---|---|---|
-| **Neovim ≥ 0.9** | Editor | `sudo snap install nvim --classic` |
+| **Neovim ≥ 0.12** | Editor | AppImage or tarball from [github.com/neovim/neovim/releases](https://github.com/neovim/neovim/releases) |
 | **build-essential, tree** | General tooling | `sudo apt install build-essential tree -y` |
 | **Lua ≥ 5.1** *(5.4 recommended)* | Required by lazy.nvim's LuaRocks support | `sudo apt install lua5.4` |
 | **LuaRocks** | Plugin dependency manager used by lazy.nvim | `sudo apt install luarocks` |
@@ -327,7 +327,7 @@ Press **`Ctrl+e`** to dismiss the completion menu and return to normal typing.
 | Language | Treesitter | LSP | REPL | Structural Editing | Guide |
 |---|---|---|---|---|---|
 | Clojure | ✅ | — | ✅ nREPL (Conjure) | ✅ vim-sexp + parinfer | [docs/guides/lisp.md](docs/guides/lisp.md) |
-| Common Lisp | ✅ | ✅ cl_lsp | ✅ Swank (Conjure) | ✅ vim-sexp + parinfer | [docs/guides/lisp.md](docs/guides/lisp.md) |
+| Common Lisp | ✅ | — | ✅ Swank (Conjure) | ✅ vim-sexp + parinfer | [docs/guides/lisp.md](docs/guides/lisp.md) |
 | F# | ✅ | ✅ fsautocomplete | ✅ dotnet fsi (iron.nvim) | — | [docs/guides/fsharp.md](docs/guides/fsharp.md) |
 | Fennel | — | — | ✅ (Conjure) | ✅ parinfer | [docs/guides/lisp.md](docs/guides/lisp.md) |
 | Haskell | — | ✅ haskell-tools | ✅ GHCi | — | [docs/guides/haskell.md](docs/guides/haskell.md) |
@@ -438,7 +438,7 @@ lua/
     confluence.lua          # Confluence publish command (MdToConfluence)
     jira.lua                # Jira issue/story creation (JiraCreateIssue, JiraCreateStory)
     copilot_cli.lua         # CopilotSuggest / CopilotExplain commands (copilot CLI)
-    lsp.lua                 # LSP server setup (cl_lsp, fsautocomplete, marksman)
+    lsp.lua                 # LSP server setup (fsautocomplete, marksman, roslyn)
     marp.lua                # MARP presentation commands (preview + export)
     mdpdf.lua               # Markdown → PDF export command (MdToPdf)
     mdpreview.lua           # Markdown markserv server preview command (MdServerPreview)
