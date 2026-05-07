@@ -310,7 +310,7 @@ Then manually confirm in Neovim:
 
 ## Output on completion
 
-[```](2026-05-05_```.md)
+```
 ## Feature Added: <name>
 
 ### Implementation
