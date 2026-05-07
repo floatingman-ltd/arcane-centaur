@@ -74,4 +74,10 @@ M.has_undercurl = undercurl_terminals[M.name] or false
 M.is_vte        = M.name == "vte"
 M.is_wsl        = is_wsl
 
+--- True when no graphical display is available (physical TTY, SSH without X
+--- forwarding, headless server). Derived solely from the absence of both
+--- $DISPLAY and $WAYLAND_DISPLAY — no manual override flag is used.
+M.is_console = (vim.env.DISPLAY or "") == ""
+           and (vim.env.WAYLAND_DISPLAY or "") == ""
+
 return M

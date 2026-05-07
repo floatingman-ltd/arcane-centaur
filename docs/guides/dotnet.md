@@ -33,9 +33,14 @@ curl -L "https://www.nuget.org/api/v2/package/Microsoft.CodeAnalysis.LanguageSer
 unzip -o /tmp/roslyn.nupkg
 chmod +x content/LanguageServer/linux-x64/Microsoft.CodeAnalysis.LanguageServer
 
-# 4. Add to PATH (add to ~/.bashrc or ~/.zshrc and reload)
+# 4. Add to PATH using the rc file for your shell, then reload it
+# Bash:
 echo 'export PATH="$HOME/.local/share/roslyn/content/LanguageServer/linux-x64:$PATH"' >> ~/.bashrc
 source ~/.bashrc
+
+# Zsh:
+echo 'export PATH="$HOME/.local/share/roslyn/content/LanguageServer/linux-x64:$PATH"' >> ~/.zshrc
+source ~/.zshrc
 
 # 5. Verify
 Microsoft.CodeAnalysis.LanguageServer --version

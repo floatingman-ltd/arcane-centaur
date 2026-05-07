@@ -34,17 +34,27 @@ vim.keymap.set('v', '>', '>gv', opts)
 -- It even correctly indents the code if, for example, you are moving some code
 -- inside an if statement. To use it, simply select the code in visual mode and
 -- press Shift + Up or Shift + Down.
-vim.keymap.set("v", "< S-Down> ", ":m '> +1< CR> gv=gv")
-vim.keymap.set("v", "< S-Up> ", ":m '<-2< CR> gv=gv")
+vim.keymap.set("v", "<S-Down>", ":m '>+1<CR>gv=gv")
+vim.keymap.set("v", "<S-Up>", ":m '<-2<CR>gv=gv")
 
 -- This command is from my VSCode days, and I got used to indent an unindent the
 -- code with Tab and Shift + Tab. It simply indents the code and then reselects
 -- the previous selection.
-vim.keymap.set("v", "< Tab> ", "> gv")
-vim.keymap.set("v", "< S-Tab> ", "< gv")
+vim.keymap.set("v", "<Tab>", ">gv")
+vim.keymap.set("v", "<S-Tab>", "<gv")
 
 -- replace code without placing the replaced text in the clipboard
-vim.keymap.set("x", "< leader> p", "\"_dP")
+vim.keymap.set("x", "<leader>p", "\"_dP")
+
+-- System-clipboard shortcuts.
+-- With clipboard=unnamedplus these mirror plain y/d/p, but the explicit
+-- "+register prefix makes the intent unambiguous and works correctly even
+-- if the clipboard setting is temporarily changed.
+vim.keymap.set({ "n", "v" }, "<leader>y", '"+y',  { noremap = true, silent = true, desc = "Yank to system clipboard" })
+vim.keymap.set("n",           "<leader>Y", '"+Y',  { noremap = true, silent = true, desc = "Yank line to system clipboard" })
+vim.keymap.set({ "n", "v" }, "<leader>d", '"+d',  { noremap = true, silent = true, desc = "Cut to system clipboard" })
+vim.keymap.set("n",           "<leader>p", '"+p',  { noremap = true, silent = true, desc = "Paste from system clipboard (after cursor)" })
+vim.keymap.set("n",           "<leader>P", '"+P',  { noremap = true, silent = true, desc = "Paste from system clipboard (before cursor)" })
 
 -- NvimTree
 vim.keymap.set("n","<leader>n",":NvimTreeOpen<CR>")
