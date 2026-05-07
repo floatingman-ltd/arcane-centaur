@@ -94,7 +94,7 @@ return {
       vim.api.nvim_create_user_command(
         "PumlPreviewAscii",
         puml_preview_ascii,
-        { desc = "Preview PlantUML as Unicode art via Docker server" }
+        { desc = "Preview PlantUML as ASCII art via Docker server" }
       )
       -- PumlPreview routes to ASCII in console mode, PNG otherwise.
       if term.is_console then

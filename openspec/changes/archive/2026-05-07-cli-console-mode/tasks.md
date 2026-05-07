@@ -12,7 +12,7 @@
 
 ## 3. PlantUML ASCII
 
-- [x] 3.1 Implement `puml_preview_ascii()` in the existing PlantUML config — encode the diagram, hit the `/utxt/` endpoint via `curl`, write output to a `buftype=nofile` scratch buffer in a vertical split
+- [x] 3.1 Implement `puml_preview_ascii()` in the existing PlantUML config — encode the diagram, hit the `/txt/` endpoint via `curl`, write output to a `buftype=nofile` scratch buffer in a centered floating window
 - [x] 3.2 Register `:PumlPreviewAscii` for the `plantuml` filetype in all environments
 - [x] 3.3 Route `:PumlPreview` to `puml_preview_ascii()` when `is_console`; keep the existing PNG path for GUI
 - [x] 3.4 Emit an `ERROR` notification and abort if URL encoding fails; do not open the scratch buffer
@@ -79,7 +79,7 @@
      <Esc>
      ,p
      ```
-     **Expected:** a vertical split opens with glow-rendered Markdown. No browser window opens.
+     **Expected:** a floating window opens with glow-rendered Markdown. No browser window opens.
 
   4. Confirm `:Glow` command exists:
      ```
@@ -153,10 +153,10 @@
      :PumlPreviewAscii
      ```
      **Expected:**
-     - A vertical split opens to the right.
-     - The buffer contains Unicode box-drawing art (lines like `┌──────────────────────┐`).
-     - `:set buftype?` in the new split shows `buftype=nofile`.
-     - Closing the split with `:q` does **not** prompt "save changes?".
+     - A centered floating window opens.
+     - The buffer contains plain ASCII diagram output.
+     - `:set buftype?` in the preview buffer shows `buftype=nofile`.
+     - Closing the window with `q` or `<Esc>` does **not** prompt "save changes?".
 
 - [x] 8.5 Confirm `:PumlPreview` routes to ASCII in console mode and PNG in GUI mode
 
@@ -168,7 +168,7 @@
      ```
      :PumlPreview
      ```
-     **Expected:** Unicode art appears in a vertical split scratch buffer. No browser is launched, no `open_url` notification is emitted.
+     **Expected:** ASCII art appears in a centered floating scratch buffer. No browser is launched, no `open_url` notification is emitted.
 
   2. Verify the localleader keymap also routes correctly:
      ```
@@ -188,7 +188,7 @@
      ```
      :PumlPreviewAscii
      ```
-     **Expected:** scratch buffer with ASCII art opens in a vertical split.
+     **Expected:** scratch buffer with ASCII art opens in a centered floating window.
 
 - [x] 8.6 Run `docker compose config` in `docker/ollama/` and confirm it exits 0
 - [ ] 8.7 Confirm `<leader>aa`, `<leader>ao`, and `<leader>ac` are registered and open avante
