@@ -45,8 +45,17 @@ local function puml_preview_ascii()
     return
   end
 
+  if vim.fn.executable("curl") ~= 1 then
+    vim.notify("PumlPreviewAscii: curl is not installed", vim.log.levels.ERROR)
+    return
+  end
+
   local url = "http://localhost:8080/txt/" .. encoded
   local output = vim.fn.system("curl -s " .. vim.fn.shellescape(url))
+  if vim.v.shell_error ~= 0 then
+    vim.notify("PumlPreviewAscii: failed to fetch preview from PlantUML server", vim.log.levels.WARN)
+    return
+  end
 
   -- Mirror glow.nvim sizing: 70% of editor dimensions, capped at 120×80.
   local editor_w = vim.o.columns

@@ -17,12 +17,12 @@ PlantUML Docker server's `/txt/` endpoint and display the result in a scratch bu
 
 ### Requirement: ASCII output displayed in scratch buffer
 The scratch buffer used by `:PumlPreviewAscii` SHALL have `buftype=nofile` and
-`bufhidden=wipe`. It SHALL open in a vertical split. It SHALL not prompt to save on
-close.
+`bufhidden=wipe`. It SHALL open in a centered floating window with a rounded border.
+It SHALL not prompt to save on close.
 
 #### Scenario: Scratch buffer properties
 - **WHEN** `:PumlPreviewAscii` produces output
-- **THEN** the result SHALL appear in a vertical split with `buftype=nofile`
+- **THEN** the result SHALL appear in a centered floating window with `buftype=nofile`
 - **THEN** closing the buffer SHALL not prompt for save
 
 ### Requirement: Console default routes PlantUML to ASCII
