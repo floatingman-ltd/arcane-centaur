@@ -13,14 +13,13 @@
 - **WHEN** Neovim starts and `term.is_console` is `false`
 - **THEN** `markdown-preview.nvim` SHALL be loaded and `glow.nvim` SHALL not be loaded
 
-### Requirement: Glow renders in a vertical split by default
-When invoked, glow SHALL render the current markdown buffer in a vertical split. This
-SHALL be the default configuration. The guide SHALL document how to switch to a floating
-window.
+### Requirement: Glow renders in a floating popup by default
+When invoked, glow SHALL render the current markdown buffer in a centered floating popup.
+This SHALL be the default configuration.
 
-#### Scenario: Preview opens in vertical split
+#### Scenario: Preview opens in floating popup
 - **WHEN** the markdown preview command is invoked in a console session
-- **THEN** a vertical split SHALL open containing the glow-rendered output
+- **THEN** a centered floating popup SHALL open containing the glow-rendered output
 
 ### Requirement: Glow binary check
 If the `glow` binary is not found on `$PATH` at preview time, the config SHALL emit a

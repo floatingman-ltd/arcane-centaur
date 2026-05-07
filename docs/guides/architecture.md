@@ -122,7 +122,7 @@ that filetype is opened. This is the correct place for:
 | File | Filetype | Key things it does |
 |---|---|---|
 | `markdown.lua` | `markdown` | `,p` preview (glow/markdown-preview); Confluence, Jira, MARP, PDF commands |
-| `plantuml.lua` | `plantuml` | `,p` / `,pa` diagram preview via Docker |
+| `plantuml.lua` | `plantuml` | `,p` / `<leader>pa` diagram preview via Docker |
 | `lisp.lua` | `lisp` | Conjure REPL keymaps, parinfer mode |
 | `clojure.lua` | `clojure` | Conjure REPL keymaps |
 | `scheme.lua` | `scheme` | Conjure REPL keymaps |

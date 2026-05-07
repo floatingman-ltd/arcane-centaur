@@ -255,9 +255,9 @@ nvim /tmp/test.puml
 
 - [ ] 8.3 Close with `q`. **Expected:** popup closes, no "save changes?" prompt.
 
-- [ ] 8.4 Test via localleader keymap:
+- [ ] 8.4 Test via leader keymap:
   ```
-  ,pa
+  <leader>pa
   ```
   **Expected:** same floating popup.
 

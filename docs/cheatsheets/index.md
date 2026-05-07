@@ -322,6 +322,7 @@ LocalLeader is `,` in PlantUML buffers.
 | Keys | Action |
 |---|---|
 | `,p` | Preview diagram in browser (via Docker server) |
+| `<leader>pa` | Open ASCII preview popup |
 
 → [Full reference](plantuml.md)
 

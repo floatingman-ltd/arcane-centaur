@@ -147,7 +147,7 @@ docker compose -f ~/.config/nvim/docker/plantuml-server/docker-compose.yml up -d
 | Key | Action |
 |---|---|
 | `,p` | `:PumlPreview` — ASCII in console, PNG in GUI |
-| `,pa` | `:PumlPreviewAscii` — plain ASCII art, always available |
+| `<leader>pa` | `:PumlPreviewAscii` — plain ASCII art, always available |
 
 > `:PumlPreviewAscii` is also useful in GUI when you want the text output without opening a browser.
 

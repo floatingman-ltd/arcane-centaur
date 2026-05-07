@@ -32,7 +32,7 @@ registered when `term.is_console` is `false`.
 
 #### Scenario: Console PumlPreview uses ASCII path
 - **WHEN** `term.is_console` is `true` and `:PumlPreview` is invoked
-- **THEN** the plain ASCII art SHALL be fetched and shown in a scratch buffer
+- **THEN** the plain ASCII art SHALL be fetched and shown in the same centered floating scratch buffer used by `:PumlPreviewAscii`
 
 #### Scenario: GUI PumlPreview uses PNG path
 - **WHEN** `term.is_console` is `false` and `:PumlPreview` is invoked
