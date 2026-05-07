@@ -13,6 +13,10 @@ dotnet tool install -g csharpier    # Formatter
 dotnet tool install -g csharprepl   # Interactive REPL
 ```
 
+### Neovim Version Requirement
+
+> **roslyn.nvim requires Neovim ≥ 0.12.** Run `nvim --version` to check. If you are on an older version, see [Upgrading Neovim](#upgrading-neovim) below before proceeding.
+
 ### Installing the Roslyn Language Server
 
 The Roslyn LSP is the official Microsoft C# language server used in VS Code's C# Dev Kit. It is **not** installed via `dotnet tool install`; download the native binary for your platform from the NuGet feed.
@@ -21,32 +25,67 @@ The Roslyn LSP is the official Microsoft C# language server used in VS Code's C#
 
 ```sh
 # 1. Create an install directory
-mkdir -p ~/.local/share/roslyn && cd ~/.local/share/roslyn
+mkdir -p ~/.local/share/roslyn
 
-# 2. Download the latest linux-x64 package (find the current version at:
-#    https://dev.azure.com/azure-public/vside/_artifacts/feed/vs-impl/NuGet/Microsoft.CodeAnalysis.LanguageServer.linux-x64 )
-VERSION="5.8.0-1.26252.1"   # replace with the latest shown on the feed page
-curl -L "https://www.nuget.org/api/v2/package/Microsoft.CodeAnalysis.LanguageServer.linux-x64/$VERSION" \
+# 2. Download the latest linux-x64 package.
+#    Find the current version at:
+#    https://www.nuget.org/packages/Microsoft.CodeAnalysis.LanguageServer.linux-x64
+VERSION="5.0.0-1.25277.114"   # replace with the latest shown on the NuGet page
+curl -L "https://api.nuget.org/v3-flatcontainer/microsoft.codeanalysis.languageserver.linux-x64/${VERSION}/microsoft.codeanalysis.languageserver.linux-x64.${VERSION}.nupkg" \
      -o /tmp/roslyn.nupkg
 
-# 3. Extract and make executable
-unzip -o /tmp/roslyn.nupkg
-chmod +x content/LanguageServer/linux-x64/Microsoft.CodeAnalysis.LanguageServer
+# 3. Extract into the install directory and make executable
+unzip -o /tmp/roslyn.nupkg -d ~/.local/share/roslyn
+chmod +x ~/.local/share/roslyn/content/LanguageServer/linux-x64/Microsoft.CodeAnalysis.LanguageServer
 
-# 4. Add to PATH using the rc file for your shell, then reload it
+# 4. Add to PATH in your shell rc file, then reload that shell config
 # Bash:
 echo 'export PATH="$HOME/.local/share/roslyn/content/LanguageServer/linux-x64:$PATH"' >> ~/.bashrc
-source ~/.bashrc
 
 # Zsh:
 echo 'export PATH="$HOME/.local/share/roslyn/content/LanguageServer/linux-x64:$PATH"' >> ~/.zshrc
-source ~/.zshrc
+
+# Reload examples:
+# source ~/.bashrc
+# source ~/.zshrc
 
 # 5. Verify
 Microsoft.CodeAnalysis.LanguageServer --version
 ```
 
-> **Tip:** The feed page above lists all available versions. Always pick the highest stable version. The `neutral` platform variant also works but requires running via `dotnet <path>/Microsoft.CodeAnalysis.LanguageServer.dll` instead of a native binary.
+> **Tip:** The NuGet page above lists all available versions. Always pick the highest stable version. Use the NuGet v3 API URL shown above — the older v2 URL (`nuget.org/api/v2/package/…`) may return a 404 HTML page for some versions, which will cause `unzip` to fail with "not a zip file".
+
+### Upgrading Neovim
+
+The system package manager (`apt`, `dnf`, etc.) and Snap often lag well behind the latest Neovim release. **Use the AppImage or tarball methods below** — they pull directly from GitHub Releases and are guaranteed to be current.
+
+**AppImage (simplest, runs without installation):**
+
+```sh
+curl -LO https://github.com/neovim/neovim/releases/download/stable/nvim-linux-x86_64.appimage
+chmod u+x nvim-linux-x86_64.appimage
+
+# Optional: install system-wide
+sudo mv nvim-linux-x86_64.appimage /usr/local/bin/nvim
+```
+
+**Tarball (extract anywhere, no root required):**
+
+```sh
+curl -LO https://github.com/neovim/neovim/releases/download/stable/nvim-linux-x86_64.tar.gz
+mkdir -p ~/.local ~/.local/bin
+tar -xzf nvim-linux-x86_64.tar.gz -C ~/.local
+# Adds nvim-linux-x86_64/bin/nvim — make sure ~/.local/nvim-linux-x86_64/bin is on your PATH,
+# or symlink: ln -sf ~/.local/nvim-linux-x86_64/bin/nvim ~/.local/bin/nvim
+```
+
+After upgrading, confirm the version:
+
+```sh
+nvim --version   # should show NVIM v0.12.x or higher
+```
+
+> **Note:** If you have multiple `nvim` binaries on your PATH (e.g. an old `/usr/bin/nvim` alongside a new `~/.local/bin/nvim`), run `which nvim` to confirm you are launching the upgraded version.
 
 ---
 
