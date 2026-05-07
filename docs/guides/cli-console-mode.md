@@ -120,8 +120,8 @@ opts = {
 ## PlantUML ASCII Preview
 
 `:PumlPreviewAscii` fetches plain ASCII art from the PlantUML Docker server's
-`/txt/` endpoint and writes it into a scratch buffer in a vertical split. It is
-available in all environments (GUI and console alike).
+`/txt/` endpoint and displays it in a scratch buffer inside a centered
+floating window. It is available in all environments (GUI and console alike).
 
 In console mode, `:PumlPreview` is automatically routed to
 `:PumlPreviewAscii`. In GUI mode, `:PumlPreview` opens the PNG in the browser
