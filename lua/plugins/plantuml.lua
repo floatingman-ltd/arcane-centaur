@@ -66,8 +66,8 @@ local function puml_preview_ascii()
   local col = math.ceil((editor_w - win_w) / 2)
 
   local buf = vim.api.nvim_create_buf(false, true)
-  vim.api.nvim_buf_set_option(buf, "buftype", "nofile")
-  vim.api.nvim_buf_set_option(buf, "bufhidden", "wipe")
+  vim.bo[buf].buftype  = "nofile"
+  vim.bo[buf].bufhidden = "wipe"
   vim.api.nvim_buf_set_lines(buf, 0, -1, false, vim.split(output, "\n", { plain = true }))
 
   local win = vim.api.nvim_open_win(buf, true, {
