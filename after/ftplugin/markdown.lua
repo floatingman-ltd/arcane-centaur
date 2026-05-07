@@ -7,7 +7,7 @@ vim.keymap.set("n", "<localleader>p", function()
   if term.is_console then
     if vim.fn.executable("glow") ~= 1 then
       vim.notify(
-        "glow not found — install with: sudo apt install glow  OR  snap install glow",
+        "glow not found — see docs/guides/cli-console-mode.md for installation instructions",
         vim.log.levels.WARN
       )
       return
