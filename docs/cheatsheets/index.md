@@ -7,6 +7,7 @@
 | Plugin / Area | Cheatsheet |
 |---|---|
 | Auto-Completion (nvim-cmp) | [completion.md](completion.md) |
+| Clipboard | [editing.md](editing.md#system-clipboard) — [full guide](../guides/clipboard.md) |
 | Comments (vim-commentary) | [comments.md](comments.md) |
 | C# / .NET (Roslyn + iron.nvim) | [dotnet.md](dotnet.md) |
 | F# REPL (iron.nvim) | [fsharp.md](fsharp.md) |
@@ -72,7 +73,7 @@
 
 ---
 
-### Editing (Visual Mode)
+### Editing
 
 | Keys | Mode | Action |
 |---|---|---|
@@ -83,6 +84,18 @@
 | `Shift-↓` | Visual | Move selected block down |
 | `Shift-↑` | Visual | Move selected block up |
 | `<leader>p` | Visual | Paste without overwriting clipboard |
+
+### System Clipboard
+
+| Keys | Mode | Action |
+|---|---|---|
+| `<leader>y` | Normal / Visual | Yank to system clipboard |
+| `<leader>Y` | Normal | Yank line to system clipboard |
+| `<leader>d` | Normal / Visual | Cut to system clipboard |
+| `<leader>p` | Normal | Paste from system clipboard (after cursor) |
+| `<leader>P` | Normal | Paste from system clipboard (before cursor) |
+
+Works on GUI Linux (xclip/xsel/wl-clipboard), WSL (win32yank.exe), and SSH/TTY sessions (OSC 52 — no external tool required).
 
 → [Full reference](editing.md)
 

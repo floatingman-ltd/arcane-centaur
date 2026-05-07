@@ -10,7 +10,7 @@ openspec change when work begins.
 
 ### Step 0 — Sync and prune
 
-- [ ] Fetch all remotes and prune dead tracking refs before doing anything else:
+- [x] Fetch all remotes and prune dead tracking refs before doing anything else:
   ```sh
   git fetch --all --prune
   ```
@@ -22,29 +22,29 @@ openspec change when work begins.
 The following branches are fully merged into `main` on origin and are safe to
 delete. Deleting them on origin also removes them from everyone's `git fetch`.
 
-- [ ] **`origin/copilot/refactor-gh-copilot-support`** — merged (PR #78 on main)
+- [x] **`origin/copilot/refactor-gh-copilot-support`** — merged (PR #78 on main)
   ```sh
   git push origin --delete copilot/refactor-gh-copilot-support
   git branch -d copilot/refactor-gh-copilot-support 2>/dev/null || true
   ```
 
-- [ ] **`origin/copilot/confluence-publish`** — merged to main
+- [x] **`origin/copilot/confluence-publish`** — merged to main
   ```sh
   git push origin --delete copilot/confluence-publish
   ```
 
-- [ ] **`origin/copilot/script-confluence-changes`** — merged to main
+- [x] **`origin/copilot/script-confluence-changes`** — merged to main
   ```sh
   git push origin --delete copilot/script-confluence-changes
   ```
 
-- [ ] **`origin/feature/dotnet-csharp`** — merged to main; remove local branch too
+- [x] **`origin/feature/dotnet-csharp`** — merged to main; remove local branch too
   ```sh
   git push origin --delete feature/dotnet-csharp
   git branch -d feature/dotnet-csharp
   ```
 
-- [ ] **`origin/copilot-openspec-serena`** — merged to main (openspec scaffolding
+- [x] **`origin/copilot-openspec-serena`** — merged to main (openspec scaffolding
   commit); open OpenSpec changes are in `openspec/changes/` on main and are
   tracked via the Incomplete OpenSpec Changes section below
   ```sh
@@ -52,7 +52,7 @@ delete. Deleting them on origin also removes them from everyone's `git fetch`.
   git branch -d copilot-openspec-serena
   ```
 
-- [ ] **`origin/add-jira-workflow`** — merged to main; the Jira implementation
+- [x] **`origin/add-jira-workflow`** — merged to main; the Jira implementation
   tasks are incomplete (see OpenSpec section below). Delete the tracking branch
   now and do the remaining implementation work on a fresh branch.
   ```sh
@@ -129,12 +129,12 @@ decision to abandon/supersede.
 
 ### Step 3 — Local-only cleanup
 
-- [ ] **Delete `wofers` local branch** — superseded; one commit carried into `cli-console-mode`
+- [x] **Delete `wofers` local branch** — superseded; one commit carried into `cli-console-mode`
   ```sh
   git branch -d wofers
   ```
 
-- [ ] **Remove `woofers` worktree** — scratch worktree at `/home/walt/.config/nvim-exp`
+- [x] **Remove `woofers` worktree** — scratch worktree at `/home/walt/.config/nvim-exp`
   ```sh
   git worktree list          # confirm nothing in use
   git worktree remove /home/walt/.config/nvim-exp
@@ -170,7 +170,7 @@ decision to abandon/supersede.
   and unpin `version = "v0.0.27"` in `lua/plugins/avante.lua` when a newer
   release publishes Linux `.so` files.
 
-- [ ] **`lazy-lock.json` is gitignored** — currently excluded from version control.
+- [x] **`lazy-lock.json` is gitignored** — currently excluded from version control.
   Consider whether to track it (guarantees reproducible installs across machines)
   or keep it ignored (allows each machine to use latest compatible versions).
 

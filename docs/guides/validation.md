@@ -109,19 +109,19 @@ This is **bold** and _italic_ text.
 - item two
 ```
 
-- [ ] 4.1 Confirm `glow.nvim` loaded and `markdown-preview.nvim` did not:
+- [x] 4.1 Confirm `glow.nvim` loaded and `markdown-preview.nvim` did not:
   ```
   :Lazy
   ```
   **Expected:** `glow.nvim` shows loaded; `markdown-preview.nvim` shows not loaded / skipped.
 
-- [ ] 4.2 Open preview via localleader:
+- [x] 4.2 Open preview via localleader:
   ```
   ,p
   ```
   **Expected:** a **floating popup** with rounded border opens showing rendered Markdown. No browser window launches.
 
-- [ ] 4.3 Close popup with `q` or `<Esc>`. **Expected:** popup closes, cursor returns to source buffer.
+- [x] 4.3 Close popup with `q` or `<Esc>`. **Expected:** popup closes, cursor returns to source buffer.
 
 - [ ] 4.4 **Orphaned popup recovery** — navigate away from the popup without closing it:
   Open the popup with `,p`, then jump to another window with `<C-w>w` until the glow

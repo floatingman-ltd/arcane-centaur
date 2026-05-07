@@ -34,8 +34,8 @@ unzip -o /tmp/roslyn.nupkg
 chmod +x content/LanguageServer/linux-x64/Microsoft.CodeAnalysis.LanguageServer
 
 # 4. Add to PATH (add to ~/.bashrc or ~/.zshrc and reload)
-echo 'export PATH="$HOME/.local/share/roslyn/content/LanguageServer/linux-x64:$PATH"' >> ~/.bashrc
-source ~/.bashrc
+echo 'export PATH="$HOME/.local/share/roslyn/content/LanguageServer/linux-x64:$PATH"' >> ~/.zshrc
+source ~/.zshrc
 
 # 5. Verify
 Microsoft.CodeAnalysis.LanguageServer --version

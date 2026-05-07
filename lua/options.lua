@@ -43,8 +43,19 @@ o.spelllang = "en_ca"
 local term = require("config.terminal")
 global.have_nerd_font = term.has_nerd_font
 
--- WSL clipboard — use win32yank.exe for fast, reliable system clipboard
--- integration instead of the slower xclip/xsel fallback.
+-- Clipboard provider — chosen by environment.
+--
+-- Priority:
+--   1. WSL  → win32yank.exe  (fastest, bidirectional)
+--   2. Console / SSH / TTY → OSC 52 escape sequence
+--      Works transparently through SSH tunnels and RDP without any
+--      external tool.  Requires Neovim ≥ 0.10 and a terminal that
+--      honours OSC 52 (Windows Terminal, Alacritty, kitty, WezTerm,
+--      iTerm2, Ghostty).  Paste support varies by terminal — if paste
+--      fails, use the terminal's own paste shortcut (Shift+Insert /
+--      Ctrl+Shift+V) instead.
+--   3. GUI Linux (X11 / Wayland) → auto-detected by Neovim from
+--      wl-clipboard, xclip, or xsel on $PATH.
 if term.is_wsl and vim.fn.executable("win32yank.exe") == 1 then
   global.clipboard = {
     name = "win32yank-wsl",
@@ -57,6 +68,13 @@ if term.is_wsl and vim.fn.executable("win32yank.exe") == 1 then
       ["*"] = "win32yank.exe -o --lf",
     },
     cache_enabled = true,
+  }
+elseif term.is_console then
+  local osc52 = require("vim.ui.clipboard.osc52")
+  global.clipboard = {
+    name  = "OSC 52",
+    copy  = { ["+"] = osc52.copy("+"), ["*"] = osc52.copy("*") },
+    paste = { ["+"] = osc52.paste("+"), ["*"] = osc52.paste("*") },
   }
 end
 

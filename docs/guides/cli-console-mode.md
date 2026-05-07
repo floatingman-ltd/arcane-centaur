@@ -26,6 +26,19 @@ unset. It is `false` when either is set, which covers:
 No manual override flag is needed. If the detection is wrong for your setup,
 file an issue.
 
+## Clipboard — OSC 52
+
+In console, SSH, and TTY sessions (where `$DISPLAY` and `$WAYLAND_DISPLAY` are
+both unset) the config uses the **OSC 52** terminal escape sequence for
+clipboard access.  No external tool is required, but the host terminal must
+support OSC 52.
+
+See the full setup guide — terminal support matrix, tmux configuration, RDP
+notes, and paste caveats:
+**[docs/guides/clipboard.md](clipboard.md)**
+
+---
+
 ## Markdown Preview — Glow
 
 In console sessions, `:MarkdownPreview` (which opens a browser) is replaced by
@@ -62,6 +75,33 @@ The preview keymap is consistent across environments:
 | `,p` | `:Glow` — floating popup with rendered Markdown | `:MarkdownPreviewToggle` — opens in browser |
 
 Press `q` or `<Esc>` to close the popup.
+
+### Closing an orphaned popup
+
+Occasionally the Glow popup is left open after navigating away (e.g. after
+following a link with `<CR>`).  The popup is a regular floating window; use
+standard Neovim window commands to reach and close it.
+
+**Normal close (focus the popup first):**
+
+```
+<C-w>w    " cycle through windows until the popup is focused
+q         " or: :q<CR>  — close the focused window
+```
+
+`<C-w>w` cycles focus through all open windows, including floats.  Once the
+glow buffer is active, `q` (the mapping set by the plugin) or `:q` closes it.
+
+**Force-close all floating windows (nuclear option):**
+
+If the window is no longer reachable or `q` does not respond:
+
+```vim
+:lua for _, w in ipairs(vim.api.nvim_list_wins()) do if vim.api.nvim_win_get_config(w).relative ~= "" then vim.api.nvim_win_close(w, true) end end
+```
+
+This closes every floating window in the current tab page (including any other
+popups, e.g. LSP hover or completion docs), so use it only as a last resort.
 
 ### Customising the popup
 

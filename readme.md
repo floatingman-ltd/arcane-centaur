@@ -25,7 +25,7 @@ On first launch, [lazy.nvim](https://github.com/folke/lazy.nvim) will bootstrap 
 [Nerd Font]: https://www.nerdfonts.com/
 
 Language-specific prerequisites (LSP servers, REPLs, runtimes) are documented in each language guide:
-[Markdown](docs/guides/markdown.md) · [Diagrams](docs/guides/diagrams.md) · [Confluence](docs/guides/confluence.md) · [Jira](docs/guides/jira.md) · [Console / AI](docs/guides/cli-console-mode.md) · [F#](docs/guides/fsharp.md) · [Haskell](docs/guides/haskell.md) · [Lisp / Clojure / Scheme](docs/guides/lisp.md) · [Presentations / MARP](docs/guides/presentations.md) · [REST Client](docs/guides/rest.md) · [Architecture](docs/guides/architecture.md) · [Validation](docs/guides/validation.md)
+[Markdown](docs/guides/markdown.md) · [Diagrams](docs/guides/diagrams.md) · [Confluence](docs/guides/confluence.md) · [Jira](docs/guides/jira.md) · [Console / AI](docs/guides/cli-console-mode.md) · [F#](docs/guides/fsharp.md) · [Haskell](docs/guides/haskell.md) · [Lisp / Clojure / Scheme](docs/guides/lisp.md) · [Presentations / MARP](docs/guides/presentations.md) · [REST Client](docs/guides/rest.md) · [Architecture](docs/guides/architecture.md) · [Validation](docs/guides/validation.md) · [Clipboard](docs/guides/clipboard.md)
 
 ### Recommended Terminal — GNOME Terminal
 

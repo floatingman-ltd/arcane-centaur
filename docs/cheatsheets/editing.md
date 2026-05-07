@@ -1,4 +1,4 @@
-# Editing Cheatsheet (Visual Mode)
+# Editing Cheatsheet (Visual Mode + Clipboard)
 
 **Leader** = `Space`
 
@@ -16,6 +16,33 @@
 | `Shift-↑` | Visual | Move selected block up |
 | `<leader>p` | Visual | Paste without overwriting clipboard |
 
+## System Clipboard
+
+With `clipboard=unnamedplus` set, the default `y`, `d`, and `p` already use the
+system clipboard on most platforms. The shortcuts below use the explicit `"+`
+register for unambiguous clipboard access (useful when you need to be certain
+you are targeting the system clipboard, not just the unnamed register).
+
+| Keys | Mode | Action |
+|---|---|---|
+| `<leader>y` | Normal / Visual | Yank to system clipboard |
+| `<leader>Y` | Normal | Yank line to system clipboard |
+| `<leader>d` | Normal / Visual | Cut (delete) to system clipboard |
+| `<leader>p` | Normal | Paste from system clipboard after cursor |
+| `<leader>P` | Normal | Paste from system clipboard before cursor |
+
+### Platform notes
+
+| Environment | Clipboard tool | Install needed? |
+|---|---|---|
+| GUI Linux (X11) | `xclip` or `xsel` | Yes — `sudo apt install xclip` |
+| GUI Linux (Wayland) | `wl-clipboard` | Yes — `sudo apt install wl-clipboard` |
+| WSL | `win32yank.exe` | Yes — install on the **Windows** side (Scoop/Chocolatey) |
+| SSH / TTY / console | OSC 52 (built-in) | No — requires Neovim ≥ 0.10 and a supporting terminal |
+| Native Windows | `win32yank.exe` | Usually bundled with Neovim Windows installer |
+
+→ **[Full setup and troubleshooting guide](../guides/clipboard.md)**
+
 ---
 
-*Defined in `lua/keymaps.lua`.*
+*Clipboard keymaps defined in `lua/keymaps.lua`. Clipboard provider configured in `lua/options.lua`. Full installation guide: [../guides/clipboard.md](../guides/clipboard.md).*
