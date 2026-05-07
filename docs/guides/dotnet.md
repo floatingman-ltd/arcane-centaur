@@ -25,7 +25,7 @@ mkdir -p ~/.local/share/roslyn && cd ~/.local/share/roslyn
 
 # 2. Download the latest linux-x64 package (find the current version at:
 #    https://dev.azure.com/azure-public/vside/_artifacts/feed/vs-impl/NuGet/Microsoft.CodeAnalysis.LanguageServer.linux-x64 )
-VERSION="4.13.0.1"   # replace with the latest shown on the feed page
+VERSION="5.8.0-1.26252.1"   # replace with the latest shown on the feed page
 curl -L "https://www.nuget.org/api/v2/package/Microsoft.CodeAnalysis.LanguageServer.linux-x64/$VERSION" \
      -o /tmp/roslyn.nupkg
 
