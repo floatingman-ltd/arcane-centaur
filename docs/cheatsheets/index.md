@@ -7,6 +7,7 @@
 | Plugin / Area | Cheatsheet |
 |---|---|
 | Auto-Completion (nvim-cmp) | [completion.md](completion.md) |
+| Clipboard | [editing.md](editing.md#system-clipboard) — [full guide](../guides/clipboard.md) |
 | Comments (vim-commentary) | [comments.md](comments.md) |
 | C# / .NET (Roslyn + iron.nvim) | [dotnet.md](dotnet.md) |
 | F# REPL (iron.nvim) | [fsharp.md](fsharp.md) |
@@ -72,7 +73,7 @@
 
 ---
 
-### Editing (Visual Mode)
+### Editing
 
 | Keys | Mode | Action |
 |---|---|---|
@@ -80,9 +81,21 @@
 | `>` | Visual | Indent selection and reselect |
 | `<Tab>` | Visual | Indent selection |
 | `<S-Tab>` | Visual | Outdent selection |
-| `Shift-↓` | Visual | Move selected block down |
-| `Shift-↑` | Visual | Move selected block up |
+| `<S-Down>` | Visual | Move selected block down |
+| `<S-Up>` | Visual | Move selected block up |
 | `<leader>p` | Visual | Paste without overwriting clipboard |
+
+### System Clipboard
+
+| Keys | Mode | Action |
+|---|---|---|
+| `<leader>y` | Normal / Visual | Yank to system clipboard |
+| `<leader>Y` | Normal | Yank line to system clipboard |
+| `<leader>d` | Normal / Visual | Cut to system clipboard |
+| `<leader>p` | Normal | Paste from system clipboard (after cursor) |
+| `<leader>P` | Normal | Paste from system clipboard (before cursor) |
+
+Works on GUI Linux (xclip/xsel/wl-clipboard), WSL (win32yank.exe), and SSH/TTY sessions (OSC 52 — no external tool required).
 
 → [Full reference](editing.md)
 
@@ -309,6 +322,7 @@ LocalLeader is `,` in PlantUML buffers.
 | Keys | Action |
 |---|---|
 | `,p` | Preview diagram in browser (via Docker server) |
+| `<leader>pa` | Open ASCII preview popup |
 
 → [Full reference](plantuml.md)
 

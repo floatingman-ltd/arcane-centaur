@@ -25,7 +25,7 @@ On first launch, [lazy.nvim](https://github.com/folke/lazy.nvim) will bootstrap 
 [Nerd Font]: https://www.nerdfonts.com/
 
 Language-specific prerequisites (LSP servers, REPLs, runtimes) are documented in each language guide:
-[Markdown](docs/guides/markdown.md) · [Diagrams](docs/guides/diagrams.md) · [Confluence](docs/guides/confluence.md) · [Jira](docs/guides/jira.md) · [F#](docs/guides/fsharp.md) · [Haskell](docs/guides/haskell.md) · [Lisp / Clojure / Scheme](docs/guides/lisp.md) · [Presentations / MARP](docs/guides/presentations.md) · [REST Client](docs/guides/rest.md)
+[Markdown](docs/guides/markdown.md) · [Diagrams](docs/guides/diagrams.md) · [Confluence](docs/guides/confluence.md) · [Jira](docs/guides/jira.md) · [Console / AI](docs/guides/cli-console-mode.md) · [F#](docs/guides/fsharp.md) · [Haskell](docs/guides/haskell.md) · [Lisp / Clojure / Scheme](docs/guides/lisp.md) · [Presentations / MARP](docs/guides/presentations.md) · [REST Client](docs/guides/rest.md) · [Architecture](docs/guides/architecture.md) · [Validation](docs/guides/validation.md) · [Clipboard](docs/guides/clipboard.md)
 
 ### Recommended Terminal — GNOME Terminal
 
@@ -103,6 +103,12 @@ environments where no graphical display is available.
 Keep in mind that the TTY console does not support Nerd Font glyphs or
 24-bit colour, so icon-based plugins fall back to plain Unicode glyphs
 automatically.  Undercurl is rendered as a plain underline.
+
+The configuration detects console mode automatically (no `$DISPLAY` and no
+`$WAYLAND_DISPLAY`) and adjusts tool behaviour accordingly — see
+**[docs/guides/cli-console-mode.md](docs/guides/cli-console-mode.md)** for
+details on Markdown preview (glow), PlantUML ASCII output, URL notification,
+and the avante AI assistant.
 
 > **Other terminals that work well:** [Alacritty](https://alacritty.org/)
 > also has full Nerd Font and undercurl support.  The Neovim config
@@ -267,6 +273,9 @@ Leader key is **Space**.
 | `Ctrl-h/j/k/l` | Normal | Navigate between splits |
 | `Ctrl-↑/↓/←/→` | Normal | Resize splits |
 | `<` / `>` | Visual | Indent/outdent and reselect |
+| `<Tab>` / `<S-Tab>` | Visual | Indent/outdent selection and reselect |
+| `<S-Down>` / `<S-Up>` | Visual | Move selected block down/up |
+| `<leader>p` | Visual | Paste without overwriting clipboard |
 | `<leader>n` or `Ctrl-n` | Normal | Open file tree |
 | `Ctrl-t` | Normal | Toggle file tree |
 | `Ctrl-f` | Normal | Find current file in tree |
@@ -276,6 +285,7 @@ Leader key is **Space**.
 | `<leader>f` | Normal / Visual | Format buffer (or selection) |
 | `<leader>gcs` | Normal / Visual | Copilot CLI: suggest (send to `copilot`) |
 | `<leader>gce` | Normal / Visual | Copilot CLI: explain (send to `copilot`) |
+| `<leader>pa` | Normal *(plantuml buffers)* | Open ASCII PlantUML preview popup (`PumlPreviewAscii`) |
 | `<leader>osn` | Normal | OpenSpec: create new change |
 | `<leader>oss` | Normal | OpenSpec: show status |
 | `<leader>osl` | Normal | OpenSpec: list all changes |
@@ -378,12 +388,25 @@ You can also press **`<leader>t`** to open the built-in terminal split and use `
 > ```
 > Or run it without a global install via `npx @oramasearch/serena`.
 
+## AI Research (Avante)
+
+[avante.nvim](https://github.com/yetone/avante.nvim) provides an in-editor Q&A chat interface with two switchable backends: a local [ollama](https://ollama.com) service (offline-first default) and GitHub Copilot (online).
+
+→ See **[docs/guides/cli-console-mode.md](docs/guides/cli-console-mode.md)** for setup instructions (ollama Docker service, model download, GPU opt-in).
+
+| Keys | Action |
+|---|---|
+| `<leader>aa` | Open avante with the current provider |
+| `<leader>ao` | Switch to ollama provider and open avante |
+| `<leader>ac` | Switch to copilot provider and open avante |
+
 ## Plugin Overview
 
 Plugins are managed by [lazy.nvim](https://github.com/folke/lazy.nvim) and organized in `lua/plugins/`:
 
 | File | Plugins | Cheatsheet |
 |---|---|---|
+| `avante.lua` | avante.nvim AI chat (`<leader>aa/ao/ac`) with ollama + copilot backends | [cli-console-mode.md](docs/guides/cli-console-mode.md) |
 | `colorscheme.lua` | TokyoNight theme (moon / storm / night / day variants) | — |
 | `conform.lua` | Formatting (format-on-save + `<leader>f`) for Lisp and F# filetypes | [formatting.md](docs/cheatsheets/formatting.md) |
 | `copilot.lua` | Copilot inline completions + Serena MCP server config | [copilot.md](docs/cheatsheets/copilot.md) · [ai-tools.md](docs/cheatsheets/ai-tools.md) |
@@ -394,11 +417,11 @@ Plugins are managed by [lazy.nvim](https://github.com/folke/lazy.nvim) and organ
 | `html.lua` | Bracey HTML live preview | [html.md](docs/cheatsheets/html.md) |
 | `init.lua` | vim-repeat, vim-sensible, vim-surround, vim-unimpaired, vim-airline (statusline), lspconfig | [lsp.md](docs/cheatsheets/lsp.md) · [surround.md](docs/cheatsheets/surround.md) · [unimpaired.md](docs/cheatsheets/unimpaired.md) |
 | `lisp.lua` | Conjure, vim-sexp, nvim-parinfer, rainbow-delimiters | [lisp.md](docs/cheatsheets/lisp.md) |
-| `markdown.lua` | markdown-preview.nvim (browser preview, PlantUML via Docker server); `:MdToPdf` PDF export; `:MdToConfluence` / `:MdFromConfluence` / `:MdConfluenceComments`; `:JiraCreateIssue` / `:JiraCreateStory` | [markdown.md](docs/cheatsheets/markdown.md) |
+| `markdown.lua` | markdown-preview.nvim (GUI) + glow.nvim (console) browser/terminal preview; `:MdToPdf` PDF export; `:MdToConfluence` / `:MdFromConfluence` / `:MdConfluenceComments`; `:JiraCreateIssue` / `:JiraCreateStory` | [markdown.md](docs/cheatsheets/markdown.md) |
 | `mkdnflow.lua` | mkdnflow.nvim (cross-page link navigation: `<CR>` follow, `<BS>` back) | [markdown.md](docs/cheatsheets/markdown.md) |
 | `nvim-cmp.lua` | nvim-cmp + completion sources | [completion.md](docs/cheatsheets/completion.md) |
 | `nvim-tree.lua` | File explorer tree | [file-tree.md](docs/cheatsheets/file-tree.md) |
-| `plantuml.lua` | plantuml-syntax + `:PumlPreview` command (browser preview via Docker server) | [plantuml.md](docs/cheatsheets/plantuml.md) |
+| `plantuml.lua` | plantuml-syntax + `:PumlPreview` (PNG in GUI, ASCII in console) + `:PumlPreviewAscii` (always available) | [plantuml.md](docs/cheatsheets/plantuml.md) |
 | `rest.lua` | kulala.nvim HTTP client (run requests from `.http` files) | [rest.md](docs/cheatsheets/rest.md) |
 | `treesitter.lua` | nvim-treesitter | — |
 | `vim-commentary.lua` | Toggle comments with `gcc` | [comments.md](docs/cheatsheets/comments.md) |
@@ -420,10 +443,11 @@ lua/
     mdpdf.lua               # Markdown → PDF export command (MdToPdf)
     mdpreview.lua           # Markdown markserv server preview command (MdServerPreview)
     openspec.lua            # OpenspecNew / OpenspecStatus / OpenspecList commands
-    terminal.lua            # Terminal detection & capability flags
+    terminal.lua            # Terminal detection & capability flags (is_console, has_nerd_font, …)
     treesitter.lua          # (config managed in plugins/treesitter.lua)
     util.lua                # Shared helpers (open_url: cross-platform browser opener)
   plugins/
+    avante.lua              # avante.nvim AI chat (ollama + copilot; <leader>aa/ao/ac)
     colorscheme.lua         # TokyoNight theme (moon/storm/night/day)
     conform.lua             # Formatting for Lisp and F# filetypes
     copilot.lua             # Copilot inline completions + Serena MCP server config
@@ -434,11 +458,11 @@ lua/
     html.lua                # Bracey HTML live preview
     init.lua                # Bare-string plugins (tpope, airline, lspconfig)
     lisp.lua                # Lisp ecosystem plugins
-    markdown.lua            # markdown-preview.nvim (browser preview)
+    markdown.lua            # markdown-preview.nvim (GUI) + glow.nvim (console)
     mkdnflow.lua            # mkdnflow.nvim (cross-page link navigation)
     nvim-cmp.lua            # Completion engine + sources
     nvim-tree.lua           # File tree
-    plantuml.lua            # plantuml-syntax + PumlPreview command
+    plantuml.lua            # plantuml-syntax + PumlPreview / PumlPreviewAscii commands
     rest.lua                # kulala.nvim HTTP client (run requests from .http files)
     treesitter.lua          # nvim-treesitter
     vim-commentary.lua      # Comment toggling
@@ -456,6 +480,7 @@ docker/
   markserv/                 # Docker + Compose for markdown preview server (cross-page links, PlantUML/Mermaid diagrams)
   md2pdf/                   # Pandoc Lua filter for Markdown → PDF with PlantUML
   plantuml-server/          # Docker Compose for PlantUML render server
+  ollama/                   # Docker Compose for ollama LLM service (avante backend)
   sbcl-swank/               # Docker Compose for SBCL/Swank REPL
 docs/
   cheatsheets/
@@ -479,6 +504,7 @@ docs/
   guides/
     confluence.md           # Confluence publishing guide (MdToConfluence)
     jira.md                 # Jira issue/story creation guide
+    cli-console-mode.md     # Console mode guide (is_console, glow, PlantUML ASCII, ollama, avante)
     diagrams.md             # Markdown + PlantUML diagram guide
     fsharp.md               # F# guide
     haskell.md              # Haskell guide

@@ -42,6 +42,10 @@ chmod +x ~/.local/share/roslyn/content/LanguageServer/linux-x64/Microsoft.CodeAn
 echo 'export PATH="$HOME/.local/share/roslyn/content/LanguageServer/linux-x64:$PATH"' >> ~/.bashrc
 source ~/.bashrc
 
+# Zsh:
+echo 'export PATH="$HOME/.local/share/roslyn/content/LanguageServer/linux-x64:$PATH"' >> ~/.zshrc
+source ~/.zshrc
+
 # 5. Verify
 Microsoft.CodeAnalysis.LanguageServer --version
 ```
