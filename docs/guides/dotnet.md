@@ -70,6 +70,7 @@ sudo mv nvim-linux-x86_64.appimage /usr/local/bin/nvim
 
 ```sh
 curl -LO https://github.com/neovim/neovim/releases/download/stable/nvim-linux-x86_64.tar.gz
+mkdir -p ~/.local ~/.local/bin
 tar -xzf nvim-linux-x86_64.tar.gz -C ~/.local
 # Adds nvim-linux-x86_64/bin/nvim — make sure ~/.local/nvim-linux-x86_64/bin is on your PATH,
 # or symlink: ln -sf ~/.local/nvim-linux-x86_64/bin/nvim ~/.local/bin/nvim
