@@ -59,8 +59,8 @@ Look for the `clipboard` section — it will list which provider was found.
 Or from a shell:
 
 ```sh
-nvim --headless -c 'echo has("clipboard")' -c 'qa'
-# prints: 1 if a provider was found, 0 if not
+nvim --headless "+checkhealth clipboard" +qa
+# review the clipboard section for detected provider/tool status
 ```
 
 Quick functional test:
