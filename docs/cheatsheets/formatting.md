@@ -16,7 +16,7 @@ Format-on-save is enabled automatically for the following filetypes:
 
 | Filetype | Formatter |
 |---|---|
-| Lisp | LSP (`cl_lsp`) |
+| Lisp | LSP (if attached) |
 | Clojure | LSP |
 | Scheme | LSP |
 | Fennel | LSP |

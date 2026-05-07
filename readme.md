@@ -327,7 +327,7 @@ Press **`Ctrl+e`** to dismiss the completion menu and return to normal typing.
 | Language | Treesitter | LSP | REPL | Structural Editing | Guide |
 |---|---|---|---|---|---|
 | Clojure | ✅ | — | ✅ nREPL (Conjure) | ✅ vim-sexp + parinfer | [docs/guides/lisp.md](docs/guides/lisp.md) |
-| Common Lisp | ✅ | ✅ cl_lsp | ✅ Swank (Conjure) | ✅ vim-sexp + parinfer | [docs/guides/lisp.md](docs/guides/lisp.md) |
+| Common Lisp | ✅ | — | ✅ Swank (Conjure) | ✅ vim-sexp + parinfer | [docs/guides/lisp.md](docs/guides/lisp.md) |
 | F# | ✅ | ✅ fsautocomplete | ✅ dotnet fsi (iron.nvim) | — | [docs/guides/fsharp.md](docs/guides/fsharp.md) |
 | Fennel | — | — | ✅ (Conjure) | ✅ parinfer | [docs/guides/lisp.md](docs/guides/lisp.md) |
 | Haskell | — | ✅ haskell-tools | ✅ GHCi | — | [docs/guides/haskell.md](docs/guides/haskell.md) |
@@ -438,7 +438,7 @@ lua/
     confluence.lua          # Confluence publish command (MdToConfluence)
     jira.lua                # Jira issue/story creation (JiraCreateIssue, JiraCreateStory)
     copilot_cli.lua         # CopilotSuggest / CopilotExplain commands (copilot CLI)
-    lsp.lua                 # LSP server setup (cl_lsp, fsautocomplete, marksman)
+    lsp.lua                 # LSP server setup (fsautocomplete, marksman, roslyn)
     marp.lua                # MARP presentation commands (preview + export)
     mdpdf.lua               # Markdown → PDF export command (MdToPdf)
     mdpreview.lua           # Markdown markserv server preview command (MdServerPreview)
