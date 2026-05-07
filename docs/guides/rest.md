@@ -7,7 +7,7 @@
 | Dependency | Purpose | Install hint |
 |---|---|---|
 | **curl** | Sends HTTP requests | `sudo apt install curl` |
-| **Neovim ≥ 0.10.1** | Minimum version required | `sudo snap install nvim --classic` |
+| **Neovim ≥ 0.10.1** | Minimum version required | AppImage or tarball from [github.com/neovim/neovim/releases](https://github.com/neovim/neovim/releases) |
 | **tree-sitter CLI** | Compiles kulala's custom HTTP parser on first launch | see below |
 
 ### Installing the tree-sitter CLI
