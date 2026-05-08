@@ -8,6 +8,7 @@
 
 | Keys | Mode | Action |
 |---|---|---|
+| `ggVG` | Normal | Select all lines (go to top → Visual Line → go to bottom) |
 | `<` | Visual | Outdent selection and reselect |
 | `>` | Visual | Indent selection and reselect |
 | `<Tab>` | Visual | Indent selection |
