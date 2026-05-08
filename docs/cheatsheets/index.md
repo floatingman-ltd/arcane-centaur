@@ -20,7 +20,7 @@
 | Haskell (haskell-tools) | [haskell.md](haskell.md) |
 | Janet (Conjure + vim-sexp) | [janet.md](janet.md) |
 | HTML Live Preview (Bracey) | [html.md](html.md) |
-| Lisp / Clojure / Scheme / Janet (Conjure + vim-sexp) | [lisp.md](lisp.md) |
+| Lisp / Clojure / Scheme / Fennel (Conjure + vim-sexp) | [lisp.md](lisp.md) |
 | LSP | [lsp.md](lsp.md) |
 | Markdown Preview + MARP + Confluence + Jira | [markdown.md](markdown.md) |
 | Navigation & Splits | [navigation.md](navigation.md) |

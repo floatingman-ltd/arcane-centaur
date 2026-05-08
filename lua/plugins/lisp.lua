@@ -1,5 +1,5 @@
 return {
-  -- Conjure: interactive REPL-driven development for Lisp, Clojure, Scheme
+  -- Conjure: interactive REPL-driven development for Lisp-family languages
   {
     "Olical/conjure",
     ft = { "lisp", "clojure", "scheme", "fennel", "janet" },
