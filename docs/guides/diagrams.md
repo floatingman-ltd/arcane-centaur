@@ -219,6 +219,7 @@ fenced plantuml block                  fenced mermaid block
 | `,p` | markdown | Toggle browser preview (`MarkdownPreviewToggle`) |
 | `,dp` | markdown | Export to PDF with PlantUML diagrams rendered (`MdToPdf`) |
 | `,p` | plantuml | Render and open diagram in browser (`PumlPreview`) |
+| `<leader>pa` | plantuml | Open ASCII preview popup (`PumlPreviewAscii`) |
 
 ## How PumlPreview Works
 
