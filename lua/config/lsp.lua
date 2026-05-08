@@ -23,6 +23,10 @@ vim.lsp.enable("fsautocomplete")
 vim.lsp.config("marksman", { on_attach = on_attach })
 vim.lsp.enable("marksman")
 
+-- Janet LSP (requires: jpm install janet-lsp)
+vim.lsp.config("janet_lsp", { on_attach = on_attach })
+vim.lsp.enable("janet_lsp")
+
 -- C# LSP (roslyn.nvim manages the server; we attach shared keymaps here)
 -- Requires the Roslyn server binary on $PATH — see docs/guides/dotnet.md.
 vim.lsp.config("roslyn", { on_attach = on_attach })
