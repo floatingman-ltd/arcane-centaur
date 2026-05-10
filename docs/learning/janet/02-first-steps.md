@@ -1,0 +1,300 @@
+# 02 — First Steps with Janet
+
+This guide covers Janet's core syntax and data types, then shows you how to use each Neovim tool hands-on. Work through it interactively — evaluate every snippet as you read.
+
+> **Series:** [01 Setup](01-setup.md) · 02 First Steps ← you are here
+
+---
+
+## 1. Open a Scratch File
+
+```sh
+nvim scratch.janet
+```
+
+Open the Conjure log in a vertical split straight away — you will use it throughout:
+
+```
+,lv
+```
+
+Everything you evaluate will appear in the right-hand pane.
+
+---
+
+## 2. Core Syntax at a Glance
+
+Janet is a Lisp. Every expression is a function call wrapped in parentheses:
+
+```janet
+(function arg1 arg2 ...)
+```
+
+| Concept | Example | Result |
+|---|---|---|
+| Arithmetic | `(+ 1 2)` | `3` |
+| Nested calls | `(* 2 (+ 3 4))` | `14` |
+| String | `"hello"` | `"hello"` |
+| Keyword | `:name` | `:name` |
+| Boolean | `true` `false` | |
+| Nil | `nil` | |
+
+Evaluate each line with `,ee` (cursor on the form) or `,eb` (whole buffer).
+
+---
+
+## 3. Data Types
+
+### Numbers
+
+```janet
+42          # integer
+3.14        # float
+0xFF        # hex integer (255)
+```
+
+### Strings
+
+```janet
+"Hello, world!"
+(string "Hello" ", " "world!")   # => "Hello, world!"
+(string/length "Janet")          # => 5
+(string/upcase "janet")          # => "JANET"
+```
+
+### Keywords
+
+Keywords are interned symbols prefixed with `:`. They evaluate to themselves and are commonly used as map keys:
+
+```janet
+:name
+:age
+```
+
+### Arrays (mutable)
+
+```janet
+(def arr @[1 2 3])
+(array/push arr 4)
+arr   # => @[1 2 3 4]
+```
+
+### Tuples (immutable)
+
+```janet
+(def t [1 2 3])
+(get t 0)   # => 1
+```
+
+### Tables (mutable maps)
+
+```janet
+(def person @{:name "Alice" :age 30})
+(get person :name)          # => "Alice"
+(put person :age 31)
+person                      # => @{:name "Alice" :age 31}
+```
+
+### Structs (immutable maps)
+
+```janet
+(def config {:host "localhost" :port 4005})
+(config :host)   # => "localhost"
+```
+
+---
+
+## 4. Defining Things
+
+### Variables
+
+```janet
+(def x 42)          # immutable binding
+(var counter 0)     # mutable binding
+(set counter 1)     # mutate a var
+```
+
+### Functions
+
+```janet
+(defn greet [name]
+  (string "Hello, " name "!"))
+
+(greet "Walt")   # => "Hello, Walt!"
+```
+
+Functions are first-class values:
+
+```janet
+(def double (fn [x] (* x 2)))
+(double 5)   # => 10
+```
+
+### Let bindings (local scope)
+
+```janet
+(let [a 3
+      b 4]
+  (math/sqrt (+ (* a a) (* b b))))   # => 5.0
+```
+
+---
+
+## 5. Control Flow
+
+### if / if-not
+
+```janet
+(if (> 3 2)
+  "yes"
+  "no")   # => "yes"
+```
+
+### when (no else branch)
+
+```janet
+(when true
+  (print "this runs"))
+```
+
+### cond (multi-branch)
+
+```janet
+(def x 5)
+(cond
+  (< x 0) "negative"
+  (= x 0) "zero"
+  "positive")   # => "positive"
+```
+
+### loop and each
+
+```janet
+(each item [1 2 3]
+  (print item))
+
+(loop [i :range [0 5]]
+  (print i))
+```
+
+---
+
+## 6. Using the Neovim Tools
+
+### Conjure — Evaluating Code
+
+| Keys | What happens |
+|---|---|
+| `,ee` | Evaluates the form the cursor is inside |
+| `,er` | Evaluates the outermost (root) form |
+| `,eb` | Evaluates every top-level form in the file |
+| `,e!` | Replaces the form in the buffer with its result |
+| `,lv` | Opens the Conjure log in a vertical split |
+| `,lq` | Closes the log window |
+
+**Try it:** place the cursor anywhere inside `(greet "Walt")` and press `,ee`.
+
+### vim-sexp — Structural Editing
+
+vim-sexp lets you reshape code without manually counting parentheses. All motions work in normal mode.
+
+**Slurp and barf** (extend or shrink a form's boundary):
+
+```janet
+; Start:
+(+ 1 2) 3
+
+; Slurp forward  >)  — pull 3 into the form:
+(+ 1 2 3)
+
+; Barf forward   <)  — push 3 back out:
+(+ 1 2) 3
+```
+
+| Keys | Action |
+|---|---|
+| `>)` | Slurp forward — extend closing `)` rightward |
+| `<)` | Barf forward — shrink closing `)` leftward |
+| `<(` | Slurp backward — extend opening `(` leftward |
+| `>(` | Barf backward — shrink opening `(` rightward |
+| `>f` / `<f` | Move the current form right / left |
+| `>e` / `<e` | Move the current element right / left |
+| `cse(` | Wrap element in `()` |
+| `cse[` | Wrap element in `[]` |
+| `dsf` | Splice (delete surrounding form, keep contents) |
+
+**Try it:** on the `greet` definition, position the cursor on `"Hello, "` and press `>)` — watch the closing paren jump right.
+
+### nvim-parinfer — Indent-Driven Parens
+
+Parinfer infers where closing parentheses belong based on your indentation. There are no keymaps — just indent with `>>` or Tab and watch the parens follow.
+
+**Key rule:** edit indentation to move code into or out of a form; do not manually drag parentheses.
+
+### rainbow-delimiters — Visual Nesting
+
+Each nesting level gets a distinct colour automatically. No keymaps needed. Use the colours to orient yourself when editing deeply nested expressions.
+
+### LSP — Language Intelligence
+
+The `janet_lsp` server activates automatically when you open a `.janet` file. Standard LSP keymaps (from `lua/config/lsp.lua`):
+
+| Keys | Action |
+|---|---|
+| `gd` | Go to definition |
+| `K` | Hover documentation |
+| `gr` | Find all references |
+| `<leader>rn` | Rename symbol |
+| `<leader>ca` | Code actions |
+| `<leader>e` | Open diagnostic float |
+| `[d` / `]d` | Jump to previous / next diagnostic |
+
+Check the server is running: `:LspInfo`
+
+### conform.nvim — Formatting
+
+Format-on-save is active for Janet. To trigger manually:
+
+| Keys | Action |
+|---|---|
+| `<leader>f` | Format buffer (normal mode) or selection (visual mode) |
+
+---
+
+## 7. A Complete Mini-Project
+
+Put this in `scratch.janet`, then evaluate forms top-to-bottom with `,er`:
+
+```janet
+# A small phonebook
+
+(def phonebook
+  @{:alice "555-0100"
+    :bob   "555-0101"
+    :carol "555-0102"})
+
+(defn lookup [name]
+  (if-let [number (phonebook name)]
+    (string name " → " number)
+    (string name " not found")))
+
+(lookup :alice)   # evaluate this line with ,ee
+(lookup :dave)    # evaluate this line with ,ee
+```
+
+**Workflow:**
+1. Evaluate `(def phonebook ...)` with `,er` — the table is now in the REPL state.
+2. Evaluate `(defn lookup ...)` with `,er` — the function is defined.
+3. Position cursor on `(lookup :alice)` and press `,ee` — see the result in the Conjure log.
+4. Try adding a new entry: `(put phonebook :dave "555-0199")` then look up `:dave`.
+
+---
+
+## 8. What to Explore Next
+
+- **Janet standard library:** run `(doc string)`, `(doc array)`, etc. in the REPL to read built-in documentation.
+- **Modules:** `(import spork/fmt)` after installing a library with `jpm install spork`.
+- **Macros:** `(defmacro unless [cond body] ~(when (not ,cond) ,body))`.
+- **Janet documentation:** [janet-lang.org/docs/](https://janet-lang.org/docs/)
+- **Cheatsheet:** `docs/cheatsheets/janet.md` — quick-reference for all Neovim keymaps.
+- **Full guide:** `docs/guides/janet.md` — plugin details, workflow diagrams, troubleshooting.
