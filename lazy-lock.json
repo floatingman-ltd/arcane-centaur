@@ -13,7 +13,7 @@
   "copilot.vim": { "branch": "release", "commit": "a12fd5672110c8aa7e3c8419e28c96943ca179be" },
   "diffview.nvim": { "branch": "main", "commit": "4516612fe98ff56ae0415a259ff6361a89419b0a" },
   "dressing.nvim": { "branch": "master", "commit": "2d7c2db2507fa3c4956142ee607431ddb2828639" },
-  "fzf-lua": { "branch": "main", "commit": "23f71140754b9162551dc8ccc1d6346e4275ecc2" },
+  "fzf-lua": { "branch": "main", "commit": "<restore the exact commit from the previous lazy-lock.json>" },
   "gitsigns.nvim": { "branch": "main", "commit": "dd3f588bacbeb041be6facf1742e42097f62165d" },
   "glow.nvim": { "branch": "main", "commit": "5d5954b2f22e109d4a6eba8b2618c5b96e4ee7a2" },
   "haskell-tools.nvim": { "branch": "master", "commit": "d223712c767011350ed887c3152da4955d9b1457" },

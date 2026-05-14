@@ -1,20 +1,15 @@
 ## Requirements
 
-### Requirement: Glow plugin loads in all environments
-> **Superseded** — the original requirement restricted `glow.nvim` to console sessions only.
-> The `markdown-popup-preview` change (see `openspec/specs/markdown-popup-preview/spec.md`)
-> extended loading to all environments so the `,pp` popup keymap is always available.
-> The updated behaviour below reflects the current implementation.
+### Requirement: Glow plugin is available in all environments
+`glow.nvim` SHALL be loaded by lazy.nvim whenever markdown filetypes are opened, regardless
+of `term.is_console`. `markdown-preview.nvim` SHALL continue to load only when
+`term.is_console` is `false`.
 
-`glow.nvim` SHALL be loaded by lazy.nvim whenever a markdown buffer is opened, regardless
-of whether `$DISPLAY` or `$WAYLAND_DISPLAY` is set. `markdown-preview.nvim` SHALL be
-loaded only when `term.is_console` is `false`.
-
-#### Scenario: Console session loads glow
+#### Scenario: Console session loads glow only
 - **WHEN** Neovim starts and `term.is_console` is `true`
 - **THEN** `glow.nvim` SHALL be loaded and `markdown-preview.nvim` SHALL not be loaded
 
-#### Scenario: GUI session loads both plugins
+#### Scenario: GUI session loads glow and markdown-preview
 - **WHEN** Neovim starts and `term.is_console` is `false`
 - **THEN** both `glow.nvim` and `markdown-preview.nvim` SHALL be loaded
 
@@ -37,8 +32,8 @@ If the `glow` binary is not found on `$PATH` at preview time, the config SHALL e
 
 ### Requirement: Consistent preview keymap across environments
 The markdown preview keymap SHALL invoke `:Glow` in console environments and
-`:MarkdownPreview` in GUI environments, providing a consistent trigger regardless of
-which plugin is active.
+`:MarkdownPreviewToggle` in GUI environments, providing a consistent trigger regardless of
+environment.
 
 #### Scenario: Preview keymap in console
 - **WHEN** the preview keymap is triggered in a console session
@@ -46,4 +41,4 @@ which plugin is active.
 
 #### Scenario: Preview keymap in GUI
 - **WHEN** the preview keymap is triggered in a GUI session
-- **THEN** `:MarkdownPreview` SHALL be invoked
+- **THEN** `:MarkdownPreviewToggle` SHALL be invoked
