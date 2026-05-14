@@ -6,7 +6,6 @@ The current git workflow (vim-fugitive + gitsigns) covers staging, blame, and in
 
 - Add `sindrets/diffview.nvim` plugin with lazy.nvim spec in `lua/plugins/git.lua`
 - Expose keymaps under `<leader>g` for opening/closing the diff view and file history
-- Add a `<leader>gm` keymap for merge conflict resolution view
 - Document new keybindings in `docs/cheatsheets/git.md` and the cheatsheet index
 
 ## Capabilities
