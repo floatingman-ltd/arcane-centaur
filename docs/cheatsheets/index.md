@@ -187,7 +187,7 @@ Works on GUI Linux (xclip/xsel/wl-clipboard), WSL (win32yank.exe), and SSH/TTY s
 
 ---
 
-### Git — vim-fugitive + gitsigns
+### Git — vim-fugitive + gitsigns + diffview.nvim
 
 | Keys | Mode | Action |
 |---|---|---|
@@ -202,6 +202,9 @@ Works on GUI Linux (xclip/xsel/wl-clipboard), WSL (win32yank.exe), and SSH/TTY s
 | `<leader>hr` | Normal / Visual | Reset hunk |
 | `<leader>hu` | Normal | Undo stage |
 | `<leader>hb` | Normal | Blame line |
+| `<leader>gD` | Normal | Open diff view (working tree) |
+| `<leader>gH` | Normal | File history for current file |
+| `<leader>gX` | Normal | Close diff view |
 
 → [Full reference](git.md)
 
@@ -300,6 +303,7 @@ LocalLeader is `,` in Markdown buffers.
 | `<Tab>` | Jump to next link in buffer (mkdnflow) |
 | `<S-Tab>` | Jump to previous link in buffer (mkdnflow) |
 | `,p` | Toggle Markdown browser preview (single-file) |
+| `,pp` | Popup preview via glow (always available) |
 | `,sp` | Open in markserv Docker server preview (cross-page links) |
 | `,dp` | Export to PDF with PlantUML diagrams rendered |
 | `,mp` | MARP: open slide in preview server |
