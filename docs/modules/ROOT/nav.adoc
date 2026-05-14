@@ -11,14 +11,13 @@
 * xref:guides/fsharp.adoc[F#]
 * xref:guides/haskell.adoc[Haskell]
 * xref:guides/janet.adoc[Janet]
-* xref:guides/jira.adoc[Jira & Confluence]
+* xref:guides/jira.adoc[Jira]
 * xref:guides/lisp.adoc[Common Lisp / Clojure / Scheme]
 * xref:guides/markdown.adoc[Markdown]
 * xref:guides/presentations.adoc[Presentations (MARP)]
 * xref:guides/rest.adoc[REST / HTTP]
 * xref:guides/validation.adoc[Validation]
 * xref:guides/confluence.adoc[Confluence]
-* xref:guides/ai-tools.adoc[AI Tools]
 
 .Cheatsheets
 * xref:cheatsheets/index.adoc[Cheatsheet Index]
