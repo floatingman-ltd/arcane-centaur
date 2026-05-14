@@ -7,7 +7,7 @@
 *LocalLeader* = `,` in PlantUML buffers
 
 → Back to xref:cheatsheets/index.adoc[main cheatsheet] · Full guide:
-../guides/diagrams.md
+xref:guides/diagrams.adoc[Diagrams guide]
 
 === Preview
 
