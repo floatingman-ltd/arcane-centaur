@@ -6,7 +6,13 @@ local function open_in_browser(filepath)
   if term.is_wsl then
     local win_path = vim.fn.system("wslpath -w " .. vim.fn.shellescape(filepath)):gsub("\n", "")
     vim.fn.jobstart(
-      { "powershell.exe", "-NoProfile", "-Command", "Start-Process '" .. win_path .. "'" },
+      {
+        "powershell.exe",
+        "-NoProfile",
+        "-Command",
+        "param($p) Start-Process -FilePath $p",
+        win_path,
+      },
       { detach = true }
     )
   else
