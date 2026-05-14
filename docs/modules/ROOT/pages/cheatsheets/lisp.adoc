@@ -9,7 +9,7 @@
 → Back to link:index.md[main cheatsheet] · Full guide: ../guides/lisp.md
 · Janet-specific: janet.md
 
-=== Conjure — Evaluation
+== Conjure — Evaluation
 
 [cols=",",options="header",]
 |===
@@ -21,7 +21,7 @@
 |`,cc` |Connect to REPL manually
 |===
 
-=== Conjure — REPL Log
+== Conjure — REPL Log
 
 [cols=",",options="header",]
 |===
@@ -31,7 +31,7 @@
 |`,lq` |Close REPL log window
 |===
 
-=== Structural Editing — vim-sexp
+== Structural Editing — vim-sexp
 
 [width="100%",cols="50%,50%",options="header",]
 |===
@@ -69,7 +69,7 @@ link:++../guides/lisp.md#structural-editing-slurp--barf++[../guides/lisp.md]
 for step-by-step examples of each slurp/barf operation.
 ____
 
-=== Other Active Plugins
+== Other Active Plugins
 
 * *nvim-parinfer* — keeps parentheses balanced as you edit indentation
 (no keymaps)

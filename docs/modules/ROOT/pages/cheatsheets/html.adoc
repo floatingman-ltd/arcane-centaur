@@ -8,7 +8,7 @@
 
 → Back to link:index.md[main cheatsheet]
 
-=== Live Preview (bracey.vim)
+== Live Preview (bracey.vim)
 
 [cols=",,",options="header",]
 |===
@@ -22,7 +22,7 @@ Bracey starts a local server and opens the current HTML file in the
 default browser. Changes to the HTML, CSS, or JavaScript are reflected
 live without a manual reload.
 
-=== Prerequisites
+== Prerequisites
 
 The plugin’s Node.js server dependency is built automatically on first
 install:

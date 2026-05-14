@@ -9,7 +9,7 @@ integration follows the same pattern as the
 link:confluence.md[Confluence integration]: pure Lua, async `curl`
 calls, and localleader keymaps in Markdown buffers.
 
-=== Prerequisites
+== Prerequisites
 
 [width="100%",cols="50%,50%",options="header",]
 |===
@@ -25,7 +25,7 @@ e.g. `https://yourcompany.atlassian.net`
 |`curl` |Already required by the Confluence integration
 |===
 
-==== Setting environment variables
+=== Setting environment variables
 
 Add to your shell profile (`~/.bashrc`, `~/.zshrc`, etc.):
 
@@ -38,13 +38,13 @@ export JIRA_BASE_URL="https://yourcompany.atlassian.net"
 
 Then reload your shell or open a new terminal before launching Neovim.
 
-=== Project Map
+== Project Map
 
 `docs/jira-project-map.md` (at the git root of your project) maps local
 path prefixes to Jira project keys. The integration reads this file each
 time a command runs.
 
-==== Format
+=== Format
 
 [source,markdown]
 ----
@@ -62,7 +62,7 @@ time a command runs.
 * The `docs/jira-project-map.md` file must exist; copy from this repo’s
 template and update the rows for your projects.
 
-=== Keymaps
+== Keymaps
 
 Keymaps are active in *Markdown buffers* only (`LocalLeader` = `,`).
 
@@ -81,9 +81,9 @@ create Task
 create Story
 |===
 
-=== Workflow
+== Workflow
 
-==== Normal mode (no pre-filled description)
+=== Normal mode (no pre-filled description)
 
 [arabic]
 . Open any markdown file whose path matches a row in
@@ -95,7 +95,7 @@ blank to skip).
 . A success notification shows the new issue key (e.g. `PROJ-42`) and
 its URL.
 
-==== Visual mode (use selection as description)
+=== Visual mode (use selection as description)
 
 [arabic]
 . Select the relevant text in visual mode.
@@ -104,7 +104,7 @@ its URL.
 from selection).
 . Success notification appears as above.
 
-=== Commands
+== Commands
 
 Both commands are also available directly:
 
@@ -122,7 +122,7 @@ description)
 description)
 |===
 
-=== Troubleshooting
+== Troubleshooting
 
 [width="100%",cols="50%,50%",options="header",]
 |===

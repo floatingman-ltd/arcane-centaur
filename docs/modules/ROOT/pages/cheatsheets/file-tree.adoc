@@ -8,7 +8,7 @@
 
 → Back to link:index.md[main cheatsheet]
 
-=== Opening the Tree
+== Opening the Tree
 
 [cols=",,",options="header",]
 |===
@@ -18,7 +18,7 @@
 |`Ctrl-f` |Normal |Reveal current file in tree
 |===
 
-=== Inside the Tree Window
+== Inside the Tree Window
 
 These are nvim-tree’s built-in keys (active while the cursor is in the
 tree pane):

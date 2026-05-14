@@ -8,7 +8,7 @@
 
 → Back to link:index.md[main cheatsheet]
 
-=== Running Requests
+== Running Requests
 
 [cols=",,",options="header",]
 |===
@@ -19,7 +19,7 @@
 |`,e` |Normal |Select environment
 |===
 
-=== Commands Reference
+== Commands Reference
 
 [cols=",",options="header",]
 |===

@@ -14,7 +14,7 @@ ____
 
 '''''
 
-=== 1. Open a Scratch File
+== 1. Open a Scratch File
 
 [source,sh]
 ----
@@ -32,7 +32,7 @@ Everything you evaluate will appear in the right-hand pane.
 
 '''''
 
-=== 2. Core Syntax at a Glance
+== 2. Core Syntax at a Glance
 
 Janet is a Lisp. Every expression is a function call wrapped in
 parentheses:
@@ -58,9 +58,9 @@ buffer).
 
 '''''
 
-=== 3. Data Types
+== 3. Data Types
 
-==== Numbers
+=== Numbers
 
 [source,janet]
 ----
@@ -69,7 +69,7 @@ buffer).
 0xFF        # hex integer (255)
 ----
 
-==== Strings
+=== Strings
 
 [source,janet]
 ----
@@ -79,7 +79,7 @@ buffer).
 (string/upcase "janet")          # => "JANET"
 ----
 
-==== Keywords
+=== Keywords
 
 Keywords are interned symbols prefixed with `:`. They evaluate to
 themselves and are commonly used as map keys:
@@ -90,7 +90,7 @@ themselves and are commonly used as map keys:
 :age
 ----
 
-==== Arrays (mutable)
+=== Arrays (mutable)
 
 [source,janet]
 ----
@@ -99,7 +99,7 @@ themselves and are commonly used as map keys:
 arr   # => @[1 2 3 4]
 ----
 
-==== Tuples (immutable)
+=== Tuples (immutable)
 
 [source,janet]
 ----
@@ -107,7 +107,7 @@ arr   # => @[1 2 3 4]
 (get t 0)   # => 1
 ----
 
-==== Tables (mutable maps)
+=== Tables (mutable maps)
 
 [source,janet]
 ----
@@ -117,7 +117,7 @@ arr   # => @[1 2 3 4]
 person                      # => @{:name "Alice" :age 31}
 ----
 
-==== Structs (immutable maps)
+=== Structs (immutable maps)
 
 [source,janet]
 ----
@@ -127,9 +127,9 @@ person                      # => @{:name "Alice" :age 31}
 
 '''''
 
-=== 4. Defining Things
+== 4. Defining Things
 
-==== Variables
+=== Variables
 
 [source,janet]
 ----
@@ -138,7 +138,7 @@ person                      # => @{:name "Alice" :age 31}
 (set counter 1)     # mutate a var
 ----
 
-==== Functions
+=== Functions
 
 [source,janet]
 ----
@@ -156,7 +156,7 @@ Functions are first-class values:
 (double 5)   # => 10
 ----
 
-==== Let bindings (local scope)
+=== Let bindings (local scope)
 
 [source,janet]
 ----
@@ -167,9 +167,9 @@ Functions are first-class values:
 
 '''''
 
-=== 5. Control Flow
+== 5. Control Flow
 
-==== if / if-not
+=== if / if-not
 
 [source,janet]
 ----
@@ -178,7 +178,7 @@ Functions are first-class values:
   "no")   # => "yes"
 ----
 
-==== when (no else branch)
+=== when (no else branch)
 
 [source,janet]
 ----
@@ -186,7 +186,7 @@ Functions are first-class values:
   (print "this runs"))
 ----
 
-==== cond (multi-branch)
+=== cond (multi-branch)
 
 [source,janet]
 ----
@@ -197,7 +197,7 @@ Functions are first-class values:
   "positive")   # => "positive"
 ----
 
-==== loop and each
+=== loop and each
 
 [source,janet]
 ----
@@ -210,9 +210,9 @@ Functions are first-class values:
 
 '''''
 
-=== 6. Using the Neovim Tools
+== 6. Using the Neovim Tools
 
-==== Conjure — Evaluating Code
+=== Conjure — Evaluating Code
 
 [cols=",",options="header",]
 |===
@@ -228,7 +228,7 @@ Functions are first-class values:
 *Try it:* place the cursor anywhere inside `(greet "Walt")` and press
 `,ee`.
 
-==== vim-sexp — Structural Editing
+=== vim-sexp — Structural Editing
 
 vim-sexp lets you reshape code without manually counting parentheses.
 All motions work in normal mode.
@@ -264,7 +264,7 @@ All motions work in normal mode.
 *Try it:* on the `greet` definition, position the cursor on `"Hello, "`
 and press `++>++)` — watch the closing paren jump right.
 
-==== nvim-parinfer — Indent-Driven Parens
+=== nvim-parinfer — Indent-Driven Parens
 
 Parinfer infers where closing parentheses belong based on your
 indentation. There are no keymaps — just indent with `++>>++` or Tab and
@@ -273,13 +273,13 @@ watch the parens follow.
 *Key rule:* edit indentation to move code into or out of a form; do not
 manually drag parentheses.
 
-==== rainbow-delimiters — Visual Nesting
+=== rainbow-delimiters — Visual Nesting
 
 Each nesting level gets a distinct colour automatically. No keymaps
 needed. Use the colours to orient yourself when editing deeply nested
 expressions.
 
-==== LSP — Language Intelligence
+=== LSP — Language Intelligence
 
 The `janet++_++lsp` server activates automatically when you open a
 `.janet` file. Standard LSP keymaps (from `lua/config/lsp.lua`):
@@ -298,7 +298,7 @@ The `janet++_++lsp` server activates automatically when you open a
 
 Check the server is running: `:LspInfo`
 
-==== conform.nvim — Formatting
+=== conform.nvim — Formatting
 
 Format-on-save is active for Janet. To trigger manually:
 
@@ -311,7 +311,7 @@ mode)
 
 '''''
 
-=== 7. A Complete Mini-Project
+== 7. A Complete Mini-Project
 
 Put this in `scratch.janet`, then evaluate forms top-to-bottom with
 `,er`:
@@ -342,7 +342,7 @@ function is defined. 3. Position cursor on `(lookup :alice)` and press
 
 '''''
 
-=== 8. What to Explore Next
+== 8. What to Explore Next
 
 * *Janet standard library:* run `(doc string)`, `(doc array)`, etc. in
 the REPL to read built-in documentation.

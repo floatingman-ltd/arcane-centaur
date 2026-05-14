@@ -24,7 +24,7 @@ install required.
 |Export to PDF |`docker run` with `--pdf` flag
 |===
 
-=== Prerequisites
+== Prerequisites
 
 [width="100%",cols="34%,33%,33%",options="header",]
 |===
@@ -36,7 +36,7 @@ install required.
 Linux desktops
 |===
 
-=== Starting the MARP Preview Server
+== Starting the MARP Preview Server
 
 A Docker Compose file is provided at `docker/marp/docker-compose.yml`
 using the `marpteam/marp-cli` image. Port 8880 is bound to localhost
@@ -56,7 +56,7 @@ docker compose -f ~/.config/nvim/docker/marp/docker-compose.yml down
 
 The server watches for file changes and refreshes automatically.
 
-=== Quick Start
+== Quick Start
 
 [arabic]
 . Start the MARP preview server (if not already running):
@@ -103,7 +103,7 @@ Content alongside an image.
 . Press *`,mp`* to open the live preview in your browser.
 . Press *`,mx`* to export the file to PowerPoint (`.pptx`).
 
-=== Keybindings
+== Keybindings
 
 `localleader` is *`,`* in markdown buffers.
 
@@ -117,7 +117,7 @@ Content alongside an image.
 |`,p` |Toggle standard Markdown preview (`MarkdownPreviewToggle`)
 |===
 
-=== User Commands
+== User Commands
 
 The following commands are available in any markdown buffer:
 
@@ -130,16 +130,16 @@ The following commands are available in any markdown buffer:
 |`:MarpToPdf` |Convert the current file to PDF
 |===
 
-=== How It Works
+== How It Works
 
-==== Live preview (`:MarpPreview`)
+=== Live preview (`:MarpPreview`)
 
 The Docker Compose service starts `marp-cli` in server mode (`-s .`),
 which serves all Markdown files in the mounted directory as rendered
 slide decks at `http://localhost:8880/++<++filename++>++`. The
 `:MarpPreview` command opens this URL with `xdg-open`.
 
-==== Export (`:MarpToPptx`, `:MarpToHtml`, `:MarpToPdf`)
+=== Export (`:MarpToPptx`, `:MarpToHtml`, `:MarpToPdf`)
 
 Each export command runs a one-shot Docker container:
 
@@ -154,7 +154,7 @@ The output file is written to the same directory as the source file. The
 `MARP++_++USER` environment variable ensures correct file ownership on
 Linux.
 
-=== Configuration
+== Configuration
 
 The MARP server port is set to *8880* (to avoid conflict with the
 PlantUML server on 8080). To change it, update:
@@ -166,7 +166,7 @@ PlantUML server on 8080). To change it, update:
 |`lua/config/marp.lua` |URL in the `preview` function
 |===
 
-=== MARP Markdown Syntax
+== MARP Markdown Syntax
 
 MARP extends standard Markdown with presentation-specific features:
 

@@ -10,7 +10,7 @@ vim-unimpaired provides pairs of bracket mappings — `++[++` for
 
 '''''
 
-=== Buffer navigation
+== Buffer navigation
 
 [cols=",",options="header",]
 |===
@@ -21,7 +21,7 @@ vim-unimpaired provides pairs of bracket mappings — `++[++` for
 |`++]++B` |Last buffer
 |===
 
-=== Quickfix / location list
+== Quickfix / location list
 
 [cols=",",options="header",]
 |===
@@ -34,7 +34,7 @@ vim-unimpaired provides pairs of bracket mappings — `++[++` for
 |`++]++l` |Next location list entry
 |===
 
-=== Argument list
+== Argument list
 
 [cols=",",options="header",]
 |===
@@ -43,7 +43,7 @@ vim-unimpaired provides pairs of bracket mappings — `++[++` for
 |`++]++a` |Next file in argument list
 |===
 
-=== Line operations
+== Line operations
 
 [cols=",",options="header",]
 |===
@@ -54,7 +54,7 @@ vim-unimpaired provides pairs of bracket mappings — `++[++` for
 |`++]++e` |Exchange current line with line below
 |===
 
-=== Option toggles
+== Option toggles
 
 Prefix with `++[++o` to enable, `++]++o` to disable, `yo` to toggle.
 
@@ -70,7 +70,7 @@ Prefix with `++[++o` to enable, `++]++o` to disable, `yo` to toggle.
 |`++[++ox` / `++]++ox` / `yox` |`cursorline` {plus} `cursorcolumn`
 |===
 
-=== URL / XML encoding
+== URL / XML encoding
 
 [cols=",",options="header",]
 |===

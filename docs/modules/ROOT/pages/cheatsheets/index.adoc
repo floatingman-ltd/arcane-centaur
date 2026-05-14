@@ -6,7 +6,7 @@
 
 *Leader* = `Space` · *LocalLeader* = `,` (in all language buffers)
 
-=== Plugin Cheatsheets
+== Plugin Cheatsheets
 
 [width="100%",cols="50%,50%",options="header",]
 |===
@@ -61,9 +61,9 @@ link:../guides/clipboard.md[full guide]
 
 '''''
 
-=== Quick Reference
+== Quick Reference
 
-==== Navigation & Splits
+=== Navigation & Splits
 
 [cols=",,",options="header",]
 |===
@@ -82,7 +82,7 @@ link:../guides/clipboard.md[full guide]
 
 '''''
 
-==== File Tree (nvim-tree)
+=== File Tree (nvim-tree)
 
 [cols=",,",options="header",]
 |===
@@ -96,7 +96,7 @@ link:../guides/clipboard.md[full guide]
 
 '''''
 
-==== Terminal
+=== Terminal
 
 [cols=",,",options="header",]
 |===
@@ -109,7 +109,7 @@ link:../guides/clipboard.md[full guide]
 
 '''''
 
-==== Editing
+=== Editing
 
 [cols=",,",options="header",]
 |===
@@ -123,7 +123,7 @@ link:../guides/clipboard.md[full guide]
 |`++<++leader++>++p` |Visual |Paste without overwriting clipboard
 |===
 
-==== System Clipboard
+=== System Clipboard
 
 [cols=",,",options="header",]
 |===
@@ -147,7 +147,7 @@ SSH/TTY sessions (OSC 52 — no external tool required).
 
 '''''
 
-==== Comments (vim-commentary)
+=== Comments (vim-commentary)
 
 [cols=",,",options="header",]
 |===
@@ -162,7 +162,7 @@ SSH/TTY sessions (OSC 52 — no external tool required).
 
 '''''
 
-==== Formatting (conform.nvim)
+=== Formatting (conform.nvim)
 
 [width="100%",cols="34%,33%,33%",options="header",]
 |===
@@ -178,7 +178,7 @@ F++#++ buffers._
 
 '''''
 
-==== Copilot
+=== Copilot
 
 [width="100%",cols="34%,33%,33%",options="header",]
 |===
@@ -204,7 +204,7 @@ window)
 
 '''''
 
-==== OpenSpec
+=== OpenSpec
 
 [cols=",,",options="header",]
 |===
@@ -218,7 +218,7 @@ window)
 
 '''''
 
-==== LSP (all LSP-enabled buffers)
+=== LSP (all LSP-enabled buffers)
 
 [cols=",,",options="header",]
 |===
@@ -237,7 +237,7 @@ window)
 
 '''''
 
-==== Auto-Completion (nvim-cmp)
+=== Auto-Completion (nvim-cmp)
 
 [cols=",,",options="header",]
 |===
@@ -255,7 +255,7 @@ window)
 
 '''''
 
-==== Git — vim-fugitive {plus} gitsigns {plus} diffview.nvim
+=== Git — vim-fugitive {plus} gitsigns {plus} diffview.nvim
 
 [cols=",,",options="header",]
 |===
@@ -280,7 +280,7 @@ window)
 
 '''''
 
-==== Haskell (haskell-tools)
+=== Haskell (haskell-tools)
 
 Leader is `Space`; no LocalLeader bindings are used in Haskell buffers.
 
@@ -299,7 +299,7 @@ Leader is `Space`; no LocalLeader bindings are used in Haskell buffers.
 
 '''''
 
-==== F++#++ REPL — iron.nvim
+=== F++#++ REPL — iron.nvim
 
 LocalLeader is `,` in F++#++ buffers.
 
@@ -320,11 +320,11 @@ LocalLeader is `,` in F++#++ buffers.
 
 '''''
 
-==== Lisp / Clojure / Scheme / Janet — Conjure
+=== Lisp / Clojure / Scheme / Janet — Conjure
 
 LocalLeader is `,` in Lisp/Clojure/Scheme/Fennel/Janet buffers.
 
-===== Evaluation
+==== Evaluation
 
 [cols=",",options="header",]
 |===
@@ -336,7 +336,7 @@ LocalLeader is `,` in Lisp/Clojure/Scheme/Fennel/Janet buffers.
 |`,cc` |Connect to REPL manually
 |===
 
-===== REPL Log
+==== REPL Log
 
 [cols=",",options="header",]
 |===
@@ -350,7 +350,7 @@ LocalLeader is `,` in Lisp/Clojure/Scheme/Fennel/Janet buffers.
 
 '''''
 
-==== Structural Editing — vim-sexp
+=== Structural Editing — vim-sexp
 
 [cols=",",options="header",]
 |===
@@ -372,7 +372,7 @@ LocalLeader is `,` in Lisp/Clojure/Scheme/Fennel/Janet buffers.
 
 '''''
 
-==== Markdown
+=== Markdown
 
 LocalLeader is `,` in Markdown buffers.
 
@@ -405,7 +405,7 @@ link:../guides/jira.md[Jira guide]
 
 '''''
 
-==== PlantUML
+=== PlantUML
 
 LocalLeader is `,` in PlantUML buffers.
 
@@ -420,7 +420,7 @@ LocalLeader is `,` in PlantUML buffers.
 
 '''''
 
-==== HTML Live Preview (Bracey)
+=== HTML Live Preview (Bracey)
 
 LocalLeader is `,` in HTML / CSS / JavaScript buffers.
 
@@ -436,7 +436,7 @@ LocalLeader is `,` in HTML / CSS / JavaScript buffers.
 
 '''''
 
-==== REST Client (kulala.nvim)
+=== REST Client (kulala.nvim)
 
 LocalLeader is `,` in `.http` buffers.
 

@@ -9,7 +9,7 @@ is available — physical TTY, SSH sessions without X forwarding, and
 headless servers — and documents the AI research assistant that works in
 all environments.
 
-=== Console Detection
+== Console Detection
 
 The configuration detects console mode via a single boolean flag:
 
@@ -37,7 +37,7 @@ which covers:
 No manual override flag is needed. If the detection is wrong for your
 setup, file an issue.
 
-=== Clipboard — OSC 52
+== Clipboard — OSC 52
 
 In console, SSH, and TTY sessions (where `$DISPLAY` and
 `$WAYLAND++_++DISPLAY` are both unset) the config uses the *OSC 52*
@@ -50,13 +50,13 @@ RDP notes, and paste caveats:
 
 '''''
 
-=== Markdown Preview — Glow
+== Markdown Preview — Glow
 
 In console sessions, `:MarkdownPreview` (which opens a browser) is
 replaced by https://github.com/charmbracelet/glow[glow], which renders
 Markdown with colour and tables in a floating popup window.
 
-==== Prerequisites
+=== Prerequisites
 
 Install the `glow` binary:
 
@@ -78,7 +78,7 @@ brew install glow
 Neovim will emit a `WARN` notification at preview time if `glow` is not
 found on `$PATH` — it will not crash.
 
-==== Usage
+=== Usage
 
 The preview keymap is consistent across environments:
 
@@ -91,7 +91,7 @@ The preview keymap is consistent across environments:
 
 Press `q` or `++<++Esc++>++` to close the popup.
 
-==== Closing an orphaned popup
+=== Closing an orphaned popup
 
 Occasionally the Glow popup is left open after navigating away
 (e.g. after following a link with `++<++CR++>++`). The popup is a
@@ -122,7 +122,7 @@ This closes every floating window in the current tab page (including any
 other popups, e.g. LSP hover or completion docs), so use it only as a
 last resort.
 
-==== Customising the popup
+=== Customising the popup
 
 Override the glow options in `lua/plugins/markdown.lua` to adjust the
 appearance (border style, max dimensions):
@@ -137,7 +137,7 @@ opts = {
 },
 ----
 
-=== PlantUML ASCII Preview
+== PlantUML ASCII Preview
 
 `:PumlPreviewAscii` fetches plain ASCII art from the PlantUML Docker
 server’s `/txt/` endpoint and displays it in a scratch buffer inside a
@@ -158,7 +158,7 @@ and change the endpoint in `lua/plugins/plantuml.lua` from `/txt/` back
 to `/utxt/`.
 ____
 
-==== Prerequisites
+=== Prerequisites
 
 The PlantUML Docker server must be running:
 
@@ -167,7 +167,7 @@ The PlantUML Docker server must be running:
 docker compose -f ~/.config/nvim/docker/plantuml-server/docker-compose.yml up -d
 ----
 
-==== Keymaps (plantuml buffers)
+=== Keymaps (plantuml buffers)
 
 [width="100%",cols="50%,50%",options="header",]
 |===
@@ -183,7 +183,7 @@ ____
 without opening a browser.
 ____
 
-=== Open URL Behaviour
+== Open URL Behaviour
 
 In console mode, `util.open++_++url` skips all browser-opener attempts
 and instead emits an `INFO` notification containing the full URL. Copy
@@ -194,7 +194,7 @@ In GUI mode, the existing behaviour is unchanged: `xdg-open` / `open` /
 `wslview` / `explorer.exe` are tried in order, and a `WARN` notification
 is emitted if none are found.
 
-=== AI Research — Avante
+== AI Research — Avante
 
 https://github.com/yetone/avante.nvim[avante.nvim] provides a Q&A chat
 interface inside Neovim. Two backends are available and can be switched
@@ -219,7 +219,7 @@ an unreleased commit produces a `"release not found"` error and avante
 will not load.
 ____
 
-==== Keymaps (global)
+=== Keymaps (global)
 
 [cols=",",options="header",]
 |===
@@ -229,7 +229,7 @@ ____
 |`++<++leader++>++ac` |Switch to copilot provider and open avante
 |===
 
-==== Ollama Setup
+=== Ollama Setup
 
 Ollama runs as a persistent Docker service. *Both commands below are
 required on first setup.*
@@ -267,7 +267,7 @@ Then update `model` in `lua/plugins/avante.lua`:
 model = "llama3.2:3b",
 ----
 
-===== GPU Acceleration (NVIDIA)
+==== GPU Acceleration (NVIDIA)
 
 GPU support is opt-in. Open `docker/ollama/docker-compose.yml` and
 uncomment the `deploy` block:
@@ -287,13 +287,13 @@ Requires the
 https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html[NVIDIA
 Container Toolkit].
 
-===== When ollama is unreachable
+==== When ollama is unreachable
 
 If the ollama service is not running when you submit a question, avante
 will display the HTTP error in its buffer. Neovim will not crash. Start
 the service and retry.
 
-==== Copilot Backend
+=== Copilot Backend
 
 No additional setup is required. Avante reuses the credentials already
 held by `github/copilot.vim`. If Copilot is not yet authenticated, run

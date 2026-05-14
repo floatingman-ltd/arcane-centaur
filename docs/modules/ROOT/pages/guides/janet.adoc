@@ -33,9 +33,9 @@ for Janet and provides *format-on-save* as well as a manual
 *`++<++leader++>++f`* keybinding (normal and visual mode) to reformat
 the current buffer or selection.
 
-=== Prerequisites
+== Prerequisites
 
-==== Installing Janet
+=== Installing Janet
 
 [width="100%",cols="50%,50%",options="header",]
 |===
@@ -57,7 +57,7 @@ Verify the installation:
 janet -v
 ----
 
-==== Installing jpm (Janet Package Manager)
+=== Installing jpm (Janet Package Manager)
 
 `jpm` is required to install the LSP server and manage Janet projects.
 It is typically bundled with Janet installations. If it is not
@@ -73,7 +73,7 @@ janet bootstrap.janet
 See https://github.com/janet-lang/jpm[janet-lang/jpm] for full
 instructions.
 
-=== LSP
+== LSP
 
 The `janet++_++lsp` server is configured in `lua/config/lsp.lua`.
 Install it via jpm:
@@ -87,7 +87,7 @@ Make sure `janet-lsp` is on your `$PATH` (typically `~/.jpm/bin/`). See
 link:../../readme.md#lsp-support[readme.md] for the shared LSP
 keybindings.
 
-=== Quick Start
+== Quick Start
 
 [arabic]
 . *Open a Janet source file* — plugins load automatically:
@@ -132,7 +132,7 @@ evaluate code in a `.janet` buffer — no manual server setup is needed.
 . *Parinfer* runs in the background — just adjust indentation and parens
 follow. No keys needed.
 
-=== Typical Workflow
+== Typical Workflow
 
 ....
  ┌──────────────────────────────────────────────┐
@@ -160,9 +160,9 @@ S-expressions without counting parentheses.
 indentation.
 . Rainbow delimiters let you visually match nesting depth.
 
-=== Troubleshooting
+== Troubleshooting
 
-==== Conjure does not start the REPL
+=== Conjure does not start the REPL
 
 Make sure `janet` is on your `$PATH`:
 
@@ -174,7 +174,7 @@ which janet
 If Janet is installed but Neovim cannot find it, check your shell `PATH`
 and ensure it is inherited by Neovim.
 
-==== LSP features not working
+=== LSP features not working
 
 Verify `janet-lsp` is installed and accessible:
 

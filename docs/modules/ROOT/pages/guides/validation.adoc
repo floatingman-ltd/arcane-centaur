@@ -16,7 +16,7 @@ command mode. - Commands prefixed `$` are run in a shell. -
 
 '''''
 
-=== Prerequisites
+== Prerequisites
 
 Before starting, confirm the following are installed and available:
 
@@ -36,7 +36,7 @@ docs/guides/cli-console-mode.md for install)
 
 '''''
 
-=== 1. Lua Syntax Check
+== 1. Lua Syntax Check
 
 Verify all Lua files are syntactically valid.
 
@@ -52,7 +52,7 @@ find ~/.config/nvim -name '*.lua' \
 
 '''''
 
-=== 2. Startup and Plugin Loading
+== 2. Startup and Plugin Loading
 
 * [x] 2.1 Open Neovim with no file argument:
 +
@@ -80,7 +80,7 @@ show `✗ error`.
 
 '''''
 
-=== 3. Console Detection
+== 3. Console Detection
 
 * [ ] 3.1 In a normal GUI/WSL session, confirm `is++_++console` is
 false:
@@ -113,7 +113,7 @@ env -u DISPLAY -u WAYLAND_DISPLAY nvim
 
 '''''
 
-=== 4. Markdown Preview — Glow (console)
+== 4. Markdown Preview — Glow (console)
 
 *Precondition:* `glow` is on `$PATH`. Launch in console mode:
 
@@ -187,7 +187,7 @@ crash. Restore: `:lua vim.env.PATH = vim.fn.system("echo -n $PATH")`
 
 '''''
 
-=== 5. Markdown Preview — markdown-preview.nvim (GUI)
+== 5. Markdown Preview — markdown-preview.nvim (GUI)
 
 *Precondition:* running in a GUI session with `$DISPLAY` or
 `$WAYLAND++_++DISPLAY` set.
@@ -223,7 +223,7 @@ opens in Neovim.
 
 '''''
 
-=== 6. Markdown Preview — Markserv (cross-page links)
+== 6. Markdown Preview — Markserv (cross-page links)
 
 *Precondition:* Docker is running.
 
@@ -257,7 +257,7 @@ docker compose -f ~/.config/nvim/docker/markserv/docker-compose.yml down
 
 '''''
 
-=== 7. PlantUML Docker Server
+== 7. PlantUML Docker Server
 
 *Precondition:* Docker is running. This server is required for sections
 8 and 9.
@@ -290,7 +290,7 @@ EOF
 
 '''''
 
-=== 8. PlantUML ASCII Preview
+== 8. PlantUML ASCII Preview
 
 *Precondition:* PlantUML server from section 7 is running.
 
@@ -350,7 +350,7 @@ nvim /tmp/test.puml
 
 '''''
 
-=== 9. Markdown → PDF Export (with diagrams)
+== 9. Markdown → PDF Export (with diagrams)
 
 *Precondition:* PlantUML server from section 7 is running.
 
@@ -396,7 +396,7 @@ ls -la /tmp/test-diagrams.pdf
 
 '''''
 
-=== 10. MARP Presentations
+== 10. MARP Presentations
 
 *Precondition:* Docker is running.
 
@@ -458,7 +458,7 @@ MARP preview server.
 
 '''''
 
-=== 11. Avante AI — Ollama Backend
+== 11. Avante AI — Ollama Backend
 
 *Precondition:* Both steps are required on first use.
 
@@ -513,7 +513,7 @@ docker compose -f ~/.config/nvim/docker/ollama/docker-compose.yml start
 
 '''''
 
-=== 12. Avante AI — Copilot Backend
+== 12. Avante AI — Copilot Backend
 
 *Precondition:* Copilot is authenticated.
 
@@ -530,7 +530,7 @@ streams in. No separate login prompt.
 
 '''''
 
-=== 13. Copilot Inline Completion
+== 13. Copilot Inline Completion
 
 * [ ] 13.1 Open a code file (e.g. a `.lua` or `.py` file) and start
 typing a function:
@@ -550,7 +550,7 @@ explanation in a popup or panel.
 
 '''''
 
-=== 14. LSP
+== 14. LSP
 
 *Precondition:* at least one LSP server is configured (e.g. open a
 `.lua` file — `lua++_++ls` if installed, or a `.fs` file for
@@ -587,7 +587,7 @@ clean).
 
 '''''
 
-=== 15. FZF Fuzzy Finder
+== 15. FZF Fuzzy Finder
 
 * [ ] 15.1 Open file finder:
 +
@@ -614,7 +614,7 @@ clean).
 
 '''''
 
-=== 16. Nvim-Tree File Explorer
+== 16. Nvim-Tree File Explorer
 
 * [ ] 16.1 Open file tree:
 +
@@ -634,7 +634,7 @@ or `++<++C-n++>++`. *Expected:* file tree sidebar opens.
 
 '''''
 
-=== 17. Git (Fugitive {plus} Gitsigns)
+== 17. Git (Fugitive {plus} Gitsigns)
 
 *Precondition:* inside a git repository.
 
@@ -658,7 +658,7 @@ appear in the gutter.
 
 '''''
 
-=== 18. REST Client (Kulala)
+== 18. REST Client (Kulala)
 
 *Precondition:* a `.http` file with a valid request.
 
@@ -695,7 +695,7 @@ nvim /tmp/test.http
 
 '''''
 
-=== 19. Common Lisp REPL (Conjure {plus} Swank)
+== 19. Common Lisp REPL (Conjure {plus} Swank)
 
 *Precondition:* Docker is running.
 
@@ -729,7 +729,7 @@ echo '(+ 1 2)' > /tmp/test.lisp && nvim /tmp/test.lisp
 
 '''''
 
-=== 20. F++#++ REPL (iron.nvim)
+== 20. F++#++ REPL (iron.nvim)
 
 *Precondition:* `dotnet` CLI is installed (`which dotnet`).
 
@@ -755,7 +755,7 @@ echo 'printfn "Hello"' > /tmp/test.fsx && nvim /tmp/test.fsx
 
 '''''
 
-=== 21. Haskell (haskell-tools {plus} GHCi)
+== 21. Haskell (haskell-tools {plus} GHCi)
 
 *Precondition:* `ghc` and `haskell-language-server` are installed.
 
@@ -781,7 +781,7 @@ echo 'main = putStrLn "hi"' > /tmp/Test.hs && nvim /tmp/Test.hs
 
 '''''
 
-=== 22. Confluence Integration
+== 22. Confluence Integration
 
 *Precondition:* `CONFLUENCE++_++EMAIL` and
 `CONFLUENCE++_++API++_++TOKEN` env vars are set. See
@@ -817,7 +817,7 @@ meaningful message (not `E492: Not an editor command`).
 
 '''''
 
-=== 23. Jira Integration
+== 23. Jira Integration
 
 *Precondition:* `JIRA++_++EMAIL`, `JIRA++_++API++_++TOKEN`, and
 `JIRA++_++BASE++_++URL` env vars are set. See `docs/guides/jira.md` for
@@ -847,7 +847,7 @@ a meaningful message if credentials are missing).
 
 '''''
 
-=== 24. OpenSpec Workflow
+== 24. OpenSpec Workflow
 
 * [ ] 24.1 Confirm OpenSpec commands are registered:
 +
@@ -868,7 +868,7 @@ a meaningful message if credentials are missing).
 
 '''''
 
-=== 25. Terminal Toggle
+== 25. Terminal Toggle
 
 * [ ] 25.1 Open terminal split:
 +
@@ -890,7 +890,7 @@ buffer) — does *not* close the terminal.
 
 '''''
 
-=== 26. Formatting (conform.nvim)
+== 26. Formatting (conform.nvim)
 
 * [ ] 26.1 Open a Lisp or F++#++ file with intentionally bad
 indentation, then save:
@@ -912,13 +912,13 @@ indentation, then save:
 
 '''''
 
-=== 27. System Clipboard
+== 27. System Clipboard
 
 These tests verify the clipboard provider is correctly selected and that
 the `++<++leader++>++` shortcuts work. Run in the environment that
 matches the platform you want to verify.
 
-==== 27.1 Identify the active provider
+=== 27.1 Identify the active provider
 
 [source,vim]
 ----
@@ -933,7 +933,7 @@ matches the platform you want to verify.
 |GUI Linux |`unnamedplus (auto)`
 |===
 
-==== GUI Linux — xclip / xsel / wl-clipboard
+=== GUI Linux — xclip / xsel / wl-clipboard
 
 * [ ] 27.2 Confirm `:checkhealth clipboard` shows a provider found
 (xclip, xsel, or wl-copy):
@@ -957,7 +957,7 @@ external application shows the deleted line.
 press `++<++leader++>++p`. *Expected:* the external text is pasted after
 the cursor.
 
-==== WSL — win32yank.exe
+=== WSL — win32yank.exe
 
 * [ ] 27.6 Verify `win32yank.exe` is on `$PATH`:
 +
@@ -981,7 +981,7 @@ Notepad.
 * [ ] 27.9 Copy text in Notepad, then paste in Neovim with
 `++<++leader++>++p`. *Expected:* the Windows clipboard text is pasted.
 
-==== SSH / Console — OSC 52
+=== SSH / Console — OSC 52
 
 *Precondition:* connect via SSH from a terminal that supports OSC 52
 (Windows Terminal, Alacritty, kitty, WezTerm, Ghostty). Or simulate
@@ -1009,7 +1009,7 @@ pasted (terminals that block OSC 52 read for security). This is
 acceptable — use `Shift{plus}Insert` or `Ctrl{plus}Shift{plus}V` as the
 fallback.
 
-==== Keymaps — all platforms
+=== Keymaps — all platforms
 
 * [ ] 27.13 In visual mode, select text and press `++<++leader++>++y`.
 *Expected:* selection is copied to the system clipboard without leaving
@@ -1025,7 +1025,7 @@ replaced text goes to the black-hole register, clipboard is preserved).
 
 '''''
 
-=== Summary Checklist
+== Summary Checklist
 
 [cols=",,",options="header",]
 |===

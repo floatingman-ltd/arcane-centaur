@@ -11,7 +11,7 @@ go-to-definition, hover docs, and formatting.
 All F++#++ plugins lazy-load only when you open a `.fs`, `.fsx`, or
 `.fsi` file.
 
-=== Prerequisites
+== Prerequisites
 
 [width="100%",cols="34%,33%,33%",options="header",]
 |===
@@ -23,7 +23,7 @@ All F++#++ plugins lazy-load only when you open a `.fs`, `.fsx`, or
 |`dotnet tool install -g fsautocomplete`
 |===
 
-==== Installing .NET SDK
+=== Installing .NET SDK
 
 Follow the official guide for Ubuntu/WSL:
 
@@ -37,14 +37,14 @@ sudo apt update && sudo apt install -y dotnet-sdk-8.0
 
 Or download directly from https://dotnet.microsoft.com/download.
 
-=== LSP
+== LSP
 
 The `fsautocomplete` server is configured in `lua/config/lsp.lua`. See
 the link:#prerequisites[Prerequisites] section above for install steps
 and link:../../readme.md#lsp-support[readme.md] for the shared LSP
 keybindings.
 
-=== Quick Start
+== Quick Start
 
 [arabic]
 . *Verify prerequisites are installed:*
@@ -86,7 +86,7 @@ height).
 fsautocomplete formatter. You can also trigger it manually with
 `++<++leader++>++f`.
 
-=== Typical Workflow
+== Typical Workflow
 
 ....
  ┌──────────────────────────────────────────────────────┐

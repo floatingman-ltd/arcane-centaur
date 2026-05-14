@@ -6,7 +6,7 @@
 
 → Back to link:index.md[main cheatsheet]
 
-=== Built-in fzf-lua Keybindings
+== Built-in fzf-lua Keybindings
 
 fzf-lua uses the default fzf key bindings inside its popup window. Open
 the picker with any `:FzfLua ++<++command++>++` call. Common built-in
@@ -26,7 +26,7 @@ keys:
 |`Ctrl-d` |Deselect all items
 |===
 
-=== Example Commands
+== Example Commands
 
 Run these from the Neovim command line or bind them to keys in
 `lua/keymaps.lua`:

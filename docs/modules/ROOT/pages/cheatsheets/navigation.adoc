@@ -8,7 +8,7 @@
 
 → Back to link:index.md[main cheatsheet]
 
-=== Window / Split Navigation
+== Window / Split Navigation
 
 [cols=",,",options="header",]
 |===
@@ -23,7 +23,7 @@
 |`Ctrl-→` |Normal |Grow split width
 |===
 
-=== Terminal
+== Terminal
 
 [width="100%",cols="34%,33%,33%",options="header",]
 |===
@@ -38,7 +38,7 @@ The terminal toggle reuses the same terminal buffer across open/close
 cycles. Press `++<++C-k++>++` after `Esc` to jump back to the editor
 window.
 
-=== Copilot Chat Window
+== Copilot Chat Window
 
 [width="100%",cols="34%,33%,33%",options="header",]
 |===

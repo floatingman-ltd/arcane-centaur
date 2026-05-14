@@ -8,7 +8,7 @@
 
 → Back to link:index.md[main cheatsheet]
 
-=== Format Keybinding
+== Format Keybinding
 
 [width="100%",cols="34%,33%,33%",options="header",]
 |===
@@ -17,7 +17,7 @@
 (LSP-preferred)
 |===
 
-=== Format-on-Save
+== Format-on-Save
 
 Format-on-save is enabled automatically for the following filetypes:
 

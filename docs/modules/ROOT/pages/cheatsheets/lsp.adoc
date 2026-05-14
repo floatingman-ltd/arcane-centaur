@@ -8,7 +8,7 @@
 
 → Back to link:index.md[main cheatsheet]
 
-=== LSP Keybindings (all LSP-enabled buffers)
+== LSP Keybindings (all LSP-enabled buffers)
 
 These keymaps are active in any buffer where an LSP server has attached
 (F++#++, C++#++, Markdown, Haskell).
@@ -26,7 +26,7 @@ These keymaps are active in any buffer where an LSP server has attached
 |`++]++d` |Normal |Jump to next diagnostic
 |===
 
-=== Configured LSP Servers
+== Configured LSP Servers
 
 [width="100%",cols="34%,33%,33%",options="header",]
 |===

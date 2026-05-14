@@ -10,7 +10,7 @@
 
 '''''
 
-=== vim-fugitive — Git Operations
+== vim-fugitive — Git Operations
 
 Run any git command with `:Git ++<++args++>++` or its short alias
 `:G ++<++args++>++` (e.g. `:Git commit`, `:G rebase -i HEAD~3`).
@@ -25,7 +25,7 @@ Run any git command with `:Git ++<++args++>++` or its short alias
 |`++<++leader++>++gp` |Normal |Git push
 |===
 
-==== Inside the `:Git` status window
+=== Inside the `:Git` status window
 
 [cols=",",options="header",]
 |===
@@ -40,12 +40,12 @@ Run any git command with `:Git ++<++args++>++` or its short alias
 
 '''''
 
-=== gitsigns.nvim — In-Buffer Git Signs
+== gitsigns.nvim — In-Buffer Git Signs
 
 Changed lines are marked in the sign column: `▎` added · `▎` changed ·
 `▁`/`▔` deleted line
 
-==== Hunk Navigation
+=== Hunk Navigation
 
 [cols=",,",options="header",]
 |===
@@ -54,7 +54,7 @@ Changed lines are marked in the sign column: `▎` added · `▎` changed ·
 |`++[++h` |Normal |Jump to previous hunk
 |===
 
-==== Hunk Actions
+=== Hunk Actions
 
 [cols=",,",options="header",]
 |===
@@ -70,7 +70,7 @@ Changed lines are marked in the sign column: `▎` added · `▎` changed ·
 |`++<++leader++>++hD` |Normal |Diff this file (staged, vs. HEAD)
 |===
 
-==== Text Object
+=== Text Object
 
 [cols=",,",options="header",]
 |===
@@ -89,7 +89,7 @@ ____
 
 '''''
 
-=== diffview.nvim — Side-by-Side Diff & File History
+== diffview.nvim — Side-by-Side Diff & File History
 
 Opens a persistent tabbed diff panel with a file list on the left and a
 two-pane diff on the right. Also provides per-file commit history and a

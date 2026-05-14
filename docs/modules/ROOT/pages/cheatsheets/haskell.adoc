@@ -9,7 +9,7 @@
 → Back to link:index.md[main cheatsheet] · Full guide:
 ../guides/haskell.md
 
-=== GHCi REPL
+== GHCi REPL
 
 [cols=",,",options="header",]
 |===
@@ -19,7 +19,7 @@
 |`++<++leader++>++rq` |Normal |Quit the GHCi REPL
 |===
 
-=== haskell-tools Extras
+== haskell-tools Extras
 
 [cols=",,",options="header",]
 |===
@@ -29,7 +29,7 @@
 |`Space-ea` |Normal |Evaluate all code snippets in the buffer
 |===
 
-=== LSP (haskell-language-server)
+== LSP (haskell-language-server)
 
 haskell-tools manages the HLS connection automatically. The standard LSP
 keys (`gd`, `K`, `gr`, `++<++leader++>++rn`, `++<++leader++>++ca`,

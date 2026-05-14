@@ -8,7 +8,7 @@
 
 → Back to link:index.md[main cheatsheet]
 
-=== Inline Suggestions (github/copilot.vim)
+== Inline Suggestions (github/copilot.vim)
 
 [cols=",,",options="header",]
 |===
@@ -19,7 +19,7 @@
 
 `Alt-f` follows the readline/Emacs "`forward-word`" convention (`M-f`).
 
-=== Model Configuration
+== Model Configuration
 
 The active inline-completion model is set in `lua/plugins/copilot.lua`:
 

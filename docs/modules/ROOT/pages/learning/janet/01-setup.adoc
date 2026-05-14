@@ -15,7 +15,7 @@ ____
 
 '''''
 
-=== 1. Install Janet
+== 1. Install Janet
 
 Janet has no runtime dependencies and ships as a single binary.
 
@@ -41,7 +41,7 @@ janet -v
 
 '''''
 
-=== 2. Install jpm (Janet Package Manager)
+== 2. Install jpm (Janet Package Manager)
 
 `jpm` is the standard package manager for Janet libraries and tools. It
 is bundled with most Janet installations. Confirm it is available:
@@ -65,7 +65,7 @@ instructions.
 
 '''''
 
-=== 3. Install the LSP Server
+== 3. Install the LSP Server
 
 `janet-lsp` provides completions, hover documentation, go-to-definition,
 and inline diagnostics inside Neovim.
@@ -93,7 +93,7 @@ which janet-lsp
 
 '''''
 
-=== 4. How the Neovim Plugins Are Wired
+== 4. How the Neovim Plugins Are Wired
 
 Everything is pre-configured. When you open any `.janet` file the
 following plugins load automatically:
@@ -125,7 +125,7 @@ live in `after/ftplugin/janet.lua`.
 
 '''''
 
-=== 5. Verify the Setup
+== 5. Verify the Setup
 
 [arabic]
 . Open (or create) a Janet file:
@@ -149,7 +149,7 @@ appear.
 
 '''''
 
-=== 6. Troubleshooting
+== 6. Troubleshooting
 
 [width="100%",cols="34%,33%,33%",options="header",]
 |===

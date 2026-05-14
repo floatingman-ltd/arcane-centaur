@@ -13,7 +13,7 @@ determine which Jira project to file tickets in.
 directory prefix (e.g. `docs/`) matches any file under it. - An exact
 file path also works (e.g. `docs/design/payment.md`).
 
-=== Project Map
+== Project Map
 
 [cols=",,",options="header",]
 |===

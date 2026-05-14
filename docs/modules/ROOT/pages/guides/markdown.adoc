@@ -19,16 +19,16 @@ For MARP presentation slides, see *presentations.md*.
 
 '''''
 
-=== Quick Start
+== Quick Start
 
-==== Single-file preview (no Docker required)
+=== Single-file preview (no Docker required)
 
 [arabic]
 . Open any `.md` file in Neovim.
 . Press `,p` to toggle the live browser preview.
 . Edit; the preview auto-refreshes in the browser.
 
-==== Project-wide preview with cross-page links (requires Docker)
+=== Project-wide preview with cross-page links (requires Docker)
 
 [arabic]
 . Start the markserv container from your markdown project root:
@@ -58,7 +58,7 @@ because the whole project directory is served.
 
 '''''
 
-=== PlantUML Server
+== PlantUML Server
 
 The markserv preview server generates `++<++img++>++` URLs pointing at
 `http://localhost:8080` for `plantuml` fenced blocks. The browser loads
@@ -75,7 +75,7 @@ running permanently. See diagrams.md for the full guide.
 
 '''''
 
-=== markdown-preview.nvim (`,p`)
+== markdown-preview.nvim (`,p`)
 
 `markdown-preview.nvim` opens a single-file browser preview that syncs
 with your cursor position. It renders:
@@ -86,7 +86,7 @@ needed
 * *PlantUML* fenced code blocks via the PlantUML Docker server on
 `localhost:8080`
 
-==== Limitation — cross-page links
+=== Limitation — cross-page links
 
 `markdown-preview.nvim` runs a minimal WebSocket server that serves
 *only the current buffer*. Clicking a relative link such as
@@ -99,7 +99,7 @@ between files in the editor.
 
 '''''
 
-=== Markserv Docker Server (`,sp`)
+== Markserv Docker Server (`,sp`)
 
 The markserv preview server is a custom Node.js server that renders a
 whole directory tree. Each `.md` file is rendered as GitHub-flavoured
@@ -115,7 +115,7 @@ link:#plantuml-server[Starting the PlantUML Server].
 * *`mermaid`* fenced blocks are rendered client-side by Mermaid.js
 loaded from the jsDelivr CDN — no extra server is needed.
 
-==== How it works
+=== How it works
 
 ....
 your project/
@@ -130,7 +130,7 @@ container mounts that directory at `/docs` and serves it. Visiting
 `++[++guide++]++(guide.md)` navigates to
 `http://localhost:8090/guide.md` — which the server renders correctly.
 
-==== Ports
+=== Ports
 
 [width="100%",cols="40%,60%",options="header",]
 |===
@@ -139,7 +139,7 @@ container mounts that directory at `/docs` and serves it. Visiting
 `/++__++livereload`)
 |===
 
-==== Start / stop commands
+=== Start / stop commands
 
 [source,sh]
 ----
@@ -164,7 +164,7 @@ ____
 
 '''''
 
-=== In-editor Navigation — mkdnflow.nvim
+== In-editor Navigation — mkdnflow.nvim
 
 `mkdnflow.nvim` provides in-editor link following so you can navigate
 between markdown files without leaving Neovim.
@@ -187,7 +187,7 @@ the single-file preview, or `,sp` to open it in the markserv server.
 
 '''''
 
-=== Keybindings Summary
+== Keybindings Summary
 
 LocalLeader is `,` in Markdown buffers.
 
@@ -228,7 +228,7 @@ navigation)
 
 '''''
 
-=== Choosing the Right Preview Tool
+== Choosing the Right Preview Tool
 
 [width="100%",cols="40%,60%",options="header",]
 |===

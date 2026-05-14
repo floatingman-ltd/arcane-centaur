@@ -6,7 +6,7 @@
 
 → Back to link:index.md[main cheatsheet]
 
-=== Comment Toggling
+== Comment Toggling
 
 [width="100%",cols="34%,33%,33%",options="header",]
 |===

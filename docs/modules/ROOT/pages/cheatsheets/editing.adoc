@@ -8,7 +8,7 @@
 
 → Back to link:index.md[main cheatsheet]
 
-=== Visual Mode Editing
+== Visual Mode Editing
 
 [cols=",,",options="header",]
 |===
@@ -22,7 +22,7 @@
 |`++<++leader++>++p` |Visual |Paste without overwriting clipboard
 |===
 
-=== System Clipboard
+== System Clipboard
 
 With `clipboard=unnamedplus` set, the default `y`, `d`, and `p` already
 use the system clipboard on most platforms. The shortcuts below use the
@@ -40,7 +40,7 @@ just the unnamed register).
 |`++<++leader++>++P` |Normal |Paste from system clipboard before cursor
 |===
 
-==== Platform notes
+=== Platform notes
 
 [width="100%",cols="34%,33%,33%",options="header",]
 |===

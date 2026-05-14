@@ -9,7 +9,7 @@
 → Back to link:index.md[main cheatsheet] · Full guide:
 ../guides/janet.md
 
-=== Conjure — Evaluation
+== Conjure — Evaluation
 
 [cols=",",options="header",]
 |===
@@ -20,7 +20,7 @@
 |`,e!` |Replace form with its evaluated result
 |===
 
-=== Conjure — REPL Log
+== Conjure — REPL Log
 
 [cols=",",options="header",]
 |===
@@ -30,7 +30,7 @@
 |`,lq` |Close REPL log window
 |===
 
-=== Structural Editing — vim-sexp
+== Structural Editing — vim-sexp
 
 [width="100%",cols="50%,50%",options="header",]
 |===
@@ -66,7 +66,7 @@ ____
 See ../guides/janet.md for step-by-step examples and setup instructions.
 ____
 
-=== Other Active Plugins
+== Other Active Plugins
 
 * *nvim-parinfer* — keeps parentheses balanced as you edit indentation
 (no keymaps)
