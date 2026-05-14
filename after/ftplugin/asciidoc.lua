@@ -100,12 +100,22 @@ vim.keymap.set("n", "<localleader>pp", function()
   local bufnr    = vim.api.nvim_get_current_buf()
   local tmpfile  = "/tmp/asciidoc-glow-" .. bufnr .. ".md"
 
-  vim.fn.system("pandoc -f asciidoc -t commonmark " .. vim.fn.shellescape(filepath) .. " -o " .. vim.fn.shellescape(tmpfile))
+  vim.fn.jobstart({
+    "pandoc",
+    "-f", "asciidoc",
+    "-t", "commonmark",
+    filepath,
+    "-o", tmpfile,
+  }, {
+    on_exit = function(_, code)
+      vim.schedule(function()
+        if code ~= 0 then
+          vim.notify("AsciiDoc popup preview: pandoc conversion failed.", vim.log.levels.ERROR)
+          return
+        end
 
-  if vim.v.shell_error ~= 0 then
-    vim.notify("AsciiDoc popup preview: pandoc conversion failed.", vim.log.levels.ERROR)
-    return
-  end
-
-  vim.cmd("Glow " .. vim.fn.fnameescape(tmpfile))
+        vim.cmd("Glow " .. vim.fn.fnameescape(tmpfile))
+      end)
+    end,
+  })
 end, { buffer = true, desc = "AsciiDoc popup preview (pandoc → glow, console + GUI)" })
