@@ -20,7 +20,6 @@ A https://neovim.io[hyperlink] and a `literal path like /tmp/preview.html`.
 == Admonitions
 
 NOTE: This is a NOTE admonition — one of AsciiDoc's key advantages over Markdown.
-https://novascotia-rmvmt.atlassian.net/wiki/spaces/ROAD/pages/2333767/Technology+and+Architecture
 TIP: Use `,p` in a GUI environment. Console mode will show a warning notification.
 
 WARNING: The `asciidoctor/docker-asciidoctor` image (~200 MB) is pulled on first use.
