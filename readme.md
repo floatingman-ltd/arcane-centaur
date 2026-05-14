@@ -159,6 +159,14 @@ vim.g.have_nerd_font = true   -- or false
 - **`<CR>`** — follow a link to another `.md` file in the editor (mkdnflow.nvim)
 - **`,cc`** — publish current file to Confluence (`MdToConfluence`)
 
+## Working with AsciiDoc
+
+The `,p` and `,pp` preview keymaps work in `.adoc` buffers. Both trigger the same one-shot convert-and-open HTML flow (no popup equivalent for AsciiDoc output):
+
+- **`,p`** / **`,pp`** — convert via Docker asciidoctor → HTML → open in system browser (GUI only)
+
+Requires Docker. See **[docker/asciidoctor/README.md](docker/asciidoctor/README.md)** for details.
+
 ## Working with Confluence
 
 → See **[docs/guides/confluence.md](docs/guides/confluence.md)** for the full guide: authentication, page map setup, diagram rendering, conflict detection, and troubleshooting.

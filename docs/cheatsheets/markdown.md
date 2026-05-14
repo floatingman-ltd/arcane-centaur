@@ -28,6 +28,19 @@ Use `,pp` when working full-screen in a terminal and you don't want to context-s
 
 **Limitation:** only the current buffer is served; clicking relative links to other `.md` files returns 404. Use the markserv server (`,sp`) for projects with cross-page links.
 
+## AsciiDoc Preview (asciidoctor via Docker)
+
+The same `,p` and `,pp` keymaps work in `.adoc` buffers. Both trigger the same one-shot convert-and-open HTML flow — there is no popup equivalent for AsciiDoc output.
+
+| Keys | Mode | Action |
+|---|---|---|
+| `,p` | Normal | Convert `.adoc` to HTML (Docker asciidoctor) and open in system browser — GUI only |
+| `,pp` | Normal | Same as `,p` (no popup equivalent for HTML output) |
+
+Requires Docker running. The `asciidoctor/docker-asciidoctor` image is pulled automatically on first use (~200 MB).
+
+**Console mode:** both `,p` and `,pp` show a notification that AsciiDoc preview requires a graphical environment.
+
 ## Project Preview with Cross-page Links — markserv (requires Docker)
 
 | Keys | Mode | Action |
