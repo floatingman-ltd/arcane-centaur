@@ -1,15 +1,15 @@
 // :auto-generated: true
-// :source: docs/learning/janet/02-first-steps.md
+// :source: documentation/learning/janet/02-first-steps.md
 // Remove this header to take manual ownership of this file
 
-= 02 — First Steps with Janet
+== 02 — First Steps with Janet
 
 This guide covers Janet’s core syntax and data types, then shows you how
 to use each Neovim tool hands-on. Work through it interactively —
 evaluate every snippet as you read.
 
 ____
-*Series:* xref:learning/janet/01-setup.adoc[01 Setup] · 02 First Steps ← you are here
+*Series:* link:01-setup.md[01 Setup] · 02 First Steps ← you are here
 ____
 
 '''''

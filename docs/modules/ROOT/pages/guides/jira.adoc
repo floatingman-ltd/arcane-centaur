@@ -1,12 +1,12 @@
 // :auto-generated: true
-// :source: docs/guides/jira.md
+// :source: documentation/guides/jira.md
 // Remove this header to take manual ownership of this file
 
-= Jira Integration Guide
+== Jira Integration Guide
 
 Create Jira issues and stories without leaving Neovim. The Jira
 integration follows the same pattern as the
-xref:guides/confluence.adoc[Confluence integration]: pure Lua, async `curl`
+link:confluence.md[Confluence integration]: pure Lua, async `curl`
 calls, and localleader keymaps in Markdown buffers.
 
 === Prerequisites

@@ -1,8 +1,8 @@
 // :auto-generated: true
-// :source: docs/guides/fsharp.md
+// :source: documentation/guides/fsharp.md
 // Remove this header to take manual ownership of this file
 
-= Working with F
+== Working with F
 
 F++#++ support uses https://github.com/Vigemus/iron.nvim[iron.nvim] for
 REPL interaction and `fsautocomplete` for LSP-powered completions,
@@ -41,7 +41,7 @@ Or download directly from https://dotnet.microsoft.com/download.
 
 The `fsautocomplete` server is configured in `lua/config/lsp.lua`. See
 the link:#prerequisites[Prerequisites] section above for install steps
-and xref:index.adoc#lsp-support[readme.adoc] for the shared LSP
+and link:../../readme.md#lsp-support[readme.md] for the shared LSP
 keybindings.
 
 === Quick Start

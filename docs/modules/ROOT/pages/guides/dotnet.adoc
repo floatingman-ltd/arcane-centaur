@@ -1,13 +1,13 @@
 // :auto-generated: true
-// :source: docs/guides/dotnet.md
+// :source: documentation/guides/dotnet.md
 // Remove this header to take manual ownership of this file
 
-= .NET / C++#++ Guide
+== .NET / C++#++ Guide
 
 Full C++#++ editing support: syntax highlighting, LSP (Roslyn),
 formatting (CSharpier), and an interactive REPL (csharprepl via
 iron.nvim). F++#++ support is unchanged — see
-xref:guides/fsharp.adoc[docs/guides/fsharp.adoc].
+link:fsharp.md[docs/guides/fsharp.md].
 
 '''''
 

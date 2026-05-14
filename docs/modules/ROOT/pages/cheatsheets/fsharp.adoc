@@ -1,12 +1,12 @@
 // :auto-generated: true
-// :source: docs/cheatsheets/fsharp.md
+// :source: documentation/cheatsheets/fsharp.md
 // Remove this header to take manual ownership of this file
 
-= F++#++ Cheatsheet (iron.nvim)
+== F++#++ Cheatsheet (iron.nvim)
 
 *LocalLeader* = `,` in F++#++ buffers
 
-→ Back to xref:cheatsheets/index.adoc[main cheatsheet] · Full guide:
+→ Back to link:index.md[main cheatsheet] · Full guide:
 ../guides/fsharp.md
 
 === REPL Interaction (dotnet fsi)

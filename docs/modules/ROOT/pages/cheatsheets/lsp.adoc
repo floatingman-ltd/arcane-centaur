@@ -1,12 +1,12 @@
 // :auto-generated: true
-// :source: docs/cheatsheets/lsp.md
+// :source: documentation/cheatsheets/lsp.md
 // Remove this header to take manual ownership of this file
 
-= LSP Cheatsheet
+== LSP Cheatsheet
 
 *Leader* = `Space`
 
-→ Back to xref:cheatsheets/index.adoc[main cheatsheet]
+→ Back to link:index.md[main cheatsheet]
 
 === LSP Keybindings (all LSP-enabled buffers)
 

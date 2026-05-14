@@ -1,12 +1,12 @@
 // :auto-generated: true
-// :source: docs/cheatsheets/navigation.md
+// :source: documentation/cheatsheets/navigation.md
 // Remove this header to take manual ownership of this file
 
-= Navigation & Terminal Cheatsheet
+== Navigation & Terminal Cheatsheet
 
 *Leader* = `Space`
 
-→ Back to xref:cheatsheets/index.adoc[main cheatsheet]
+→ Back to link:index.md[main cheatsheet]
 
 === Window / Split Navigation
 

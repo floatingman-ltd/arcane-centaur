@@ -4,6 +4,7 @@ on:
   push:
     branches: [main]
     paths:
+      - 'documentation/**'
       - 'docs/**'
       - '*.adoc'
       - 'antora-playbook.yml'
@@ -19,7 +20,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6.0.2
         with:
           fetch-depth: 0
 
@@ -30,14 +31,14 @@ jobs:
 
       - name: Sentinel-aware conversion
         run: |
-          # For each .md under docs/, if no corresponding .adoc in the Antora
-          # pages tree exists, or the existing .adoc still has the sentinel,
+          # For each .md under documentation/, if no corresponding .adoc in the
+          # Antora pages tree exists, or the existing .adoc still has the sentinel,
           # regenerate it with pandoc.
           PAGES_ROOT="docs/modules/ROOT/pages"
 
           convert_page() {
-            local src="$1"         # e.g. docs/guides/lisp.md
-            local rel="${src#docs/}" # e.g. guides/lisp.md
+            local src="$1"                  # e.g. documentation/guides/lisp.md
+            local rel="${src#documentation/}" # e.g. guides/lisp.md
             local dst="${PAGES_ROOT}/${rel%.md}.adoc"
 
             if [[ -f "$dst" ]]; then
@@ -55,14 +56,14 @@ jobs:
               echo "// :source: $src"
               echo "// Remove this header to take manual ownership of this file"
               echo ""
-              pandoc -f markdown -t asciidoc "$src"
+              pandoc -f markdown -t asciidoc "$src" | awk '/^={2,6} / { sub(/^=/, ""); } { print }'
             } > "$dst"
           }
 
           while IFS= read -r -d '' f; do
             rel="${f#./}"
             convert_page "$rel"
-          done < <(find docs/cheatsheets docs/guides docs/learning -name "*.md" -print0 2>/dev/null | sort -z)
+          done < <(find documentation/cheatsheets documentation/guides documentation/learning -name "*.md" -print0 2>/dev/null | sort -z)
 
       - name: Build Antora site
         run: |
@@ -71,9 +72,9 @@ jobs:
             antora/antora antora-playbook.yml
 
       - name: Deploy to gh-pages
-        uses: peaceiris/actions-gh-pages@v4
+        uses: peaceiris/actions-gh-pages@v4.1.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build/site/arcane-centaur
+          publish_dir: ./build/site
           publish_branch: gh-pages
           force_orphan: true

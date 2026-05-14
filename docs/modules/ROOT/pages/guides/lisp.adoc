@@ -1,8 +1,8 @@
 // :auto-generated: true
-// :source: docs/guides/lisp.md
+// :source: documentation/guides/lisp.md
 // Remove this header to take manual ownership of this file
 
-= Working with Lisp
+== Working with Lisp
 
 This configuration is built around an interactive, REPL-driven Lisp
 workflow. Four plugins work together to give you a seamless experience:
@@ -57,7 +57,7 @@ Start)
 === LSP
 
 No Common Lisp LSP is configured by default in this repository. See
-xref:index.adoc#lsp-support[readme.adoc] for shared LSP keybindings
+link:../../readme.md#lsp-support[readme.md] for shared LSP keybindings
 that apply in buffers where an LSP client is attached.
 
 === Quick Start

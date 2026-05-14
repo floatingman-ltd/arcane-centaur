@@ -1,12 +1,12 @@
 // :auto-generated: true
-// :source: docs/cheatsheets/file-tree.md
+// :source: documentation/cheatsheets/file-tree.md
 // Remove this header to take manual ownership of this file
 
-= File Tree Cheatsheet (nvim-tree)
+== File Tree Cheatsheet (nvim-tree)
 
 *Leader* = `Space`
 
-→ Back to xref:cheatsheets/index.adoc[main cheatsheet]
+→ Back to link:index.md[main cheatsheet]
 
 === Opening the Tree
 

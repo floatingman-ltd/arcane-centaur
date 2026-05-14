@@ -1,10 +1,10 @@
 // :auto-generated: true
-// :source: docs/cheatsheets/fzf.md
+// :source: documentation/cheatsheets/fzf.md
 // Remove this header to take manual ownership of this file
 
-= Fuzzy Finder Cheatsheet (fzf-lua)
+== Fuzzy Finder Cheatsheet (fzf-lua)
 
-→ Back to xref:cheatsheets/index.adoc[main cheatsheet]
+→ Back to link:index.md[main cheatsheet]
 
 === Built-in fzf-lua Keybindings
 

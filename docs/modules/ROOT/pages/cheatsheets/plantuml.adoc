@@ -1,13 +1,13 @@
 // :auto-generated: true
-// :source: docs/cheatsheets/plantuml.md
+// :source: documentation/cheatsheets/plantuml.md
 // Remove this header to take manual ownership of this file
 
-= PlantUML Cheatsheet
+== PlantUML Cheatsheet
 
 *LocalLeader* = `,` in PlantUML buffers
 
-→ Back to xref:cheatsheets/index.adoc[main cheatsheet] · Full guide:
-xref:guides/diagrams.adoc[Diagrams guide]
+→ Back to link:index.md[main cheatsheet] · Full guide:
+../guides/diagrams.md
 
 === Preview
 

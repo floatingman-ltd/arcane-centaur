@@ -1,12 +1,12 @@
 // :auto-generated: true
-// :source: docs/cheatsheets/html.md
+// :source: documentation/cheatsheets/html.md
 // Remove this header to take manual ownership of this file
 
-= HTML Live Preview Cheatsheet (Bracey)
+== HTML Live Preview Cheatsheet (Bracey)
 
 *LocalLeader* = `,` in HTML / CSS / JavaScript buffers
 
-→ Back to xref:cheatsheets/index.adoc[main cheatsheet]
+→ Back to link:index.md[main cheatsheet]
 
 === Live Preview (bracey.vim)
 

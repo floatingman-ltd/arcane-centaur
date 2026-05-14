@@ -1,12 +1,12 @@
 // :auto-generated: true
-// :source: docs/cheatsheets/editing.md
+// :source: documentation/cheatsheets/editing.md
 // Remove this header to take manual ownership of this file
 
-= Editing Cheatsheet (Visual Mode {plus} Clipboard)
+== Editing Cheatsheet (Visual Mode {plus} Clipboard)
 
 *Leader* = `Space`
 
-→ Back to xref:cheatsheets/index.adoc[main cheatsheet]
+→ Back to link:index.md[main cheatsheet]
 
 === Visual Mode Editing
 
@@ -60,7 +60,7 @@ a supporting terminal
 installer
 |===
 
-→ *xref:guides/clipboard.adoc[Full setup and troubleshooting guide]*
+→ *link:../guides/clipboard.md[Full setup and troubleshooting guide]*
 
 '''''
 

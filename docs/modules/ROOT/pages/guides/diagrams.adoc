@@ -1,8 +1,8 @@
 // :auto-generated: true
-// :source: docs/guides/diagrams.md
+// :source: documentation/guides/diagrams.md
 // Remove this header to take manual ownership of this file
 
-= Working with Diagrams (Markdown {plus} PlantUML {plus} Mermaid)
+== Working with Diagrams (Markdown {plus} PlantUML {plus} Mermaid)
 
 This configuration supports architectural and documentation diagrams
 through three complementary workflows:
@@ -327,7 +327,7 @@ The `marksman` LSP server provides: - *Link completion* — auto-complete
 links and malformed references are flagged inline - *Go-to-definition*
 (`gd`) — jump to linked documents
 
-See xref:index.adoc#lsp-support[readme.adoc] for the shared LSP
+See link:../../readme.md#lsp-support[readme.md] for the shared LSP
 keybindings.
 
 === Diagram Types Supported

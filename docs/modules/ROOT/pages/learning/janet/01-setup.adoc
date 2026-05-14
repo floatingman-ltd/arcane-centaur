@@ -1,15 +1,15 @@
 // :auto-generated: true
-// :source: docs/learning/janet/01-setup.md
+// :source: documentation/learning/janet/01-setup.md
 // Remove this header to take manual ownership of this file
 
-= 01 — Janet in Neovim: Setup
+== 01 — Janet in Neovim: Setup
 
 This guide walks you through installing Janet and activating the Neovim
 toolchain that is already configured in this repository — LSP, REPL,
 structural editing, formatting, and rainbow delimiters.
 
 ____
-*Series:* 01 Setup ← you are here · xref:learning/janet/02-first-steps.adoc[02 First
+*Series:* 01 Setup ← you are here · link:02-first-steps.md[02 First
 Steps]
 ____
 
@@ -172,5 +172,5 @@ For deeper LSP debugging see `docs/cheatsheets/lsp.md` and run
 
 '''''
 
-*Next:* xref:learning/janet/02-first-steps.adoc[02 — First Steps: syntax&#44; data
+*Next:* link:02-first-steps.md[02 — First Steps: syntax&#44; data
 types&#44; and using the tools]

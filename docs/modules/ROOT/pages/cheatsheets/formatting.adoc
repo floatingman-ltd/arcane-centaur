@@ -1,12 +1,12 @@
 // :auto-generated: true
-// :source: docs/cheatsheets/formatting.md
+// :source: documentation/cheatsheets/formatting.md
 // Remove this header to take manual ownership of this file
 
-= Formatting Cheatsheet (conform.nvim)
+== Formatting Cheatsheet (conform.nvim)
 
 *Leader* = `Space`
 
-→ Back to xref:cheatsheets/index.adoc[main cheatsheet]
+→ Back to link:index.md[main cheatsheet]
 
 === Format Keybinding
 

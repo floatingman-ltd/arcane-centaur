@@ -2,10 +2,13 @@
 // :source: readme.md
 // Remove this header to take manual ownership of this file
 
-= Magical NeoVIM
+== Magical NeoVIM
 
 Representing a NeoVIM installation that looks and feels like I’m in
 coding land.
+
+📖 *https://floatingman-ltd.github.io/arcane-centaur[Full documentation
+site →]*
 
 === Installation
 
@@ -220,6 +223,17 @@ PlantUML/Mermaid diagrams rendered
 (mkdnflow.nvim)
 * *`,cc`* — publish current file to Confluence (`MdToConfluence`)
 
+=== Working with AsciiDoc
+
+The `,p` and `,pp` preview keymaps work in `.adoc` buffers. Both trigger
+the same one-shot convert-and-open HTML flow (no popup equivalent for
+AsciiDoc output):
+
+* *`,p`* / *`,pp`* — convert via Docker asciidoctor → HTML → open in
+system browser (GUI only)
+
+Requires Docker. See *docker/asciidoctor/README.md* for details.
+
 === Working with Confluence
 
 → See *docs/guides/confluence.md* for the full guide: authentication,
@@ -298,6 +312,8 @@ Git integration is provided by two complementary plugins:
 `:Git commit`, `:Git log`, etc.)
 * *gitsigns.nvim* — live gutter signs showing added / changed / removed
 lines, with hunk-level staging, resetting, and inline blame
+* *diffview.nvim* — tabbed side-by-side diff panel, per-file commit
+history, and three-way merge conflict view
 
 ==== Quick keybindings
 
@@ -309,6 +325,9 @@ lines, with hunk-level staging, resetting, and inline blame
 |`++<++leader++>++gl` |Git log
 |`++<++leader++>++gd` |Diff unstaged changes
 |`++<++leader++>++gp` |Push
+|`++<++leader++>++gD` |Open diff view (side-by-side, all changes)
+|`++<++leader++>++gH` |File history for current file
+|`++<++leader++>++gX` |Close diff view
 |`++]++h` / `++[++h` |Jump to next / previous changed hunk
 |`++<++leader++>++hs` |Stage hunk under cursor
 |`++<++leader++>++hr` |Reset hunk under cursor
@@ -615,7 +634,8 @@ link:docs/cheatsheets/dotnet.md[dotnet.md]
 |`fzf-lua.lua` |Fuzzy finder |link:docs/cheatsheets/fzf.md[fzf.md]
 
 |`git.lua` |vim-fugitive (`:Git` commands) {plus} gitsigns.nvim (hunk
-signs & staging) |link:docs/cheatsheets/git.md[git.md]
+signs & staging) {plus} diffview.nvim (side-by-side diff & history)
+|link:docs/cheatsheets/git.md[git.md]
 
 |`haskell.lua` |haskell-tools.nvim (GHCi REPL {plus} HLS integration)
 |link:docs/cheatsheets/haskell.md[haskell.md]
@@ -688,7 +708,7 @@ lua/
     copilot.lua             # Copilot inline completions + Serena MCP server config
     dotnet.lua              # F# + C# REPLs via iron.nvim; roslyn.nvim C# LSP
     fzf-lua.lua             # Fuzzy finder
-    git.lua                 # Git (vim-fugitive + gitsigns.nvim)
+    git.lua                 # Git (vim-fugitive + gitsigns.nvim + diffview.nvim)
     haskell.lua             # haskell-tools.nvim (GHCi REPL + HLS)
     html.lua                # Bracey HTML live preview
     init.lua                # Bare-string plugins (tpope, airline, lspconfig)
@@ -752,11 +772,3 @@ docs/
     presentations.md        # MARP presentation guide
     rest.md                 # REST client guide (kulala.nvim, .http files)
 ....
-
-== Documentation
-
-The full documentation site is published at
-https://floatingman-ltd.github.io/arcane-centaur[floatingman-ltd.github.io/arcane-centaur].
-
-It includes guides, cheatsheets, and learning content built from the `docs/` directory
-using https://antora.org[Antora] and redeployed automatically on every push to `main`.

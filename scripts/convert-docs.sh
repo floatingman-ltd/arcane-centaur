@@ -25,8 +25,8 @@ convert_file() {
 
   if [[ "$src" == "readme.md" ]]; then
     dst="${PAGES_ROOT}/index.adoc"
-  elif [[ "$src" =~ ^docs/.+\.md$ ]]; then
-    local rel="${src#docs/}"
+  elif [[ "$src" =~ ^documentation/.+\.md$ ]]; then
+    local rel="${src#documentation/}"
     dst="${PAGES_ROOT}/${rel%.md}.adoc"
   else
     echo "ERROR: unsupported source path: $src" >&2
@@ -62,11 +62,11 @@ convert_file() {
   mv "$tmp" "${REPO_ROOT}/${dst}"
 }
 
-echo "==> Converting docs/**/*.md ..."
+echo "==> Converting documentation/**/*.md ..."
 while IFS= read -r -d '' f; do
   rel="${f#${REPO_ROOT}/}"
   convert_file "$rel"
-done < <(find "${REPO_ROOT}/docs" -name "*.md" -print0 | sort -z)
+done < <(find "${REPO_ROOT}/documentation" -name "*.md" -print0 | sort -z)
 
 echo "==> Converting readme.md ..."
 convert_file "readme.md"

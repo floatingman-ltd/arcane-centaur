@@ -1,8 +1,8 @@
 // :auto-generated: true
-// :source: docs/guides/rest.md
+// :source: documentation/guides/rest.md
 // Remove this header to take manual ownership of this file
 
-= REST Client Guide (kulala.nvim)
+== REST Client Guide (kulala.nvim)
 
 https://github.com/mistweaverco/kulala.nvim[kulala.nvim] is a
 fully-featured, pure-Lua REST client for Neovim. Write your API requests
@@ -164,7 +164,7 @@ active.
 
 === Keybindings
 
-→ See the link:../cheatsheets/rest.adoc[REST cheatsheet] for the full
+→ See the link:../cheatsheets/rest.md[REST cheatsheet] for the full
 keybinding reference.
 
 [cols=",",options="header",]

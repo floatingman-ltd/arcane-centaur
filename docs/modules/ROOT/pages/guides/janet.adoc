@@ -1,8 +1,8 @@
 // :auto-generated: true
-// :source: docs/guides/janet.md
+// :source: documentation/guides/janet.md
 // Remove this header to take manual ownership of this file
 
-= Working with Janet
+== Working with Janet
 
 Janet is a lightweight, expressive Lisp dialect designed for scripting,
 system automation, and embedding. This configuration provides
@@ -84,7 +84,7 @@ jpm install janet-lsp
 ----
 
 Make sure `janet-lsp` is on your `$PATH` (typically `~/.jpm/bin/`). See
-xref:index.adoc#lsp-support[readme.adoc] for the shared LSP
+link:../../readme.md#lsp-support[readme.md] for the shared LSP
 keybindings.
 
 === Quick Start

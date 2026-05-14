@@ -1,12 +1,12 @@
 // :auto-generated: true
-// :source: docs/cheatsheets/copilot.md
+// :source: documentation/cheatsheets/copilot.md
 // Remove this header to take manual ownership of this file
 
-= Copilot Cheatsheet
+== Copilot Cheatsheet
 
 *Leader* = `Space`
 
-→ Back to xref:cheatsheets/index.adoc[main cheatsheet]
+→ Back to link:index.md[main cheatsheet]
 
 === Inline Suggestions (github/copilot.vim)
 

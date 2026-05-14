@@ -1,12 +1,12 @@
 // :auto-generated: true
-// :source: docs/cheatsheets/janet.md
+// :source: documentation/cheatsheets/janet.md
 // Remove this header to take manual ownership of this file
 
-= Janet Cheatsheet (Conjure {plus} vim-sexp)
+== Janet Cheatsheet (Conjure {plus} vim-sexp)
 
 *LocalLeader* = `,` in Janet buffers
 
-→ Back to xref:cheatsheets/index.adoc[main cheatsheet] · Full guide:
+→ Back to link:index.md[main cheatsheet] · Full guide:
 ../guides/janet.md
 
 === Conjure — Evaluation

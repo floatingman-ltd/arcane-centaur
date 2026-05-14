@@ -1,8 +1,8 @@
 // :auto-generated: true
-// :source: docs/guides/markdown.md
+// :source: documentation/guides/markdown.md
 // Remove this header to take manual ownership of this file
 
-= Markdown Preview Guide
+== Markdown Preview Guide
 
 This guide covers all preview and export options for Markdown files:
 
@@ -194,7 +194,11 @@ LocalLeader is `,` in Markdown buffers.
 [width="100%",cols="43%,57%",options="header",]
 |===
 |Keys |Action
-|`,p` |Toggle `markdown-preview.nvim` single-file browser preview
+|`,p` |Toggle `markdown-preview.nvim` single-file browser preview (GUI)
+or glow popup (console)
+
+|`,pp` |Force glow popup preview — always in-terminal, regardless of
+environment
 
 |`,sp` |Open current file in markserv Docker server preview
 (`MdServerPreview`)
@@ -220,7 +224,7 @@ navigation)
 |`,md` |Export MARP slide to PDF
 |===
 
-→ link:../cheatsheets/markdown.adoc[Full cheatsheet]
+→ link:../cheatsheets/markdown.md[Full cheatsheet]
 
 '''''
 
@@ -230,6 +234,9 @@ navigation)
 |===
 |Situation |Recommended tool
 |Single file, diagrams, cursor sync |`,p` — markdown-preview.nvim
+
+|Full-screen terminal, no browser context |`,pp` — glow popup (always
+in-terminal)
 
 |Multi-file project, cross-page links, diagrams |`,sp` — markserv Docker
 server
