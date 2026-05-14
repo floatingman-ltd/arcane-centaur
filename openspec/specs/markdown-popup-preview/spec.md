@@ -1,7 +1,7 @@
 # markdown-popup-preview Specification
 
 ## Purpose
-TBD - created by archiving change markdown-force-popup-preview. Update Purpose after archive.
+Define markdown preview behavior so markdown buffers always provide a forced popup preview via `,pp`, ensure `glow.nvim` loads in all environments, and preserve the existing smart-routing behavior of `,p`.
 ## Requirements
 ### Requirement: Forced popup preview keymap always available
 The config SHALL provide a `,pp` keymap in markdown buffers that opens the glow.nvim floating popup preview unconditionally, regardless of whether a graphical display is available.
