@@ -25,7 +25,7 @@ convert_file() {
 
   if [[ "$src" == "readme.md" ]]; then
     dst="${PAGES_ROOT}/index.adoc"
-  elif [[ "$src" == docs/* ]] && [[ "$src" == *.md ]]; then
+  elif [[ "$src" =~ ^docs/.+\.md$ ]]; then
     local rel="${src#docs/}"
     dst="${PAGES_ROOT}/${rel%.md}.adoc"
   else
