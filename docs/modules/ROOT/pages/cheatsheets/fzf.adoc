@@ -1,8 +1,8 @@
 // :auto-generated: true
-// :source: docs/cheatsheets/fzf.md
+// :source: documentation/cheatsheets/fzf.md
 // Remove this header to take manual ownership of this file
 
-= Fuzzy Finder Cheatsheet (fzf-lua)
+== Fuzzy Finder Cheatsheet (fzf-lua)
 
 → Back to link:index.md[main cheatsheet]
 

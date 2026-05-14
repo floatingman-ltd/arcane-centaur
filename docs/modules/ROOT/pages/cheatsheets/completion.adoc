@@ -1,8 +1,8 @@
 // :auto-generated: true
-// :source: docs/cheatsheets/completion.md
+// :source: documentation/cheatsheets/completion.md
 // Remove this header to take manual ownership of this file
 
-= Auto-Completion Cheatsheet (nvim-cmp)
+== Auto-Completion Cheatsheet (nvim-cmp)
 
 → Back to link:index.md[main cheatsheet]
 

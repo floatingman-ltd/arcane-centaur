@@ -1,7 +1,7 @@
 // Manually owned: pandoc generates broken ++{++motion} passthrough for {motion}
 // in table cells; fixed to ++{motion}++ here. Do not add auto-generated sentinel.
 
-= Unimpaired Cheatsheet (vim-unimpaired)
+== Unimpaired Cheatsheet (vim-unimpaired)
 
 → Back to link:index.md[main cheatsheet]
 

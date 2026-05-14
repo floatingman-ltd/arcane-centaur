@@ -1,8 +1,8 @@
 // :auto-generated: true
-// :source: docs/cheatsheets/ai-tools.md
+// :source: documentation/cheatsheets/ai-tools.md
 // Remove this header to take manual ownership of this file
 
-= AI Tools Cheat Sheet
+== AI Tools Cheat Sheet
 
 Covers in-editor keymaps for *GitHub Copilot CLI* (`copilot`) and the
 *OpenSpec* workflow tool.

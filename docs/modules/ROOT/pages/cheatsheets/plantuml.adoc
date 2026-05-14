@@ -1,8 +1,8 @@
 // :auto-generated: true
-// :source: docs/cheatsheets/plantuml.md
+// :source: documentation/cheatsheets/plantuml.md
 // Remove this header to take manual ownership of this file
 
-= PlantUML Cheatsheet
+== PlantUML Cheatsheet
 
 *LocalLeader* = `,` in PlantUML buffers
 

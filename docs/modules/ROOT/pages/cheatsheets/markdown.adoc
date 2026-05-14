@@ -1,8 +1,8 @@
 // :auto-generated: true
-// :source: docs/cheatsheets/markdown.md
+// :source: documentation/cheatsheets/markdown.md
 // Remove this header to take manual ownership of this file
 
-= Markdown Cheatsheet (markdown-preview {plus} mkdnflow {plus} markserv {plus} MARP {plus} Confluence {plus} Jira)
+== Markdown Cheatsheet (markdown-preview {plus} mkdnflow {plus} markserv {plus} MARP {plus} Confluence {plus} Jira)
 
 *LocalLeader* = `,` in Markdown buffers
 

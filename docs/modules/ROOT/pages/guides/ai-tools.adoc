@@ -1,8 +1,8 @@
 // :auto-generated: true
-// :source: docs/guides/ai-tools.md
+// :source: documentation/guides/ai-tools.md
 // Remove this header to take manual ownership of this file
 
-= AI Tools Guide
+== AI Tools Guide
 
 This guide covers three AI / workflow tools that are integrated directly
 into Neovim:
