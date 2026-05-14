@@ -71,4 +71,20 @@ Changed lines are marked in the sign column:
 
 ---
 
+## diffview.nvim — Side-by-Side Diff & File History
+
+Opens a persistent tabbed diff panel with a file list on the left and a two-pane diff on the right. Also provides per-file commit history and a three-way merge conflict view.
+
+| Keys | Mode | Action |
+|---|---|---|
+| `<leader>gD` | Normal | Open diff view (all working tree changes) |
+| `<leader>gH` | Normal | Open file history for current file |
+| `<leader>gX` | Normal | Close diff view |
+
+You can also open diffview against any ref directly:
+- `:DiffviewOpen HEAD~3` — diff working tree vs 3 commits ago
+- `:DiffviewFileHistory` — history for all files (omit `%` for repo-wide)
+
+---
+
 *Plugin configured in `lua/plugins/git.lua`.*

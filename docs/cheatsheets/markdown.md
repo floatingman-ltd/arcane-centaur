@@ -15,13 +15,16 @@
 
 Use `<CR>` to follow a `[text](other-file.md)` link directly in the editor, then press `,p` or `,sp` to open the browser preview for that file. Press `<BS>` to return to the original file.
 
-## Markdown Preview (markdown-preview.nvim)
+## Markdown Preview (markdown-preview.nvim + glow.nvim)
 
 | Keys | Mode | Action |
 |---|---|---|
-| `,p` | Normal | Toggle live browser preview (`MarkdownPreviewToggle`) |
+| `,p` | Normal | Toggle live browser preview (`MarkdownPreviewToggle`) — GUI; or glow popup in console |
+| `,pp` | Normal | Force glow popup preview — always opens in-terminal, regardless of environment |
 
-The preview auto-refreshes as you edit. **Mermaid fenced code blocks render natively** in the browser — no extra plugin or Docker server required. PlantUML fenced code blocks are rendered via the PlantUML Docker server (`http://localhost:8080`).
+The browser preview (`,p` in GUI) auto-refreshes as you edit. **Mermaid fenced code blocks render natively** in the browser — no extra plugin or Docker server required. PlantUML fenced code blocks are rendered via the PlantUML Docker server (`http://localhost:8080`).
+
+Use `,pp` when working full-screen in a terminal and you don't want to context-switch to a browser.
 
 **Limitation:** only the current buffer is served; clicking relative links to other `.md` files returns 404. Use the markserv server (`,sp`) for projects with cross-page links.
 

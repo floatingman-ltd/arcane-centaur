@@ -1,17 +1,17 @@
 ## Requirements
 
-### Requirement: Glow plugin loads only in console environments
-`glow.nvim` SHALL be loaded by lazy.nvim only when `term.is_console` is `true`, via the
-`cond` field. `markdown-preview.nvim` SHALL be loaded only when `term.is_console` is
-`false`. Exactly one of the two plugins SHALL be active in any given Neovim session.
+### Requirement: Glow plugin is available in all environments
+`glow.nvim` SHALL be loaded by lazy.nvim whenever markdown filetypes are opened, regardless
+of `term.is_console`. `markdown-preview.nvim` SHALL continue to load only when
+`term.is_console` is `false`.
 
-#### Scenario: Console session loads glow
+#### Scenario: Console session loads glow only
 - **WHEN** Neovim starts and `term.is_console` is `true`
 - **THEN** `glow.nvim` SHALL be loaded and `markdown-preview.nvim` SHALL not be loaded
 
-#### Scenario: GUI session loads markdown-preview
+#### Scenario: GUI session loads glow and markdown-preview
 - **WHEN** Neovim starts and `term.is_console` is `false`
-- **THEN** `markdown-preview.nvim` SHALL be loaded and `glow.nvim` SHALL not be loaded
+- **THEN** both `glow.nvim` and `markdown-preview.nvim` SHALL be loaded
 
 ### Requirement: Glow renders in a floating popup by default
 When invoked, glow SHALL render the current markdown buffer in a centered floating popup.
@@ -32,8 +32,8 @@ If the `glow` binary is not found on `$PATH` at preview time, the config SHALL e
 
 ### Requirement: Consistent preview keymap across environments
 The markdown preview keymap SHALL invoke `:Glow` in console environments and
-`:MarkdownPreview` in GUI environments, providing a consistent trigger regardless of
-which plugin is active.
+`:MarkdownPreviewToggle` in GUI environments, providing a consistent trigger regardless of
+environment.
 
 #### Scenario: Preview keymap in console
 - **WHEN** the preview keymap is triggered in a console session
@@ -41,4 +41,4 @@ which plugin is active.
 
 #### Scenario: Preview keymap in GUI
 - **WHEN** the preview keymap is triggered in a GUI session
-- **THEN** `:MarkdownPreview` SHALL be invoked
+- **THEN** `:MarkdownPreviewToggle` SHALL be invoked

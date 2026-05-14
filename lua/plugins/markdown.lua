@@ -23,7 +23,6 @@ return {
   {
     "ellisonleao/glow.nvim",
     ft = { "markdown" },
-    cond = function() return require("config.terminal").is_console end,
     opts = {
       style = "dark",
       border = "rounded",
