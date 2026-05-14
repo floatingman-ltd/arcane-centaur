@@ -1,3 +1,7 @@
+// :auto-generated: true
+// :source: docs/guides/clipboard.md
+// Remove this header to take manual ownership of this file
+
 = Clipboard Integration Guide
 
 Neovim uses the system clipboard through a *provider* — an external tool
@@ -5,11 +9,11 @@ Neovim uses the system clipboard through a *provider* — an external tool
 clipboard. This config selects the provider automatically based on the
 environment.
 
-→ Keybinding reference: xref:cheatsheets/editing.adoc[Editing Cheatsheet]
+→ Keybinding reference: ../cheatsheets/editing.md
 
 '''''
 
-=== How the provider is chosen
+== How the provider is chosen
 
 The selection logic is in `lua/options.lua`:
 
@@ -29,9 +33,9 @@ alternative.
 
 '''''
 
-=== GUI Linux — X11
+== GUI Linux — X11
 
-==== Tool: xclip or xsel
+=== Tool: xclip or xsel
 
 Neovim checks for `xclip` first, then `xsel`. Install one of them:
 
@@ -50,7 +54,7 @@ sudo dnf install xclip
 sudo pacman -S xclip
 ----
 
-==== Verify
+=== Verify
 
 Open Neovim and run:
 
@@ -76,7 +80,7 @@ echo "hello" | xclip -selection clipboard
 # then in Neovim: <leader>p  — should paste "hello"
 ----
 
-==== Troubleshooting
+=== Troubleshooting
 
 [width="100%",cols="50%,50%",options="header",]
 |===
@@ -94,9 +98,9 @@ tmux intercepts OSC 52 by default
 
 '''''
 
-=== GUI Linux — Wayland
+== GUI Linux — Wayland
 
-==== Tool: wl-clipboard
+=== Tool: wl-clipboard
 
 [source,sh]
 ----
@@ -113,7 +117,7 @@ sudo pacman -S wl-clipboard
 `wl-clipboard` provides two binaries: `wl-copy` and `wl-paste`. Neovim
 detects them automatically when `$WAYLAND++_++DISPLAY` is set.
 
-==== Verify
+=== Verify
 
 [source,sh]
 ----
@@ -123,7 +127,7 @@ wl-paste          # should print: hello
 
 Then in Neovim `++<++leader++>++p` should paste "`hello`".
 
-==== Wayland {plus} X11 compatibility (XWayland)
+=== Wayland {plus} X11 compatibility (XWayland)
 
 If you start Neovim from an XWayland application (e.g. a legacy X11
 terminal inside a Wayland session), `$DISPLAY` may be set but
@@ -136,15 +140,15 @@ Ghostty) so that `$WAYLAND++_++DISPLAY` is inherited.
 
 '''''
 
-=== WSL (Windows Subsystem for Linux)
+== WSL (Windows Subsystem for Linux)
 
-==== Tool: win32yank.exe
+=== Tool: win32yank.exe
 
 `win32yank.exe` is a small Windows utility that reads and writes the
 Windows clipboard. Because it runs as a Windows `.exe`, it is accessible
 from WSL without X11 forwarding.
 
-===== Install on the Windows side
+==== Install on the Windows side
 
 Open a *Windows* PowerShell or Command Prompt (not a WSL shell):
 
@@ -161,7 +165,7 @@ choco install win32yank
 # Place it anywhere on your Windows PATH, e.g. C:\Windows\System32\
 ----
 
-===== Make it visible from WSL
+==== Make it visible from WSL
 
 WSL inherits the Windows `PATH` by default (controlled by
 `appendWindowsPath = true` in `/etc/wsl.conf`). No extra steps are
@@ -181,14 +185,14 @@ to your shell’s `$PATH` in `~/.bashrc` / `~/.zshrc`:
 export PATH="$PATH:/mnt/c/path/to/win32yank/directory"
 ----
 
-===== How the config uses it
+==== How the config uses it
 
 When `WSL++_++DISTRO++_++NAME` is set and `win32yank.exe` is on `$PATH`,
 the config registers it as a custom `vim.g.clipboard` provider that
 handles both `{plus}` and `++*++` registers. The `--crlf` / `--lf` flags
 handle the Windows line-ending difference automatically.
 
-===== Verify
+==== Verify
 
 [source,sh]
 ----
@@ -207,9 +211,9 @@ ____
 
 '''''
 
-=== SSH / TTY / Console — OSC 52
+== SSH / TTY / Console — OSC 52
 
-==== No external tool required
+=== No external tool required
 
 When Neovim detects no graphical display (`$DISPLAY` and
 `$WAYLAND++_++DISPLAY` are both unset), it uses the *OSC 52* terminal
@@ -224,7 +228,7 @@ forwarding or any tool on the remote server.
 *Minimum requirement:* Neovim ≥ 0.10 (the built-in
 `vim.ui.clipboard.osc52` module).
 
-==== Terminal support matrix
+=== Terminal support matrix
 
 [width="100%",cols="25%,25%,25%,25%",options="header",]
 |===
@@ -246,7 +250,7 @@ You have two options: - Connect from a terminal that does support it
 `xclip`/`xsel` installed on the server
 ____
 
-==== Paste over SSH
+=== Paste over SSH
 
 Most terminals block OSC 52 paste for security (to prevent a remote host
 from reading your clipboard). If `++<++leader++>++p` does not work in an
@@ -263,7 +267,7 @@ local clipboard:
 |Most Linux terminals |`Shift{plus}Insert`
 |===
 
-==== tmux inside SSH
+=== tmux inside SSH
 
 tmux intercepts OSC 52 by default and does not forward it to the outer
 terminal. To enable clipboard pass-through, add this to `~/.tmux.conf`:
@@ -278,7 +282,7 @@ Then reload: `tmux source ~/.tmux.conf`.
 With `set-clipboard on`, tmux forwards OSC 52 to the outer terminal,
 which then writes to the local clipboard.
 
-==== RDP sessions
+=== RDP sessions
 
 RDP clipboard is a separate channel from the terminal clipboard. OSC 52
 works if the RDP client renders a terminal that supports it
@@ -287,7 +291,7 @@ machine). On Linux desktops inside RDP (e.g. xrdp {plus} GNOME), you are
 back in a graphical session so `$DISPLAY` is set — the config will use
 `xclip`/`xsel` automatically.
 
-==== Verify OSC 52 is working
+=== Verify OSC 52 is working
 
 In an SSH session, run:
 
@@ -302,9 +306,9 @@ and press `++<++leader++>++y`. Switch to a local application and paste.
 
 '''''
 
-=== Troubleshooting
+== Troubleshooting
 
-==== `:checkhealth clipboard`
+=== `:checkhealth clipboard`
 
 Always start here. Run `:checkhealth` in Neovim and read the `clipboard`
 section:
@@ -321,7 +325,7 @@ If the provider shows as `OSC 52` there will be no checkhealth entry —
 OSC 52 is transparent to Neovim’s health check system. Verify it
 empirically (see above).
 
-==== Common issues
+=== Common issues
 
 [width="100%",cols="34%,33%,33%",options="header",]
 |===

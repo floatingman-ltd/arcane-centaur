@@ -1,17 +1,16 @@
-// :auto-generated: true
-// :source: docs/cheatsheets/unimpaired.md
-// Remove this header to take manual ownership of this file
+// Manually owned: pandoc generates broken ++{++motion} passthrough for {motion}
+// in table cells; fixed to ++{motion}++ here. Do not add auto-generated sentinel.
 
 = Unimpaired Cheatsheet (vim-unimpaired)
 
-→ Back to xref:cheatsheets/index.adoc[main cheatsheet]
+→ Back to link:index.md[main cheatsheet]
 
 vim-unimpaired provides pairs of bracket mappings — `++[++` for
 "`previous / enable`" and `++]++` for "`next / disable`".
 
 '''''
 
-=== Buffer navigation
+== Buffer navigation
 
 [cols=",",options="header",]
 |===
@@ -22,7 +21,7 @@ vim-unimpaired provides pairs of bracket mappings — `++[++` for
 |`++]++B` |Last buffer
 |===
 
-=== Quickfix / location list
+== Quickfix / location list
 
 [cols=",",options="header",]
 |===
@@ -35,7 +34,7 @@ vim-unimpaired provides pairs of bracket mappings — `++[++` for
 |`++]++l` |Next location list entry
 |===
 
-=== Argument list
+== Argument list
 
 [cols=",",options="header",]
 |===
@@ -44,7 +43,7 @@ vim-unimpaired provides pairs of bracket mappings — `++[++` for
 |`++]++a` |Next file in argument list
 |===
 
-=== Line operations
+== Line operations
 
 [cols=",",options="header",]
 |===
@@ -55,7 +54,7 @@ vim-unimpaired provides pairs of bracket mappings — `++[++` for
 |`++]++e` |Exchange current line with line below
 |===
 
-=== Option toggles
+== Option toggles
 
 Prefix with `++[++o` to enable, `++]++o` to disable, `yo` to toggle.
 
@@ -71,15 +70,15 @@ Prefix with `++[++o` to enable, `++]++o` to disable, `yo` to toggle.
 |`++[++ox` / `++]++ox` / `yox` |`cursorline` {plus} `cursorcolumn`
 |===
 
-=== URL / XML encoding
+== URL / XML encoding
 
 [cols=",",options="header",]
 |===
 |Keys |Action
-|`++[++u++{++motion}` |URL-encode text
-|`++]++u++{++motion}` |URL-decode text
-|`++[++x++{++motion}` |XML-encode text (`&amp;`, `&lt;`, etc.)
-|`++]++x++{++motion}` |XML-decode text
+|`++[++u++{motion}++` |URL-encode text
+|`++]++u++{motion}++` |URL-decode text
+|`++[++x++{motion}++` |XML-encode text (`&amp;`, `&lt;`, etc.)
+|`++]++x++{motion}++` |XML-decode text
 |===
 
 '''''

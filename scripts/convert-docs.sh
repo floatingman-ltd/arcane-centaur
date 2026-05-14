@@ -56,7 +56,7 @@ convert_file() {
     echo "// :source: $src"
     echo "// Remove this header to take manual ownership of this file"
     echo ""
-    (cd "$REPO_ROOT" && "$PANDOC" -f markdown -t asciidoc "$src")
+    (cd "$REPO_ROOT" && "$PANDOC" -f markdown -t asciidoc "$src" | awk '/^={2,6} / { sub(/^=/, ""); } { print }')
   } > "$tmp"
 
   mv "$tmp" "${REPO_ROOT}/${dst}"

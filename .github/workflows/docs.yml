@@ -55,7 +55,7 @@ jobs:
               echo "// :source: $src"
               echo "// Remove this header to take manual ownership of this file"
               echo ""
-              pandoc -f markdown -t asciidoc "$src"
+              pandoc -f markdown -t asciidoc "$src" | awk '/^={2,6} / { sub(/^=/, ""); } { print }'
             } > "$dst"
           }
 

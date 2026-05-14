@@ -7,11 +7,11 @@
 Full C++#++ editing support: syntax highlighting, LSP (Roslyn),
 formatting (CSharpier), and an interactive REPL (csharprepl via
 iron.nvim). F++#++ support is unchanged — see
-xref:guides/fsharp.adoc[docs/guides/fsharp.adoc].
+link:fsharp.md[docs/guides/fsharp.md].
 
 '''''
 
-=== Prerequisites
+== Prerequisites
 
 Install the following .NET global tools:
 
@@ -21,7 +21,7 @@ dotnet tool install -g csharpier    # Formatter
 dotnet tool install -g csharprepl   # Interactive REPL
 ----
 
-==== Neovim Version Requirement
+=== Neovim Version Requirement
 
 ____
 *roslyn.nvim requires Neovim ≥ 0.12.* Run `nvim --version` to check. If
@@ -29,7 +29,7 @@ you are on an older version, see link:#upgrading-neovim[Upgrading
 Neovim] below before proceeding.
 ____
 
-==== Installing the Roslyn Language Server
+=== Installing the Roslyn Language Server
 
 The Roslyn LSP is the official Microsoft C++#++ language server used in
 VS Code’s C++#++ Dev Kit. It is *not* installed via
@@ -77,7 +77,7 @@ for some versions, which will cause `unzip` to fail with "`not a zip
 file`".
 ____
 
-==== Upgrading Neovim
+=== Upgrading Neovim
 
 The system package manager (`apt`, `dnf`, etc.) and Snap often lag well
 behind the latest Neovim release. *Use the AppImage or tarball methods
@@ -121,7 +121,7 @@ ____
 
 '''''
 
-=== Quick Start
+== Quick Start
 
 [arabic]
 . Open any `.cs` file — Roslyn attaches automatically.
@@ -132,7 +132,7 @@ iron.nvim’s `:IronRepl`.
 
 '''''
 
-=== LSP Features (Roslyn)
+== LSP Features (Roslyn)
 
 All standard LSP keybindings apply in `.cs` buffers:
 
@@ -166,7 +166,7 @@ opts if your `.sln` lives above the project root.
 
 '''''
 
-=== C++#++ REPL (csharprepl via iron.nvim)
+== C++#++ REPL (csharprepl via iron.nvim)
 
 LocalLeader is `,` in `.cs` buffers.
 
@@ -188,7 +188,7 @@ window.
 
 '''''
 
-=== Formatting (CSharpier)
+== Formatting (CSharpier)
 
 Format-on-save is enabled automatically in `.cs` buffers via
 `conform.nvim`. Manual trigger:
@@ -204,7 +204,7 @@ configuration file required.
 
 '''''
 
-=== Typical Workflow
+== Typical Workflow
 
 ....
  ┌──────────────────────────────────────────────────────┐

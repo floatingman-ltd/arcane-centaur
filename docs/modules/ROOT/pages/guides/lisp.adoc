@@ -37,9 +37,9 @@ for these filetypes and provides *format-on-save* as well as a manual
 *`++<++leader++>++f`* keybinding (normal and visual mode) to reformat
 the current buffer or selection.
 
-=== Prerequisites
+== Prerequisites
 
-==== Choosing a REPL
+=== Choosing a REPL
 
 [width="100%",cols="34%,33%,33%",options="header",]
 |===
@@ -54,13 +54,13 @@ Start)
 |Fennel |Fennel REPL |`fennel --repl`
 |===
 
-=== LSP
+== LSP
 
 No Common Lisp LSP is configured by default in this repository. See
-xref:index.adoc#lsp-support[readme.adoc] for shared LSP keybindings
+link:../../readme.md#lsp-support[readme.md] for shared LSP keybindings
 that apply in buffers where an LSP client is attached.
 
-=== Quick Start
+== Quick Start
 
 [arabic]
 . *Start your REPL* in a terminal (Conjure connects to it):
@@ -190,7 +190,7 @@ form at the REPL prompt, or quit the process entirely:
 (quit)
 ----
 
-=== Structural Editing: Slurp & Barf
+== Structural Editing: Slurp & Barf
 
 Slurp and barf let you *reshape S-expressions without manually counting
 or moving parentheses*. The cursor can be anywhere inside (or on the
@@ -200,7 +200,7 @@ Each example below shows the code before and after the operation.
 
 '''''
 
-==== Slurp forward — `++>++)`
+=== Slurp forward — `++>++)`
 
 Moves the *closing* `)` one step to the right, pulling the *next
 sibling* element into the form.
@@ -220,7 +220,7 @@ on.
 
 '''''
 
-==== Barf forward — `++<++)`
+=== Barf forward — `++<++)`
 
 Moves the *closing* `)` one step to the left, pushing the *last element*
 out of the form.
@@ -239,7 +239,7 @@ accidentally slurped in, or to split a call up.
 
 '''''
 
-==== Slurp backward — `++<++(`
+=== Slurp backward — `++<++(`
 
 Moves the *opening* `(` one step to the left, pulling the *previous
 sibling* element into the form.
@@ -255,7 +255,7 @@ foo (bar baz)
 
 '''''
 
-==== Barf backward — `++>++(`
+=== Barf backward — `++>++(`
 
 Moves the *opening* `(` one step to the right, pushing the *first
 element* out of the form.
@@ -271,7 +271,7 @@ foo (bar baz)
 
 '''''
 
-==== Combining operations
+=== Combining operations
 
 Slurp/barf pairs let you migrate elements between adjacent forms without
 cutting and pasting:
@@ -286,7 +286,7 @@ cutting and pasting:
   (format t "Hello ~a!" name))
 ----
 
-=== Typical Workflow
+== Typical Workflow
 
 ....
  ┌──────────────────────────────────────────────┐
@@ -320,9 +320,9 @@ S-expressions without counting parentheses.
 indentation.
 . Rainbow delimiters let you visually match nesting depth.
 
-=== Troubleshooting
+== Troubleshooting
 
-==== HUD shows nothing / `close-connection: end of file`
+=== HUD shows nothing / `close-connection: end of file`
 
 There are *three distinct failure modes*. Read all three before
 rebuilding.
@@ -423,7 +423,7 @@ healthy, reconnect manually if you already have a `.lisp` buffer open:
 |`,cc` |Connect (or reconnect) to Swank
 |===
 
-==== Checking the full evaluation log
+=== Checking the full evaluation log
 
 The HUD shows the last few lines of Conjure’s log buffer as a floating
 popup. To see the complete history:

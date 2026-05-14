@@ -8,7 +8,7 @@
 
 '''''
 
-=== C++#++ REPL — iron.nvim {plus} csharprepl
+== C++#++ REPL — iron.nvim {plus} csharprepl
 
 [cols=",,",options="header",]
 |===
@@ -25,7 +25,7 @@
 
 '''''
 
-=== F++#++ REPL — iron.nvim {plus} dotnet fsi
+== F++#++ REPL — iron.nvim {plus} dotnet fsi
 
 [cols=",,",options="header",]
 |===
@@ -42,7 +42,7 @@
 
 '''''
 
-=== LSP (Roslyn — C++#++ buffers only)
+== LSP (Roslyn — C++#++ buffers only)
 
 [cols=",,",options="header",]
 |===
@@ -59,7 +59,7 @@
 
 '''''
 
-=== Roslyn Commands
+== Roslyn Commands
 
 [width="100%",cols="50%,50%",options="header",]
 |===
@@ -68,4 +68,4 @@
 exist)
 |===
 
-→ xref:guides/dotnet.adoc[Full guide]
+→ link:../guides/dotnet.md[Full guide]

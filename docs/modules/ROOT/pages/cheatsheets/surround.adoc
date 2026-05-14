@@ -4,14 +4,14 @@
 
 = Surround Cheatsheet (vim-surround)
 
-→ Back to xref:cheatsheets/index.adoc[main cheatsheet]
+→ Back to link:index.md[main cheatsheet]
 
 vim-surround adds keybindings to add, change, and delete surrounding
 characters (quotes, brackets, tags, etc.) around text objects.
 
 '''''
 
-=== Change surroundings
+== Change surroundings
 
 [cols=",,",options="header",]
 |===
@@ -24,7 +24,7 @@ characters (quotes, brackets, tags, etc.) around text objects.
 |`cst"` |Change tag to `"` |`++<++q++>++hello++<++/q++>++` → `"hello"`
 |===
 
-=== Delete surroundings
+== Delete surroundings
 
 [cols=",,",options="header",]
 |===
@@ -35,7 +35,7 @@ characters (quotes, brackets, tags, etc.) around text objects.
 `hello`
 |===
 
-=== Add surroundings
+== Add surroundings
 
 Cursor must be inside (or on) the text to surround. `ys` = "`you
 surround`".
@@ -56,7 +56,7 @@ surround`".
 `++<++p++><++em++>++hello++<++/em++><++/p++>++`
 |===
 
-=== Visual mode
+== Visual mode
 
 Select text in visual mode, then press `S` followed by the surround
 character.

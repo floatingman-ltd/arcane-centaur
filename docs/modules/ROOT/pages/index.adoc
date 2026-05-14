@@ -7,7 +7,10 @@
 Representing a NeoVIM installation that looks and feels like I’m in
 coding land.
 
-=== Installation
+📖 *https://floatingman-ltd.github.io/arcane-centaur[Full documentation
+site →]*
+
+== Installation
 
 Clone this repo into your Neovim config directory:
 
@@ -19,7 +22,7 @@ git clone https://github.com/floatingman-ltd/arcane-centaur ~/.config/nvim
 On first launch, https://github.com/folke/lazy.nvim[lazy.nvim] will
 bootstrap itself and install all plugins automatically.
 
-==== Prerequisites
+=== Prerequisites
 
 [width="100%",cols="34%,33%,33%",options="header",]
 |===
@@ -56,7 +59,7 @@ link:docs/guides/architecture.md[Architecture] ·
 link:docs/guides/validation.md[Validation] ·
 link:docs/guides/clipboard.md[Clipboard]
 
-==== Recommended Terminal — GNOME Terminal
+=== Recommended Terminal — GNOME Terminal
 
 https://help.gnome.org/users/gnome-terminal/stable/[GNOME Terminal] is
 the default terminal emulator for this configuration. It ships with most
@@ -80,7 +83,7 @@ installing a Nerd Font, set the override in `lua/options.lua`:
 vim.g.have_nerd_font = true
 ----
 
-===== Installing GNOME Terminal
+==== Installing GNOME Terminal
 
 GNOME Terminal is pre-installed on most GNOME-based distributions. If it
 is not present:
@@ -93,7 +96,7 @@ is not present:
 |*Arch Linux* |`sudo pacman -S gnome-terminal`
 |===
 
-===== Windows Terminal (WSL)
+==== Windows Terminal (WSL)
 
 https://aka.ms/terminal[Windows Terminal] is fully supported when
 running Neovim inside *WSL* (Windows Subsystem for Linux). The config
@@ -134,7 +137,7 @@ built-in clipboard provider detection (`xclip`, `xsel`, etc.), which may
 be slower or require an X server.
 ____
 
-===== Secondary Terminal — TTY Console
+==== Secondary Terminal — TTY Console
 
 The Linux TTY console (accessed with *Ctrl{plus}Alt{plus}F2* through
 *F6*) is supported as a secondary terminal. It is useful in minimal or
@@ -156,7 +159,7 @@ has full Nerd Font and undercurl support. The Neovim config auto-detects
 it and enables the appropriate features.
 ____
 
-===== Nerd Font Setup
+==== Nerd Font Setup
 
 `nvim-tree` and `fzf-lua` can display file-type icons when a patched
 https://www.nerdfonts.com/[Nerd Font] is installed *and* selected as the
@@ -172,7 +175,7 @@ https://www.nerdfonts.com/font-downloads.
 . Select it in your terminal emulator (GNOME Terminal: _Preferences →
 Profiles → Custom font_, or see your terminal’s documentation).
 
-===== Terminal Auto-Detection
+==== Terminal Auto-Detection
 
 The configuration automatically detects which terminal emulator is
 running (via `$TERM++_++PROGRAM`, `$VTE++_++VERSION`, and related
@@ -206,7 +209,7 @@ auto-detection is wrong for your setup you can still force the flag in
 vim.g.have_nerd_font = true   -- or false
 ----
 
-=== Working with Markdown
+== Working with Markdown
 
 → See *docs/guides/markdown.md* for the full guide: single-file browser
 preview, markserv Docker server for cross-page links, in-editor
@@ -220,7 +223,18 @@ PlantUML/Mermaid diagrams rendered
 (mkdnflow.nvim)
 * *`,cc`* — publish current file to Confluence (`MdToConfluence`)
 
-=== Working with Confluence
+== Working with AsciiDoc
+
+The `,p` and `,pp` preview keymaps work in `.adoc` buffers. Both trigger
+the same one-shot convert-and-open HTML flow (no popup equivalent for
+AsciiDoc output):
+
+* *`,p`* / *`,pp`* — convert via Docker asciidoctor → HTML → open in
+system browser (GUI only)
+
+Requires Docker. See *docker/asciidoctor/README.md* for details.
+
+== Working with Confluence
 
 → See *docs/guides/confluence.md* for the full guide: authentication,
 page map setup, diagram rendering, conflict detection, and
@@ -238,7 +252,7 @@ troubleshooting.
 (`MdConfluenceComments`)
 |===
 
-=== Working with Jira
+== Working with Jira
 
 → See *docs/guides/jira.md* for the full guide: authentication, project
 map setup, and troubleshooting.
@@ -255,7 +269,7 @@ Requires `JIRA++_++EMAIL`, `JIRA++_++API++_++TOKEN`, and
 |`,js` |Visual |Create a Story with selection as description
 |===
 
-=== Working with Diagrams
+== Working with Diagrams
 
 → See *docs/guides/diagrams.md* for the full guide: PlantUML and Mermaid
 in Markdown, standalone `.puml` files, Docker server setup, keybindings,
@@ -265,32 +279,32 @@ Mermaid fenced code blocks (`++```++mermaid` … `++```++`) render
 natively in the browser preview — *no extra plugin required*. PlantUML
 rendering uses a local Docker server.
 
-=== Working with F
+== Working with F
 
 → See *docs/guides/fsharp.md* for the full guide: iron.nvim REPL,
 fsautocomplete LSP, Quick Start, and Typical Workflow.
 
-=== Working with Haskell
+== Working with Haskell
 
 → See *docs/guides/haskell.md* for the full guide: haskell-tools.nvim,
 hls LSP, and GHCi REPL keybindings.
 
-=== Working with Janet
+== Working with Janet
 
 → See *docs/guides/janet.md* for the full guide: Conjure REPL, vim-sexp
 structural editing, janet-lsp, Quick Start, and Typical Workflow.
 
-=== Working with Lisp
+== Working with Lisp
 
 → See *docs/guides/lisp.md* for the full guide: Conjure, vim-sexp,
 parinfer, rainbow-delimiters, Quick Start, and Typical Workflow.
 
-=== Working with Presentations (MARP)
+== Working with Presentations (MARP)
 
 → See *docs/guides/presentations.md* for the full guide: MARP live
 preview via Docker, export to PPTX / HTML / PDF, and keybindings.
 
-=== Working with Git
+== Working with Git
 
 Git integration is provided by two complementary plugins:
 
@@ -298,8 +312,10 @@ Git integration is provided by two complementary plugins:
 `:Git commit`, `:Git log`, etc.)
 * *gitsigns.nvim* — live gutter signs showing added / changed / removed
 lines, with hunk-level staging, resetting, and inline blame
+* *diffview.nvim* — tabbed side-by-side diff panel, per-file commit
+history, and three-way merge conflict view
 
-==== Quick keybindings
+=== Quick keybindings
 
 [cols=",",options="header",]
 |===
@@ -309,6 +325,9 @@ lines, with hunk-level staging, resetting, and inline blame
 |`++<++leader++>++gl` |Git log
 |`++<++leader++>++gd` |Diff unstaged changes
 |`++<++leader++>++gp` |Push
+|`++<++leader++>++gD` |Open diff view (side-by-side, all changes)
+|`++<++leader++>++gH` |File history for current file
+|`++<++leader++>++gX` |Close diff view
 |`++]++h` / `++[++h` |Jump to next / previous changed hunk
 |`++<++leader++>++hs` |Stage hunk under cursor
 |`++<++leader++>++hr` |Reset hunk under cursor
@@ -323,7 +342,7 @@ in Haskell buffers (buffer-local, so it takes priority there). Use the
 fugitive status window to stage changes while editing Haskell files.
 ____
 
-=== Working with REST APIs (kulala.nvim)
+== Working with REST APIs (kulala.nvim)
 
 → See *docs/guides/rest.md* for the full guide: writing `.http` files,
 environment variables, and typical workflow.
@@ -349,7 +368,7 @@ ____
 |`,e` |Select environment
 |===
 
-=== LSP Support
+== LSP Support
 
 LSP servers are configured in `lua/config/lsp.lua`. See each language’s
 doc for server-specific setup. All servers share these keybindings
@@ -369,7 +388,7 @@ Keybindings:
 |`++[++d` / `++]++d` |Previous / next diagnostic
 |===
 
-=== General Keybindings
+== General Keybindings
 
 → See *docs/cheatsheets/index.md* for the complete one-page keybinding
 reference.
@@ -423,19 +442,19 @@ preview popup (`PumlPreviewAscii`)
 |`++<++leader++>++osl` |Normal |OpenSpec: list all changes
 |===
 
-=== Auto-Completion
+== Auto-Completion
 
 Auto-completion is powered by
 https://github.com/hrsh7th/nvim-cmp[nvim-cmp] and draws from LSP,
 snippets, open buffers, file paths, and (when spell-checking is active)
 the spell dictionary.
 
-==== Triggering the menu
+=== Triggering the menu
 
 The completion menu opens automatically as you type. To open it on
 demand in insert mode, press *`Alt{plus}Space`* (`++<++M-Space++>++`).
 
-==== Navigating the menu
+=== Navigating the menu
 
 Once the menu is open, use *`j`* and *`k`* to move through suggestions —
 matching the standard Neovim screen-movement keys. Both keys fall back
@@ -450,18 +469,18 @@ to inserting the literal character when the menu is not visible.
 |`Ctrl-b` |Scroll the documentation preview up
 |===
 
-==== Selecting the highlighted entry
+=== Selecting the highlighted entry
 
 Press *`Enter`* (`++<++CR++>++`) to confirm and insert the currently
 highlighted suggestion. If nothing is highlighted, `Enter` inserts a
 newline as normal (selection is never forced automatically).
 
-==== Cancelling the menu
+=== Cancelling the menu
 
 Press *`Ctrl{plus}e`* to dismiss the completion menu and return to
 normal typing.
 
-=== Supported Languages
+== Supported Languages
 
 [width="99%",cols="20%,16%,16%,16%,16%,16%",options="header",]
 |===
@@ -499,7 +518,7 @@ normal typing.
 |docs/guides/lisp.md
 |===
 
-=== Copilot Model Configuration
+== Copilot Model Configuration
 
 Edit `lua/plugins/copilot.lua` and uncomment the desired
 `vim.g.copilot++_++model` line:
@@ -516,13 +535,13 @@ end,
 
 Common values: `"gpt-4o"`, `"gpt-4.1"`, `"claude-sonnet-4-5"`.
 
-=== GitHub Copilot CLI
+== GitHub Copilot CLI
 
 The https://github.com/github/copilot-cli[GitHub Copilot CLI]
 (`@github/copilot` npm package) brings Copilot AI assistance to your
 terminal and is integrated directly into Neovim.
 
-==== Installation
+=== Installation
 
 [source,sh]
 ----
@@ -534,7 +553,7 @@ copilot
 # then enter: /login
 ----
 
-==== In-editor usage
+=== In-editor usage
 
 [width="100%",cols="50%,50%",options="header",]
 |===
@@ -566,7 +585,7 @@ npm install -g @oramasearch/serena
 Or run it without a global install via `npx @oramasearch/serena`.
 ____
 
-=== AI Research (Avante)
+== AI Research (Avante)
 
 https://github.com/yetone/avante.nvim[avante.nvim] provides an in-editor
 Q&A chat interface with two switchable backends: a local
@@ -584,7 +603,7 @@ Docker service, model download, GPU opt-in).
 |`++<++leader++>++ac` |Switch to copilot provider and open avante
 |===
 
-=== Plugin Overview
+== Plugin Overview
 
 Plugins are managed by https://github.com/folke/lazy.nvim[lazy.nvim] and
 organized in `lua/plugins/`:
@@ -615,7 +634,8 @@ link:docs/cheatsheets/dotnet.md[dotnet.md]
 |`fzf-lua.lua` |Fuzzy finder |link:docs/cheatsheets/fzf.md[fzf.md]
 
 |`git.lua` |vim-fugitive (`:Git` commands) {plus} gitsigns.nvim (hunk
-signs & staging) |link:docs/cheatsheets/git.md[git.md]
+signs & staging) {plus} diffview.nvim (side-by-side diff & history)
+|link:docs/cheatsheets/git.md[git.md]
 
 |`haskell.lua` |haskell-tools.nvim (GHCi REPL {plus} HLS integration)
 |link:docs/cheatsheets/haskell.md[haskell.md]
@@ -661,7 +681,7 @@ ASCII in console) {plus} `:PumlPreviewAscii` (always available)
 |link:docs/cheatsheets/comments.md[comments.md]
 |===
 
-=== Project Structure
+== Project Structure
 
 ....
 init.lua                    # Entry point
@@ -688,7 +708,7 @@ lua/
     copilot.lua             # Copilot inline completions + Serena MCP server config
     dotnet.lua              # F# + C# REPLs via iron.nvim; roslyn.nvim C# LSP
     fzf-lua.lua             # Fuzzy finder
-    git.lua                 # Git (vim-fugitive + gitsigns.nvim)
+    git.lua                 # Git (vim-fugitive + gitsigns.nvim + diffview.nvim)
     haskell.lua             # haskell-tools.nvim (GHCi REPL + HLS)
     html.lua                # Bracey HTML live preview
     init.lua                # Bare-string plugins (tpope, airline, lspconfig)
@@ -752,11 +772,3 @@ docs/
     presentations.md        # MARP presentation guide
     rest.md                 # REST client guide (kulala.nvim, .http files)
 ....
-
-== Documentation
-
-The full documentation site is published at
-https://floatingman-ltd.github.io/arcane-centaur[floatingman-ltd.github.io/arcane-centaur].
-
-It includes guides, cheatsheets, and learning content built from the `docs/` directory
-using https://antora.org[Antora] and redeployed automatically on every push to `main`.

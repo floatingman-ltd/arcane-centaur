@@ -11,7 +11,7 @@ plugin.
 
 All Haskell plugins lazy-load only when you open a `.hs` or `.lhs` file.
 
-=== Prerequisites
+== Prerequisites
 
 [width="100%",cols="34%,33%,33%",options="header",]
 |===
@@ -22,14 +22,14 @@ All Haskell plugins lazy-load only when you open a `.hs` or `.lhs` file.
 |*haskell-language-server* |LSP server |`ghcup install hls`
 |===
 
-=== LSP
+== LSP
 
 `haskell-tools` manages the `hls` LSP connection automatically — no
 manual `lspconfig` setup is needed. See
-xref:index.adoc#lsp-support[readme.adoc] for the shared LSP
+link:../../readme.md#lsp-support[readme.md] for the shared LSP
 keybindings (`gd`, `K`, `gr`, etc.).
 
-=== REPL (GHCi)
+== REPL (GHCi)
 
 haskell-tools provides a built-in GHCi REPL. Keybindings are defined in
 `after/ftplugin/haskell.lua`.
@@ -47,7 +47,7 @@ Leader is `Space`; no LocalLeader bindings are used in Haskell buffers.
 |`Space-ea` |Evaluate all code snippets in the buffer
 |===
 
-=== Configuration
+== Configuration
 
 Plugin spec lives in `lua/plugins/haskell.lua` and ftplugin overrides
 live in `after/ftplugin/haskell.lua`.

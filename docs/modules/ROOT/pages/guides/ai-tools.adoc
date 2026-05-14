@@ -22,9 +22,9 @@ Copilot chat and completions
 
 '''''
 
-=== GitHub Copilot CLI
+== GitHub Copilot CLI
 
-==== Prerequisites
+=== Prerequisites
 
 [arabic]
 . Install https://nodejs.org/[Node.js 22{plus}].
@@ -42,7 +42,7 @@ copilot
 # then enter: /login
 ----
 
-==== Usage
+=== Usage
 
 Select code in visual mode (or stay in normal mode to use the whole
 buffer), then:
@@ -62,7 +62,7 @@ to close it.
 You can also run the commands directly: - `:CopilotSuggest` — suggest -
 `:CopilotExplain` — explain
 
-==== How it works
+=== How it works
 
 `lua/config/copilot++_++cli.lua` uses `vim.system()` to invoke
 `copilot -sp "++<++prompt++>++"` non-interactively. The `-s` flag
@@ -72,17 +72,17 @@ floating window.
 
 '''''
 
-=== OpenSpec
+== OpenSpec
 
 OpenSpec is the change-management workflow tool used in this repo (see
 `openspec/` directory).
 
-==== Prerequisites
+=== Prerequisites
 
 `openspec` must be on your `$PATH`. Install it following the project’s
 own README, or check `openspec --help` to confirm it’s available.
 
-==== Usage
+=== Usage
 
 [width="100%",cols="34%,33%,33%",options="header",]
 |===
@@ -105,7 +105,7 @@ that change:
 Output is shown in a read-only bottom split (15 lines tall). Press `q`
 or `++<++Esc++>++` to close it.
 
-==== How it works
+=== How it works
 
 `lua/config/openspec.lua` uses synchronous `vim.fn.system()`
 (appropriate because `openspec` commands complete in well under a
@@ -113,7 +113,7 @@ second) and opens a scratch buffer in a `botright split`.
 
 '''''
 
-=== Serena MCP Server
+== Serena MCP Server
 
 https://github.com/oramasearch/serena[Serena] is a symbol-aware
 code-intelligence MCP (Model Context Protocol) server. When running, it
@@ -121,7 +121,7 @@ allows GitHub Copilot to perform semantic operations — go-to-definition,
 find-references, workspace symbol search — that it cannot do from text
 alone.
 
-==== Prerequisites
+=== Prerequisites
 
 Node.js 18{plus} is required. Install Serena globally to avoid `npx`
 startup latency on every request:
@@ -138,7 +138,7 @@ Or rely on on-demand `npx` (slower first call, no install needed):
 # No install needed; npx downloads on first use
 ----
 
-==== Configuration
+=== Configuration
 
 Serena is declared in `lua/plugins/copilot.lua` via
 `vim.g.copilot++_++mcp++_++servers`. No extra setup is needed — it is
@@ -147,7 +147,7 @@ auto-discovered by `copilot.vim` at startup.
 The config prefers the global `serena` binary when found on `$PATH`;
 otherwise it falls back to `npx -y @oramasearch/serena`.
 
-==== Verifying
+=== Verifying
 
 To confirm the MCP server is configured, run inside Neovim:
 
@@ -161,4 +161,4 @@ and the launch command.
 
 '''''
 
-→ link:../cheatsheets/ai-tools.adoc[Keybinding cheatsheet]
+→ link:../cheatsheets/ai-tools.md[Keybinding cheatsheet]

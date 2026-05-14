@@ -8,7 +8,7 @@ https://github.com/mistweaverco/kulala.nvim[kulala.nvim] is a
 fully-featured, pure-Lua REST client for Neovim. Write your API requests
 in `.http` files and execute them directly from the editor.
 
-=== Prerequisites
+== Prerequisites
 
 [width="100%",cols="34%,33%,33%",options="header",]
 |===
@@ -22,7 +22,7 @@ https://github.com/neovim/neovim/releases[github.com/neovim/neovim/releases]
 |see below
 |===
 
-==== Installing the tree-sitter CLI
+=== Installing the tree-sitter CLI
 
 kulala.nvim ships a custom `kulala++_++http` tree-sitter grammar that
 nvim-treesitter compiles from source the first time you open an `.http`
@@ -51,7 +51,7 @@ The compilation happens once; subsequent launches use the cached parser.
 kulala.nvim has *no LuaRocks dependencies* and installs as a plain git
 plugin.
 
-=== Quick Start
+== Quick Start
 
 [arabic]
 . Create a file with the `.http` extension, e.g. `api.http`.
@@ -69,7 +69,7 @@ Accept: application/json
 . The result pane opens automatically with the response body, headers,
 and timing stats.
 
-=== HTTP File Syntax
+== HTTP File Syntax
 
 [source,http]
 ----
@@ -79,7 +79,7 @@ Header-field: Header-value
 Request-Body
 ----
 
-==== Example: GET request
+=== Example: GET request
 
 [source,http]
 ----
@@ -87,7 +87,7 @@ GET https://api.example.com/users HTTP/1.1
 Accept: application/json
 ----
 
-==== Example: POST request with JSON body
+=== Example: POST request with JSON body
 
 [source,http]
 ----
@@ -100,7 +100,7 @@ Content-Type: application/json
 }
 ----
 
-==== Example: Named request
+=== Example: Named request
 
 [source,http]
 ----
@@ -113,7 +113,7 @@ Content-Type: application/json
 }
 ----
 
-=== Environment Variables
+== Environment Variables
 
 kulala.nvim supports two env file formats:
 
@@ -152,7 +152,7 @@ Authorization: Bearer {{api_key}}
 Use `,e` to pick which named environment from `http-client.env.json` is
 active.
 
-=== Typical Workflow
+== Typical Workflow
 
 [arabic]
 . Create `requests.http` with your API calls.
@@ -162,9 +162,9 @@ active.
 . Press `,l` to quickly re-run the last request after editing it.
 . Press `,o` to re-open the result pane if closed.
 
-=== Keybindings
+== Keybindings
 
-→ See the link:../cheatsheets/rest.adoc[REST cheatsheet] for the full
+→ See the link:../cheatsheets/rest.md[REST cheatsheet] for the full
 keybinding reference.
 
 [cols=",",options="header",]
@@ -176,9 +176,9 @@ keybinding reference.
 |`,e` |Select environment
 |===
 
-=== Troubleshooting
+== Troubleshooting
 
-==== `ENOENT: no such file or directory (cmd): 'tree-sitter'`
+=== `ENOENT: no such file or directory (cmd): 'tree-sitter'`
 
 kulala.nvim builds its custom `kulala++_++http` tree-sitter grammar on
 first launch using the `tree-sitter` CLI. If the binary is not on your
@@ -192,7 +192,7 @@ first launch using the `tree-sitter` CLI. If the binary is not on your
 link:#installing-the-tree-sitter-cli[Installing the tree-sitter CLI]
 above), then *restart Neovim*.
 
-==== `async.lua: timeout` / `Failed to run config for kulala.nvim`
+=== `async.lua: timeout` / `Failed to run config for kulala.nvim`
 
 Same root cause — nvim-treesitter timed out waiting for
 `tree-sitter build` to complete because the binary was not found.
@@ -200,7 +200,7 @@ Same root cause — nvim-treesitter timed out waiting for
 *Fix:* same as above — install the tree-sitter CLI, then *restart
 Neovim*.
 
-==== All keymaps (`,r` `,l` `,o` `,e`) do nothing after the error
+=== All keymaps (`,r` `,l` `,o` `,e`) do nothing after the error
 
 When kulala’s `setup()` errors (either due to the missing CLI or the
 timeout), the UI layer is never initialized. Every keymap that calls
@@ -211,7 +211,7 @@ show `nil` errors until kulala initializes successfully.
 file. The grammar is compiled once on this first successful launch;
 subsequent starts will use the cached parser and load instantly.
 
-=== Configuration
+== Configuration
 
 kulala.nvim is configured via `opts` in `lua/plugins/rest.lua`. The
 defaults are sensible for most use cases. To customise:

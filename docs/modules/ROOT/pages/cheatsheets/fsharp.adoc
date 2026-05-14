@@ -6,10 +6,10 @@
 
 *LocalLeader* = `,` in F++#++ buffers
 
-→ Back to xref:cheatsheets/index.adoc[main cheatsheet] · Full guide:
+→ Back to link:index.md[main cheatsheet] · Full guide:
 ../guides/fsharp.md
 
-=== REPL Interaction (dotnet fsi)
+== REPL Interaction (dotnet fsi)
 
 The REPL opens as a horizontal split at the bottom (40% height).
 
@@ -26,7 +26,7 @@ The REPL opens as a horizontal split at the bottom (40% height).
 |`,cl` |Normal |Clear the REPL output buffer
 |===
 
-=== LSP (fsautocomplete)
+== LSP (fsautocomplete)
 
 Standard LSP keys are active in F++#++ buffers — see lsp.md.
 Format-on-save is handled by conform.nvim — see formatting.md.

@@ -4,9 +4,9 @@
 
 = Auto-Completion Cheatsheet (nvim-cmp)
 
-→ Back to xref:cheatsheets/index.adoc[main cheatsheet]
+→ Back to link:index.md[main cheatsheet]
 
-=== Completion Menu
+== Completion Menu
 
 [cols=",,",options="header",]
 |===
@@ -25,7 +25,7 @@ accidentally confirm the first suggestion. `Ctrl-n` and `Ctrl-p` follow
 Vim’s built-in completion-navigation convention and never block normal
 typing.
 
-=== Completion Sources
+== Completion Sources
 
 [cols=",",options="header",]
 |===
@@ -38,7 +38,7 @@ typing.
 |`cmp-conjure` |Conjure REPL completions (Lisp buffers)
 |===
 
-=== Command-line Completion
+== Command-line Completion
 
 [cols=",",options="header",]
 |===

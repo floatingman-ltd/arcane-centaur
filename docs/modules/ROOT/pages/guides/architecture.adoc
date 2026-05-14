@@ -10,7 +10,7 @@ where it is, and how the pieces fit together at startup.
 
 '''''
 
-=== Startup Order
+== Startup Order
 
 Neovim always loads files in this sequence:
 
@@ -28,7 +28,7 @@ is first needed, or by `require()` calls inside plugin config functions.
 
 '''''
 
-=== Root-Level Files
+== Root-Level Files
 
 [width="100%",cols="50%,50%",options="header",]
 |===
@@ -50,13 +50,13 @@ Copilot instructions file.
 
 '''''
 
-=== `lua/` — The Lua Source Tree
+== `lua/` — The Lua Source Tree
 
 All runtime Lua code lives here. Neovim adds `lua/` to the Lua
 `package.path` automatically, so `require("config.terminal")` maps to
 `lua/config/terminal.lua`.
 
-==== `lua/options.lua`
+=== `lua/options.lua`
 
 Sets `vim.opt.++*++` values (line numbers, tabs, scroll offset, etc.)
 and the two leader keys:
@@ -70,20 +70,20 @@ vim.g.maplocalleader = ","   -- Comma  (filetype keymaps)
 This file is loaded first so leader keys are defined before any plugin
 or keymap tries to reference them.
 
-==== `lua/keymaps.lua`
+=== `lua/keymaps.lua`
 
 Global `++<++leader++>++` keymaps that are not tied to any plugin or
 filetype. Things like window navigation, buffer management, and
 diagnostic shortcuts.
 
-==== `lua/loader/init.lua`
+=== `lua/loader/init.lua`
 
 Bootstraps https://github.com/folke/lazy.nvim[lazy.nvim] (downloads it
 if missing), then calls `lazy.setup()` with
 `++{++ import = "plugins" }`. This tells lazy.nvim to auto-import every
 file under `lua/plugins/` as a plugin spec.
 
-==== `lua/plugins/` — Plugin Specs
+=== `lua/plugins/` — Plugin Specs
 
 One file per plugin group. Each file returns a lazy.nvim spec table.
 Examples:
@@ -129,7 +129,7 @@ objects
 Plugins use `ft = ++{++ "markdown" }` (lazy-load on filetype) or
 `event = "VeryLazy"` (load after startup) to keep startup time fast.
 
-==== `lua/config/` — Non-Plugin Configuration Modules
+=== `lua/config/` — Non-Plugin Configuration Modules
 
 Reusable Lua modules that are `require()`d by plugin configs or
 ftplugins. They do not return lazy.nvim specs.
@@ -177,7 +177,7 @@ management).
 
 '''''
 
-=== `after/ftplugin/` — Filetype-Specific Overrides
+== `after/ftplugin/` — Filetype-Specific Overrides
 
 Neovim automatically sources `after/ftplugin/++<++filetype++>++.lua`
 when a buffer of that filetype is opened. This is the correct place for:
@@ -217,7 +217,7 @@ search)
 
 '''''
 
-=== `docker/` — Docker Service Definitions
+== `docker/` — Docker Service Definitions
 
 Each subdirectory is a self-contained Docker Compose service used by a
 Neovim feature. Start them independently with
@@ -246,21 +246,21 @@ PlantUML {plus} Mermaid diagram rendering)
 
 '''''
 
-=== `docs/` — User Documentation
+== `docs/` — User Documentation
 
 Human-readable reference material. Not loaded by Neovim.
 
-==== `docs/guides/`
+=== `docs/guides/`
 
 Long-form setup and usage guides, one per feature area. Start here when
 setting up a new language or feature on a fresh machine.
 
-==== `docs/cheatsheets/`
+=== `docs/cheatsheets/`
 
 Quick-reference keymap tables. `index.md` is the single-page master
 reference. Each other file covers one plugin or language area.
 
-==== `docs/jira-project-map.md`
+=== `docs/jira-project-map.md`
 
 Maps directory prefixes to Jira project keys. Used by
 `lua/config/jira.lua` to automatically select the right Jira project
@@ -268,7 +268,7 @@ when creating issues.
 
 '''''
 
-=== `scripts/` — Shell and Pandoc Scripts
+== `scripts/` — Shell and Pandoc Scripts
 
 Helper scripts invoked by Neovim commands, not intended to be run
 directly by the user.
@@ -288,7 +288,7 @@ conversion
 
 '''''
 
-=== `openspec/` — OpenSpec Change Management
+== `openspec/` — OpenSpec Change Management
 
 OpenSpec is a lightweight spec-driven workflow for tracking proposed
 changes to this configuration. It is used by the Copilot CLI and
@@ -316,7 +316,7 @@ directory.
 
 '''''
 
-=== `.github/` — Copilot CLI Integration
+== `.github/` — Copilot CLI Integration
 
 [width="100%",cols="50%,50%",options="header",]
 |===
@@ -334,7 +334,7 @@ how to invoke an OpenSpec workflow step.
 
 '''''
 
-=== `.opencode/` — opencode-ai Integration
+== `.opencode/` — opencode-ai Integration
 
 Mirror of `.github/skills/` for the opencode-ai editor assistant.
 Contains the same OpenSpec skill definitions in the format opencode-ai
@@ -342,7 +342,7 @@ expects.
 
 '''''
 
-=== `.serena/` — Serena MCP Server State
+== `.serena/` — Serena MCP Server State
 
 Runtime state for the https://github.com/oraios/serena[Serena] MCP
 server:
@@ -363,7 +363,7 @@ sessions
 
 '''''
 
-=== `testdocs/`
+== `testdocs/`
 
 Sample files used for manual testing of preview features
 (e.g. `test.puml` for verifying the PlantUML ASCII preview). Not part of

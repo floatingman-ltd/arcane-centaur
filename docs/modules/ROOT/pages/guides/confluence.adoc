@@ -15,7 +15,7 @@ required.
 
 '''''
 
-=== Prerequisites
+== Prerequisites
 
 ____
 *Required:* `pandoc`, `curl`, and `jq` must be installed before `,cc`
@@ -45,19 +45,19 @@ link:#authentication[Authentication]
 
 '''''
 
-=== Authentication
+== Authentication
 
 The publisher reads credentials from environment variables. They are
 never stored in any file.
 
-==== Generating an API token
+=== Generating an API token
 
 [arabic]
 . Go to https://id.atlassian.com/manage-profile/security/api-tokens
 . Click *Create API token*
 . Give it a label (e.g. `nvim-confluence-publish`) and copy the token
 
-==== Setting the environment variables
+=== Setting the environment variables
 
 Add these lines to your shell profile (`~/.bashrc`, `~/.zshrc`, or
 `~/.profile`):
@@ -79,7 +79,7 @@ ____
 
 '''''
 
-=== Page map
+== Page map
 
 The publisher resolves which Confluence page to update by reading
 `docs/confluence-page-map.md` at the root of the git repository
@@ -98,11 +98,11 @@ and does nothing.
 
 '''''
 
-=== Usage
+== Usage
 
 Open any markdown file that is listed in the page map, then:
 
-==== Publishing
+=== Publishing
 
 [cols=",",options="header",]
 |===
@@ -114,7 +114,7 @@ Open any markdown file that is listed in the page map, then:
 Progress messages appear in the notification area. The final message
 includes the published page URL.
 
-==== Pulling from Confluence
+=== Pulling from Confluence
 
 [width="100%",cols="50%,50%",options="header",]
 |===
@@ -127,7 +127,7 @@ The local file is overwritten with the Confluence content (converted
 back to Markdown via pandoc). A `.bak` backup of the previous local file
 is created automatically before overwriting.
 
-==== Fetching comments
+=== Fetching comments
 
 [cols=",",options="header",]
 |===
@@ -141,7 +141,7 @@ directory as the source file. Existing comment files are overwritten.
 
 '''''
 
-=== Conflict detection
+== Conflict detection
 
 The publisher tracks the last-published Confluence page version in
 `docs/.confluence-state.json` (relative to the git root). When you run
@@ -155,7 +155,7 @@ team benefits from conflict detection.
 
 '''''
 
-=== Link substitution and code macros
+== Link substitution and code macros
 
 When `confluence++_++filter.lua` is found (either alongside the publish
 script or via `CONFLUENCE++_++FILTER++_++LUA`), `,cc` automatically:
@@ -181,7 +181,7 @@ export CONFLUENCE_FILTER_LUA="/home/walt/src/rmv/drive-api/scripts/confluence_fi
 
 '''''
 
-=== Troubleshooting
+== Troubleshooting
 
 [width="100%",cols="34%,33%,33%",options="header",]
 |===
