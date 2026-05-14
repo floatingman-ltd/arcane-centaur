@@ -1,5 +1,3 @@
-// :auto-generated: false
-// This file was authored manually.
 = Contributing to the Documentation
 
 This guide explains how to author and maintain the AsciiDoc documentation
