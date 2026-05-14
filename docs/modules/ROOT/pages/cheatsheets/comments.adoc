@@ -16,7 +16,7 @@
 |`gc` |Visual |Toggle comment on selection
 
 |`gc++<++motion++>++` |Normal |Toggle comment over a motion (e.g. `gcap`
-= paragraph)
+== paragraph)
 
 |`Ctrl-/` |Normal |Toggle comment — use `Ctrl-++_++` on most terminals
 |===

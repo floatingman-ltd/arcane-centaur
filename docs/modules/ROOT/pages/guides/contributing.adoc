@@ -5,7 +5,7 @@
 This guide explains how to author and maintain the AsciiDoc documentation
 that powers the https://floatingman-ltd.github.io/arcane-centaur[Arcane Centaur docs site].
 
-= Authoring Workflow
+== Authoring Workflow
 
 The source of truth for most documentation is the Markdown files in `docs/`
 and the root `readme.md`. A GitHub Actions pipeline converts these to AsciiDoc
