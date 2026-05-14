@@ -18,6 +18,17 @@ vim.keymap.set("n", "<localleader>p", function()
   end
 end, { buffer = true, desc = "Toggle markdown preview" })
 
+vim.keymap.set("n", "<localleader>pp", function()
+  if vim.fn.executable("glow") ~= 1 then
+    vim.notify(
+      "glow not found — see docs/guides/cli-console-mode.md for installation instructions",
+      vim.log.levels.WARN
+    )
+    return
+  end
+  vim.cmd("Glow")
+end, { buffer = true, desc = "Popup preview (glow, always)" })
+
 -- Markserv server preview (requires Docker; see docs/guides/markdown.md)
 require("config.mdpreview").setup()
 vim.keymap.set("n", "<localleader>sp", "<cmd>MdServerPreview<cr>", { buffer = true, desc = "Open in markserv Docker preview server (cross-page links)" })

@@ -161,7 +161,8 @@ LocalLeader is `,` in Markdown buffers.
 
 | Keys | Action |
 |------|--------|
-| `,p` | Toggle `markdown-preview.nvim` single-file browser preview |
+| `,p` | Toggle `markdown-preview.nvim` single-file browser preview (GUI) or glow popup (console) |
+| `,pp` | Force glow popup preview — always in-terminal, regardless of environment |
 | `,sp` | Open current file in markserv Docker server preview (`MdServerPreview`) |
 | `<CR>` | Follow link under cursor (mkdnflow — in-editor navigation) |
 | `<BS>` | Go back to previous file (mkdnflow) |
@@ -182,6 +183,7 @@ LocalLeader is `,` in Markdown buffers.
 | Situation | Recommended tool |
 |-----------|-----------------|
 | Single file, diagrams, cursor sync | `,p` — markdown-preview.nvim |
+| Full-screen terminal, no browser context | `,pp` — glow popup (always in-terminal) |
 | Multi-file project, cross-page links, diagrams | `,sp` — markserv Docker server |
 | Navigate between linked files in editor | `<CR>` — mkdnflow.nvim |
 | Export to PDF with diagram rendering | `,dp` — MdToPdf |

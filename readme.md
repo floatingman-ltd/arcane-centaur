@@ -214,6 +214,7 @@ Git integration is provided by two complementary plugins:
 
 * **vim-fugitive** — full git command interface (`:Git status`, `:Git commit`, `:Git log`, etc.)
 * **gitsigns.nvim** — live gutter signs showing added / changed / removed lines, with hunk-level staging, resetting, and inline blame
+* **diffview.nvim** — tabbed side-by-side diff panel, per-file commit history, and three-way merge conflict view
 
 ### Quick keybindings
 
@@ -224,6 +225,9 @@ Git integration is provided by two complementary plugins:
 | `<leader>gl` | Git log |
 | `<leader>gd` | Diff unstaged changes |
 | `<leader>gp` | Push |
+| `<leader>gD` | Open diff view (side-by-side, all changes) |
+| `<leader>gH` | File history for current file |
+| `<leader>gX` | Close diff view |
 | `]h` / `[h` | Jump to next / previous changed hunk |
 | `<leader>hs` | Stage hunk under cursor |
 | `<leader>hr` | Reset hunk under cursor |
@@ -417,7 +421,7 @@ Plugins are managed by [lazy.nvim](https://github.com/folke/lazy.nvim) and organ
 | `copilot.lua` | Copilot inline completions + Serena MCP server config | [copilot.md](docs/cheatsheets/copilot.md) · [ai-tools.md](docs/cheatsheets/ai-tools.md) |
 | `dotnet.lua` | iron.nvim REPL integration for F# (`dotnet fsi`) and C# (`csharprepl`); roslyn.nvim C# LSP | [fsharp.md](docs/cheatsheets/fsharp.md) · [dotnet.md](docs/cheatsheets/dotnet.md) |
 | `fzf-lua.lua` | Fuzzy finder | [fzf.md](docs/cheatsheets/fzf.md) |
-| `git.lua` | vim-fugitive (`:Git` commands) + gitsigns.nvim (hunk signs & staging) | [git.md](docs/cheatsheets/git.md) |
+| `git.lua` | vim-fugitive (`:Git` commands) + gitsigns.nvim (hunk signs & staging) + diffview.nvim (side-by-side diff & history) | [git.md](docs/cheatsheets/git.md) |
 | `haskell.lua` | haskell-tools.nvim (GHCi REPL + HLS integration) | [haskell.md](docs/cheatsheets/haskell.md) |
 | `html.lua` | Bracey HTML live preview | [html.md](docs/cheatsheets/html.md) |
 | `init.lua` | vim-repeat, vim-sensible, vim-surround, vim-unimpaired, vim-airline (statusline), lspconfig | [lsp.md](docs/cheatsheets/lsp.md) · [surround.md](docs/cheatsheets/surround.md) · [unimpaired.md](docs/cheatsheets/unimpaired.md) |
@@ -458,7 +462,7 @@ lua/
     copilot.lua             # Copilot inline completions + Serena MCP server config
     dotnet.lua              # F# + C# REPLs via iron.nvim; roslyn.nvim C# LSP
     fzf-lua.lua             # Fuzzy finder
-    git.lua                 # Git (vim-fugitive + gitsigns.nvim)
+    git.lua                 # Git (vim-fugitive + gitsigns.nvim + diffview.nvim)
     haskell.lua             # haskell-tools.nvim (GHCi REPL + HLS)
     html.lua                # Bracey HTML live preview
     init.lua                # Bare-string plugins (tpope, airline, lspconfig)

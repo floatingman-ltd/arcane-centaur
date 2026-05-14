@@ -61,4 +61,15 @@ return {
       end,
     },
   },
+
+  -- Rich side-by-side diff view, file history, and merge conflict UI
+  {
+    "sindrets/diffview.nvim",
+    cmd = { "DiffviewOpen", "DiffviewFileHistory", "DiffviewClose" },
+    keys = {
+      { "<leader>gD", "<cmd>DiffviewOpen<CR>",        desc = "Diff view (working tree)" },
+      { "<leader>gH", "<cmd>DiffviewFileHistory %<CR>", desc = "File history (current file)" },
+      { "<leader>gX", "<cmd>DiffviewClose<CR>",       desc = "Close diff view" },
+    },
+  },
 }
