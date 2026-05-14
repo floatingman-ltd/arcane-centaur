@@ -34,6 +34,16 @@ vim.keymap.set("n", "<localleader>p", function()
     return
   end
 
+  vim.fn.system({ "docker", "info" })
+  if vim.v.shell_error ~= 0 then
+    vim.notify(
+      "Docker is installed but the daemon is not running or not reachable.\n"
+        .. "Start Docker and try AsciiDoc preview again.",
+      vim.log.levels.ERROR
+    )
+    return
+  end
+
   local docdir  = vim.fn.expand("%:p:h")
   local filename = vim.fn.expand("%:t")
   local bufnr   = vim.api.nvim_get_current_buf()
