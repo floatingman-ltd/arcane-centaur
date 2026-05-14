@@ -9,7 +9,7 @@ Neovim uses the system clipboard through a *provider* — an external tool
 clipboard. This config selects the provider automatically based on the
 environment.
 
-→ Keybinding reference: ../cheatsheets/editing.md
+→ Keybinding reference: xref:cheatsheets/editing.adoc[Editing Cheatsheet]
 
 '''''
 

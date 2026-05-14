@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Convert all docs/*.md and readme.md to AsciiDoc counterparts.
+# Convert docs/**/*.md and readme.md into the Antora pages tree.
 #
 # Sentinel header injected into every auto-generated .adoc:
 #   // :auto-generated: true
@@ -12,6 +12,7 @@ set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 PANDOC="${REPO_ROOT}/docker/pandoc/run.sh"
+PAGES_ROOT="docs/modules/ROOT/pages"
 
 if [[ ! -x "$PANDOC" ]]; then
   echo "ERROR: $PANDOC not found or not executable" >&2
@@ -20,7 +21,17 @@ fi
 
 convert_file() {
   local src="$1"          # relative path from repo root, e.g. docs/guides/lisp.md
-  local dst="${src%.md}.adoc"
+  local dst=""
+
+  if [[ "$src" == "readme.md" ]]; then
+    dst="${PAGES_ROOT}/index.adoc"
+  elif [[ "$src" == docs/*.md ]]; then
+    local rel="${src#docs/}"
+    dst="${PAGES_ROOT}/${rel%.md}.adoc"
+  else
+    echo "ERROR: unsupported source path: $src" >&2
+    exit 1
+  fi
 
   # Skip if .adoc exists and has no sentinel (manually owned)
   if [[ -f "${REPO_ROOT}/${dst}" ]]; then
@@ -28,6 +39,8 @@ convert_file() {
       echo "  SKIP (manual): $dst"
       return
     fi
+  else
+    mkdir -p "$(dirname "${REPO_ROOT}/${dst}")"
   fi
 
   echo "  CONVERT: $src -> $dst"
