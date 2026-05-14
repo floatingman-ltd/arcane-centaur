@@ -1,0 +1,52 @@
+// :auto-generated: true
+// :source: docs/cheatsheets/completion.md
+// Remove this header to take manual ownership of this file
+
+= Auto-Completion Cheatsheet (nvim-cmp)
+
+→ Back to xref:cheatsheets/index.adoc[main cheatsheet]
+
+=== Completion Menu
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`Alt-Space` |Insert |Open completion menu on demand
+|`Ctrl-n` |Insert (menu open) |Select next suggestion
+|`Ctrl-p` |Insert (menu open) |Select previous suggestion
+|`Enter` |Insert |Confirm highlighted suggestion
+|`Ctrl-e` |Insert |Dismiss completion menu
+|`Ctrl-f` |Insert |Scroll documentation preview down
+|`Ctrl-b` |Insert |Scroll documentation preview up
+|===
+
+`Enter` only inserts when an entry is actively highlighted — it will not
+accidentally confirm the first suggestion. `Ctrl-n` and `Ctrl-p` follow
+Vim’s built-in completion-navigation convention and never block normal
+typing.
+
+=== Completion Sources
+
+[cols=",",options="header",]
+|===
+|Source |Provides
+|`nvim++_++lsp` |Language server completions
+|`luasnip` |Snippet expansions
+|`buffer` |Words from open buffers
+|`path` |File-system paths
+|`spell` |Dictionary words (when `spell` is active)
+|`cmp-conjure` |Conjure REPL completions (Lisp buffers)
+|===
+
+=== Command-line Completion
+
+[cols=",",options="header",]
+|===
+|Mode |Sources
+|`/` search |Buffer words
+|`:` commands |File paths, then Ex commands
+|===
+
+'''''
+
+_Configured in `lua/plugins/nvim-cmp.lua`._

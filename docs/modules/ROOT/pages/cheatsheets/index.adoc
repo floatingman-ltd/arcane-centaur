@@ -1,0 +1,448 @@
+// :auto-generated: true
+// :source: docs/cheatsheets/index.md
+// Remove this header to take manual ownership of this file
+
+= Neovim Keybinding Cheat Sheet
+
+*Leader* = `Space` · *LocalLeader* = `,` (in all language buffers)
+
+=== Plugin Cheatsheets
+
+[width="100%",cols="50%,50%",options="header",]
+|===
+|Plugin / Area |Cheatsheet
+|Auto-Completion (nvim-cmp) |xref:cheatsheets/completion.adoc[completion.adoc]
+
+|Clipboard |xref:cheatsheets/editing.adoc#system-clipboard[editing.adoc] —
+xref:guides/clipboard.adoc[full guide]
+
+|Comments (vim-commentary) |xref:cheatsheets/comments.adoc[comments.adoc]
+
+|C++#++ / .NET (Roslyn {plus} iron.nvim) |xref:cheatsheets/dotnet.adoc[dotnet.adoc]
+
+|F++#++ REPL (iron.nvim) |xref:cheatsheets/fsharp.adoc[fsharp.adoc]
+
+|File Tree (nvim-tree) |xref:cheatsheets/file-tree.adoc[file-tree.adoc]
+
+|Formatting (conform.nvim) |xref:cheatsheets/formatting.adoc[formatting.adoc]
+
+|Fuzzy Finder (fzf-lua) |xref:cheatsheets/fzf.adoc[fzf.adoc]
+
+|Git (vim-fugitive {plus} gitsigns) |xref:cheatsheets/git.adoc[git.adoc]
+
+|GitHub Copilot |xref:cheatsheets/copilot.adoc[copilot.adoc]
+
+|GitHub Copilot CLI {plus} OpenSpec |xref:cheatsheets/ai-tools.adoc[ai-tools.adoc]
+
+|Haskell (haskell-tools) |xref:cheatsheets/haskell.adoc[haskell.adoc]
+
+|Janet (Conjure {plus} vim-sexp) |xref:cheatsheets/janet.adoc[janet.adoc]
+
+|HTML Live Preview (Bracey) |xref:cheatsheets/html.adoc[html.adoc]
+
+|Lisp / Clojure / Scheme / Fennel (Conjure {plus} vim-sexp) |xref:cheatsheets/lisp.adoc[lisp.adoc]
+
+|LSP |xref:cheatsheets/lsp.adoc[lsp.adoc]
+
+|Markdown Preview {plus} MARP {plus} Confluence {plus} Jira |xref:cheatsheets/markdown.adoc[markdown.adoc]
+
+|Navigation & Splits |xref:cheatsheets/navigation.adoc[navigation.adoc]
+
+|PlantUML Preview |plantuml.md
+
+|REST Client (kulala.nvim) |rest.md
+
+|Surround (vim-surround) |surround.md
+
+|Unimpaired (vim-unimpaired) |unimpaired.md
+
+|Visual Editing |editing.md
+|===
+
+'''''
+
+=== Quick Reference
+
+==== Navigation & Splits
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`Ctrl-h` |Normal |Move to left split
+|`Ctrl-j` |Normal |Move to split below
+|`Ctrl-k` |Normal |Move to split above
+|`Ctrl-l` |Normal |Move to right split
+|`Ctrl-↑` |Normal |Shrink split height
+|`Ctrl-↓` |Normal |Grow split height
+|`Ctrl-←` |Normal |Shrink split width
+|`Ctrl-→` |Normal |Grow split width
+|===
+
+→ xref:cheatsheets/navigation.adoc[Full reference]
+
+'''''
+
+==== File Tree (nvim-tree)
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`++<++leader++>++n` or `Ctrl-n` |Normal |Open file tree
+|`Ctrl-t` |Normal |Toggle file tree
+|`Ctrl-f` |Normal |Reveal current file in tree
+|===
+
+→ xref:cheatsheets/file-tree.adoc[Full reference]
+
+'''''
+
+==== Terminal
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`++<++leader++>++t` |Normal |Toggle terminal split
+|`Esc` |Terminal |Exit terminal insert mode
+|===
+
+→ xref:cheatsheets/navigation.adoc[Full reference]
+
+'''''
+
+==== Editing
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`++<++` |Visual |Outdent selection and reselect
+|`++>++` |Visual |Indent selection and reselect
+|`++<++Tab++>++` |Visual |Indent selection
+|`++<++S-Tab++>++` |Visual |Outdent selection
+|`++<++S-Down++>++` |Visual |Move selected block down
+|`++<++S-Up++>++` |Visual |Move selected block up
+|`++<++leader++>++p` |Visual |Paste without overwriting clipboard
+|===
+
+==== System Clipboard
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`++<++leader++>++y` |Normal / Visual |Yank to system clipboard
+
+|`++<++leader++>++Y` |Normal |Yank line to system clipboard
+
+|`++<++leader++>++d` |Normal / Visual |Cut to system clipboard
+
+|`++<++leader++>++p` |Normal |Paste from system clipboard (after cursor)
+
+|`++<++leader++>++P` |Normal |Paste from system clipboard (before
+cursor)
+|===
+
+Works on GUI Linux (xclip/xsel/wl-clipboard), WSL (win32yank.exe), and
+SSH/TTY sessions (OSC 52 — no external tool required).
+
+→ xref:cheatsheets/editing.adoc[Full reference]
+
+'''''
+
+==== Comments (vim-commentary)
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`gcc` |Normal |Toggle line comment
+|`gc` |Visual |Toggle comment on selection
+|`Ctrl-++_++` |Normal |Toggle comment (most terminals)
+|`Ctrl-/` |Normal |Toggle comment (Kitty / WezTerm)
+|===
+
+→ xref:cheatsheets/comments.adoc[Full reference]
+
+'''''
+
+==== Formatting (conform.nvim)
+
+[width="100%",cols="34%,33%,33%",options="header",]
+|===
+|Keys |Mode |Action
+|`++<++leader++>++f` |Normal / Visual |Format buffer or selection
+(LSP-preferred)
+|===
+
+_Format-on-save is enabled for Lisp, Clojure, Scheme, Fennel, Janet, and
+F++#++ buffers._
+
+→ xref:cheatsheets/formatting.adoc[Full reference]
+
+'''''
+
+==== Copilot
+
+[width="100%",cols="34%,33%,33%",options="header",]
+|===
+|Keys |Mode |Action
+|`Ctrl-j` |Insert |Accept full inline suggestion
+
+|`Alt-f` |Insert |Accept next word of suggestion
+
+|`++<++leader++>++gcs` |Normal / Visual |Copilot CLI: suggest (floating
+window)
+
+|`++<++leader++>++gce` |Normal / Visual |Copilot CLI: explain (floating
+window)
+
+|`++<++leader++>++gcs` |Normal / Visual |Copilot CLI: suggest (floating
+window)
+
+|`++<++leader++>++gce` |Normal / Visual |Copilot CLI: explain (floating
+window)
+|===
+
+→ xref:cheatsheets/copilot.adoc[Full reference] · xref:cheatsheets/ai-tools.adoc[AI Tools guide]
+
+'''''
+
+==== OpenSpec
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`++<++leader++>++osn` |Normal |Create a new OpenSpec change
+|`++<++leader++>++oss` |Normal |Show OpenSpec status
+|`++<++leader++>++osl` |Normal |List all OpenSpec changes
+|===
+
+→ xref:cheatsheets/ai-tools.adoc[Full reference]
+
+'''''
+
+==== LSP (all LSP-enabled buffers)
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`gd` |Normal |Go to definition
+|`K` |Normal |Hover documentation
+|`gr` |Normal |Find references
+|`++<++leader++>++rn` |Normal |Rename symbol
+|`++<++leader++>++ca` |Normal |Code action
+|`++<++leader++>++e` |Normal |Show diagnostic float
+|`++[++d` |Normal |Previous diagnostic
+|`++]++d` |Normal |Next diagnostic
+|===
+
+→ xref:cheatsheets/lsp.adoc[Full reference]
+
+'''''
+
+==== Auto-Completion (nvim-cmp)
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`Alt-Space` |Insert |Open completion menu
+|`Ctrl-n` |Insert |Select next suggestion (menu open)
+|`Ctrl-p` |Insert |Select previous suggestion (menu open)
+|`Enter` |Insert |Confirm highlighted suggestion
+|`Ctrl-e` |Insert |Dismiss completion menu
+|`Ctrl-f` |Insert |Scroll docs preview down
+|`Ctrl-b` |Insert |Scroll docs preview up
+|===
+
+→ xref:cheatsheets/completion.adoc[Full reference]
+
+'''''
+
+==== Git — vim-fugitive {plus} gitsigns
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`++<++leader++>++gs` |Normal |Git status (`:Git`)
+|`++<++leader++>++gb` |Normal |Git blame
+|`++<++leader++>++gl` |Normal |Git log
+|`++<++leader++>++gd` |Normal |Git diff (unstaged)
+|`++<++leader++>++gp` |Normal |Git push
+|`++]++h` |Normal |Next hunk
+|`++[++h` |Normal |Previous hunk
+|`++<++leader++>++hs` |Normal / Visual |Stage hunk
+|`++<++leader++>++hr` |Normal / Visual |Reset hunk
+|`++<++leader++>++hu` |Normal |Undo stage
+|`++<++leader++>++hb` |Normal |Blame line
+|===
+
+→ xref:cheatsheets/git.adoc[Full reference]
+
+'''''
+
+==== Haskell (haskell-tools)
+
+Leader is `Space`; no LocalLeader bindings are used in Haskell buffers.
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`++<++leader++>++rr` |Normal |Toggle GHCi REPL for package
+|`++<++leader++>++rf` |Normal |Toggle GHCi REPL for current file
+|`++<++leader++>++rq` |Normal |Quit GHCi REPL
+|`Space-cl` |Normal |Run code lenses
+|`Space-hs` |Normal |Hoogle search for type under cursor
+|`Space-ea` |Normal |Evaluate all code snippets
+|===
+
+→ xref:cheatsheets/haskell.adoc[Full reference] · xref:guides/haskell.adoc[Guide]
+
+'''''
+
+==== F++#++ REPL — iron.nvim
+
+LocalLeader is `,` in F++#++ buffers.
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`,sl` |Normal |Send current line to REPL
+|`,sc` |Normal / Visual |Send motion or selection to REPL
+|`,sp` |Normal |Send current paragraph to REPL
+|`,sf` |Normal |Send entire file to REPL
+|`,s++<++CR++>++` |Normal |Send carriage return to REPL
+|`,si` |Normal |Interrupt REPL
+|`,sq` |Normal |Quit / exit REPL
+|`,cl` |Normal |Clear REPL output
+|===
+
+→ xref:cheatsheets/fsharp.adoc[Full reference] · xref:guides/fsharp.adoc[Guide]
+
+'''''
+
+==== Lisp / Clojure / Scheme / Janet — Conjure
+
+LocalLeader is `,` in Lisp/Clojure/Scheme/Fennel/Janet buffers.
+
+===== Evaluation
+
+[cols=",",options="header",]
+|===
+|Keys |Action
+|`,ee` |Evaluate form under cursor
+|`,er` |Evaluate root (outermost) form
+|`,eb` |Evaluate entire buffer
+|`,e!` |Replace form with its evaluated result
+|`,cc` |Connect to REPL manually
+|===
+
+===== REPL Log
+
+[cols=",",options="header",]
+|===
+|Keys |Action
+|`,lv` |Open REPL log in vertical split
+|`,ls` |Open REPL log in horizontal split
+|`,lq` |Close REPL log window
+|===
+
+→ xref:cheatsheets/lisp.adoc[Full reference] · xref:guides/lisp.adoc[Guide]
+
+'''''
+
+==== Structural Editing — vim-sexp
+
+[cols=",",options="header",]
+|===
+|Keys |Action
+|`++>++)` |Slurp forward — pull next element into form
+|`++<++)` |Barf forward — push last element out of form
+|`++<++(` |Slurp backward
+|`++>++(` |Barf backward
+|`++>++f` |Move current form right among siblings
+|`++<++f` |Move current form left among siblings
+|`++>++e` |Move current element right
+|`++<++e` |Move current element left
+|`cse(` or `cse)` |Surround element with `()`
+|`cse++[++` or `cse++]++` |Surround element with `++[]++`
+|`dsf` |Delete surrounding function call (splice)
+|===
+
+→ xref:cheatsheets/lisp.adoc[Full reference]
+
+'''''
+
+==== Markdown
+
+LocalLeader is `,` in Markdown buffers.
+
+[cols=",",options="header",]
+|===
+|Keys |Action
+|`++<++CR++>++` |Follow link under cursor (mkdnflow — opens target file)
+|`++<++BS++>++` |Go back to previous file (mkdnflow)
+|`++<++Tab++>++` |Jump to next link in buffer (mkdnflow)
+|`++<++S-Tab++>++` |Jump to previous link in buffer (mkdnflow)
+|`,p` |Toggle Markdown browser preview (single-file)
+|`,sp` |Open in markserv Docker server preview (cross-page links)
+|`,dp` |Export to PDF with PlantUML diagrams rendered
+|`,mp` |MARP: open slide in preview server
+|`,mx` |MARP: export to PowerPoint (`.pptx`)
+|`,mh` |MARP: export to HTML
+|`,md` |MARP: export to PDF
+|`,cc` |Publish current file to Confluence
+|`,cf` |Pull current Confluence page to local file
+|`,ck` |Fetch Confluence comments to sidecar file
+|`,ji` |Create Jira Task issue (prompts for summary {plus} description)
+|`,js` |Create Jira Story (prompts for summary {plus} description)
+|===
+
+→ xref:cheatsheets/markdown.adoc[Full reference] · xref:guides/diagrams.adoc[Diagrams
+guide] · xref:guides/presentations.adoc[Presentations guide] ·
+xref:guides/confluence.adoc[Confluence guide] ·
+xref:guides/jira.adoc[Jira guide]
+
+'''''
+
+==== PlantUML
+
+LocalLeader is `,` in PlantUML buffers.
+
+[cols=",",options="header",]
+|===
+|Keys |Action
+|`,p` |Preview diagram in browser (via Docker server)
+|`++<++leader++>++pa` |Open ASCII preview popup
+|===
+
+→ xref:cheatsheets/plantuml.adoc[Full reference]
+
+'''''
+
+==== HTML Live Preview (Bracey)
+
+LocalLeader is `,` in HTML / CSS / JavaScript buffers.
+
+[cols=",",options="header",]
+|===
+|Keys |Action
+|`,p` |Start HTML live preview in browser
+|`,x` |Stop the live preview
+|`,r` |Reload the live preview
+|===
+
+→ xref:cheatsheets/html.adoc[Full reference]
+
+'''''
+
+==== REST Client (kulala.nvim)
+
+LocalLeader is `,` in `.http` buffers.
+
+[cols=",",options="header",]
+|===
+|Keys |Action
+|`,r` |Run request under cursor
+|`,l` |Re-run last request
+|`,o` |Open result pane
+|`,e` |Select environment
+|===
+
+→ xref:cheatsheets/rest.adoc[Full reference] · xref:guides/rest.adoc[Guide]

@@ -1,0 +1,52 @@
+// :auto-generated: true
+// :source: docs/cheatsheets/navigation.md
+// Remove this header to take manual ownership of this file
+
+= Navigation & Terminal Cheatsheet
+
+*Leader* = `Space`
+
+→ Back to xref:cheatsheets/index.adoc[main cheatsheet]
+
+=== Window / Split Navigation
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`Ctrl-h` |Normal |Move to left split
+|`Ctrl-j` |Normal |Move to split below
+|`Ctrl-k` |Normal |Move to split above
+|`Ctrl-l` |Normal |Move to right split
+|`Ctrl-↑` |Normal |Shrink split height
+|`Ctrl-↓` |Normal |Grow split height
+|`Ctrl-←` |Normal |Shrink split width
+|`Ctrl-→` |Normal |Grow split width
+|===
+
+=== Terminal
+
+[width="100%",cols="34%,33%,33%",options="header",]
+|===
+|Keys |Mode |Action
+|`++<++leader++>++t` |Normal |Toggle terminal split (15-line split at
+bottom)
+
+|`Esc` |Terminal |Exit terminal insert mode
+|===
+
+The terminal toggle reuses the same terminal buffer across open/close
+cycles. Press `++<++C-k++>++` after `Esc` to jump back to the editor
+window.
+
+=== Copilot Chat Window
+
+[width="100%",cols="34%,33%,33%",options="header",]
+|===
+|Keys |Mode |Action
+|`++<++leader++>++c` |Normal |Move focus to left window (jump back from
+Copilot chat panel)
+|===
+
+'''''
+
+_Defined in `lua/keymaps.lua`._

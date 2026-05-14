@@ -1,0 +1,53 @@
+// :auto-generated: true
+// :source: docs/guides/haskell.md
+// Remove this header to take manual ownership of this file
+
+= Working with Haskell
+
+Haskell support is provided by
+https://github.com/mrcjkb/haskell-tools.nvim[haskell-tools.nvim], which
+bundles LSP integration, a GHCi REPL, and Hoogle search into a single
+plugin.
+
+All Haskell plugins lazy-load only when you open a `.hs` or `.lhs` file.
+
+=== Prerequisites
+
+[width="100%",cols="34%,33%,33%",options="header",]
+|===
+|Dependency |Purpose |Install hint
+|*GHC {plus} cabal / stack* |Haskell compiler and build tools
+|https://www.haskell.org/ghcup/[ghcup]
+
+|*haskell-language-server* |LSP server |`ghcup install hls`
+|===
+
+=== LSP
+
+`haskell-tools` manages the `hls` LSP connection automatically — no
+manual `lspconfig` setup is needed. See
+xref:index.adoc#lsp-support[readme.adoc] for the shared LSP
+keybindings (`gd`, `K`, `gr`, etc.).
+
+=== REPL (GHCi)
+
+haskell-tools provides a built-in GHCi REPL. Keybindings are defined in
+`after/ftplugin/haskell.lua`.
+
+Leader is `Space`; no LocalLeader bindings are used in Haskell buffers.
+
+[cols=",",options="header",]
+|===
+|Keys |Action
+|`++<++leader++>++rr` |Toggle GHCi REPL for the current package
+|`++<++leader++>++rf` |Toggle GHCi REPL for the current file
+|`++<++leader++>++rq` |Quit the GHCi REPL
+|`Space-cl` |Run code lenses (haskell-language-server)
+|`Space-hs` |Hoogle search for type under cursor
+|`Space-ea` |Evaluate all code snippets in the buffer
+|===
+
+=== Configuration
+
+Plugin spec lives in `lua/plugins/haskell.lua` and ftplugin overrides
+live in `after/ftplugin/haskell.lua`.
