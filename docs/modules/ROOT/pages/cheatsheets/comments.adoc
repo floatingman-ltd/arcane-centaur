@@ -2,7 +2,7 @@
 // :source: documentation/cheatsheets/comments.md
 // Remove this header to take manual ownership of this file
 
-== Comments Cheatsheet (vim-commentary)
+= Comments Cheatsheet (vim-commentary)
 
 → Back to link:index.md[main cheatsheet]
 
@@ -16,9 +16,10 @@
 |`gc` |Visual |Toggle comment on selection
 
 |`gc++<++motion++>++` |Normal |Toggle comment over a motion (e.g. `gcap`
-= paragraph)
+= paragraph, `gc2j` = 3 lines)
 
-|`Ctrl-/` |Normal |Toggle comment — use `Ctrl-++_++` on most terminals
+|`:Commentary` |Command |Toggle comment on current line or range
+(e.g. `:'++<++,'++>++Commentary`)
 |===
 
 `vim-commentary` uses the correct comment syntax for each filetype
@@ -27,8 +28,4 @@ for Python, etc.).
 
 '''''
 
-_Plugin configured in `lua/plugins/vim-commentary.lua`. `gcc`, `gc`,
-`Ctrl-++_++`, and `Ctrl-/` keys are registered via lazy.nvim `keys` so
-the plugin loads on first use of any of them. Most terminals send
-`Ctrl-++_++` (byte 0x1F) when Ctrl{plus}/ is pressed; `Ctrl-/` is kept
-for terminals using the extended keyboard protocol (Kitty, WezTerm)._
+_Plugin configured in `lua/plugins/vim-commentary.lua`._
