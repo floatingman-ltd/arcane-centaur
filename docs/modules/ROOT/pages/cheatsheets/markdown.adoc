@@ -6,12 +6,12 @@
 
 *LocalLeader* = `,` in Markdown buffers
 
-→ Back to xref:cheatsheets/index.adoc[main cheatsheet] · Markdown guide:
+→ Back to link:index.md[main cheatsheet] · Markdown guide:
 ../guides/markdown.md · Diagrams guide: ../guides/diagrams.md ·
 Presentations guide: ../guides/presentations.md · Confluence guide:
 ../guides/confluence.md · Jira guide: ../guides/jira.md
 
-=== Cross-page Link Navigation (mkdnflow.nvim)
+== Cross-page Link Navigation (mkdnflow.nvim)
 
 [width="100%",cols="34%,33%,33%",options="header",]
 |===
@@ -31,24 +31,52 @@ directly in the editor, then press `,p` or `,sp` to open the browser
 preview for that file. Press `++<++BS++>++` to return to the original
 file.
 
-=== Markdown Preview (markdown-preview.nvim)
+== Markdown Preview (markdown-preview.nvim {plus} glow.nvim)
 
 [width="100%",cols="34%,33%,33%",options="header",]
 |===
 |Keys |Mode |Action
-|`,p` |Normal |Toggle live browser preview (`MarkdownPreviewToggle`)
+|`,p` |Normal |Toggle live browser preview (`MarkdownPreviewToggle`) —
+GUI; or glow popup in console
+
+|`,pp` |Normal |Force glow popup preview — always opens in-terminal,
+regardless of environment
 |===
 
-The preview auto-refreshes as you edit. *Mermaid fenced code blocks
-render natively* in the browser — no extra plugin or Docker server
-required. PlantUML fenced code blocks are rendered via the PlantUML
-Docker server (`http://localhost:8080`).
+The browser preview (`,p` in GUI) auto-refreshes as you edit. *Mermaid
+fenced code blocks render natively* in the browser — no extra plugin or
+Docker server required. PlantUML fenced code blocks are rendered via the
+PlantUML Docker server (`http://localhost:8080`).
+
+Use `,pp` when working full-screen in a terminal and you don’t want to
+context-switch to a browser.
 
 *Limitation:* only the current buffer is served; clicking relative links
 to other `.md` files returns 404. Use the markserv server (`,sp`) for
 projects with cross-page links.
 
-=== Project Preview with Cross-page Links — markserv (requires Docker)
+== AsciiDoc Preview (asciidoctor via Docker)
+
+The same `,p` and `,pp` keymaps work in `.adoc` buffers. Both trigger
+the same one-shot convert-and-open HTML flow — there is no popup
+equivalent for AsciiDoc output.
+
+[width="100%",cols="34%,33%,33%",options="header",]
+|===
+|Keys |Mode |Action
+|`,p` |Normal |Convert `.adoc` to HTML (Docker asciidoctor) and open in
+system browser — GUI only
+
+|`,pp` |Normal |Same as `,p` (no popup equivalent for HTML output)
+|===
+
+Requires Docker running. The `asciidoctor/docker-asciidoctor` image is
+pulled automatically on first use (~200 MB).
+
+*Console mode:* both `,p` and `,pp` show a notification that AsciiDoc
+preview requires a graphical environment.
+
+== Project Preview with Cross-page Links — markserv (requires Docker)
 
 [width="100%",cols="34%,33%,33%",options="header",]
 |===
@@ -89,7 +117,7 @@ render natively* in the browser — no extra plugin or Docker server
 required. PlantUML fenced code blocks are rendered via the PlantUML
 Docker server (`http://localhost:8080`).
 
-=== Export to PDF with PlantUML and Mermaid diagrams (requires Docker)
+== Export to PDF with PlantUML and Mermaid diagrams (requires Docker)
 
 [width="100%",cols="34%,33%,33%",options="header",]
 |===
@@ -103,9 +131,9 @@ Requires the PlantUML server
 Docker image (`docker pull pandoc/extra`). Mermaid blocks are rendered
 via the https://kroki.io[Kroki] public API (internet access required).
 The PDF is written to the same directory as the source file. See
-xref:guides/diagrams.adoc#exporting-to-pdf[../guides/diagrams.adoc].
+link:../guides/diagrams.md#exporting-to-pdf[../guides/diagrams.md].
 
-=== MARP Presentations (requires Docker)
+== MARP Presentations (requires Docker)
 
 [cols=",,",options="header",]
 |===
@@ -125,7 +153,7 @@ using `,mp`:
 docker compose -f ~/.config/nvim/docker/marp/docker-compose.yml up -d
 ----
 
-=== Confluence Publishing (requires env vars {plus} pandoc {plus} curl)
+== Confluence Publishing (requires env vars {plus} pandoc {plus} curl)
 
 [width="100%",cols="34%,33%,33%",options="header",]
 |===
@@ -144,7 +172,7 @@ environment variables and a `docs/confluence-page-map.md` page map in
 the repository root. See ../guides/confluence.md for full setup
 instructions.
 
-=== Jira Issue & Story Creation (requires env vars {plus} curl)
+== Jira Issue & Story Creation (requires env vars {plus} curl)
 
 [cols=",,",options="header",]
 |===
@@ -160,7 +188,7 @@ Requires `JIRA++_++EMAIL`, `JIRA++_++API++_++TOKEN`, and
 `docs/jira-project-map.md` project map in the repository root. See
 ../guides/jira.md for full setup instructions.
 
-=== User Commands
+== User Commands
 
 [width="100%",cols="50%,50%",options="header",]
 |===

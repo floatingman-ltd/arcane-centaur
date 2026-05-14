@@ -11,7 +11,7 @@ Covers in-editor keymaps for *GitHub Copilot CLI* (`copilot`) and the
 
 '''''
 
-=== GitHub Copilot CLI
+== GitHub Copilot CLI
 
 These commands send the current visual selection (or whole buffer when
 no selection is active) to the `copilot` CLI and display the response in
@@ -27,7 +27,7 @@ command
 selected code
 |===
 
-==== Commands
+=== Commands
 
 [width="100%",cols="50%,50%",options="header",]
 |===
@@ -39,7 +39,7 @@ command suggestion
 explanation
 |===
 
-==== Floating window controls
+=== Floating window controls
 
 [cols=",",options="header",]
 |===
@@ -50,7 +50,7 @@ explanation
 
 '''''
 
-=== OpenSpec
+== OpenSpec
 
 Drive the OpenSpec change workflow from within Neovim. Output is shown
 in a bottom split (close with `q` or `++<++Esc++>++`).
@@ -63,7 +63,7 @@ in a bottom split (close with `q` or `++<++Esc++>++`).
 |`++<++leader++>++osl` |Normal |List all changes (`OpenspecList`)
 |===
 
-==== Commands
+=== Commands
 
 [width="100%",cols="50%,50%",options="header",]
 |===
@@ -79,4 +79,4 @@ specific `++[++name++]++`
 
 '''''
 
-→ xref:guides/ai-tools.adoc[Full guide] · xref:cheatsheets/index.adoc[Back to index]
+→ link:../guides/ai-tools.md[Full guide] · link:index.md[Back to index]

@@ -6,10 +6,10 @@
 
 *LocalLeader* = `,` in PlantUML buffers
 
-→ Back to xref:cheatsheets/index.adoc[main cheatsheet] · Full guide:
-xref:guides/diagrams.adoc[Diagrams guide]
+→ Back to link:index.md[main cheatsheet] · Full guide:
+../guides/diagrams.md
 
-=== Preview
+== Preview
 
 [width="100%",cols="34%,33%,33%",options="header",]
 |===
@@ -20,7 +20,7 @@ xref:guides/diagrams.adoc[Diagrams guide]
 (`PumlPreviewAscii`)
 |===
 
-=== User Command
+== User Command
 
 [width="100%",cols="50%,50%",options="header",]
 |===
@@ -38,7 +38,7 @@ base64 scheme via `python3`, then opens the result at
 browser opener (`xdg-open` on Linux, `open` on macOS, `wslview` or
 `explorer.exe` on WSL).
 
-=== Prerequisites
+== Prerequisites
 
 The PlantUML Docker server must be running before using `:PumlPreview`:
 

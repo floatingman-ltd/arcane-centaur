@@ -6,11 +6,11 @@
 
 *Leader* = `Space`
 
-→ Back to xref:cheatsheets/index.adoc[main cheatsheet]
+→ Back to link:index.md[main cheatsheet]
 
 '''''
 
-=== vim-fugitive — Git Operations
+== vim-fugitive — Git Operations
 
 Run any git command with `:Git ++<++args++>++` or its short alias
 `:G ++<++args++>++` (e.g. `:Git commit`, `:G rebase -i HEAD~3`).
@@ -25,7 +25,7 @@ Run any git command with `:Git ++<++args++>++` or its short alias
 |`++<++leader++>++gp` |Normal |Git push
 |===
 
-==== Inside the `:Git` status window
+=== Inside the `:Git` status window
 
 [cols=",",options="header",]
 |===
@@ -40,12 +40,12 @@ Run any git command with `:Git ++<++args++>++` or its short alias
 
 '''''
 
-=== gitsigns.nvim — In-Buffer Git Signs
+== gitsigns.nvim — In-Buffer Git Signs
 
 Changed lines are marked in the sign column: `▎` added · `▎` changed ·
 `▁`/`▔` deleted line
 
-==== Hunk Navigation
+=== Hunk Navigation
 
 [cols=",,",options="header",]
 |===
@@ -54,7 +54,7 @@ Changed lines are marked in the sign column: `▎` added · `▎` changed ·
 |`++[++h` |Normal |Jump to previous hunk
 |===
 
-==== Hunk Actions
+=== Hunk Actions
 
 [cols=",,",options="header",]
 |===
@@ -70,7 +70,7 @@ Changed lines are marked in the sign column: `▎` added · `▎` changed ·
 |`++<++leader++>++hD` |Normal |Diff this file (staged, vs. HEAD)
 |===
 
-==== Text Object
+=== Text Object
 
 [cols=",,",options="header",]
 |===
@@ -86,6 +86,26 @@ for Hoogle search in `.hs` files. The buffer-local haskell binding takes
 precedence there; use the fugitive status window (`:Git`) to stage
 changes while editing Haskell.
 ____
+
+'''''
+
+== diffview.nvim — Side-by-Side Diff & File History
+
+Opens a persistent tabbed diff panel with a file list on the left and a
+two-pane diff on the right. Also provides per-file commit history and a
+three-way merge conflict view.
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`++<++leader++>++gD` |Normal |Open diff view (all working tree changes)
+|`++<++leader++>++gH` |Normal |Open file history for current file
+|`++<++leader++>++gX` |Normal |Close diff view
+|===
+
+You can also open diffview against any ref directly: -
+`:DiffviewOpen HEAD~3` — diff working tree vs 3 commits ago -
+`:DiffviewFileHistory` — history for all files (omit `%` for repo-wide)
 
 '''''
 

@@ -6,10 +6,10 @@
 
 *LocalLeader* = `,` in Lisp / Clojure / Scheme / Fennel buffers
 
-→ Back to xref:cheatsheets/index.adoc[main cheatsheet] · Full guide: ../guides/lisp.adoc
+→ Back to link:index.md[main cheatsheet] · Full guide: ../guides/lisp.md
 · Janet-specific: janet.md
 
-=== Conjure — Evaluation
+== Conjure — Evaluation
 
 [cols=",",options="header",]
 |===
@@ -21,7 +21,7 @@
 |`,cc` |Connect to REPL manually
 |===
 
-=== Conjure — REPL Log
+== Conjure — REPL Log
 
 [cols=",",options="header",]
 |===
@@ -31,7 +31,7 @@
 |`,lq` |Close REPL log window
 |===
 
-=== Structural Editing — vim-sexp
+== Structural Editing — vim-sexp
 
 [width="100%",cols="50%,50%",options="header",]
 |===
@@ -65,11 +65,11 @@ the first element _out of_ the form
 
 ____
 See
-xref:guides/lisp.adoc#structural-editing-slurp--barf[../guides/lisp.adoc]
+link:++../guides/lisp.md#structural-editing-slurp--barf++[../guides/lisp.md]
 for step-by-step examples of each slurp/barf operation.
 ____
 
-=== Other Active Plugins
+== Other Active Plugins
 
 * *nvim-parinfer* — keeps parentheses balanced as you edit indentation
 (no keymaps)
