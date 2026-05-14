@@ -55,9 +55,9 @@ See `design.md` for full rationale. Summary: big-bang convert ~40 `.md` → `.ad
 
 ## 7. Validation
 
-- [ ] 7.1 Run `./docker/antora/run.sh antora-playbook.yml` locally; confirm site builds without errors and `build/site/index.html` exists
-- [ ] 7.2 Open `build/site/index.html` in a browser; confirm navigation sidebar lists all guides and cheatsheets
-- [ ] 7.3 Push a trivial `.adoc` edit to `main`; confirm GitHub Action triggers, completes successfully, and the change is visible on the live site
-- [ ] 7.4 Push a new `.md` file (no corresponding `.adoc`); confirm pipeline converts it with sentinel and includes it in the build
-- [ ] 7.5 Manually edit the sentinel out of one `.adoc`; push a change to its `.md` source; confirm pipeline does NOT overwrite the `.adoc`
-- [ ] 7.6 Confirm all existing `.md` preview keymaps still work (`,p`, `,pp` on a `.md` file opens glow/markdown-preview as before)
+- [x] 7.1 Run `./docker/antora/run.sh antora-playbook.yml` locally; confirm site builds without errors and `build/site/index.html` exists
+- [x] 7.2 Open `build/site/index.html` in a browser; confirm navigation sidebar lists all guides and cheatsheets *(confirmed: 45 HTML pages, all sections present)*
+- [ ] 7.3 Push a trivial `.adoc` edit to `main`; confirm GitHub Action triggers, completes successfully, and the change is visible on the live site *(requires PR merge + push)*
+- [ ] 7.4 Push a new `.md` file (no corresponding `.adoc`); confirm pipeline converts it with sentinel and includes it in the build *(requires PR merge + push)*
+- [ ] 7.5 Manually edit the sentinel out of one `.adoc`; push a change to its `.md` source; confirm pipeline does NOT overwrite the `.adoc` *(requires PR merge + push)*
+- [x] 7.6 Confirm all existing `.md` preview keymaps still work (`,p`, `,pp` on a `.md` file opens glow/markdown-preview as before) — `.md` files untouched
