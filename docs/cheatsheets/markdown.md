@@ -25,20 +25,18 @@ The preview auto-refreshes as you edit. **Mermaid fenced code blocks render nati
 
 **Limitation:** only the current buffer is served; clicking relative links to other `.md` files returns 404. Use the markserv server (`,sp`) for projects with cross-page links.
 
-## AsciiDoc Preview (asciidoctor via Docker + pandoc + glow)
+## AsciiDoc Preview (asciidoctor via Docker)
 
-The same `,p` and `,pp` keymaps work in `.adoc` buffers, mirroring the Markdown preview behaviour.
+The same `,p` and `,pp` keymaps work in `.adoc` buffers. Both trigger the same one-shot convert-and-open HTML flow — there is no popup equivalent for AsciiDoc output.
 
 | Keys | Mode | Action |
 |---|---|---|
 | `,p` | Normal | Convert `.adoc` to HTML (Docker asciidoctor) and open in system browser — GUI only |
-| `,pp` | Normal | Convert `.adoc` to Markdown (pandoc) and open in glow popup — console **and** GUI |
+| `,pp` | Normal | Same as `,p` (no popup equivalent for HTML output) |
 
-**`,p`** requires Docker running. The `asciidoctor/docker-asciidoctor` image is pulled automatically on first use (~200 MB).
+Requires Docker running. The `asciidoctor/docker-asciidoctor` image is pulled automatically on first use (~200 MB).
 
-**`,pp`** requires `pandoc` (converts AsciiDoc → CommonMark) and `glow`. Works in console mode — use this when you don't want to switch to a browser.
-
-**Console mode:** `,p` shows a notification directing you to `,pp`; `,pp` works normally.
+**Console mode:** both `,p` and `,pp` show a notification that AsciiDoc preview requires a graphical environment.
 
 ## Project Preview with Cross-page Links — markserv (requires Docker)
 

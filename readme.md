@@ -161,12 +161,11 @@ vim.g.have_nerd_font = true   -- or false
 
 ## Working with AsciiDoc
 
-The `,p` and `,pp` preview keymaps work in `.adoc` buffers, mirroring the Markdown preview workflow:
+The `,p` and `,pp` preview keymaps work in `.adoc` buffers. Both trigger the same one-shot convert-and-open HTML flow (no popup equivalent for AsciiDoc output):
 
-- **`,p`** — convert via Docker asciidoctor → HTML → open in system browser (GUI only)
-- **`,pp`** — convert via pandoc → Markdown → glow popup (console **and** GUI)
+- **`,p`** / **`,pp`** — convert via Docker asciidoctor → HTML → open in system browser (GUI only)
 
-Requires Docker (for `,p`) and pandoc + glow (for `,pp`). See **[docker/asciidoctor/README.md](docker/asciidoctor/README.md)** for details.
+Requires Docker. See **[docker/asciidoctor/README.md](docker/asciidoctor/README.md)** for details.
 
 ## Working with Confluence
 

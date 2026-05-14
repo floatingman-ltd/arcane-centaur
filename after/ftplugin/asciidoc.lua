@@ -20,12 +20,10 @@ local function open_in_browser(filepath)
   end
 end
 
--- ,p — convert to HTML via Docker asciidoctor, open in system browser (GUI only)
-vim.keymap.set("n", "<localleader>p", function()
+local function asciidoc_preview()
   if term.is_console then
     vim.notify(
-      "AsciiDoc browser preview requires a graphical environment.\n"
-        .. "Use ,pp for an in-terminal glow popup instead.",
+      "AsciiDoc browser preview requires a graphical environment.",
       vim.log.levels.WARN
     )
     return
@@ -81,47 +79,9 @@ vim.keymap.set("n", "<localleader>p", function()
       end)
     end,
   })
-end, { buffer = true, desc = "AsciiDoc browser preview (Docker asciidoctor → HTML)" })
+end
 
--- ,pp — convert to Markdown via pandoc, open in glow popup (console + GUI)
-vim.keymap.set("n", "<localleader>pp", function()
-  if vim.fn.executable("pandoc") ~= 1 then
-    vim.notify(
-      "pandoc not found — install pandoc for AsciiDoc popup preview.\n"
-        .. "Tip: use ,p for the browser preview (requires Docker).",
-      vim.log.levels.WARN
-    )
-    return
-  end
-
-  if vim.fn.executable("glow") ~= 1 then
-    vim.notify(
-      "glow not found — see docs/guides/cli-console-mode.md for installation instructions.",
-      vim.log.levels.WARN
-    )
-    return
-  end
-
-  local filepath = vim.fn.expand("%:p")
-  local bufnr    = vim.api.nvim_get_current_buf()
-  local tmpfile  = "/tmp/asciidoc-glow-" .. bufnr .. ".md"
-
-  vim.fn.jobstart({
-    "pandoc",
-    "-f", "asciidoc",
-    "-t", "commonmark",
-    filepath,
-    "-o", tmpfile,
-  }, {
-    on_exit = function(_, code)
-      vim.schedule(function()
-        if code ~= 0 then
-          vim.notify("AsciiDoc popup preview: pandoc conversion failed.", vim.log.levels.ERROR)
-          return
-        end
-
-        vim.cmd("Glow " .. vim.fn.fnameescape(tmpfile))
-      end)
-    end,
-  })
-end, { buffer = true, desc = "AsciiDoc popup preview (pandoc → glow, console + GUI)" })
+-- ,p / ,pp — convert to HTML via Docker asciidoctor, open in system browser (GUI only)
+-- Both keymaps trigger the same one-shot convert-and-open flow (no popup equivalent for HTML output).
+vim.keymap.set("n", "<localleader>p",  asciidoc_preview, { buffer = true, desc = "AsciiDoc browser preview (Docker asciidoctor → HTML)" })
+vim.keymap.set("n", "<localleader>pp", asciidoc_preview, { buffer = true, desc = "AsciiDoc browser preview (Docker asciidoctor → HTML)" })
