@@ -77,7 +77,7 @@ end, { buffer = true })
 | Same as `,p` (no popup equivalent for HTML output)
 | Normal (GUI)
 
-| `,p`
+| `,p` / `,pp`
 | Shows warning notification — preview not available in console
 | Normal (Console)
 |===

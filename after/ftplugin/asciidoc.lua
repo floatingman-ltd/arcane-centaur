@@ -48,17 +48,18 @@ local function asciidoc_preview()
     return
   end
 
-  local docdir  = vim.fn.expand("%:p:h")
+  local docdir   = vim.fn.expand("%:p:h")
   local filename = vim.fn.expand("%:t")
-  local bufnr   = vim.api.nvim_get_current_buf()
-  local outfile = "/tmp/asciidoc-preview-" .. bufnr .. ".html"
+  local bufnr    = vim.api.nvim_get_current_buf()
+  local cachedir = vim.fn.stdpath("cache")
+  local outfile  = cachedir .. "/asciidoc-preview-" .. bufnr .. ".html"
 
   vim.notify("AsciiDoc preview: converting…", vim.log.levels.INFO)
 
   vim.fn.jobstart({
     "docker", "run", "--rm",
     "-v", docdir .. ":/documents",
-    "-v", "/tmp:/tmp",
+    "-v", cachedir .. ":" .. cachedir,
     "asciidoctor/docker-asciidoctor",
     "asciidoctor", "/documents/" .. filename,
     "-o", outfile,
