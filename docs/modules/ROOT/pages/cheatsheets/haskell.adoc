@@ -2,7 +2,7 @@
 // :source: docs/cheatsheets/haskell.md
 // Remove this header to take manual ownership of this file
 
-== Haskell Cheatsheet (haskell-tools.nvim)
+= Haskell Cheatsheet (haskell-tools.nvim)
 
 *Leader* = `Space`
 

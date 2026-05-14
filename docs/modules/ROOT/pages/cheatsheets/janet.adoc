@@ -2,7 +2,7 @@
 // :source: docs/cheatsheets/janet.md
 // Remove this header to take manual ownership of this file
 
-== Janet Cheatsheet (Conjure {plus} vim-sexp)
+= Janet Cheatsheet (Conjure {plus} vim-sexp)
 
 *LocalLeader* = `,` in Janet buffers
 

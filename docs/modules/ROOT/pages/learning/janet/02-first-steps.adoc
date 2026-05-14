@@ -2,7 +2,7 @@
 // :source: docs/learning/janet/02-first-steps.md
 // Remove this header to take manual ownership of this file
 
-== 02 — First Steps with Janet
+= 02 — First Steps with Janet
 
 This guide covers Janet’s core syntax and data types, then shows you how
 to use each Neovim tool hands-on. Work through it interactively —

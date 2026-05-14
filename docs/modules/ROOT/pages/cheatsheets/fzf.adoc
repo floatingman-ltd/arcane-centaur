@@ -2,7 +2,7 @@
 // :source: docs/cheatsheets/fzf.md
 // Remove this header to take manual ownership of this file
 
-== Fuzzy Finder Cheatsheet (fzf-lua)
+= Fuzzy Finder Cheatsheet (fzf-lua)
 
 → Back to xref:cheatsheets/index.adoc[main cheatsheet]
 

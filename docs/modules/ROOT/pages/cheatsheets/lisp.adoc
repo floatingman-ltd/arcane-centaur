@@ -2,7 +2,7 @@
 // :source: docs/cheatsheets/lisp.md
 // Remove this header to take manual ownership of this file
 
-== Lisp Cheatsheet (Conjure {plus} vim-sexp)
+= Lisp Cheatsheet (Conjure {plus} vim-sexp)
 
 *LocalLeader* = `,` in Lisp / Clojure / Scheme / Fennel buffers
 

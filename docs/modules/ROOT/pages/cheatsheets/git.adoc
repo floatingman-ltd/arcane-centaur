@@ -2,7 +2,7 @@
 // :source: docs/cheatsheets/git.md
 // Remove this header to take manual ownership of this file
 
-== Git Cheatsheet
+= Git Cheatsheet
 
 *Leader* = `Space`
 

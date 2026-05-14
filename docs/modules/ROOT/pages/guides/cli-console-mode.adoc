@@ -2,7 +2,7 @@
 // :source: docs/guides/cli-console-mode.md
 // Remove this header to take manual ownership of this file
 
-== Console Mode Guide
+= Console Mode Guide
 
 This guide covers how the configuration adapts when no graphical display
 is available — physical TTY, SSH sessions without X forwarding, and

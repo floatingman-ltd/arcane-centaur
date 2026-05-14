@@ -2,7 +2,7 @@
 // :source: docs/guides/diagrams.md
 // Remove this header to take manual ownership of this file
 
-== Working with Diagrams (Markdown {plus} PlantUML {plus} Mermaid)
+= Working with Diagrams (Markdown {plus} PlantUML {plus} Mermaid)
 
 This configuration supports architectural and documentation diagrams
 through three complementary workflows:

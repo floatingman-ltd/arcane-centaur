@@ -2,7 +2,7 @@
 // :source: docs/cheatsheets/fsharp.md
 // Remove this header to take manual ownership of this file
 
-== F++#++ Cheatsheet (iron.nvim)
+= F++#++ Cheatsheet (iron.nvim)
 
 *LocalLeader* = `,` in F++#++ buffers
 

@@ -2,7 +2,7 @@
 // :source: docs/guides/presentations.md
 // Remove this header to take manual ownership of this file
 
-== Working with Presentations (MARP)
+= Working with Presentations (MARP)
 
 https://marp.app/[MARP] (Markdown Presentation Ecosystem) turns standard
 Markdown files into slide decks. This configuration adds Neovim commands

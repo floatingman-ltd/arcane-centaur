@@ -2,7 +2,7 @@
 // :source: docs/cheatsheets/formatting.md
 // Remove this header to take manual ownership of this file
 
-== Formatting Cheatsheet (conform.nvim)
+= Formatting Cheatsheet (conform.nvim)
 
 *Leader* = `Space`
 

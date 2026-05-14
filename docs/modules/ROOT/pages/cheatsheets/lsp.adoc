@@ -2,7 +2,7 @@
 // :source: docs/cheatsheets/lsp.md
 // Remove this header to take manual ownership of this file
 
-== LSP Cheatsheet
+= LSP Cheatsheet
 
 *Leader* = `Space`
 

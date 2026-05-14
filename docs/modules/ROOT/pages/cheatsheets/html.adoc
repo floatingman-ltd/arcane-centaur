@@ -2,7 +2,7 @@
 // :source: docs/cheatsheets/html.md
 // Remove this header to take manual ownership of this file
 
-== HTML Live Preview Cheatsheet (Bracey)
+= HTML Live Preview Cheatsheet (Bracey)
 
 *LocalLeader* = `,` in HTML / CSS / JavaScript buffers
 

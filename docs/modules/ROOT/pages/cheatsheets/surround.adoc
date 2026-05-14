@@ -2,7 +2,7 @@
 // :source: docs/cheatsheets/surround.md
 // Remove this header to take manual ownership of this file
 
-== Surround Cheatsheet (vim-surround)
+= Surround Cheatsheet (vim-surround)
 
 → Back to xref:cheatsheets/index.adoc[main cheatsheet]
 

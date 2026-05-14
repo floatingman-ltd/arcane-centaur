@@ -2,7 +2,7 @@
 // :source: docs/guides/rest.md
 // Remove this header to take manual ownership of this file
 
-== REST Client Guide (kulala.nvim)
+= REST Client Guide (kulala.nvim)
 
 https://github.com/mistweaverco/kulala.nvim[kulala.nvim] is a
 fully-featured, pure-Lua REST client for Neovim. Write your API requests

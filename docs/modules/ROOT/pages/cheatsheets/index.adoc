@@ -2,7 +2,7 @@
 // :source: docs/cheatsheets/index.md
 // Remove this header to take manual ownership of this file
 
-== Neovim Keybinding Cheat Sheet
+= Neovim Keybinding Cheat Sheet
 
 *Leader* = `Space` · *LocalLeader* = `,` (in all language buffers)
 

@@ -2,7 +2,7 @@
 // :source: docs/cheatsheets/copilot.md
 // Remove this header to take manual ownership of this file
 
-== Copilot Cheatsheet
+= Copilot Cheatsheet
 
 *Leader* = `Space`
 

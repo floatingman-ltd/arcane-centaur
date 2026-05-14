@@ -2,7 +2,7 @@
 // :source: docs/cheatsheets/dotnet.md
 // Remove this header to take manual ownership of this file
 
-== .NET / C++#++ Cheatsheet (Roslyn {plus} iron.nvim)
+= .NET / C++#++ Cheatsheet (Roslyn {plus} iron.nvim)
 
 *LocalLeader* = `,` in `.cs` and `.fsx`/`.fs` buffers.
 

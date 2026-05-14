@@ -2,7 +2,7 @@
 // :source: docs/guides/haskell.md
 // Remove this header to take manual ownership of this file
 
-== Working with Haskell
+= Working with Haskell
 
 Haskell support is provided by
 https://github.com/mrcjkb/haskell-tools.nvim[haskell-tools.nvim], which

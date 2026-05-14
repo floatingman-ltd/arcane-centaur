@@ -2,7 +2,7 @@
 // :source: docs/cheatsheets/navigation.md
 // Remove this header to take manual ownership of this file
 
-== Navigation & Terminal Cheatsheet
+= Navigation & Terminal Cheatsheet
 
 *Leader* = `Space`
 

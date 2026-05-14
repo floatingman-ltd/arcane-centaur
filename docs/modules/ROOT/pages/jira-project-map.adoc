@@ -2,7 +2,7 @@
 // :source: docs/jira-project-map.md
 // Remove this header to take manual ownership of this file
 
-== Jira Project Map
+= Jira Project Map
 
 Maps local directory/file path prefixes (relative to the git root) to
 Jira project keys. Used by `:JiraCreateIssue` and `:JiraCreateStory` to

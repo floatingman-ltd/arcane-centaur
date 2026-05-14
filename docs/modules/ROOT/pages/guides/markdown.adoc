@@ -2,7 +2,7 @@
 // :source: docs/guides/markdown.md
 // Remove this header to take manual ownership of this file
 
-== Markdown Preview Guide
+= Markdown Preview Guide
 
 This guide covers all preview and export options for Markdown files:
 

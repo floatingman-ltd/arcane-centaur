@@ -2,7 +2,7 @@
 // :source: docs/guides/architecture.md
 // Remove this header to take manual ownership of this file
 
-== Configuration Architecture
+= Configuration Architecture
 
 This document explains the directory structure of this Neovim
 configuration — what each directory and file is for, why it is placed

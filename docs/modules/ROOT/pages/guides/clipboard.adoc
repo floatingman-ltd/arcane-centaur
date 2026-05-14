@@ -2,7 +2,7 @@
 // :source: docs/guides/clipboard.md
 // Remove this header to take manual ownership of this file
 
-== Clipboard Integration Guide
+= Clipboard Integration Guide
 
 Neovim uses the system clipboard through a *provider* — an external tool
 (or terminal escape sequence) that bridges Neovim’s registers and the OS

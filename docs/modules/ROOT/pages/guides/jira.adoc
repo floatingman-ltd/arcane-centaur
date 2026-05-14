@@ -2,7 +2,7 @@
 // :source: docs/guides/jira.md
 // Remove this header to take manual ownership of this file
 
-== Jira Integration Guide
+= Jira Integration Guide
 
 Create Jira issues and stories without leaving Neovim. The Jira
 integration follows the same pattern as the

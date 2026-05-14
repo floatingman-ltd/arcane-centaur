@@ -2,7 +2,7 @@
 // :source: docs/cheatsheets/comments.md
 // Remove this header to take manual ownership of this file
 
-== Comments Cheatsheet (vim-commentary)
+= Comments Cheatsheet (vim-commentary)
 
 → Back to xref:cheatsheets/index.adoc[main cheatsheet]
 

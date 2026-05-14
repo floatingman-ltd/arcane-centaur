@@ -2,7 +2,7 @@
 // :source: readme.md
 // Remove this header to take manual ownership of this file
 
-== Magical NeoVIM
+= Magical NeoVIM
 
 Representing a NeoVIM installation that looks and feels like I’m in
 coding land.

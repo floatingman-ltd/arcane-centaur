@@ -2,7 +2,7 @@
 // :source: docs/cheatsheets/unimpaired.md
 // Remove this header to take manual ownership of this file
 
-== Unimpaired Cheatsheet (vim-unimpaired)
+= Unimpaired Cheatsheet (vim-unimpaired)
 
 → Back to xref:cheatsheets/index.adoc[main cheatsheet]
 

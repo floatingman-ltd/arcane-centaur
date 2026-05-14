@@ -2,7 +2,7 @@
 // :source: docs/cheatsheets/editing.md
 // Remove this header to take manual ownership of this file
 
-== Editing Cheatsheet (Visual Mode {plus} Clipboard)
+= Editing Cheatsheet (Visual Mode {plus} Clipboard)
 
 *Leader* = `Space`
 

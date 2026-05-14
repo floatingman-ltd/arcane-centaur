@@ -2,7 +2,7 @@
 // :source: docs/guides/fsharp.md
 // Remove this header to take manual ownership of this file
 
-== Working with F
+= Working with F
 
 F++#++ support uses https://github.com/Vigemus/iron.nvim[iron.nvim] for
 REPL interaction and `fsautocomplete` for LSP-powered completions,

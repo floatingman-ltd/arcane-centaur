@@ -2,7 +2,7 @@
 // :source: docs/cheatsheets/file-tree.md
 // Remove this header to take manual ownership of this file
 
-== File Tree Cheatsheet (nvim-tree)
+= File Tree Cheatsheet (nvim-tree)
 
 *Leader* = `Space`
 

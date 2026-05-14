@@ -2,7 +2,7 @@
 // :source: docs/cheatsheets/rest.md
 // Remove this header to take manual ownership of this file
 
-== REST Client Cheatsheet (kulala.nvim)
+= REST Client Cheatsheet (kulala.nvim)
 
 *LocalLeader* = `,` in `.http` buffers
 
