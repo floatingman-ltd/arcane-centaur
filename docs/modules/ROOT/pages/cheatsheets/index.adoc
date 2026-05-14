@@ -11,42 +11,42 @@
 [width="100%",cols="50%,50%",options="header",]
 |===
 |Plugin / Area |Cheatsheet
-|Auto-Completion (nvim-cmp) |completion.md
+|Auto-Completion (nvim-cmp) |xref:cheatsheets/completion.adoc[completion.adoc]
 
 |Clipboard |xref:cheatsheets/editing.adoc#system-clipboard[editing.adoc] —
 xref:guides/clipboard.adoc[full guide]
 
-|Comments (vim-commentary) |comments.md
+|Comments (vim-commentary) |xref:cheatsheets/comments.adoc[comments.adoc]
 
-|C++#++ / .NET (Roslyn {plus} iron.nvim) |dotnet.md
+|C++#++ / .NET (Roslyn {plus} iron.nvim) |xref:cheatsheets/dotnet.adoc[dotnet.adoc]
 
-|F++#++ REPL (iron.nvim) |fsharp.md
+|F++#++ REPL (iron.nvim) |xref:cheatsheets/fsharp.adoc[fsharp.adoc]
 
-|File Tree (nvim-tree) |file-tree.md
+|File Tree (nvim-tree) |xref:cheatsheets/file-tree.adoc[file-tree.adoc]
 
-|Formatting (conform.nvim) |formatting.md
+|Formatting (conform.nvim) |xref:cheatsheets/formatting.adoc[formatting.adoc]
 
-|Fuzzy Finder (fzf-lua) |fzf.md
+|Fuzzy Finder (fzf-lua) |xref:cheatsheets/fzf.adoc[fzf.adoc]
 
-|Git (vim-fugitive {plus} gitsigns) |git.md
+|Git (vim-fugitive {plus} gitsigns) |xref:cheatsheets/git.adoc[git.adoc]
 
-|GitHub Copilot |copilot.md
+|GitHub Copilot |xref:cheatsheets/copilot.adoc[copilot.adoc]
 
-|GitHub Copilot CLI {plus} OpenSpec |ai-tools.md
+|GitHub Copilot CLI {plus} OpenSpec |xref:cheatsheets/ai-tools.adoc[ai-tools.adoc]
 
-|Haskell (haskell-tools) |haskell.md
+|Haskell (haskell-tools) |xref:cheatsheets/haskell.adoc[haskell.adoc]
 
-|Janet (Conjure {plus} vim-sexp) |janet.md
+|Janet (Conjure {plus} vim-sexp) |xref:cheatsheets/janet.adoc[janet.adoc]
 
-|HTML Live Preview (Bracey) |html.md
+|HTML Live Preview (Bracey) |xref:cheatsheets/html.adoc[html.adoc]
 
-|Lisp / Clojure / Scheme / Fennel (Conjure {plus} vim-sexp) |lisp.md
+|Lisp / Clojure / Scheme / Fennel (Conjure {plus} vim-sexp) |xref:cheatsheets/lisp.adoc[lisp.adoc]
 
-|LSP |lsp.md
+|LSP |xref:cheatsheets/lsp.adoc[lsp.adoc]
 
-|Markdown Preview {plus} MARP {plus} Confluence {plus} Jira |markdown.md
+|Markdown Preview {plus} MARP {plus} Confluence {plus} Jira |xref:cheatsheets/markdown.adoc[markdown.adoc]
 
-|Navigation & Splits |navigation.md
+|Navigation & Splits |xref:cheatsheets/navigation.adoc[navigation.adoc]
 
 |PlantUML Preview |plantuml.md
 
