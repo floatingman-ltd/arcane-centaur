@@ -1,0 +1,102 @@
+= AsciiDoc Preview Test
+:toc:
+:source-highlighter: highlight.js
+
+A test document for validating the `,p` / `,pp` AsciiDoc preview keymaps.
+Open this file in Neovim and press `,p` to convert and open in your browser.
+
+== Headings
+
+=== Level 3
+
+==== Level 4
+
+== Text Formatting
+
+This is *bold*, _italic_, `monospace`, and ^super^script.
+
+A https://neovim.io[hyperlink] and a `literal path like /tmp/preview.html`.
+
+== Admonitions
+
+NOTE: This is a NOTE admonition — one of AsciiDoc's key advantages over Markdown.
+TIP: Use `,p` in a GUI environment. Console mode will show a warning notification.
+
+WARNING: The `asciidoctor/docker-asciidoctor` image (~200 MB) is pulled on first use.
+
+IMPORTANT: Docker must be running before pressing `,p`.
+
+== Lists
+
+=== Unordered
+
+* First item
+* Second item
+** Nested item
+** Another nested item
+* Third item
+
+=== Ordered
+
+. Step one
+. Step two
+.. Sub-step a
+.. Sub-step b
+. Step three
+
+=== Definition List
+
+AsciiDoc:: A rich document markup language with native admonitions, includes, and callouts.
+Antora:: A multi-component documentation site generator built on AsciiDoc.
+Markdown:: A lightweight markup language — simpler, but fewer features.
+
+== Code Block with Callouts
+
+[source,lua]
+----
+vim.b.maplocalleader = ","                         -- <1>
+
+vim.keymap.set("n", "<localleader>p", function()   -- <2>
+  vim.notify("AsciiDoc preview triggered")
+end, { buffer = true })
+----
+<1> Set localleader to `,` for this buffer only.
+<2> Map `,p` as a buffer-local keymap.
+
+== Table
+
+[%autowidth,cols="1,2,1"]
+|===
+| Key | Action | Mode
+
+| `,p`
+| AsciiDoc preview — convert to HTML and open in browser
+| Normal (GUI)
+
+| `,pp`
+| Same as `,p` (no popup equivalent for HTML output)
+| Normal (GUI)
+
+| `,p` / `,pp`
+| Shows warning notification — preview not available in console
+| Normal (Console)
+|===
+
+== Block Quote
+
+[quote,Donald Knuth]
+____
+Programs are meant to be read by humans and only incidentally for computers to execute.
+____
+
+== Include Directive (AsciiDoc-only feature)
+
+The line below would include content from another file if this were part of an
+Antora build (disabled in standalone `asciidoctor` by default for security):
+
+ include::other-file.adoc[]
+
+== Conclusion
+
+If you can read this in a browser with styled headings, a table, and admonition
+boxes — the preview keymap is working correctly. ✓
