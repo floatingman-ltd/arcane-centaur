@@ -1,7 +1,7 @@
 # git-diff-view Specification
 
 ## Purpose
-TBD - created by archiving change add-diffview. Update Purpose after archive.
+Define the expected diffview.nvim experience for inspecting Git working tree changes and per-file history in Neovim, including user commands, keymaps, lazy-loading behavior, and cheatsheet documentation.
 ## Requirements
 ### Requirement: Side-by-side diff view for working tree changes
 The plugin SHALL open a tabbed diff panel showing all changed files side-by-side via `:DiffviewOpen`. The panel SHALL list changed files in a file panel on the left and render a two-pane diff on the right.
