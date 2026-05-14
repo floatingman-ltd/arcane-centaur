@@ -1,0 +1,5 @@
+name: arcane-centaur
+title: Arcane Centaur
+version: ~
+nav:
+  - docs/modules/ROOT/nav.adoc

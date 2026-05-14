@@ -1,0 +1,85 @@
+// :auto-generated: true
+// :source: docs/cheatsheets/lisp.md
+// Remove this header to take manual ownership of this file
+
+== Lisp Cheatsheet (Conjure {plus} vim-sexp)
+
+*LocalLeader* = `,` in Lisp / Clojure / Scheme / Fennel buffers
+
+→ Back to xref:cheatsheets/index.adoc[main cheatsheet] · Full guide: ../guides/lisp.adoc
+· Janet-specific: janet.md
+
+=== Conjure — Evaluation
+
+[cols=",",options="header",]
+|===
+|Keys |Action
+|`,ee` |Evaluate form under cursor
+|`,er` |Evaluate root (outermost) form
+|`,eb` |Evaluate entire buffer
+|`,e!` |Replace form with its evaluated result
+|`,cc` |Connect to REPL manually
+|===
+
+=== Conjure — REPL Log
+
+[cols=",",options="header",]
+|===
+|Keys |Action
+|`,lv` |Open REPL log in vertical split
+|`,ls` |Open REPL log in horizontal split
+|`,lq` |Close REPL log window
+|===
+
+=== Structural Editing — vim-sexp
+
+[width="100%",cols="50%,50%",options="header",]
+|===
+|Keys |Action
+|`++>++)` |*Slurp forward* — extend the closing `)` rightward, pulling
+the next sibling _into_ the form
+
+|`++<++)` |*Barf forward* — shrink the closing `)` leftward, pushing the
+last element _out of_ the form
+
+|`++<++(` |*Slurp backward* — extend the opening `(` leftward, pulling
+the previous sibling _into_ the form
+
+|`++>++(` |*Barf backward* — shrink the opening `(` rightward, pushing
+the first element _out of_ the form
+
+|`++>++f` |Move current form right among siblings
+
+|`++<++f` |Move current form left among siblings
+
+|`++>++e` |Move current element right
+
+|`++<++e` |Move current element left
+
+|`cse(` or `cse)` |Surround element with `()`
+
+|`cse++[++` or `cse++]++` |Surround element with `++[]++`
+
+|`dsf` |Delete surrounding function call (splice)
+|===
+
+____
+See
+xref:guides/lisp.adoc#structural-editing-slurp--barf[../guides/lisp.adoc]
+for step-by-step examples of each slurp/barf operation.
+____
+
+=== Other Active Plugins
+
+* *nvim-parinfer* — keeps parentheses balanced as you edit indentation
+(no keymaps)
+* *rainbow-delimiters.nvim* — color-codes matching delimiters by depth
+(no keymaps)
+* *LSP* (none configured by default for Common Lisp) — see lsp.md
+* *Formatting* (conform.nvim, format-on-save) — see formatting.md
+
+'''''
+
+_Conjure prefix configured in `lua/plugins/lisp.lua`. vim-sexp keymaps
+from `tpope/vim-sexp-mappings-for-regular-people`. LocalLeader set in
+`after/ftplugin/lisp.lua`, `clojure.lua`, and `scheme.lua`._

@@ -1,0 +1,46 @@
+// :auto-generated: true
+// :source: docs/cheatsheets/lsp.md
+// Remove this header to take manual ownership of this file
+
+== LSP Cheatsheet
+
+*Leader* = `Space`
+
+→ Back to xref:cheatsheets/index.adoc[main cheatsheet]
+
+=== LSP Keybindings (all LSP-enabled buffers)
+
+These keymaps are active in any buffer where an LSP server has attached
+(F++#++, C++#++, Markdown, Haskell).
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`gd` |Normal |Go to definition
+|`K` |Normal |Hover documentation
+|`gr` |Normal |Find all references
+|`++<++leader++>++rn` |Normal |Rename symbol
+|`++<++leader++>++ca` |Normal |Code action
+|`++<++leader++>++e` |Normal |Show diagnostic float
+|`++[++d` |Normal |Jump to previous diagnostic
+|`++]++d` |Normal |Jump to next diagnostic
+|===
+
+=== Configured LSP Servers
+
+[width="100%",cols="34%,33%,33%",options="header",]
+|===
+|Server |Language |Install
+|`fsautocomplete` |F++#++ |`dotnet tool install -g fsautocomplete`
+
+|`roslyn` |C++#++ |See ../guides/dotnet.md
+
+|`marksman` |Markdown |`sudo apt install marksman`
+
+|`haskell-language-server` |Haskell |`ghcup install hls` (managed by
+haskell-tools.nvim)
+|===
+
+'''''
+
+_Keymaps defined in `lua/config/lsp.lua`._

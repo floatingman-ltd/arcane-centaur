@@ -1,0 +1,53 @@
+// :auto-generated: true
+// :source: docs/cheatsheets/plantuml.md
+// Remove this header to take manual ownership of this file
+
+== PlantUML Cheatsheet
+
+*LocalLeader* = `,` in PlantUML buffers
+
+→ Back to xref:cheatsheets/index.adoc[main cheatsheet] · Full guide:
+../guides/diagrams.md
+
+=== Preview
+
+[width="100%",cols="34%,33%,33%",options="header",]
+|===
+|Keys |Mode |Action
+|`,p` |Normal |Render and open diagram in browser (`PumlPreview`)
+
+|`++<++leader++>++pa` |Normal |Open ASCII preview popup
+(`PumlPreviewAscii`)
+|===
+
+=== User Command
+
+[width="100%",cols="50%,50%",options="header",]
+|===
+|Command |Description
+|`:PumlPreview` |Encode the current buffer and open it in the PlantUML
+Docker server
+
+|`:PumlPreviewAscii` |Encode the current buffer and show ASCII preview
+in a floating popup
+|===
+
+The command reads the buffer, encodes it using PlantUML’s deflate {plus}
+base64 scheme via `python3`, then opens the result at
+`http://localhost:8080/png/++<++encoded++>++` using the first available
+browser opener (`xdg-open` on Linux, `open` on macOS, `wslview` or
+`explorer.exe` on WSL).
+
+=== Prerequisites
+
+The PlantUML Docker server must be running before using `:PumlPreview`:
+
+[source,sh]
+----
+docker compose -f ~/.config/nvim/docker/plantuml-server/docker-compose.yml up -d
+----
+
+'''''
+
+_Keymaps defined in `after/ftplugin/plantuml.lua`. `:PumlPreview` and
+`:PumlPreviewAscii` commands defined in `lua/plugins/plantuml.lua`._

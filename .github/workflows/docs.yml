@@ -1,0 +1,79 @@
+name: Build and Deploy Docs
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/**'
+      - '*.adoc'
+      - 'antora-playbook.yml'
+      - 'antora.yml'
+      - '.github/workflows/docs.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install pandoc
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y pandoc
+
+      - name: Sentinel-aware conversion
+        run: |
+          # For each .md under docs/, if no corresponding .adoc in the Antora
+          # pages tree exists, or the existing .adoc still has the sentinel,
+          # regenerate it with pandoc.
+          PAGES_ROOT="docs/modules/ROOT/pages"
+
+          convert_page() {
+            local src="$1"         # e.g. docs/guides/lisp.md
+            local rel="${src#docs/}" # e.g. guides/lisp.md
+            local dst="${PAGES_ROOT}/${rel%.md}.adoc"
+
+            if [[ -f "$dst" ]]; then
+              if ! grep -q '^// :auto-generated: true' "$dst"; then
+                echo "  SKIP (manual): $dst"
+                return
+              fi
+            else
+              mkdir -p "$(dirname "$dst")"
+            fi
+
+            echo "  CONVERT: $src -> $dst"
+            {
+              echo "// :auto-generated: true"
+              echo "// :source: $src"
+              echo "// Remove this header to take manual ownership of this file"
+              echo ""
+              pandoc -f markdown -t asciidoc "$src"
+            } > "$dst"
+          }
+
+          while IFS= read -r -d '' f; do
+            rel="${f#./}"
+            convert_page "$rel"
+          done < <(find docs/cheatsheets docs/guides docs/learning -name "*.md" -print0 2>/dev/null | sort -z)
+
+      - name: Build Antora site
+        run: |
+          docker run --rm \
+            -v "$(pwd)":/antora \
+            antora/antora antora-playbook.yml
+
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build/site
+          publish_branch: gh-pages
+          force_orphan: true

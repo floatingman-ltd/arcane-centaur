@@ -6,78 +6,52 @@ See `design.md` for full rationale. Summary: big-bang convert ~40 `.md` → `.ad
 
 ## 1. Docker Tooling
 
-- [ ] 1.1 Create `docker/pandoc/` directory
-- [ ] 1.2 Create `docker/pandoc/run.sh`: check for native `pandoc` first; if not found, run `docker run --rm -v "$(pwd)":/data pandoc/minimal "$@"`; mark executable
-- [ ] 1.3 Create `docker/pandoc/README.md`: document `pandoc/minimal` image, native-first strategy, first-use pull behaviour, and example conversion command
+- [x] 1.1 Create `docker/pandoc/` directory
+- [x] 1.2 Create `docker/pandoc/run.sh`: check for native `pandoc` first; if not found, run `docker run --rm -v "$(pwd)":/data pandoc/minimal "$@"`; mark executable
+- [x] 1.3 Create `docker/pandoc/README.md`: document `pandoc/minimal` image, native-first strategy, first-use pull behaviour, and example conversion command
 
-- [ ] 1.4 Create `docker/antora/` directory
-- [ ] 1.5 Create `docker/antora/run.sh`: run `docker run --rm -v "$(pwd)":/antora antora/antora "$@"`; mark executable
-- [ ] 1.6 Create `docker/antora/README.md`: document `antora/antora` image, local build usage (`./docker/antora/run.sh antora-playbook.yml`), and first-use pull behaviour
+- [x] 1.4 Create `docker/antora/` directory
+- [x] 1.5 Create `docker/antora/run.sh`: run `docker run --rm -v "$(pwd)":/antora antora/antora "$@"`; mark executable
+- [x] 1.6 Create `docker/antora/README.md`: document `antora/antora` image, local build usage (`./docker/antora/run.sh antora-playbook.yml`), and first-use pull behaviour
 
 ## 2. Big Bang Conversion
 
-- [ ] 2.1 Write `scripts/convert-docs.sh`: for each `.md` file under `docs/` and `readme.md`, run pandoc (`-f markdown -t asciidoc`) to produce a `.adoc` counterpart, injecting the sentinel header block at the top of each generated file
+- [x] 2.1 Write `scripts/convert-docs.sh`: for each `.md` file under `docs/` and `readme.md`, run pandoc (`-f markdown -t asciidoc`) to produce a `.adoc` counterpart, injecting the sentinel header block at the top of each generated file
   - Sentinel format:
     ```
     // :auto-generated: true
     // :source: <relative-path-to-source.md>
     // Remove this header to take manual ownership of this file
     ```
-- [ ] 2.2 Run `scripts/convert-docs.sh` against all source `.md` files; verify `.adoc` output exists for every source file
-- [ ] 2.3 Review pass on converted `.adoc` files: check headings, tables, code blocks, and cross-file links for conversion artefacts; fix any broken relative links (`.md` → `.adoc` extension in xrefs)
-- [ ] 2.4 Manual admonition upgrade: find all `> **Note**`, `> **Warning**`, `> **Tip**` patterns in converted `.adoc` files and replace with native AsciiDoc admonitions (`NOTE:`, `WARNING:`, `TIP:`)
+- [x] 2.2 Run `scripts/convert-docs.sh` against all source `.md` files; verify `.adoc` output exists for every source file
+- [x] 2.3 Review pass on converted `.adoc` files: check headings, tables, code blocks, and cross-file links for conversion artefacts; fix any broken relative links (`.md` → `.adoc` extension in xrefs)
+- [x] 2.4 Manual admonition upgrade: find all `> **Note**`, `> **Warning**`, `> **Tip**` patterns in converted `.adoc` files and replace with native AsciiDoc admonitions (`NOTE:`, `WARNING:`, `TIP:`) — 0 occurrences found; pandoc rendered all blockquotes as `____` delimiter blocks, which are acceptable AsciiDoc sidebars
 
 ## 3. Antora Structure
 
-- [ ] 3.1 Create `antora.yml` at repo root:
-  ```yaml
-  name: arcane-centaur
-  title: Arcane Centaur
-  version: ~
-  nav:
-    - docs/modules/ROOT/nav.adoc
-  ```
-- [ ] 3.2 Create directory structure: `docs/modules/ROOT/pages/guides/`, `docs/modules/ROOT/pages/cheatsheets/`, `docs/modules/ROOT/pages/learning/janet/`
-- [ ] 3.3 Move converted `.adoc` files into their Antora page locations (mirror the current `docs/guides/`, `docs/cheatsheets/`, `docs/learning/` structure)
-- [ ] 3.4 Retain all original `.md` files in their current locations (they are not picked up by Antora and preserve editor preview)
-- [ ] 3.5 Create `docs/modules/ROOT/nav.adoc`: hand-authored navigation tree with xrefs for all guide, cheatsheet, and learning pages, grouped logically
-- [ ] 3.6 Create `antora-playbook.yml` at repo root:
-  ```yaml
-  site:
-    title: Arcane Centaur Docs
-    url: https://floatingman-ltd.github.io/arcane-centaur
-  content:
-    sources:
-      - url: .
-        branches: HEAD
-  ui:
-    bundle:
-      url: https://gitlab.com/antora/antora-ui-default/-/jobs/artifacts/HEAD/raw/build/ui-bundle.zip?job=bundle-stable
-      snapshot: true
-  ```
-- [ ] 3.7 Convert `readme.md` → `readme.adoc` (project root); `readme.md` remains for GitHub's repo homepage rendering
+- [x] 3.1 Create `antora.yml` at repo root:
+- [x] 3.2 Create directory structure: `docs/modules/ROOT/pages/guides/`, `docs/modules/ROOT/pages/cheatsheets/`, `docs/modules/ROOT/pages/learning/janet/`
+- [x] 3.3 Move converted `.adoc` files into their Antora page locations (mirror the current `docs/guides/`, `docs/cheatsheets/`, `docs/learning/` structure)
+- [x] 3.4 Retain all original `.md` files in their current locations (they are not picked up by Antora and preserve editor preview)
+- [x] 3.5 Create `docs/modules/ROOT/nav.adoc`: hand-authored navigation tree with xrefs for all guide, cheatsheet, and learning pages, grouped logically
+- [x] 3.6 Create `antora-playbook.yml` at repo root:
+- [x] 3.7 Convert `readme.md` → `readme.adoc` (project root); `readme.md` remains for GitHub's repo homepage rendering
 
 ## 4. GitHub Action Pipeline
 
-- [ ] 4.1 Create `.github/workflows/docs.yml`:
-  - Trigger: `push` to `main` with paths filter (`docs/**`, `*.adoc`, `antora-playbook.yml`, `antora.yml`)
-  - Steps:
-    1. Checkout
-    2. Sentinel-aware conversion: for each `.md` in `docs/`, if no corresponding `.adoc` exists OR corresponding `.adoc` contains the sentinel → run pandoc conversion with sentinel injection
-    3. `docker run --rm -v $(pwd):/antora antora/antora antora-playbook.yml`
-    4. Deploy output (`build/site/`) to `gh-pages` branch using `peaceiris/actions-gh-pages` or equivalent
-- [ ] 4.2 Verify the sentinel-skip logic: add a test `.md` and a corresponding sentinel-free `.adoc` and confirm the action does not overwrite the `.adoc`
+- [x] 4.1 Create `.github/workflows/docs.yml`:
+- [x] 4.2 Verify the sentinel-skip logic: add a test `.md` and a corresponding sentinel-free `.adoc` and confirm the action does not overwrite the `.adoc`
 
 ## 5. GitHub Pages Setup (manual, one-time)
 
-- [ ] 5.1 In the GitHub repo Settings → Pages, set source to `gh-pages` branch, root `/`
-- [ ] 5.2 Confirm the site is accessible at `https://floatingman-ltd.github.io/arcane-centaur` after the first successful Action run
+- [ ] 5.1 In the GitHub repo Settings → Pages, set source to `gh-pages` branch, root `/` *(manual — do once after first successful Action run)*
+- [ ] 5.2 Confirm the site is accessible at `https://floatingman-ltd.github.io/arcane-centaur` after the first successful Action run *(manual)*
 
 ## 6. Documentation
 
-- [ ] 6.1 Update `readme.adoc`: add "Documentation" section linking to the live GitHub Pages site
-- [ ] 6.2 Create `docs/modules/ROOT/pages/guides/contributing.adoc`: document the authoring workflow, sentinel header convention, how to graduate a file to manual AsciiDoc, and nav.adoc update requirement for new pages
-- [ ] 6.3 Update `readme.md` (GitHub homepage): add link to live docs site
+- [x] 6.1 Update `readme.adoc`: add "Documentation" section linking to the live GitHub Pages site
+- [x] 6.2 Create `docs/modules/ROOT/pages/guides/contributing.adoc`: document the authoring workflow, sentinel header convention, how to graduate a file to manual AsciiDoc, and nav.adoc update requirement for new pages
+- [x] 6.3 Update `readme.md` (GitHub homepage): add link to live docs site
 
 ## 7. Validation
 

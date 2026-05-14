@@ -1,0 +1,11 @@
+site:
+  title: Arcane Centaur Docs
+  url: https://floatingman-ltd.github.io/arcane-centaur
+content:
+  sources:
+    - url: .
+      branches: HEAD
+ui:
+  bundle:
+    url: https://gitlab.com/antora/antora-ui-default/-/jobs/artifacts/HEAD/raw/build/ui-bundle.zip?job=bundle-stable
+    snapshot: true

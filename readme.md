@@ -2,6 +2,8 @@
 
 Representing a NeoVIM installation that looks and feels like I'm in coding land.
 
+📖 **[Full documentation site →](https://floatingman-ltd.github.io/arcane-centaur)**
+
 ## Installation
 
 Clone this repo into your Neovim config directory:

@@ -1,0 +1,762 @@
+// :auto-generated: true
+// :source: readme.md
+// Remove this header to take manual ownership of this file
+
+== Magical NeoVIM
+
+Representing a NeoVIM installation that looks and feels like I’m in
+coding land.
+
+=== Installation
+
+Clone this repo into your Neovim config directory:
+
+[source,sh]
+----
+git clone https://github.com/floatingman-ltd/arcane-centaur ~/.config/nvim
+----
+
+On first launch, https://github.com/folke/lazy.nvim[lazy.nvim] will
+bootstrap itself and install all plugins automatically.
+
+==== Prerequisites
+
+[width="100%",cols="34%,33%,33%",options="header",]
+|===
+|Dependency |Purpose |Install hint
+|*Neovim ≥ 0.12* |Editor |AppImage or tarball from
+https://github.com/neovim/neovim/releases[github.com/neovim/neovim/releases]
+
+|*build-essential, tree* |General tooling
+|`sudo apt install build-essential tree -y`
+
+|*Lua ≥ 5.1* _(5.4 recommended)_ |Required by lazy.nvim’s LuaRocks
+support |`sudo apt install lua5.4`
+
+|*LuaRocks* |Plugin dependency manager used by lazy.nvim
+|`sudo apt install luarocks`
+
+|*A https://www.nerdfonts.com/[Nerd Font]* _(optional)_ |File-type icons
+in the tree and fuzzy-finder |See below
+|===
+
+Language-specific prerequisites (LSP servers, REPLs, runtimes) are
+documented in each language guide:
+link:docs/guides/markdown.md[Markdown] ·
+link:docs/guides/diagrams.md[Diagrams] ·
+link:docs/guides/confluence.md[Confluence] ·
+link:docs/guides/jira.md[Jira] ·
+link:docs/guides/cli-console-mode.md[Console / AI] ·
+link:docs/guides/fsharp.md[F++#++] ·
+link:docs/guides/haskell.md[Haskell] · link:docs/guides/janet.md[Janet]
+· link:docs/guides/lisp.md[Lisp / Clojure / Scheme] ·
+link:docs/guides/presentations.md[Presentations / MARP] ·
+link:docs/guides/rest.md[REST Client] ·
+link:docs/guides/architecture.md[Architecture] ·
+link:docs/guides/validation.md[Validation] ·
+link:docs/guides/clipboard.md[Clipboard]
+
+==== Recommended Terminal — GNOME Terminal
+
+https://help.gnome.org/users/gnome-terminal/stable/[GNOME Terminal] is
+the default terminal emulator for this configuration. It ships with most
+GNOME-based Linux distributions and is powered by the VTE library. Key
+features:
+
+* *Nerd Font support* — icons render correctly once a Nerd Font is
+installed and selected as the profile font (_Preferences → Profiles →
+Custom font_).
+* *True-colour support* — 24-bit RGB colour is supported natively.
+* *System integration* — tightly integrated with the GNOME desktop
+environment, no additional installation required on
+Ubuntu/Fedora/Debian.
+
+GNOME Terminal does *not* auto-detect Nerd Font usage (see
+link:#terminal-auto-detection[Terminal Auto-Detection] below). After
+installing a Nerd Font, set the override in `lua/options.lua`:
+
+[source,lua]
+----
+vim.g.have_nerd_font = true
+----
+
+===== Installing GNOME Terminal
+
+GNOME Terminal is pre-installed on most GNOME-based distributions. If it
+is not present:
+
+[cols=",",options="header",]
+|===
+|Platform |Command
+|*Ubuntu / Debian* |`sudo apt install gnome-terminal`
+|*Fedora* |`sudo dnf install gnome-terminal`
+|*Arch Linux* |`sudo pacman -S gnome-terminal`
+|===
+
+===== Windows Terminal (WSL)
+
+https://aka.ms/terminal[Windows Terminal] is fully supported when
+running Neovim inside *WSL* (Windows Subsystem for Linux). The config
+auto-detects it via the `WT++_++SESSION` environment variable and
+enables Nerd Font icons and undercurl automatically.
+
+*Clipboard integration* — on WSL the config uses
+https://github.com/equalsraf/win32yank[`win32yank.exe`] for fast system
+clipboard access. Install it once on the *Windows* side:
+
+[source,powershell]
+----
+# From a Windows PowerShell / Terminal prompt:
+scoop install win32yank      # or: choco install win32yank
+----
+
+The executable must be on your Windows `PATH` (which WSL inherits by
+default). Verify with:
+
+[source,sh]
+----
+which win32yank.exe   # should print a /mnt/c/... path
+----
+
+*Nerd Font setup for Windows Terminal* — install a Nerd Font on Windows,
+then select it in Windows Terminal settings:
+
+[arabic]
+. Download _FiraCode Nerd Font_ from
+https://www.nerdfonts.com/font-downloads.
+. Install it on *Windows* (right-click → _Install for all users_).
+. Open Windows Terminal → _Settings → Profiles → Defaults → Appearance →
+Font face_ and select *FiraCode Nerd Font*.
+
+____
+*Tip:* If `win32yank.exe` is not available, Neovim falls back to its
+built-in clipboard provider detection (`xclip`, `xsel`, etc.), which may
+be slower or require an X server.
+____
+
+===== Secondary Terminal — TTY Console
+
+The Linux TTY console (accessed with *Ctrl{plus}Alt{plus}F2* through
+*F6*) is supported as a secondary terminal. It is useful in minimal or
+headless environments where no graphical display is available.
+
+Keep in mind that the TTY console does not support Nerd Font glyphs or
+24-bit colour, so icon-based plugins fall back to plain Unicode glyphs
+automatically. Undercurl is rendered as a plain underline.
+
+The configuration detects console mode automatically (no `$DISPLAY` and
+no `$WAYLAND++_++DISPLAY`) and adjusts tool behaviour accordingly — see
+*docs/guides/cli-console-mode.md* for details on Markdown preview
+(glow), PlantUML ASCII output, URL notification, and the avante AI
+assistant.
+
+____
+*Other terminals that work well:* https://alacritty.org/[Alacritty] also
+has full Nerd Font and undercurl support. The Neovim config auto-detects
+it and enables the appropriate features.
+____
+
+===== Nerd Font Setup
+
+`nvim-tree` and `fzf-lua` can display file-type icons when a patched
+https://www.nerdfonts.com/[Nerd Font] is installed *and* selected as the
+terminal font. Without one the config automatically falls back to plain
+Unicode glyphs, so icons are entirely optional.
+
+To install a Nerd Font:
+
+[arabic]
+. Download _FiraCode Nerd Font_ from
+https://www.nerdfonts.com/font-downloads.
+. Install it system-wide or for the current user.
+. Select it in your terminal emulator (GNOME Terminal: _Preferences →
+Profiles → Custom font_, or see your terminal’s documentation).
+
+===== Terminal Auto-Detection
+
+The configuration automatically detects which terminal emulator is
+running (via `$TERM++_++PROGRAM`, `$VTE++_++VERSION`, and related
+environment variables) and adjusts its behaviour:
+
+[width="100%",cols="25%,25%,25%,25%",options="header",]
+|===
+|Terminal |Nerd Font icons |Undercurl |Notes
+|*GNOME Terminal* (VTE) |❌ fallback glyphs |❌ → underline |*Default* —
+set `vim.g.have++_++nerd++_++font = true` in `lua/options.lua` after
+installing a Nerd Font
+
+|*Windows Terminal* (WSL) |✅ auto-enabled |✅ native |Clipboard via
+`win32yank.exe`; see link:#windows-terminal-wsl[Windows Terminal (WSL)]
+
+|*TTY Console* |❌ fallback glyphs |❌ → underline |Secondary — no
+graphical font support
+
+|*Alacritty* |✅ auto-enabled |✅ native |
+
+|*Other / unknown* |❌ fallback glyphs |❌ → underline |Override as
+above if your terminal supports Nerd Fonts
+|===
+
+Detection logic lives in `lua/config/terminal.lua`. If the
+auto-detection is wrong for your setup you can still force the flag in
+`lua/options.lua`:
+
+[source,lua]
+----
+vim.g.have_nerd_font = true   -- or false
+----
+
+=== Working with Markdown
+
+→ See *docs/guides/markdown.md* for the full guide: single-file browser
+preview, markserv Docker server for cross-page links, in-editor
+navigation, and PDF export.
+
+* *`,p`* — toggle `markdown-preview.nvim` (single file with
+PlantUML/Mermaid)
+* *`,sp`* — open in markserv Docker server — cross-page links and
+PlantUML/Mermaid diagrams rendered
+* *`++<++CR++>++`* — follow a link to another `.md` file in the editor
+(mkdnflow.nvim)
+* *`,cc`* — publish current file to Confluence (`MdToConfluence`)
+
+=== Working with Confluence
+
+→ See *docs/guides/confluence.md* for the full guide: authentication,
+page map setup, diagram rendering, conflict detection, and
+troubleshooting.
+
+[width="100%",cols="50%,50%",options="header",]
+|===
+|Keys |Action
+|`,cc` |Publish current file to Confluence (`MdToConfluence`)
+
+|`,cf` |Pull current Confluence page back to local file
+(`MdFromConfluence`)
+
+|`,ck` |Fetch Confluence page comments to sidecar file
+(`MdConfluenceComments`)
+|===
+
+=== Working with Jira
+
+→ See *docs/guides/jira.md* for the full guide: authentication, project
+map setup, and troubleshooting.
+
+Requires `JIRA++_++EMAIL`, `JIRA++_++API++_++TOKEN`, and
+`JIRA++_++BASE++_++URL` environment variables.
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`,ji` |Normal |Create a Jira Task issue (`JiraCreateIssue`)
+|`,js` |Normal |Create a Jira Story (`JiraCreateStory`)
+|`,ji` |Visual |Create a Task with selection as description
+|`,js` |Visual |Create a Story with selection as description
+|===
+
+=== Working with Diagrams
+
+→ See *docs/guides/diagrams.md* for the full guide: PlantUML and Mermaid
+in Markdown, standalone `.puml` files, Docker server setup, keybindings,
+and *exporting to PDF*.
+
+Mermaid fenced code blocks (`++```++mermaid` … `++```++`) render
+natively in the browser preview — *no extra plugin required*. PlantUML
+rendering uses a local Docker server.
+
+=== Working with F
+
+→ See *docs/guides/fsharp.md* for the full guide: iron.nvim REPL,
+fsautocomplete LSP, Quick Start, and Typical Workflow.
+
+=== Working with Haskell
+
+→ See *docs/guides/haskell.md* for the full guide: haskell-tools.nvim,
+hls LSP, and GHCi REPL keybindings.
+
+=== Working with Janet
+
+→ See *docs/guides/janet.md* for the full guide: Conjure REPL, vim-sexp
+structural editing, janet-lsp, Quick Start, and Typical Workflow.
+
+=== Working with Lisp
+
+→ See *docs/guides/lisp.md* for the full guide: Conjure, vim-sexp,
+parinfer, rainbow-delimiters, Quick Start, and Typical Workflow.
+
+=== Working with Presentations (MARP)
+
+→ See *docs/guides/presentations.md* for the full guide: MARP live
+preview via Docker, export to PPTX / HTML / PDF, and keybindings.
+
+=== Working with Git
+
+Git integration is provided by two complementary plugins:
+
+* *vim-fugitive* — full git command interface (`:Git status`,
+`:Git commit`, `:Git log`, etc.)
+* *gitsigns.nvim* — live gutter signs showing added / changed / removed
+lines, with hunk-level staging, resetting, and inline blame
+
+==== Quick keybindings
+
+[cols=",",options="header",]
+|===
+|Keys |Action
+|`++<++leader++>++gs` |Open git status window
+|`++<++leader++>++gb` |Blame current file
+|`++<++leader++>++gl` |Git log
+|`++<++leader++>++gd` |Diff unstaged changes
+|`++<++leader++>++gp` |Push
+|`++]++h` / `++[++h` |Jump to next / previous changed hunk
+|`++<++leader++>++hs` |Stage hunk under cursor
+|`++<++leader++>++hr` |Reset hunk under cursor
+|`++<++leader++>++hb` |Show full blame for current line
+|===
+
+→ See *docs/cheatsheets/git.md* for the complete reference.
+
+____
+*Conflict note:* `++<++leader++>++hs` is also bound to _Hoogle search_
+in Haskell buffers (buffer-local, so it takes priority there). Use the
+fugitive status window to stage changes while editing Haskell files.
+____
+
+=== Working with REST APIs (kulala.nvim)
+
+→ See *docs/guides/rest.md* for the full guide: writing `.http` files,
+environment variables, and typical workflow.
+
+Write HTTP requests in `.http` files and run them directly from Neovim
+with the https://github.com/mistweaverco/kulala.nvim[kulala.nvim]
+plugin.
+
+____
+*Prerequisite:* the `tree-sitter` CLI must be on your `PATH`.
+kulala.nvim compiles a custom `kulala++_++http` grammar on first launch.
+Install it with `npm install -g tree-sitter-cli` (or
+`cargo install tree-sitter-cli`). See docs/guides/rest.md for full
+install instructions.
+____
+
+[cols=",",options="header",]
+|===
+|Keys |Action
+|`,r` |Run request under cursor
+|`,l` |Re-run last request
+|`,o` |Open result pane
+|`,e` |Select environment
+|===
+
+=== LSP Support
+
+LSP servers are configured in `lua/config/lsp.lua`. See each language’s
+doc for server-specific setup. All servers share these keybindings
+(available in any LSP-enabled buffer):
+
+Keybindings:
+
+[cols=",",options="header",]
+|===
+|Keys |Action
+|`gd` |Go to definition
+|`K` |Hover documentation
+|`gr` |Find references
+|`++<++leader++>++rn` |Rename symbol
+|`++<++leader++>++ca` |Code action
+|`++<++leader++>++e` |Show diagnostic float
+|`++[++d` / `++]++d` |Previous / next diagnostic
+|===
+
+=== General Keybindings
+
+→ See *docs/cheatsheets/index.md* for the complete one-page keybinding
+reference.
+
+Leader key is *Space*.
+
+[width="100%",cols="34%,33%,33%",options="header",]
+|===
+|Keys |Mode |Action
+|`Ctrl-h/j/k/l` |Normal |Navigate between splits
+
+|`Ctrl-↑/↓/←/→` |Normal |Resize splits
+
+|`++<++` / `++>++` |Visual |Indent/outdent and reselect
+
+|`++<++Tab++>++` / `++<++S-Tab++>++` |Visual |Indent/outdent selection
+and reselect
+
+|`++<++S-Down++>++` / `++<++S-Up++>++` |Visual |Move selected block
+down/up
+
+|`++<++leader++>++p` |Visual |Paste without overwriting clipboard
+
+|`++<++leader++>++n` or `Ctrl-n` |Normal |Open file tree
+
+|`Ctrl-t` |Normal |Toggle file tree
+
+|`Ctrl-f` |Normal |Find current file in tree
+
+|`Ctrl-j` |Insert |Accept full Copilot suggestion
+
+|`Alt-f` |Insert |Accept next word of Copilot suggestion
+
+|`++<++leader++>++t` |Normal |Toggle terminal split
+
+|`++<++leader++>++f` |Normal / Visual |Format buffer (or selection)
+
+|`++<++leader++>++gcs` |Normal / Visual |Copilot CLI: suggest (send to
+`copilot`)
+
+|`++<++leader++>++gce` |Normal / Visual |Copilot CLI: explain (send to
+`copilot`)
+
+|`++<++leader++>++pa` |Normal _(plantuml buffers)_ |Open ASCII PlantUML
+preview popup (`PumlPreviewAscii`)
+
+|`++<++leader++>++osn` |Normal |OpenSpec: create new change
+
+|`++<++leader++>++oss` |Normal |OpenSpec: show status
+
+|`++<++leader++>++osl` |Normal |OpenSpec: list all changes
+|===
+
+=== Auto-Completion
+
+Auto-completion is powered by
+https://github.com/hrsh7th/nvim-cmp[nvim-cmp] and draws from LSP,
+snippets, open buffers, file paths, and (when spell-checking is active)
+the spell dictionary.
+
+==== Triggering the menu
+
+The completion menu opens automatically as you type. To open it on
+demand in insert mode, press *`Alt{plus}Space`* (`++<++M-Space++>++`).
+
+==== Navigating the menu
+
+Once the menu is open, use *`j`* and *`k`* to move through suggestions —
+matching the standard Neovim screen-movement keys. Both keys fall back
+to inserting the literal character when the menu is not visible.
+
+[cols=",",options="header",]
+|===
+|Key |Action
+|`j` |Move to the next suggestion
+|`k` |Move to the previous suggestion
+|`Ctrl-f` |Scroll the documentation preview down
+|`Ctrl-b` |Scroll the documentation preview up
+|===
+
+==== Selecting the highlighted entry
+
+Press *`Enter`* (`++<++CR++>++`) to confirm and insert the currently
+highlighted suggestion. If nothing is highlighted, `Enter` inserts a
+newline as normal (selection is never forced automatically).
+
+==== Cancelling the menu
+
+Press *`Ctrl{plus}e`* to dismiss the completion menu and return to
+normal typing.
+
+=== Supported Languages
+
+[width="99%",cols="20%,16%,16%,16%,16%,16%",options="header",]
+|===
+|Language |Treesitter |LSP |REPL |Structural Editing |Guide
+|Clojure |✅ |— |✅ nREPL (Conjure) |✅ vim-sexp {plus} parinfer
+|docs/guides/lisp.md
+
+|Common Lisp |✅ |— |✅ Swank (Conjure) |✅ vim-sexp {plus} parinfer
+|docs/guides/lisp.md
+
+|F++#++ |✅ |✅ fsautocomplete |✅ dotnet fsi (iron.nvim) |—
+|docs/guides/fsharp.md
+
+|Fennel |— |— |✅ (Conjure) |✅ parinfer |docs/guides/lisp.md
+
+|Haskell |— |✅ haskell-tools |✅ GHCi |— |docs/guides/haskell.md
+
+|HTTP |✅ |— |— |— |docs/guides/rest.md
+
+|Janet |— |✅ janet++_++lsp |✅ (Conjure) |✅ vim-sexp {plus} parinfer
+|docs/guides/janet.md
+
+|Lua |✅ |— |— |— |—
+
+|Markdown |✅ |✅ marksman |— |— |docs/guides/markdown.md
+
+|Mermaid _(in Markdown)_ |✅ _(markdown)_ |— |— |—
+|docs/guides/diagrams.md
+
+|MARP (slides) |✅ _(markdown)_ |— |— |— |docs/guides/presentations.md
+
+|PlantUML |✅ |— |— |— |docs/guides/diagrams.md
+
+|Scheme |✅ |— |✅ built-in (Conjure) |✅ vim-sexp {plus} parinfer
+|docs/guides/lisp.md
+|===
+
+=== Copilot Model Configuration
+
+Edit `lua/plugins/copilot.lua` and uncomment the desired
+`vim.g.copilot++_++model` line:
+
+[source,lua]
+----
+config = function()
+  vim.g.copilot_model = "claude-sonnet-4-5"   -- active
+  -- vim.g.copilot_model = "gpt-4o"
+  -- vim.g.copilot_model = "gpt-4.1"
+  -- vim.g.copilot_model = "claude-opus-4-5"
+end,
+----
+
+Common values: `"gpt-4o"`, `"gpt-4.1"`, `"claude-sonnet-4-5"`.
+
+=== GitHub Copilot CLI
+
+The https://github.com/github/copilot-cli[GitHub Copilot CLI]
+(`@github/copilot` npm package) brings Copilot AI assistance to your
+terminal and is integrated directly into Neovim.
+
+==== Installation
+
+[source,sh]
+----
+# Requires Node.js 22+
+npm install -g @github/copilot
+
+# Authenticate on first use
+copilot
+# then enter: /login
+----
+
+==== In-editor usage
+
+[width="100%",cols="50%,50%",options="header",]
+|===
+|Keys |Action
+|`++<++leader++>++gcs` |Send current selection (or buffer) to `copilot`
+for a shell command suggestion
+
+|`++<++leader++>++gce` |Send current selection (or buffer) to `copilot`
+for a code explanation
+|===
+
+Results appear in a floating window. Close with `q` or `++<++Esc++>++`.
+
+You can also press *`++<++leader++>++t`* to open the built-in terminal
+split and use `copilot` interactively.
+
+→ See *docs/guides/ai-tools.md* for the full guide including OpenSpec
+and Serena setup.
+
+____
+*Serena MCP server prerequisites:* Node.js 18{plus} is required. Install
+Serena with:
+
+[source,sh]
+----
+npm install -g @oramasearch/serena
+----
+
+Or run it without a global install via `npx @oramasearch/serena`.
+____
+
+=== AI Research (Avante)
+
+https://github.com/yetone/avante.nvim[avante.nvim] provides an in-editor
+Q&A chat interface with two switchable backends: a local
+https://ollama.com[ollama] service (offline-first default) and GitHub
+Copilot (online).
+
+→ See *docs/guides/cli-console-mode.md* for setup instructions (ollama
+Docker service, model download, GPU opt-in).
+
+[cols=",",options="header",]
+|===
+|Keys |Action
+|`++<++leader++>++aa` |Open avante with the current provider
+|`++<++leader++>++ao` |Switch to ollama provider and open avante
+|`++<++leader++>++ac` |Switch to copilot provider and open avante
+|===
+
+=== Plugin Overview
+
+Plugins are managed by https://github.com/folke/lazy.nvim[lazy.nvim] and
+organized in `lua/plugins/`:
+
+[width="100%",cols="34%,33%,33%",options="header",]
+|===
+|File |Plugins |Cheatsheet
+|`avante.lua` |avante.nvim AI chat (`++<++leader++>++aa/ao/ac`) with
+ollama {plus} copilot backends
+|link:docs/guides/cli-console-mode.md[cli-console-mode.md]
+
+|`colorscheme.lua` |TokyoNight theme (moon / storm / night / day
+variants) |—
+
+|`conform.lua` |Formatting (format-on-save {plus} `++<++leader++>++f`)
+for Lisp, Janet, and F++#++ filetypes
+|link:docs/cheatsheets/formatting.md[formatting.md]
+
+|`copilot.lua` |Copilot inline completions {plus} Serena MCP server
+config |link:docs/cheatsheets/copilot.md[copilot.md] ·
+link:docs/cheatsheets/ai-tools.md[ai-tools.md]
+
+|`dotnet.lua` |iron.nvim REPL integration for F++#++ (`dotnet fsi`) and
+C++#++ (`csharprepl`); roslyn.nvim C++#++ LSP
+|link:docs/cheatsheets/fsharp.md[fsharp.md] ·
+link:docs/cheatsheets/dotnet.md[dotnet.md]
+
+|`fzf-lua.lua` |Fuzzy finder |link:docs/cheatsheets/fzf.md[fzf.md]
+
+|`git.lua` |vim-fugitive (`:Git` commands) {plus} gitsigns.nvim (hunk
+signs & staging) |link:docs/cheatsheets/git.md[git.md]
+
+|`haskell.lua` |haskell-tools.nvim (GHCi REPL {plus} HLS integration)
+|link:docs/cheatsheets/haskell.md[haskell.md]
+
+|`html.lua` |Bracey HTML live preview
+|link:docs/cheatsheets/html.md[html.md]
+
+|`init.lua` |vim-repeat, vim-sensible, vim-surround, vim-unimpaired,
+vim-airline (statusline), lspconfig
+|link:docs/cheatsheets/lsp.md[lsp.md] ·
+link:docs/cheatsheets/surround.md[surround.md] ·
+link:docs/cheatsheets/unimpaired.md[unimpaired.md]
+
+|`lisp.lua` |Conjure, vim-sexp, nvim-parinfer, rainbow-delimiters
+|link:docs/cheatsheets/lisp.md[lisp.md] ·
+link:docs/cheatsheets/janet.md[janet.md]
+
+|`markdown.lua` |markdown-preview.nvim (GUI) {plus} glow.nvim (console)
+browser/terminal preview; `:MdToPdf` PDF export; `:MdToConfluence` /
+`:MdFromConfluence` / `:MdConfluenceComments`; `:JiraCreateIssue` /
+`:JiraCreateStory` |link:docs/cheatsheets/markdown.md[markdown.md]
+
+|`mkdnflow.lua` |mkdnflow.nvim (cross-page link navigation:
+`++<++CR++>++` follow, `++<++BS++>++` back)
+|link:docs/cheatsheets/markdown.md[markdown.md]
+
+|`nvim-cmp.lua` |nvim-cmp {plus} completion sources
+|link:docs/cheatsheets/completion.md[completion.md]
+
+|`nvim-tree.lua` |File explorer tree
+|link:docs/cheatsheets/file-tree.md[file-tree.md]
+
+|`plantuml.lua` |plantuml-syntax {plus} `:PumlPreview` (PNG in GUI,
+ASCII in console) {plus} `:PumlPreviewAscii` (always available)
+|link:docs/cheatsheets/plantuml.md[plantuml.md]
+
+|`rest.lua` |kulala.nvim HTTP client (run requests from `.http` files)
+|link:docs/cheatsheets/rest.md[rest.md]
+
+|`treesitter.lua` |nvim-treesitter |—
+
+|`vim-commentary.lua` |Toggle comments with `gcc`
+|link:docs/cheatsheets/comments.md[comments.md]
+|===
+
+=== Project Structure
+
+....
+init.lua                    # Entry point
+lua/
+  options.lua               # Editor options (tabs, search, UI)
+  keymaps.lua               # Global keybindings
+  loader/init.lua           # lazy.nvim bootstrap
+  config/
+    confluence.lua          # Confluence publish command (MdToConfluence)
+    jira.lua                # Jira issue/story creation (JiraCreateIssue, JiraCreateStory)
+    copilot_cli.lua         # CopilotSuggest / CopilotExplain commands (copilot CLI)
+    lsp.lua                 # LSP server setup (fsautocomplete, janet_lsp, marksman, roslyn)
+    marp.lua                # MARP presentation commands (preview + export)
+    mdpdf.lua               # Markdown → PDF export command (MdToPdf)
+    mdpreview.lua           # Markdown markserv server preview command (MdServerPreview)
+    openspec.lua            # OpenspecNew / OpenspecStatus / OpenspecList commands
+    terminal.lua            # Terminal detection & capability flags (is_console, has_nerd_font, …)
+    treesitter.lua          # (config managed in plugins/treesitter.lua)
+    util.lua                # Shared helpers (open_url: cross-platform browser opener)
+  plugins/
+    avante.lua              # avante.nvim AI chat (ollama + copilot; <leader>aa/ao/ac)
+    colorscheme.lua         # TokyoNight theme (moon/storm/night/day)
+    conform.lua             # Formatting for Lisp and F# filetypes
+    copilot.lua             # Copilot inline completions + Serena MCP server config
+    dotnet.lua              # F# + C# REPLs via iron.nvim; roslyn.nvim C# LSP
+    fzf-lua.lua             # Fuzzy finder
+    git.lua                 # Git (vim-fugitive + gitsigns.nvim)
+    haskell.lua             # haskell-tools.nvim (GHCi REPL + HLS)
+    html.lua                # Bracey HTML live preview
+    init.lua                # Bare-string plugins (tpope, airline, lspconfig)
+    lisp.lua                # Lisp ecosystem plugins
+    markdown.lua            # markdown-preview.nvim (GUI) + glow.nvim (console)
+    mkdnflow.lua            # mkdnflow.nvim (cross-page link navigation)
+    nvim-cmp.lua            # Completion engine + sources
+    nvim-tree.lua           # File tree
+    plantuml.lua            # plantuml-syntax + PumlPreview / PumlPreviewAscii commands
+    rest.lua                # kulala.nvim HTTP client (run requests from .http files)
+    treesitter.lua          # nvim-treesitter
+    vim-commentary.lua      # Comment toggling
+after/ftplugin/
+  clojure.lua               # Clojure indent settings
+  cs.lua                    # C# indent settings
+  fsharp.lua                # F# indent settings (4-space) & localleader
+  haskell.lua               # Haskell-tools keybindings
+  http.lua                  # REST client localleader & keymaps
+  janet.lua                 # Janet indent settings & localleader
+  lisp.lua                  # Lisp indent settings & lispwords
+  markdown.lua              # Markdown localleader, preview keymap, MARP commands, MdToPdf, MdServerPreview, MdToConfluence, JiraCreateIssue/Story
+  plantuml.lua              # PlantUML localleader & PumlPreview keymap
+  scheme.lua                # Scheme indent settings
+docker/
+  marp/                     # Docker Compose for MARP presentation server
+  markserv/                 # Docker + Compose for markdown preview server (cross-page links, PlantUML/Mermaid diagrams)
+  md2pdf/                   # Pandoc Lua filter for Markdown → PDF with PlantUML
+  plantuml-server/          # Docker Compose for PlantUML render server
+  ollama/                   # Docker Compose for ollama LLM service (avante backend)
+  sbcl-swank/               # Docker Compose for SBCL/Swank REPL
+docs/
+  cheatsheets/
+    comments.md             # vim-commentary
+    completion.md           # nvim-cmp
+    copilot.md              # GitHub Copilot
+    editing.md              # Visual-mode editing
+    file-tree.md            # nvim-tree
+    formatting.md           # conform.nvim
+    fsharp.md               # iron.nvim / dotnet fsi
+    fzf.md                  # fzf-lua fuzzy finder
+    haskell.md              # haskell-tools REPL & HLS
+    html.md                 # Bracey HTML live preview
+    index.md              # Main keybinding reference (links to plugin sheets)
+    janet.md                # Conjure + vim-sexp (Janet)
+    lisp.md                 # Conjure + vim-sexp
+    lsp.md                  # LSP keybindings
+    markdown.md             # Markdown preview + MARP + markserv + Confluence
+    navigation.md           # Window navigation & terminal
+    plantuml.md             # PlantUML preview
+    rest.md                 # REST client (kulala.nvim)
+  guides/
+    confluence.md           # Confluence publishing guide (MdToConfluence)
+    jira.md                 # Jira issue/story creation guide
+    cli-console-mode.md     # Console mode guide (is_console, glow, PlantUML ASCII, ollama, avante)
+    diagrams.md             # Markdown + PlantUML diagram guide
+    fsharp.md               # F# guide
+    haskell.md              # Haskell guide
+    janet.md                # Janet guide
+    lisp.md                 # Lisp / Clojure / Scheme / Fennel guide
+    markdown.md             # Markdown preview guide (markserv, cross-page links)
+    presentations.md        # MARP presentation guide
+    rest.md                 # REST client guide (kulala.nvim, .http files)
+....
+
+== Documentation
+
+The full documentation site is published at
+https://floatingman-ltd.github.io/arcane-centaur[floatingman-ltd.github.io/arcane-centaur].
+
+It includes guides, cheatsheets, and learning content built from the `docs/` directory
+using https://antora.org[Antora] and redeployed automatically on every push to `main`.
