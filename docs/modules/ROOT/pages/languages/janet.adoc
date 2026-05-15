@@ -162,8 +162,15 @@ Verify `janet-lsp` is installed and accessible:
 which janet-lsp
 ----
 
-Use `:LspInfo` inside Neovim to check whether the server is attached.
-See `:LspLog` for error details.
+Use `:lua =vim.lsp.get_clients({bufnr=0})` inside Neovim to check whether
+the server is attached to the current buffer. To open the LSP log:
+
+[source,vim]
+----
+:lua vim.cmd('e ' .. vim.lsp.get_log_path())
+----
+
+`:checkhealth lsp` gives a broader overview of LSP status.
 
 '''''
 

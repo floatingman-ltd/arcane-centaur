@@ -212,8 +212,15 @@ Check that it's installed:
 dotnet tool list -g | grep fsautocomplete
 ----
 
-Run `:LspInfo` inside Neovim to check whether the server is attached.
-See `:LspLog` for error details.
+Run `:lua =vim.lsp.get_clients({bufnr=0})` inside Neovim to check whether
+the server is attached to the current buffer. To open the LSP log:
+
+[source,vim]
+----
+:lua vim.cmd('e ' .. vim.lsp.get_log_path())
+----
+
+`:checkhealth lsp` gives a broader overview of LSP status.
 
 === REPL does not open
 

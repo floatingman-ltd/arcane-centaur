@@ -296,7 +296,7 @@ The `janet++_++lsp` server activates automatically when you open a
 |`++[++d` / `++]++d` |Jump to previous / next diagnostic
 |===
 
-Check the server is running: `:LspInfo`
+Check the server is running: `:lua =vim.lsp.get_clients({bufnr=0})`
 
 === conform.nvim — Formatting
 
