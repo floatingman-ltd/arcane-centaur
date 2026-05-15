@@ -162,8 +162,15 @@ Verify `janet-lsp` is installed and accessible:
 which janet-lsp
 ----
 
-Use `:LspInfo` inside Neovim to check whether the server is attached.
-See `:LspLog` for error details.
+Use `:lua =vim.lsp.get_clients({bufnr=0})` inside Neovim to check whether
+the server is attached to the current buffer. To open the LSP log:
+
+[source,vim]
+----
+:lua vim.cmd('e ' .. vim.lsp.get_log_path())
+----
+
+`:checkhealth lsp` gives a broader overview of LSP status.
 
 '''''
 
@@ -191,6 +198,27 @@ Verify the installation:
 ----
 janet -v
 ----
+
+==== Docker option (explored, not implemented)
+
+https://hub.docker.com/r/leafgarland/janet-sdk[leafgarland/janet-sdk] is
+the main community image — no official Docker image exists. It ships
+Janet, jpm, git, and a C compiler.
+
+Because Conjure spawns the `janet` binary directly (unlike Common Lisp,
+which uses a TCP socket), the Docker REPL would require a wrapper script
+on `$PATH` named `janet` that delegates to `docker run`:
+
+[source,sh]
+----
+#!/bin/sh
+docker run --rm -i leafgarland/janet-sdk janet "$@"
+----
+
+The LSP server (`janet-lsp`) is harder to containerise — it is a
+persistent stdio process that needs access to project files. The simpler
+split is to use Docker for the REPL and install `janet-lsp` locally via
+jpm. This combination has not been set up or tested for this config.
 
 === Installing jpm (Janet Package Manager)
 
