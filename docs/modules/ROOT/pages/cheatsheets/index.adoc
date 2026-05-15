@@ -1,7 +1,3 @@
-// :auto-generated: true
-// :source: documentation/cheatsheets/index.md
-// Remove this header to take manual ownership of this file
-
 == Neovim Keybinding Cheat Sheet
 
 *Leader* = `Space` · *LocalLeader* = `,` (in all language buffers)
@@ -11,52 +7,30 @@
 [width="100%",cols="50%,50%",options="header",]
 |===
 |Plugin / Area |Cheatsheet
-|Auto-Completion (nvim-cmp) |completion.md
+|.NET — C++#++ and F++#++ (Roslyn {plus} iron.nvim {plus} fsautocomplete) |xref:cheatsheets/dotnet.adoc[dotnet]
 
-|Clipboard |link:editing.md#system-clipboard[editing.md] —
-link:../guides/clipboard.md[full guide]
+|AI Tools (Copilot CLI {plus} OpenSpec {plus} Serena {plus} Avante) |xref:cheatsheets/ai-tools.adoc[ai-tools]
 
-|Comments (vim-commentary) |comments.md
+|Code Intelligence (LSP {plus} Completion {plus} Formatting) |xref:cheatsheets/code-intelligence.adoc[code-intelligence]
 
-|C++#++ / .NET (Roslyn {plus} iron.nvim) |dotnet.md
+|Clipboard |xref:cheatsheets/editing.adoc#system-clipboard[editing] —
+xref:guides/clipboard.adoc[full guide]
 
-|F++#++ REPL (iron.nvim) |fsharp.md
+|Editing (Visual Mode {plus} Clipboard {plus} Comments {plus} Surround) |xref:cheatsheets/editing.adoc[editing]
 
-|File Tree (nvim-tree) |file-tree.md
+|Git (vim-fugitive {plus} gitsigns {plus} diffview) |xref:cheatsheets/git.adoc[git]
 
-|Formatting (conform.nvim) |formatting.md
+|Haskell (haskell-tools) |xref:cheatsheets/haskell.adoc[haskell]
 
-|Fuzzy Finder (fzf-lua) |fzf.md
+|Janet (Conjure {plus} vim-sexp) |xref:cheatsheets/janet.adoc[janet]
 
-|Git (vim-fugitive {plus} gitsigns) |git.md
+|Lisp / Clojure / Scheme / Fennel (Conjure {plus} vim-sexp) |xref:cheatsheets/lisp.adoc[lisp]
 
-|GitHub Copilot |copilot.md
+|Markdown Preview {plus} PlantUML {plus} HTML {plus} MARP {plus} Confluence {plus} Jira |xref:cheatsheets/markdown.adoc[markdown]
 
-|GitHub Copilot CLI {plus} OpenSpec |ai-tools.md
+|Navigation (Splits {plus} Fuzzy Finder {plus} File Tree {plus} Unimpaired) |xref:cheatsheets/navigation.adoc[navigation]
 
-|Haskell (haskell-tools) |haskell.md
-
-|Janet (Conjure {plus} vim-sexp) |janet.md
-
-|HTML Live Preview (Bracey) |html.md
-
-|Lisp / Clojure / Scheme / Fennel (Conjure {plus} vim-sexp) |lisp.md
-
-|LSP |lsp.md
-
-|Markdown Preview {plus} MARP {plus} Confluence {plus} Jira |markdown.md
-
-|Navigation & Splits |navigation.md
-
-|PlantUML Preview |plantuml.md
-
-|REST Client (kulala.nvim) |rest.md
-
-|Surround (vim-surround) |surround.md
-
-|Unimpaired (vim-unimpaired) |unimpaired.md
-
-|Visual Editing |editing.md
+|REST Client (kulala.nvim) |xref:cheatsheets/rest.adoc[rest]
 |===
 
 '''''
@@ -78,7 +52,7 @@ link:../guides/clipboard.md[full guide]
 |`Ctrl-→` |Normal |Grow split width
 |===
 
-→ link:navigation.md[Full reference]
+→ xref:cheatsheets/navigation.adoc[Full reference]
 
 '''''
 
@@ -92,7 +66,7 @@ link:../guides/clipboard.md[full guide]
 |`Ctrl-f` |Normal |Reveal current file in tree
 |===
 
-→ link:file-tree.md[Full reference]
+→ xref:cheatsheets/navigation.adoc[Full reference]
 
 '''''
 
@@ -105,7 +79,7 @@ link:../guides/clipboard.md[full guide]
 |`Esc` |Terminal |Exit terminal insert mode
 |===
 
-→ link:navigation.md[Full reference]
+→ xref:cheatsheets/navigation.adoc[Full reference]
 
 '''''
 
@@ -143,7 +117,7 @@ cursor)
 Works on GUI Linux (xclip/xsel/wl-clipboard), WSL (win32yank.exe), and
 SSH/TTY sessions (OSC 52 — no external tool required).
 
-→ link:editing.md[Full reference]
+→ xref:cheatsheets/editing.adoc[Full reference]
 
 '''''
 
@@ -158,7 +132,7 @@ SSH/TTY sessions (OSC 52 — no external tool required).
 |`Ctrl-/` |Normal |Toggle comment (Kitty / WezTerm)
 |===
 
-→ link:comments.md[Full reference]
+→ xref:cheatsheets/editing.adoc[Full reference]
 
 '''''
 
@@ -174,7 +148,7 @@ SSH/TTY sessions (OSC 52 — no external tool required).
 _Format-on-save is enabled for Lisp, Clojure, Scheme, Fennel, Janet, and
 F++#++ buffers._
 
-→ link:formatting.md[Full reference]
+→ xref:cheatsheets/code-intelligence.adoc[Full reference]
 
 '''''
 
@@ -200,7 +174,7 @@ window)
 window)
 |===
 
-→ link:copilot.md[Full reference] · link:ai-tools.md[AI Tools guide]
+→ xref:cheatsheets/ai-tools.adoc[Full reference] · xref:cheatsheets/ai-tools.adoc[AI Tools guide]
 
 '''''
 
@@ -214,7 +188,7 @@ window)
 |`++<++leader++>++osl` |Normal |List all OpenSpec changes
 |===
 
-→ link:ai-tools.md[Full reference]
+→ xref:cheatsheets/ai-tools.adoc[Full reference]
 
 '''''
 
@@ -233,7 +207,7 @@ window)
 |`++]++d` |Normal |Next diagnostic
 |===
 
-→ link:lsp.md[Full reference]
+→ xref:cheatsheets/code-intelligence.adoc[Full reference]
 
 '''''
 
@@ -251,7 +225,7 @@ window)
 |`Ctrl-b` |Insert |Scroll docs preview up
 |===
 
-→ link:completion.md[Full reference]
+→ xref:cheatsheets/code-intelligence.adoc[Full reference]
 
 '''''
 
@@ -276,7 +250,7 @@ window)
 |`++<++leader++>++gX` |Normal |Close diff view
 |===
 
-→ link:git.md[Full reference]
+→ xref:cheatsheets/git.adoc[Full reference]
 
 '''''
 
@@ -295,28 +269,7 @@ Leader is `Space`; no LocalLeader bindings are used in Haskell buffers.
 |`Space-ea` |Normal |Evaluate all code snippets
 |===
 
-→ link:haskell.md[Full reference] · link:../guides/haskell.md[Guide]
-
-'''''
-
-=== F++#++ REPL — iron.nvim
-
-LocalLeader is `,` in F++#++ buffers.
-
-[cols=",,",options="header",]
-|===
-|Keys |Mode |Action
-|`,sl` |Normal |Send current line to REPL
-|`,sc` |Normal / Visual |Send motion or selection to REPL
-|`,sp` |Normal |Send current paragraph to REPL
-|`,sf` |Normal |Send entire file to REPL
-|`,s++<++CR++>++` |Normal |Send carriage return to REPL
-|`,si` |Normal |Interrupt REPL
-|`,sq` |Normal |Quit / exit REPL
-|`,cl` |Normal |Clear REPL output
-|===
-
-→ link:fsharp.md[Full reference] · link:../guides/fsharp.md[Guide]
+→ xref:cheatsheets/haskell.adoc[Full reference] · xref:guides/haskell.adoc[Guide]
 
 '''''
 
@@ -346,7 +299,7 @@ LocalLeader is `,` in Lisp/Clojure/Scheme/Fennel/Janet buffers.
 |`,lq` |Close REPL log window
 |===
 
-→ link:lisp.md[Full reference] · link:../guides/lisp.md[Guide]
+→ xref:cheatsheets/lisp.adoc[Full reference] · xref:guides/lisp.adoc[Guide]
 
 '''''
 
@@ -368,7 +321,7 @@ LocalLeader is `,` in Lisp/Clojure/Scheme/Fennel/Janet buffers.
 |`dsf` |Delete surrounding function call (splice)
 |===
 
-→ link:lisp.md[Full reference]
+→ xref:cheatsheets/lisp.adoc[Full reference]
 
 '''''
 
@@ -398,10 +351,10 @@ LocalLeader is `,` in Markdown buffers.
 |`,js` |Create Jira Story (prompts for summary {plus} description)
 |===
 
-→ link:markdown.md[Full reference] · link:../guides/diagrams.md[Diagrams
-guide] · link:../guides/presentations.md[Presentations guide] ·
-link:../guides/confluence.md[Confluence guide] ·
-link:../guides/jira.md[Jira guide]
+→ xref:cheatsheets/markdown.adoc[Full reference] · xref:guides/diagrams.adoc[Diagrams
+guide] · xref:guides/presentations.adoc[Presentations guide] ·
+xref:guides/confluence.adoc[Confluence guide] ·
+xref:guides/jira.adoc[Jira guide]
 
 '''''
 
@@ -416,7 +369,7 @@ LocalLeader is `,` in PlantUML buffers.
 |`++<++leader++>++pa` |Open ASCII preview popup
 |===
 
-→ link:plantuml.md[Full reference]
+→ xref:cheatsheets/markdown.adoc[Full reference]
 
 '''''
 
@@ -432,7 +385,7 @@ LocalLeader is `,` in HTML / CSS / JavaScript buffers.
 |`,r` |Reload the live preview
 |===
 
-→ link:html.md[Full reference]
+→ xref:cheatsheets/markdown.adoc[Full reference]
 
 '''''
 
@@ -449,4 +402,4 @@ LocalLeader is `,` in `.http` buffers.
 |`,e` |Select environment
 |===
 
-→ link:rest.md[Full reference] · link:../guides/rest.md[Guide]
+→ xref:cheatsheets/rest.adoc[Full reference] · xref:guides/rest.adoc[Guide]

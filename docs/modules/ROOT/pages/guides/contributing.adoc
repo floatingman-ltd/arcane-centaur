@@ -1,57 +1,81 @@
-= Contributing to the Documentation
+== Contributing to the Documentation
 
 This guide explains how to author and maintain the AsciiDoc documentation
 that powers the https://floatingman-ltd.github.io/arcane-centaur[Arcane Centaur docs site].
 
 == Authoring Workflow
 
-The source of truth for most documentation is the Markdown files in `docs/`
-and the root `readme.md`. A GitHub Actions pipeline converts these to AsciiDoc
-automatically on every push to `main`.
+AsciiDoc files in `docs/modules/ROOT/pages/` are the *source of truth* for all documentation. There is no conversion pipeline and no auto-generated files. Edit `.adoc` files directly.
+
+The only Markdown file in the repository is `README.md` in the repo root (repository metadata and a link to the hosted docs site). Do not create `.md` files elsewhere.
 
 === Editing an Existing Page
 
-**For a Markdown-source page** (most pages): edit the `.md` file under `docs/`.
-The pipeline will regenerate the corresponding `.adoc` on the next push and
-redeploy the site.
-
-**For a manually-graduated page** (no sentinel): edit the `.adoc` file directly
-under `docs/modules/ROOT/pages/`. The pipeline will not overwrite it.
+Open the relevant `.adoc` file under `docs/modules/ROOT/pages/` and edit it directly. Changes are published on the next push to `main`.
 
 === Adding a New Page
 
-. Create a new `.md` file under `docs/guides/`, `docs/cheatsheets/`, or
-  `docs/learning/`.
-. The pipeline will generate the `.adoc` automatically on the next push.
-. **Update `docs/modules/ROOT/nav.adoc`** to add the new page to the sidebar.
-  Without this step the page builds but is unreachable from the navigation.
+. Create a new `.adoc` file under the appropriate subdirectory:
++
+[cols="1,2"]
+|===
+|`docs/modules/ROOT/pages/guides/` |Full how-to guides
+|`docs/modules/ROOT/pages/cheatsheets/` |Quick reference tables
+|`docs/modules/ROOT/pages/learning/` |Step-by-step learning paths
+|===
+. Add an `xref:` entry in `docs/modules/ROOT/nav.adoc` to make it reachable from the sidebar.
+. Follow the guide template (see below).
 
-== Sentinel Header Convention
+=== Removing a Page
 
-Auto-generated `.adoc` files start with:
+. Delete the `.adoc` file with `git rm`.
+. Remove its entry from `docs/modules/ROOT/nav.adoc`.
+. Update any `xref:` links pointing to the deleted file in other pages.
+
+== Guide Template
+
+All guides follow a consistent structure:
 
 [source,asciidoc]
 ----
-// :auto-generated: true
-// :source: docs/guides/example.md
-// Remove this header to take manual ownership of this file
+== Title
+
+Intro paragraph.
+
+*Quick navigation*
+
+[cols="1,3"]
+|===
+| xref:#quick-start[Quick Start] | One-line description
+| xref:#setup[Setup] | One-line description
+| xref:#prerequisites[Prerequisites] | One-line description
+|===
+
+'''''
+
+[[quick-start]]
+== Quick Start
+
+...
+
+[[setup]]
+== Setup
+
+...
+
+[[prerequisites]]
+== Prerequisites
+
+...
 ----
 
-The pipeline uses this header to decide whether to regenerate the file:
+Key rules:
 
-* **Sentinel present** → the file is overwritten from its `.md` source on every push.
-* **Sentinel absent** → the file is skipped by the pipeline (manually owned).
-
-=== Graduating a File to Manual AsciiDoc
-
-. Open the `.adoc` under `docs/modules/ROOT/pages/`.
-. Remove the three `// :auto-generated:` / `// :source:` / `// Remove this header` lines.
-. Commit. The pipeline will no longer touch this file.
-. You may now enrich the file with native AsciiDoc features (`NOTE:`, `include::`,
-  `[cols=]` table attributes, etc.) that would be lost on regeneration.
-
-NOTE: After graduating a file, changes to its `.md` source will no longer propagate
-to the site. Update the `.adoc` directly going forward.
+* Jump navigation table immediately after the intro.
+* `'''''` (five single quotes) as horizontal rule — not `---`.
+* `[[anchor]]` tag immediately before each `==` section heading.
+* Quick Start first, Prerequisites last.
+* Use `xref:` for internal links, never `link:`.
 
 == Local Build
 
@@ -59,24 +83,28 @@ Preview the full site locally before pushing:
 
 [source,sh]
 ----
-./docker/antora/run.sh antora-playbook.yml
+docker compose -f antora-playbook.yml run --rm antora antora-playbook.yml
 # Then open build/site/index.html in a browser
 ----
 
-The first run pulls the `antora/antora` Docker image (~150 MB). Subsequent runs
-use the cache.
+The first run pulls the `antora/antora` Docker image (~150 MB). Subsequent runs use the cache.
 
 == nav.adoc Maintenance
 
-`docs/modules/ROOT/nav.adoc` drives the sidebar navigation. It is authored
-manually and must be updated whenever a page is added or removed.
-
-To add a page, insert an `xref:` entry in the appropriate section:
+`docs/modules/ROOT/nav.adoc` drives the sidebar navigation. It is authored manually and must be updated whenever a page is added or removed.
 
 [source,asciidoc]
 ----
-.Guides
+.Section Name
 * xref:guides/my-new-guide.adoc[My New Guide]
 ----
 
-Page paths in `nav.adoc` are relative to `docs/modules/ROOT/pages/`.
+Page paths in `nav.adoc` are relative to `docs/modules/ROOT/pages/`. The sidebar supports up to five levels of nesting (`*` through `*****`). Use unlinked plain-text items as sub-headers within a section:
+
+[source,asciidoc]
+----
+.Languages
+* Lisp Family
+** xref:guides/lisp.adoc[Guide]
+** xref:cheatsheets/lisp.adoc[Cheatsheet]
+----

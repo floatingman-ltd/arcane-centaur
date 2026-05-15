@@ -4,7 +4,6 @@ on:
   push:
     branches: [main]
     paths:
-      - 'documentation/**'
       - 'docs/**'
       - '*.adoc'
       - 'antora-playbook.yml'
@@ -23,47 +22,6 @@ jobs:
         uses: actions/checkout@v6.0.2
         with:
           fetch-depth: 0
-
-      - name: Install pandoc
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y pandoc
-
-      - name: Sentinel-aware conversion
-        run: |
-          # For each .md under documentation/, if no corresponding .adoc in the
-          # Antora pages tree exists, or the existing .adoc still has the sentinel,
-          # regenerate it with pandoc.
-          PAGES_ROOT="docs/modules/ROOT/pages"
-
-          convert_page() {
-            local src="$1"                  # e.g. documentation/guides/lisp.md
-            local rel="${src#documentation/}" # e.g. guides/lisp.md
-            local dst="${PAGES_ROOT}/${rel%.md}.adoc"
-
-            if [[ -f "$dst" ]]; then
-              if ! grep -q '^// :auto-generated: true' "$dst"; then
-                echo "  SKIP (manual): $dst"
-                return
-              fi
-            else
-              mkdir -p "$(dirname "$dst")"
-            fi
-
-            echo "  CONVERT: $src -> $dst"
-            {
-              echo "// :auto-generated: true"
-              echo "// :source: $src"
-              echo "// Remove this header to take manual ownership of this file"
-              echo ""
-              pandoc -f markdown -t asciidoc "$src" | awk '/^={2,6} / { sub(/^=/, ""); } { print }'
-            } > "$dst"
-          }
-
-          while IFS= read -r -d '' f; do
-            rel="${f#./}"
-            convert_page "$rel"
-          done < <(find documentation/cheatsheets documentation/guides documentation/learning -name "*.md" -print0 2>/dev/null | sort -z)
 
       - name: Build Antora site
         run: |

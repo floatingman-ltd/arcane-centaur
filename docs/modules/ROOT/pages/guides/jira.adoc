@@ -1,43 +1,25 @@
-// :auto-generated: true
-// :source: documentation/guides/jira.md
-// Remove this header to take manual ownership of this file
-
 == Jira Integration Guide
 
 Create Jira issues and stories without leaving Neovim. The Jira
 integration follows the same pattern as the
-link:confluence.md[Confluence integration]: pure Lua, async `curl`
-calls, and localleader keymaps in Markdown buffers.
+xref:guides/confluence.adoc[Confluence integration]: pure Lua, async
+`curl` calls, and localleader keymaps in Markdown buffers.
 
-== Prerequisites
+*Quick navigation*
 
-[width="100%",cols="50%,50%",options="header",]
+[cols="1,3"]
 |===
-|Requirement |Notes
-|`JIRA++_++EMAIL` |Your Atlassian account email
-
-|`JIRA++_++API++_++TOKEN` |An Atlassian API token — generate one at
-https://id.atlassian.com/manage-profile/security/api-tokens[id.atlassian.com/manage-profile/security/api-tokens]
-
-|`JIRA++_++BASE++_++URL` |Your Jira Cloud instance URL,
-e.g. `https://yourcompany.atlassian.net`
-
-|`curl` |Already required by the Confluence integration
+| xref:#project-map[Project Map] | Map file paths to Jira project keys
+| xref:#keymaps[Keymaps] | Create issues and stories
+| xref:#workflow[Workflow] | Normal and visual mode workflows
+| xref:#commands[Commands] | Available Neovim commands
+| xref:#troubleshooting[Troubleshooting] | Common error messages
+| xref:#prerequisites[Prerequisites] | Environment variables
 |===
 
-=== Setting environment variables
+'''''
 
-Add to your shell profile (`~/.bashrc`, `~/.zshrc`, etc.):
-
-[source,bash]
-----
-export JIRA_EMAIL="you@example.com"
-export JIRA_API_TOKEN="your-api-token-here"
-export JIRA_BASE_URL="https://yourcompany.atlassian.net"
-----
-
-Then reload your shell or open a new terminal before launching Neovim.
-
+[[project-map]]
 == Project Map
 
 `docs/jira-project-map.md` (at the git root of your project) maps local
@@ -59,9 +41,12 @@ time a command runs.
 * *Longest prefix wins* when multiple rows match.
 * Both directory prefixes (`docs/`) and exact file paths
 (`docs/design/foo.md`) work.
-* The `docs/jira-project-map.md` file must exist; copy from this repo’s
+* The `docs/jira-project-map.md` file must exist; copy from this repo's
 template and update the rows for your projects.
 
+'''''
+
+[[keymaps]]
 == Keymaps
 
 Keymaps are active in *Markdown buffers* only (`LocalLeader` = `,`).
@@ -81,6 +66,9 @@ create Task
 create Story
 |===
 
+'''''
+
+[[workflow]]
 == Workflow
 
 === Normal mode (no pre-filled description)
@@ -92,7 +80,7 @@ create Story
 . Enter the issue *summary* at the prompt and press `++<++Enter++>++`.
 . Enter an optional *description* and press `++<++Enter++>++` (leave
 blank to skip).
-. A success notification shows the new issue key (e.g. `PROJ-42`) and
+. A success notification shows the new issue key (e.g. `PROJ-42`) and
 its URL.
 
 === Visual mode (use selection as description)
@@ -104,6 +92,9 @@ its URL.
 from selection).
 . Success notification appears as above.
 
+'''''
+
+[[commands]]
 == Commands
 
 Both commands are also available directly:
@@ -122,6 +113,9 @@ description)
 description)
 |===
 
+'''''
+
+[[troubleshooting]]
 == Troubleshooting
 
 [width="100%",cols="50%,50%",options="header",]
@@ -131,7 +125,7 @@ description)
 env vars and restart Neovim
 
 |`JIRA++_++BASE++_++URL must be set` |Export `JIRA++_++BASE++_++URL`
-(e.g. `https://co.atlassian.net`)
+(e.g. `https://co.atlassian.net`)
 
 |`file not in project map` |Add a matching row to
 `docs/jira-project-map.md`
@@ -143,8 +137,46 @@ the git root
 and not expired
 
 |`API returned HTTP 400` |The project key may be wrong, or the issue
-type doesn’t exist in your project
+type doesn't exist in your project
 
 |Creation succeeds but wrong project |Check for overlapping prefixes;
 the longest prefix wins
 |===
+
+'''''
+
+[[prerequisites]]
+== Prerequisites
+
+[width="100%",cols="50%,50%",options="header",]
+|===
+|Requirement |Notes
+|`JIRA++_++EMAIL` |Your Atlassian account email
+
+|`JIRA++_++API++_++TOKEN` |An Atlassian API token — generate one at
+https://id.atlassian.com/manage-profile/security/api-tokens[id.atlassian.com/manage-profile/security/api-tokens]
+
+|`JIRA++_++BASE++_++URL` |Your Jira Cloud instance URL,
+e.g. `https://yourcompany.atlassian.net`
+
+|`curl` |Already required by the Confluence integration
+|===
+
+=== Setting environment variables
+
+Add to your shell profile (`~/.bashrc`, `~/.zshrc`, etc.):
+
+[source,bash]
+----
+export JIRA_EMAIL="you@example.com"
+export JIRA_API_TOKEN="your-api-token-here"
+export JIRA_BASE_URL="https://yourcompany.atlassian.net"
+----
+
+Then reload your shell or open a new terminal before launching Neovim.
+
+Create Jira issues and stories without leaving Neovim. The Jira
+integration follows the same pattern as the
+xref:guides/confluence.adoc[Confluence integration]: pure Lua, async `curl`
+calls, and localleader keymaps in Markdown buffers.
+

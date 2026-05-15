@@ -1,60 +1,30 @@
-// :auto-generated: true
-// :source: documentation/guides/rest.md
-// Remove this header to take manual ownership of this file
-
 == REST Client Guide (kulala.nvim)
 
 https://github.com/mistweaverco/kulala.nvim[kulala.nvim] is a
 fully-featured, pure-Lua REST client for Neovim. Write your API requests
 in `.http` files and execute them directly from the editor.
 
-== Prerequisites
+*Quick navigation*
 
-[width="100%",cols="34%,33%,33%",options="header",]
+[cols="1,3"]
 |===
-|Dependency |Purpose |Install hint
-|*curl* |Sends HTTP requests |`sudo apt install curl`
-
-|*Neovim ≥ 0.10.1* |Minimum version required |AppImage or tarball from
-https://github.com/neovim/neovim/releases[github.com/neovim/neovim/releases]
-
-|*tree-sitter CLI* |Compiles kulala’s custom HTTP parser on first launch
-|see below
+| xref:#quick-start[Quick Start] | Create a request and run it
+| xref:#http-syntax[HTTP File Syntax] | Request format and examples
+| xref:#env-vars[Environment Variables] | Per-environment config
+| xref:#typical-workflow[Typical Workflow] | Day-to-day API testing
+| xref:#keybindings[Keybindings] | Key reference
+| xref:#troubleshooting[Troubleshooting] | tree-sitter and parser errors
+| xref:#configuration[Configuration] | Plugin options
+| xref:#prerequisites[Prerequisites] | curl and tree-sitter CLI
 |===
 
-=== Installing the tree-sitter CLI
+'''''
 
-kulala.nvim ships a custom `kulala++_++http` tree-sitter grammar that
-nvim-treesitter compiles from source the first time you open an `.http`
-file. This requires the `tree-sitter` CLI binary to be on your `PATH`.
-
-*Via npm* (recommended if Node.js is already installed):
-
-[source,sh]
-----
-npm install -g tree-sitter-cli
-----
-
-*Via Cargo* (if you have a Rust toolchain):
-
-[source,sh]
-----
-cargo install tree-sitter-cli
-----
-
-*Pre-built binary*: download the latest release for your platform from
-https://github.com/tree-sitter/tree-sitter/releases/latest and place it
-somewhere on your `PATH` (e.g. `~/.local/bin/`).
-
-The compilation happens once; subsequent launches use the cached parser.
-
-kulala.nvim has *no LuaRocks dependencies* and installs as a plain git
-plugin.
-
+[[quick-start]]
 == Quick Start
 
 [arabic]
-. Create a file with the `.http` extension, e.g. `api.http`.
+. Create a file with the `.http` extension, e.g. `api.http`.
 . Write a request:
 
 [source,http]
@@ -69,6 +39,9 @@ Accept: application/json
 . The result pane opens automatically with the response body, headers,
 and timing stats.
 
+'''''
+
+[[http-syntax]]
 == HTTP File Syntax
 
 [source,http]
@@ -113,6 +86,9 @@ Content-Type: application/json
 }
 ----
 
+'''''
+
+[[env-vars]]
 == Environment Variables
 
 kulala.nvim supports two env file formats:
@@ -152,6 +128,9 @@ Authorization: Bearer {{api_key}}
 Use `,e` to pick which named environment from `http-client.env.json` is
 active.
 
+'''''
+
+[[typical-workflow]]
 == Typical Workflow
 
 [arabic]
@@ -162,9 +141,12 @@ active.
 . Press `,l` to quickly re-run the last request after editing it.
 . Press `,o` to re-open the result pane if closed.
 
+'''''
+
+[[keybindings]]
 == Keybindings
 
-→ See the link:../cheatsheets/rest.md[REST cheatsheet] for the full
+→ See the xref:cheatsheets/rest.adoc[REST cheatsheet] for the full
 keybinding reference.
 
 [cols=",",options="header",]
@@ -176,6 +158,9 @@ keybinding reference.
 |`,e` |Select environment
 |===
 
+'''''
+
+[[troubleshooting]]
 == Troubleshooting
 
 === `ENOENT: no such file or directory (cmd): 'tree-sitter'`
@@ -189,8 +174,7 @@ first launch using the `tree-sitter` CLI. If the binary is not on your
 ....
 
 *Fix:* install the tree-sitter CLI (see
-link:#installing-the-tree-sitter-cli[Installing the tree-sitter CLI]
-above), then *restart Neovim*.
+xref:#prerequisites[Prerequisites] below), then *restart Neovim*.
 
 === `async.lua: timeout` / `Failed to run config for kulala.nvim`
 
@@ -202,7 +186,7 @@ Neovim*.
 
 === All keymaps (`,r` `,l` `,o` `,e`) do nothing after the error
 
-When kulala’s `setup()` errors (either due to the missing CLI or the
+When kulala's `setup()` errors (either due to the missing CLI or the
 timeout), the UI layer is never initialized. Every keymap that calls
 into the UI — including `,o` (open result pane) — will silently fail or
 show `nil` errors until kulala initializes successfully.
@@ -211,6 +195,9 @@ show `nil` errors until kulala initializes successfully.
 file. The grammar is compiled once on this first successful launch;
 subsequent starts will use the cached parser and load instantly.
 
+'''''
+
+[[configuration]]
 == Configuration
 
 kulala.nvim is configured via `opts` in `lua/plugins/rest.lua`. The
@@ -233,3 +220,51 @@ return {
 See the
 https://neovim.getkulala.net/docs/getting-started/configuration-options[kulala.nvim
 documentation] for all available options.
+
+'''''
+
+[[prerequisites]]
+== Prerequisites
+
+[width="100%",cols="34%,33%,33%",options="header",]
+|===
+|Dependency |Purpose |Install hint
+|*curl* |Sends HTTP requests |`sudo apt install curl`
+
+|*Neovim ≥ 0.12* |Minimum version required |See
+xref:guides/getting-started.adoc[Getting Started]
+
+|*tree-sitter CLI* |Compiles kulala's custom HTTP parser on first launch
+|see below
+|===
+
+=== Installing the tree-sitter CLI
+
+kulala.nvim ships a custom `kulala++_++http` tree-sitter grammar that
+nvim-treesitter compiles from source the first time you open an `.http`
+file. This requires the `tree-sitter` CLI binary to be on your `PATH`.
+
+*Via npm* (recommended if Node.js is already installed):
+
+[source,sh]
+----
+npm install -g tree-sitter-cli
+----
+
+*Via Cargo* (if you have a Rust toolchain):
+
+[source,sh]
+----
+cargo install tree-sitter-cli
+----
+
+*Pre-built binary*: download the latest release for your platform from
+https://github.com/tree-sitter/tree-sitter/releases/latest and place it
+somewhere on your `PATH` (e.g. `~/.local/bin/`).
+
+The compilation happens once; subsequent launches use the cached parser.
+
+https://github.com/mistweaverco/kulala.nvim[kulala.nvim] is a
+fully-featured, pure-Lua REST client for Neovim. Write your API requests
+in `.http` files and execute them directly from the editor.
+

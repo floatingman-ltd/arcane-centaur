@@ -6,7 +6,7 @@
 
 *Leader* = `Space`
 
-→ Back to link:index.md[main cheatsheet] · Full guide:
+→ Back to xref:cheatsheets/index.adoc[main cheatsheet] · Full guide:
 ../guides/haskell.md
 
 == GHCi REPL

@@ -1,7 +1,3 @@
-// :auto-generated: true
-// :source: documentation/guides/markdown.md
-// Remove this header to take manual ownership of this file
-
 == Markdown Preview Guide
 
 This guide covers all preview and export options for Markdown files:
@@ -14,11 +10,26 @@ cross-page links between `.md` files resolve correctly
 * *PDF export* — Pandoc-based export with rendered diagrams
 
 For diagrams specifically (PlantUML, Mermaid, PDF export), see
-*diagrams.md*. +
-For MARP presentation slides, see *presentations.md*.
+xref:guides/diagrams.adoc[Diagrams Guide]. +
+For MARP presentation slides, see xref:guides/presentations.adoc[Presentations Guide].
+
+*Quick navigation*
+
+[cols="1,3"]
+|===
+| xref:#quick-start[Quick Start] | Single-file and multi-file preview
+| xref:#plantuml-server[PlantUML Server] | Docker server for diagram preview
+| xref:#markdown-preview[markdown-preview.nvim] | Browser preview with diagram support
+| xref:#markserv[Markserv Docker Server] | Project-wide cross-page preview
+| xref:#mkdnflow[In-editor Navigation] | mkdnflow.nvim link following
+| xref:#keybindings[Keybindings Summary] | All local leader keymaps
+| xref:#choosing[Choosing the Right Preview Tool] | Decision guide
+| xref:#glow-preview[Glow (Console)] | In-terminal Markdown rendering
+|===
 
 '''''
 
+[[quick-start]]
 == Quick Start
 
 === Single-file preview (no Docker required)
@@ -58,6 +69,7 @@ because the whole project directory is served.
 
 '''''
 
+[[plantuml-server]]
 == PlantUML Server
 
 The markserv preview server generates `++<++img++>++` URLs pointing at
@@ -75,6 +87,7 @@ running permanently. See diagrams.md for the full guide.
 
 '''''
 
+[[markdown-preview]]
 == markdown-preview.nvim (`,p`)
 
 `markdown-preview.nvim` opens a single-file browser preview that syncs
@@ -99,6 +112,7 @@ between files in the editor.
 
 '''''
 
+[[markserv]]
 == Markserv Docker Server (`,sp`)
 
 The markserv preview server is a custom Node.js server that renders a
@@ -164,6 +178,7 @@ ____
 
 '''''
 
+[[mkdnflow]]
 == In-editor Navigation — mkdnflow.nvim
 
 `mkdnflow.nvim` provides in-editor link following so you can navigate
@@ -187,6 +202,7 @@ the single-file preview, or `,sp` to open it in the markserv server.
 
 '''''
 
+[[keybindings]]
 == Keybindings Summary
 
 LocalLeader is `,` in Markdown buffers.
@@ -224,10 +240,11 @@ navigation)
 |`,md` |Export MARP slide to PDF
 |===
 
-→ link:../cheatsheets/markdown.md[Full cheatsheet]
+→ xref:cheatsheets/markdown.adoc[Full cheatsheet]
 
 '''''
 
+[[choosing]]
 == Choosing the Right Preview Tool
 
 [width="100%",cols="40%,60%",options="header",]
@@ -247,3 +264,75 @@ server
 
 |MARP presentation slides |`,mp` — MARP Docker server
 |===
+
+'''''
+
+[[glow-preview]]
+== Markdown Preview — Glow (Console)
+
+In console sessions, `,p` is routed to https://github.com/charmbracelet/glow[glow], which renders
+Markdown with colour and tables in a floating popup window. Use `,pp` to
+force the glow popup even in a GUI environment.
+
+[width="100%",cols="34%,33%,33%",options="header",]
+|===
+|Key |Console |GUI
+|`,p` |`:Glow` — floating popup with rendered Markdown
+|`:MarkdownPreviewToggle` — opens in browser
+|===
+
+Press `q` or `++<++Esc++>++` to close the popup.
+
+=== Closing an orphaned popup
+
+Occasionally the Glow popup is left open after navigating away.
+The popup is a regular floating window; use standard Neovim window
+commands to reach and close it.
+
+*Normal close (focus the popup first):*
+
+....
+<C-w>w    " cycle through windows until the popup is focused
+q         " or: :q<CR>  — close the focused window
+....
+
+*Force-close all floating windows (nuclear option):*
+
+[source,vim]
+----
+:lua for _, w in ipairs(vim.api.nvim_list_wins()) do if vim.api.nvim_win_get_config(w).relative ~= "" then vim.api.nvim_win_close(w, true) end end
+----
+
+=== Customising the popup
+
+Override the glow options in `lua/plugins/markdown.lua`:
+
+[source,lua]
+----
+opts = {
+  border = "rounded",   -- "shadow", "none", "double", "solid", "single"
+  width  = 120,         -- max popup width in columns
+  height = 80,          -- max popup height in lines
+  pager  = false,
+},
+----
+
+=== Prerequisites — Installing glow
+
+[source,sh]
+----
+# Debian / Ubuntu (via Charmbracelet apt repo)
+sudo mkdir -p /etc/apt/keyrings
+curl -fsSL https://repo.charm.sh/apt/gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/charm.gpg
+echo "deb [signed-by=/etc/apt/keyrings/charm.gpg] https://repo.charm.sh/apt/ * *" \
+  | sudo tee /etc/apt/sources.list.d/charm.list
+sudo apt update && sudo apt install glow
+
+# macOS
+brew install glow
+
+# Other: https://github.com/charmbracelet/glow#installation
+----
+
+Neovim will emit a `WARN` notification at preview time if `glow` is not
+found on `$PATH` — it will not crash.

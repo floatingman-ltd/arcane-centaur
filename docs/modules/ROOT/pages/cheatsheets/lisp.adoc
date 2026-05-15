@@ -6,7 +6,7 @@
 
 *LocalLeader* = `,` in Lisp / Clojure / Scheme / Fennel buffers
 
-→ Back to link:index.md[main cheatsheet] · Full guide: ../guides/lisp.md
+→ Back to xref:cheatsheets/index.adoc[main cheatsheet] · Full guide: ../guides/lisp.md
 · Janet-specific: janet.md
 
 == Conjure — Evaluation
@@ -65,7 +65,7 @@ the first element _out of_ the form
 
 ____
 See
-link:++../guides/lisp.md#structural-editing-slurp--barf++[../guides/lisp.md]
+xref:guides/lisp.adoc#structural-editing[../guides/lisp.md]
 for step-by-step examples of each slurp/barf operation.
 ____
 

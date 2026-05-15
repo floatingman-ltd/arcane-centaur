@@ -1,7 +1,3 @@
-// :auto-generated: true
-// :source: documentation/guides/presentations.md
-// Remove this header to take manual ownership of this file
-
 == Working with Presentations (MARP)
 
 https://marp.app/[MARP] (Markdown Presentation Ecosystem) turns standard
@@ -24,38 +20,23 @@ install required.
 |Export to PDF |`docker run` with `--pdf` flag
 |===
 
-== Prerequisites
+*Quick navigation*
 
-[width="100%",cols="34%,33%,33%",options="header",]
+[cols="1,3"]
 |===
-|Dependency |Purpose |Install hint
-|*Docker* |Run the MARP CLI container
-|https://docs.docker.com/get-docker/[docs.docker.com]
-
-|*xdg-open* |Open the preview URL in a browser |Pre-installed on most
-Linux desktops
+| xref:#quick-start[Quick Start] | Start server and preview slides
+| xref:#starting-server[Starting the Preview Server] | Docker Compose commands
+| xref:#keybindings[Keybindings] | Preview and export keys
+| xref:#commands[User Commands] | Available Neovim commands
+| xref:#how-it-works[How It Works] | Implementation details
+| xref:#configuration[Configuration] | Port and path settings
+| xref:#marp-syntax[MARP Markdown Syntax] | Slide directives
+| xref:#prerequisites[Prerequisites] | Docker and xdg-open
 |===
 
-== Starting the MARP Preview Server
+'''''
 
-A Docker Compose file is provided at `docker/marp/docker-compose.yml`
-using the `marpteam/marp-cli` image. Port 8880 is bound to localhost
-only (8080 is reserved for the PlantUML server).
-
-[source,sh]
-----
-# Start the server (serves the current directory):
-docker compose -f ~/.config/nvim/docker/marp/docker-compose.yml up -d
-
-# Or serve a specific slides directory:
-MARP_DIR=~/slides docker compose -f ~/.config/nvim/docker/marp/docker-compose.yml up -d
-
-# Stop it when done:
-docker compose -f ~/.config/nvim/docker/marp/docker-compose.yml down
-----
-
-The server watches for file changes and refreshes automatically.
-
+[[quick-start]]
 == Quick Start
 
 [arabic]
@@ -103,6 +84,32 @@ Content alongside an image.
 . Press *`,mp`* to open the live preview in your browser.
 . Press *`,mx`* to export the file to PowerPoint (`.pptx`).
 
+'''''
+
+[[starting-server]]
+== Starting the MARP Preview Server
+
+A Docker Compose file is provided at `docker/marp/docker-compose.yml`
+using the `marpteam/marp-cli` image. Port 8880 is bound to localhost
+only (8080 is reserved for the PlantUML server).
+
+[source,sh]
+----
+# Start the server (serves the current directory):
+docker compose -f ~/.config/nvim/docker/marp/docker-compose.yml up -d
+
+# Or serve a specific slides directory:
+MARP_DIR=~/slides docker compose -f ~/.config/nvim/docker/marp/docker-compose.yml up -d
+
+# Stop it when done:
+docker compose -f ~/.config/nvim/docker/marp/docker-compose.yml down
+----
+
+The server watches for file changes and refreshes automatically.
+
+'''''
+
+[[keybindings]]
 == Keybindings
 
 `localleader` is *`,`* in markdown buffers.
@@ -117,6 +124,9 @@ Content alongside an image.
 |`,p` |Toggle standard Markdown preview (`MarkdownPreviewToggle`)
 |===
 
+'''''
+
+[[commands]]
 == User Commands
 
 The following commands are available in any markdown buffer:
@@ -130,6 +140,9 @@ The following commands are available in any markdown buffer:
 |`:MarpToPdf` |Convert the current file to PDF
 |===
 
+'''''
+
+[[how-it-works]]
 == How It Works
 
 === Live preview (`:MarpPreview`)
@@ -154,6 +167,9 @@ The output file is written to the same directory as the source file. The
 `MARP++_++USER` environment variable ensures correct file ownership on
 Linux.
 
+'''''
+
+[[configuration]]
 == Configuration
 
 The MARP server port is set to *8880* (to avoid conflict with the
@@ -166,6 +182,9 @@ PlantUML server on 8080). To change it, update:
 |`lua/config/marp.lua` |URL in the `preview` function
 |===
 
+'''''
+
+[[marp-syntax]]
 == MARP Markdown Syntax
 
 MARP extends standard Markdown with presentation-specific features:
@@ -194,3 +213,42 @@ overrides
 
 See the https://marpit.marp.app/[Marpit documentation] for the full
 directive reference.
+
+'''''
+
+[[prerequisites]]
+== Prerequisites
+
+[width="100%",cols="34%,33%,33%",options="header",]
+|===
+|Dependency |Purpose |Install hint
+|*Docker* |Run the MARP CLI container
+|https://docs.docker.com/get-docker/[docs.docker.com]
+
+|*xdg-open* |Open the preview URL in a browser |Pre-installed on most
+Linux desktops
+
+|*Neovim ≥ 0.12* |Minimum version |See
+xref:guides/getting-started.adoc[Getting Started]
+|===
+
+https://marp.app/[MARP] (Markdown Presentation Ecosystem) turns standard
+Markdown files into slide decks. This configuration adds Neovim commands
+that use the official
+https://hub.docker.com/r/marpteam/marp-cli/[marp-cli Docker image] to
+*preview* and *export* presentations — no local Node.js or Chromium
+install required.
+
+[width="100%",cols="50%,50%",options="header",]
+|===
+|Feature |How it works
+|Live preview |Docker Compose runs a MARP server on
+`http://localhost:8880`
+
+|Export to PPTX |`docker run` with `--pptx` flag
+
+|Export to HTML |`docker run` with `--html` flag
+
+|Export to PDF |`docker run` with `--pdf` flag
+|===
+

@@ -1,7 +1,3 @@
-// :auto-generated: true
-// :source: documentation/guides/lisp.md
-// Remove this header to take manual ownership of this file
-
 == Working with Lisp
 
 This configuration is built around an interactive, REPL-driven Lisp
@@ -29,7 +25,8 @@ All four plugins lazy-load only when you open a *Lisp*, *Clojure*,
 
 ____
 *Janet* shares the same plugin set (Conjure, vim-sexp, parinfer,
-rainbow-delimiters). See janet.md for the Janet-specific guide.
+rainbow-delimiters). See xref:guides/janet.adoc[Janet Guide] for the
+Janet-specific guide.
 ____
 
 https://github.com/stevearc/conform.nvim[conform.nvim] is also loaded
@@ -37,29 +34,21 @@ for these filetypes and provides *format-on-save* as well as a manual
 *`++<++leader++>++f`* keybinding (normal and visual mode) to reformat
 the current buffer or selection.
 
-== Prerequisites
+*Quick navigation*
 
-=== Choosing a REPL
-
-[width="100%",cols="34%,33%,33%",options="header",]
+[cols="1,3"]
 |===
-|Language |REPL |Notes
-|Common Lisp |SBCL |Recommended — Docker setup included (see Quick
-Start)
-
-|Clojure |Clojure nREPL |Start with `clojure -M:nrepl`
-
-|Scheme |MIT Scheme |`sudo apt install mit-scheme`
-
-|Fennel |Fennel REPL |`fennel --repl`
+| xref:#quick-start[Quick Start] | Start the REPL and evaluate code
+| xref:#lsp[LSP] | Language server notes
+| xref:#structural-editing[Structural Editing] | Slurp & barf reference
+| xref:#typical-workflow[Typical Workflow] | Day-to-day Lisp in Neovim
+| xref:#troubleshooting[Troubleshooting] | REPL connection issues
+| xref:#prerequisites[Prerequisites] | SBCL, Clojure, Scheme options
 |===
 
-== LSP
+'''''
 
-No Common Lisp LSP is configured by default in this repository. See
-link:../../readme.md#lsp-support[readme.md] for shared LSP keybindings
-that apply in buffers where an LSP client is attached.
-
+[[quick-start]]
 == Quick Start
 
 [arabic]
@@ -68,20 +57,8 @@ that apply in buffers where an LSP client is attached.
 *Option A — Docker (recommended for Common Lisp):* A pre-configured
 Docker setup lives in `docker/sbcl-swank/`. It runs SBCL with Quicklisp
 and starts the Swank server on port 4005 automatically.
-+
-[source,sh]
-----
-# Build the image before first use and after pulling config updates:
-docker compose -f ~/.config/nvim/docker/sbcl-swank/docker-compose.yml build
-
-# Start the server and wait until Swank is ready before returning.
-# --build keeps the image current; --wait blocks until the healthcheck
-# passes so Conjure can connect as soon as you open a file.
-LISP_DIR=$PWD docker compose -f ~/.config/nvim/docker/sbcl-swank/docker-compose.yml up -d --build --wait
-
-# Stop it when done:
-LISP_DIR=$PWD docker compose -f ~/.config/nvim/docker/sbcl-swank/docker-compose.yml down
-----
+See xref:guides/getting-started.adoc#sbcl-swank[Getting Started: SBCL + Swank container]
+for build, start, and stop commands.
 +
 Conjure will auto-connect on the next file open, or use `,cc` to connect
 manually.
@@ -161,8 +138,8 @@ the first element _out of_ the form
 |`dsf` |Delete surrounding function call (splice)
 |===
 +
-See link:++#structural-editing-slurp--barf++[Structural Editing: Slurp &
-Barf] below for step-by-step examples.
+See xref:#structural-editing[Structural Editing: Slurp & Barf] below
+for step-by-step examples.
 . *Parinfer* runs in the background — just adjust indentation and parens
 follow. No keys needed.
 . *Stop the Swank server* when you are done (Common Lisp only):
@@ -190,6 +167,19 @@ form at the REPL prompt, or quit the process entirely:
 (quit)
 ----
 
+'''''
+
+[[lsp]]
+== LSP
+
+No Common Lisp LSP is configured by default in this repository. See the
+xref:cheatsheets/code-intelligence.adoc[Code Intelligence cheatsheet]
+for shared LSP keybindings that apply in buffers where an LSP client is
+attached.
+
+'''''
+
+[[structural-editing]]
 == Structural Editing: Slurp & Barf
 
 Slurp and barf let you *reshape S-expressions without manually counting
@@ -286,6 +276,9 @@ cutting and pasting:
   (format t "Hello ~a!" name))
 ----
 
+'''''
+
+[[typical-workflow]]
 == Typical Workflow
 
 ....
@@ -313,13 +306,16 @@ cutting and pasting:
 . Write or edit code in the left pane.
 . Press `,ee` to evaluate the expression under the cursor — the result
 appears in the Conjure log.
-. Use `,lv` to open the log in a vertical split if it isn’t visible.
+. Use `,lv` to open the log in a vertical split if it isn't visible.
 . Use vim-sexp motions (`++>++)`, `++<++(`, etc.) to restructure
 S-expressions without counting parentheses.
 . Parinfer keeps parens balanced automatically as you change
 indentation.
 . Rainbow delimiters let you visually match nesting depth.
 
+'''''
+
+[[troubleshooting]]
 == Troubleshooting
 
 === HUD shows nothing / `close-connection: end of file`
@@ -337,7 +333,7 @@ Symptoms: `docker compose logs` shows an error _before_ the
 
 '''''
 
-*Failure mode 2 — Conjure’s connection is refused (HUD shows nothing, no
+*Failure mode 2 — Conjure's connection is refused (HUD shows nothing, no
 `close-connection`)*
 
 Symptoms: The container is `healthy`, port 4005 is open on the host, but
@@ -345,7 +341,7 @@ Conjure cannot connect and the HUD stays silent.
 
 Root cause: `swank:create-server` binds to `127.0.0.1` (loopback) by
 default. Docker port-forwarding routes host connections to the
-*container’s eth0 interface* (e.g. `172.17.0.2`), not to its loopback.
+*container's eth0 interface* (e.g. `172.17.0.2`), not to its loopback.
 The TCP connection is refused at the network level — Swank never sees
 it, so no `close-connection` appears in the logs.
 
@@ -425,7 +421,7 @@ healthy, reconnect manually if you already have a `.lisp` buffer open:
 
 === Checking the full evaluation log
 
-The HUD shows the last few lines of Conjure’s log buffer as a floating
+The HUD shows the last few lines of Conjure's log buffer as a floating
 popup. To see the complete history:
 
 [cols=",",options="header",]
@@ -435,3 +431,63 @@ popup. To see the complete history:
 |`,ls` |Open the log in a horizontal split
 |`,lq` |Close the log window
 |===
+
+'''''
+
+[[prerequisites]]
+== Prerequisites
+
+=== Choosing a REPL
+
+[width="100%",cols="34%,33%,33%",options="header",]
+|===
+|Language |REPL |Notes
+|Common Lisp |SBCL |Recommended — Docker setup included (see Quick
+Start)
+
+|Clojure |Clojure nREPL |Start with `clojure -M:nrepl`
+
+|Scheme |MIT Scheme |`sudo apt install mit-scheme`
+
+|Fennel |Fennel REPL |`fennel --repl`
+|===
+
+=== Neovim
+
+Neovim ≥ 0.12 is required. See
+xref:guides/getting-started.adoc[Getting Started] for install
+instructions.
+
+This configuration is built around an interactive, REPL-driven Lisp
+workflow. Four plugins work together to give you a seamless experience:
+
+[width="100%",cols="50%,50%",options="header",]
+|===
+|Plugin |Role
+|https://github.com/Olical/conjure[Conjure] |Connect to a REPL and
+evaluate code without leaving the editor
+
+|https://github.com/guns/vim-sexp[vim-sexp] {plus}
+https://github.com/tpope/vim-sexp-mappings-for-regular-people[mappings]
+|Structural editing — slurp, barf, and move S-expressions
+
+|https://github.com/gpanders/nvim-parinfer[nvim-parinfer] |Keeps
+parentheses balanced automatically as you edit indentation
+
+|https://github.com/HiPhish/rainbow-delimiters.nvim[rainbow-delimiters.nvim]
+|Color-codes matching delimiters so you can see nesting at a glance
+|===
+
+All four plugins lazy-load only when you open a *Lisp*, *Clojure*,
+*Scheme*, or *Fennel* file.
+
+____
+*Janet* shares the same plugin set (Conjure, vim-sexp, parinfer,
+rainbow-delimiters). See janet.md for the Janet-specific guide.
+____
+
+https://github.com/stevearc/conform.nvim[conform.nvim] is also loaded
+for these filetypes and provides *format-on-save* as well as a manual
+*`++<++leader++>++f`* keybinding (normal and visual mode) to reformat
+the current buffer or selection.
+

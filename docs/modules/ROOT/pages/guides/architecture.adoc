@@ -1,15 +1,248 @@
-// :auto-generated: true
-// :source: documentation/guides/architecture.md
-// Remove this header to take manual ownership of this file
-
 == Configuration Architecture
 
 This document explains the directory structure of this Neovim
 configuration — what each directory and file is for, why it is placed
 where it is, and how the pieces fit together at startup.
 
+*Quick navigation*
+
+[cols="1,3"]
+|===
+| xref:#supported-languages[Supported Languages] | Language support matrix
+| xref:#plugin-overview[Plugin Overview] | All plugins grouped by category
+| xref:#startup-order[Startup Order] | Init file loading sequence
+| xref:#root-level-files[Root-Level Files] | init.lua, lazy-lock.json
+| xref:#lua[lua/] | options, keymaps, plugins, config modules
+| xref:#after-ftplugin[after/ftplugin/] | Filetype-specific overrides
+| xref:#docker[docker/] | Docker service definitions
+| xref:#docs[docs/] | User documentation
+| xref:#openspec[openspec/] | Change management workflow
+| xref:#github[.github/] | Copilot CLI integration
+| xref:#console-detection[Console Detection] | How is_console is determined
+| xref:#open-url[Open URL Behaviour] | Browser vs. notification
+|===
+
 '''''
 
+[[supported-languages]]
+== Supported Languages
+
+[width="100%",cols="20%,15%,20%,20%,15%,10%",options="header",]
+|===
+|Language |Treesitter |LSP |REPL |Structural Editing |Guide
+
+|Clojure
+|✅
+|—
+|✅ nREPL (Conjure)
+|✅ vim-sexp {plus} parinfer
+|xref:guides/lisp.adoc[Lisp guide]
+
+|Common Lisp
+|✅
+|—
+|✅ Swank (Conjure)
+|✅ vim-sexp {plus} parinfer
+|xref:guides/lisp.adoc[Lisp guide]
+
+|C++#++
+|✅
+|✅ roslyn.nvim
+|—
+|—
+|xref:guides/dotnet.adoc[.NET guide]
+
+|F++#++
+|✅
+|✅ fsautocomplete
+|✅ dotnet fsi (iron.nvim)
+|—
+|xref:guides/dotnet.adoc[.NET guide]
+
+|Fennel
+|—
+|—
+|✅ (Conjure)
+|✅ parinfer
+|xref:guides/lisp.adoc[Lisp guide]
+
+|Haskell
+|—
+|✅ haskell-tools
+|✅ GHCi
+|—
+|xref:guides/haskell.adoc[Haskell guide]
+
+|HTTP
+|✅
+|—
+|—
+|—
+|xref:guides/rest.adoc[REST guide]
+
+|Janet
+|—
+|✅ janet_lsp
+|✅ (Conjure)
+|✅ vim-sexp {plus} parinfer
+|xref:guides/janet.adoc[Janet guide]
+
+|Lua
+|✅
+|—
+|—
+|—
+|—
+
+|Markdown
+|✅
+|✅ marksman
+|—
+|—
+|xref:guides/markdown.adoc[Markdown guide]
+
+|Mermaid _(in Markdown)_
+|✅ _(markdown)_
+|—
+|—
+|—
+|xref:guides/diagrams.adoc[Diagrams guide]
+
+|MARP slides
+|✅ _(markdown)_
+|—
+|—
+|—
+|xref:guides/presentations.adoc[Presentations guide]
+
+|PlantUML
+|✅
+|—
+|—
+|—
+|xref:guides/diagrams.adoc[Diagrams guide]
+
+|Scheme
+|✅
+|—
+|✅ built-in (Conjure)
+|✅ vim-sexp {plus} parinfer
+|xref:guides/lisp.adoc[Lisp guide]
+|===
+
+'''''
+
+[[plugin-overview]]
+== Plugin Overview
+
+All plugins are managed by https://github.com/folke/lazy.nvim[lazy.nvim]. Specs live in `lua/plugins/` — one file per group.
+
+=== Colorscheme
+
+[cols="1,3"]
+|===
+|https://github.com/folke/tokyonight.nvim[tokyonight.nvim] |TokyoNight color scheme (moon variant by default)
+|===
+
+=== Completion & LSP
+
+[cols="1,3"]
+|===
+|https://github.com/neovim/nvim-lspconfig[nvim-lspconfig] |LSP server configuration helpers
+|https://github.com/hrsh7th/nvim-cmp[nvim-cmp] |Completion engine
+|https://github.com/hrsh7th/cmp-nvim-lsp[cmp-nvim-lsp] |LSP completion source
+|https://github.com/hrsh7th/cmp-buffer[cmp-buffer] |Buffer words completion source
+|https://github.com/hrsh7th/cmp-path[cmp-path] |File path completion source
+|https://github.com/hrsh7th/cmp-cmdline[cmp-cmdline] |Command-line completion source
+|https://github.com/saadparwaiz1/cmp_luasnip[cmp_luasnip] |Snippet completion source
+|https://github.com/f3fora/cmp-spell[cmp-spell] |Spell dictionary completion source
+|https://github.com/stevearc/conform.nvim[conform.nvim] |Format-on-save and manual formatting
+|===
+
+=== Navigation & UI
+
+[cols="1,3"]
+|===
+|https://github.com/ibhagwan/fzf-lua[fzf-lua] |Fuzzy finder for files, grep, buffers, diagnostics
+|https://github.com/nvim-tree/nvim-tree.lua[nvim-tree.lua] |File explorer sidebar
+|https://github.com/vim-airline/vim-airline[vim-airline] |Status line
+|https://github.com/nvim-tree/nvim-web-devicons[nvim-web-devicons] |File type icons (requires Nerd Font)
+|===
+
+=== Editor Enhancement
+
+[cols="1,3"]
+|===
+|https://github.com/nvim-treesitter/nvim-treesitter[nvim-treesitter] |Syntax highlighting and text objects
+|https://github.com/tpope/vim-surround[vim-surround] |Surround text with quotes, brackets, tags
+|https://github.com/tpope/vim-commentary[vim-commentary] |Toggle comments (`gcc`, `gc`)
+|https://github.com/tpope/vim-unimpaired[vim-unimpaired] |Paired bracket keymaps (`[b`, `]b`, etc.)
+|https://github.com/tpope/vim-repeat[vim-repeat] |Repeat plugin commands with `.`
+|https://github.com/tpope/vim-sensible[vim-sensible] |Sensible default settings
+|https://github.com/jakewvincent/mkdnflow.nvim[mkdnflow.nvim] |Markdown link following and note navigation
+|===
+
+=== Git
+
+[cols="1,3"]
+|===
+|https://github.com/tpope/vim-fugitive[vim-fugitive] |Git commands inside Neovim (`:G`, `:Gdiff`, etc.)
+|https://github.com/lewis6991/gitsigns.nvim[gitsigns.nvim] |Inline hunk signs, stage/unstage hunks
+|https://github.com/sindrets/diffview.nvim[diffview.nvim] |Side-by-side diff and file history views
+|===
+
+=== Languages — Lisp Family
+
+[cols="1,3"]
+|===
+|https://github.com/Olical/conjure[conjure] |Evaluate code in a running REPL from the editor
+|https://github.com/PaterJason/cmp-conjure[cmp-conjure] |Conjure completion source for nvim-cmp
+|https://github.com/guns/vim-sexp[vim-sexp] |Structural S-expression editing
+|https://github.com/tpope/vim-sexp-mappings-for-regular-people[vim-sexp-mappings-for-regular-people] |Friendlier default keymaps for vim-sexp
+|https://github.com/gpanders/nvim-parinfer[nvim-parinfer] |Automatic parenthesis balancing via indentation
+|https://github.com/HiPhish/rainbow-delimiters.nvim[rainbow-delimiters.nvim] |Color-coded nested delimiters
+|===
+
+=== Languages — .NET
+
+[cols="1,3"]
+|===
+|https://github.com/seblyng/roslyn.nvim[roslyn.nvim] |Roslyn LSP for C++#++ (OmniSharp successor)
+|https://github.com/Vigemus/iron.nvim[iron.nvim] |REPL management (used for F++#++ `dotnet fsi`)
+|===
+
+=== Languages — Haskell
+
+[cols="1,3"]
+|===
+|https://github.com/mrcjkb/haskell-tools.nvim[haskell-tools.nvim] |Haskell LSP, GHCi REPL, Hoogle search
+|===
+
+=== AI & Automation
+
+[cols="1,3"]
+|===
+|https://github.com/github/copilot.vim[copilot.vim] |GitHub Copilot inline completions
+|https://github.com/yetone/avante.nvim[avante.nvim] |AI chat panel (Copilot {plus} Ollama backends)
+|https://github.com/MunifTanjim/nui.nvim[nui.nvim] |UI component library (required by avante)
+|https://github.com/stevearc/dressing.nvim[dressing.nvim] |Improved `vim.ui.input` / `vim.ui.select` (required by avante)
+|https://github.com/nvim-lua/plenary.nvim[plenary.nvim] |Lua utility library (required by avante)
+|===
+
+=== Content & Preview
+
+[cols="1,3"]
+|===
+|https://github.com/iamcco/markdown-preview.nvim[markdown-preview.nvim] |Live Markdown preview in browser (GUI)
+|https://github.com/ellisonleao/glow.nvim[glow.nvim] |Terminal Markdown preview via glow (console)
+|https://github.com/aklt/plantuml-syntax[plantuml-syntax] |PlantUML syntax highlighting
+|https://github.com/mistweaverco/kulala.nvim[kulala.nvim] |HTTP/REST client for `.http` files
+|https://github.com/turbio/bracey.vim[bracey.vim] |Live HTML preview in browser
+|===
+
+'''''
+
+[[startup-order]]
 == Startup Order
 
 Neovim always loads files in this sequence:
@@ -28,6 +261,7 @@ is first needed, or by `require()` calls inside plugin config functions.
 
 '''''
 
+[[root-level-files]]
 == Root-Level Files
 
 [width="100%",cols="50%,50%",options="header",]
@@ -50,6 +284,7 @@ Copilot instructions file.
 
 '''''
 
+[[lua]]
 == `lua/` — The Lua Source Tree
 
 All runtime Lua code lives here. Neovim adds `lua/` to the Lua
@@ -177,6 +412,7 @@ management).
 
 '''''
 
+[[after-ftplugin]]
 == `after/ftplugin/` — Filetype-Specific Overrides
 
 Neovim automatically sources `after/ftplugin/++<++filetype++>++.lua`
@@ -217,6 +453,7 @@ search)
 
 '''''
 
+[[docker]]
 == `docker/` — Docker Service Definitions
 
 Each subdirectory is a self-contained Docker Compose service used by a
@@ -246,9 +483,14 @@ PlantUML {plus} Mermaid diagram rendering)
 
 '''''
 
+[[docs]]
 == `docs/` — User Documentation
 
-Human-readable reference material. Not loaded by Neovim.
+Human-readable reference material, authored in AsciiDoc. Not loaded by Neovim.
+
+All documentation lives under `docs/modules/ROOT/pages/` as `.adoc` files —
+this is the source of truth. There are no auto-generated files and no Markdown
+source files under `docs/`.
 
 === `docs/guides/`
 
@@ -257,10 +499,19 @@ setting up a new language or feature on a fresh machine.
 
 === `docs/cheatsheets/`
 
-Quick-reference keymap tables. `index.md` is the single-page master
+Quick-reference keymap tables. `index.adoc` is the single-page master
 reference. Each other file covers one plugin or language area.
 
-=== `docs/jira-project-map.md`
+=== `docs/learning/`
+
+Step-by-step learning paths for specific languages (currently Janet).
+
+=== `docs/modules/ROOT/nav.adoc`
+
+Sidebar navigation for the Antora docs site. Must be updated whenever
+a page is added or removed. See xref:guides/contributing.adoc[Contributing to Docs].
+
+=== `jira-project-map.adoc`
 
 Maps directory prefixes to Jira project keys. Used by
 `lua/config/jira.lua` to automatically select the right Jira project
@@ -268,6 +519,7 @@ when creating issues.
 
 '''''
 
+[[scripts]]
 == `scripts/` — Shell and Pandoc Scripts
 
 Helper scripts invoked by Neovim commands, not intended to be run
@@ -288,6 +540,7 @@ conversion
 
 '''''
 
+[[openspec]]
 == `openspec/` — OpenSpec Change Management
 
 OpenSpec is a lightweight spec-driven workflow for tracking proposed
@@ -316,6 +569,7 @@ directory.
 
 '''''
 
+[[github]]
 == `.github/` — Copilot CLI Integration
 
 [width="100%",cols="50%,50%",options="header",]
@@ -334,6 +588,7 @@ how to invoke an OpenSpec workflow step.
 
 '''''
 
+[[opencode]]
 == `.opencode/` — opencode-ai Integration
 
 Mirror of `.github/skills/` for the opencode-ai editor assistant.
@@ -342,6 +597,7 @@ expects.
 
 '''''
 
+[[serena]]
 == `.serena/` — Serena MCP Server State
 
 Runtime state for the https://github.com/oraios/serena[Serena] MCP
@@ -363,8 +619,54 @@ sessions
 
 '''''
 
+[[testdocs]]
 == `testdocs/`
 
 Sample files used for manual testing of preview features
 (e.g. `test.puml` for verifying the PlantUML ASCII preview). Not part of
 the production config.
+
+'''''
+
+[[console-detection]]
+== Console Detection
+
+The configuration detects console mode via a single boolean flag:
+
+[source,lua]
+----
+local term = require("config.terminal")
+if term.is_console then ...
+----
+
+`is++_++console` is `true` when *both* `$DISPLAY` and
+`$WAYLAND++_++DISPLAY` are unset. It is `false` when either is set,
+which covers:
+
+[width="100%",cols="25%,25%,25%,25%",options="header",]
+|===
+|Environment |`$DISPLAY` |`$WAYLAND++_++DISPLAY` |`is++_++console`
+|Physical TTY (`$TERM=linux`) |unset |unset |`true`
+|SSH without X forwarding |unset |unset |`true`
+|tmux on headless server |unset |unset |`true`
+|X11 GUI terminal |set (e.g. `:0`) |unset |`false`
+|Wayland GUI terminal |unset |set (e.g. `wayland-0`) |`false`
+|tmux inside GUI terminal |set (outer terminal sets it) |— |`false`
+|===
+
+No manual override flag is needed. If the detection is wrong for your
+setup, file an issue.
+
+'''''
+
+[[open-url]]
+== Open URL Behaviour
+
+In console mode, `util.open++_++url` skips all browser-opener attempts
+and instead emits an `INFO` notification containing the full URL. Copy
+it and open it manually (e.g. in w3m, or paste it into a GUI browser on
+another machine).
+
+In GUI mode, the existing behaviour is unchanged: `xdg-open` / `open` /
+`wslview` / `explorer.exe` are tried in order, and a `WARN` notification
+is emitted if none are found.

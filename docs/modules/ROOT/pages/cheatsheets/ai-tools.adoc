@@ -1,7 +1,3 @@
-// :auto-generated: true
-// :source: documentation/cheatsheets/ai-tools.md
-// Remove this header to take manual ownership of this file
-
 == AI Tools Cheat Sheet
 
 Covers in-editor keymaps for *GitHub Copilot CLI* (`copilot`) and the
@@ -79,4 +75,45 @@ specific `++[++name++]++`
 
 '''''
 
-→ link:../guides/ai-tools.md[Full guide] · link:index.md[Back to index]
+→ xref:guides/ai-tools.adoc[Full guide] · xref:index.adoc[Back to index]
+
+'''''
+
+== Copilot Inline Suggestions (github/copilot.vim)
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`Ctrl-j` |Insert |Accept the full inline suggestion
+|`Alt-f` |Insert |Accept only the next word of the suggestion
+|===
+
+`Alt-f` follows the readline/Emacs "`forward-word`" convention (`M-f`).
+
+=== Model Configuration
+
+The active inline-completion model is set in `lua/plugins/copilot.lua`:
+
+[source,lua]
+----
+vim.g.copilot_model = "claude-sonnet-4-5"
+----
+
+Other available values: `"gpt-4o"`, `"gpt-4.1"`, `"claude-opus-4-5"`.
+
+_Keymaps defined in `lua/keymaps.lua`. Plugin configured in
+`lua/plugins/copilot.lua`._
+
+'''''
+
+== Avante AI Research
+
+[cols=",",options="header",]
+|===
+|Key |Action
+|`++<++leader++>++aa` |Open avante with the current provider
+|`++<++leader++>++ao` |Switch to ollama provider and open avante
+|`++<++leader++>++ac` |Switch to copilot provider and open avante
+|===
+
+_Plugin configured in `lua/plugins/avante.lua`. See xref:guides/ai-tools.adoc#avante[full Avante guide]._
