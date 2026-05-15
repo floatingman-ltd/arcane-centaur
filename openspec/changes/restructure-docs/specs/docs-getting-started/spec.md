@@ -4,8 +4,16 @@
 A `documentation/guides/getting-started.md` file SHALL exist as the single canonical
 reference for system-level prerequisites and Neovim installation. It SHALL cover:
 - Neovim version requirement (≥ 0.12) with install instructions (AppImage and tarball)
+- Docker Engine / Docker Compose install and verification (`docker compose version`)
 - General system dependencies shared across language plugins (git, curl, etc.)
 - First-run steps after cloning the config
+
+> **Note — Docker coverage gap:** Docker is currently assumed to be present throughout
+> the guides (markserv, plantuml-server, pandoc/extra, marp-cli, ollama, SBCL/Swank all
+> use `docker compose`) but no guide explains how to install it. The only prior mention
+> was in `validation.md` which is being removed from the site. `getting-started.md` is
+> the correct home for Docker Engine / Docker Desktop install instructions and a
+> `docker compose version` verification step.
 
 #### Scenario: Getting started guide is the install authority
 - **WHEN** a reader needs to install or upgrade Neovim
