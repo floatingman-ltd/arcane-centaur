@@ -145,14 +145,13 @@ Press `Enter` on any commit to open a diff of that commit.
 [[workflow]]
 == Typical Workflow
 
-....
- 1. Edit code
- 2. <leader>hs  — stage individual hunks as you work
- 3. <leader>gs  — open status window for a final review
- 4. cc           — write commit message and commit
- 5. <leader>gp  — push
- 6. <leader>gD  — verify the diff before and after
-....
+[arabic]
+. Edit code.
+. `++<++leader++>++hs` — stage individual hunks as you work.
+. `++<++leader++>++gs` — open status window for a final review.
+. `cc` — write commit message and commit.
+. `++<++leader++>++gp` — push.
+. `++<++leader++>++gD` — verify the diff before and after.
 
 ---
 
