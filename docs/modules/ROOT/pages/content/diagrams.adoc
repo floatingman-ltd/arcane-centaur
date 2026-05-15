@@ -299,7 +299,7 @@ The `marksman` LSP server provides: - *Link completion* — auto-complete
 links and malformed references are flagged inline - *Go-to-definition*
 (`gd`) — jump to linked documents
 
-See xref:cheatsheets/code-intelligence.adoc[readme.md] for the shared LSP
+See xref:editor/code-intelligence.adoc[readme.md] for the shared LSP
 keybindings.
 
 [[diagram-types]]
@@ -424,4 +424,4 @@ ____
 ____
 
 Neovim ≥ 0.12 is required. See
-xref:guides/getting-started.adoc[Getting Started] for install instructions.
+xref:getting-started.adoc[Getting Started] for install instructions.

@@ -102,7 +102,7 @@ jpm install janet-lsp
 ----
 
 Make sure `janet-lsp` is on your `$PATH` (typically `~/.jpm/bin/`). See
-the xref:cheatsheets/code-intelligence.adoc[Code Intelligence cheatsheet]
+the xref:editor/code-intelligence.adoc[Code Intelligence cheatsheet]
 for shared LSP keybindings.
 
 '''''
@@ -211,7 +211,7 @@ instructions.
 === Neovim
 
 Neovim ≥ 0.12 is required. See
-xref:guides/getting-started.adoc[Getting Started] for install instructions.
+xref:getting-started.adoc[Getting Started] for install instructions.
 
 Janet is a lightweight, expressive Lisp dialect designed for scripting,
 system automation, and embedding. This configuration provides

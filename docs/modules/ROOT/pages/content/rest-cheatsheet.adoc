@@ -6,7 +6,7 @@
 
 *LocalLeader* = `,` in `.http` buffers
 
-→ Back to xref:cheatsheets/index.adoc[main cheatsheet]
+→ Back to xref:editor/keybindings.adoc[main cheatsheet]
 
 == Running Requests
 
@@ -33,4 +33,4 @@
 |`:Kulala search` |Search and jump to a request
 |===
 
-→ xref:guides/rest.adoc[Guide]
+→ xref:content/rest.adoc[Guide]

@@ -36,56 +36,56 @@ where it is, and how the pieces fit together at startup.
 |—
 |✅ nREPL (Conjure)
 |✅ vim-sexp {plus} parinfer
-|xref:guides/lisp.adoc[Lisp guide]
+|xref:languages/lisp.adoc[Lisp guide]
 
 |Common Lisp
 |✅
 |—
 |✅ Swank (Conjure)
 |✅ vim-sexp {plus} parinfer
-|xref:guides/lisp.adoc[Lisp guide]
+|xref:languages/lisp.adoc[Lisp guide]
 
 |C++#++
 |✅
 |✅ roslyn.nvim
 |—
 |—
-|xref:guides/dotnet.adoc[.NET guide]
+|xref:languages/dotnet.adoc[.NET guide]
 
 |F++#++
 |✅
 |✅ fsautocomplete
 |✅ dotnet fsi (iron.nvim)
 |—
-|xref:guides/dotnet.adoc[.NET guide]
+|xref:languages/dotnet.adoc[.NET guide]
 
 |Fennel
 |—
 |—
 |✅ (Conjure)
 |✅ parinfer
-|xref:guides/lisp.adoc[Lisp guide]
+|xref:languages/lisp.adoc[Lisp guide]
 
 |Haskell
 |—
 |✅ haskell-tools
 |✅ GHCi
 |—
-|xref:guides/haskell.adoc[Haskell guide]
+|xref:languages/haskell.adoc[Haskell guide]
 
 |HTTP
 |✅
 |—
 |—
 |—
-|xref:guides/rest.adoc[REST guide]
+|xref:content/rest.adoc[REST guide]
 
 |Janet
 |—
 |✅ janet_lsp
 |✅ (Conjure)
 |✅ vim-sexp {plus} parinfer
-|xref:guides/janet.adoc[Janet guide]
+|xref:languages/janet.adoc[Janet guide]
 
 |Lua
 |✅
@@ -99,35 +99,35 @@ where it is, and how the pieces fit together at startup.
 |✅ marksman
 |—
 |—
-|xref:guides/markdown.adoc[Markdown guide]
+|xref:content/markdown.adoc[Markdown guide]
 
 |Mermaid _(in Markdown)_
 |✅ _(markdown)_
 |—
 |—
 |—
-|xref:guides/diagrams.adoc[Diagrams guide]
+|xref:content/diagrams.adoc[Diagrams guide]
 
 |MARP slides
 |✅ _(markdown)_
 |—
 |—
 |—
-|xref:guides/presentations.adoc[Presentations guide]
+|xref:content/presentations.adoc[Presentations guide]
 
 |PlantUML
 |✅
 |—
 |—
 |—
-|xref:guides/diagrams.adoc[Diagrams guide]
+|xref:content/diagrams.adoc[Diagrams guide]
 
 |Scheme
 |✅
 |—
 |✅ built-in (Conjure)
 |✅ vim-sexp {plus} parinfer
-|xref:guides/lisp.adoc[Lisp guide]
+|xref:languages/lisp.adoc[Lisp guide]
 |===
 
 '''''
@@ -509,7 +509,7 @@ Step-by-step learning paths for specific languages (currently Janet).
 === `docs/modules/ROOT/nav.adoc`
 
 Sidebar navigation for the Antora docs site. Must be updated whenever
-a page is added or removed. See xref:guides/contributing.adoc[Contributing to Docs].
+a page is added or removed. See xref:other/contributing.adoc[Contributing to Docs].
 
 === `jira-project-map.adoc`
 

@@ -1,13 +1,13 @@
 // :auto-generated: true
-// :source: documentation/cheatsheets/lisp.md
+// :source: documentation/cheatsheets/janet.md
 // Remove this header to take manual ownership of this file
 
-== Lisp Cheatsheet (Conjure {plus} vim-sexp)
+== Janet Cheatsheet (Conjure {plus} vim-sexp)
 
-*LocalLeader* = `,` in Lisp / Clojure / Scheme / Fennel buffers
+*LocalLeader* = `,` in Janet buffers
 
-→ Back to xref:cheatsheets/index.adoc[main cheatsheet] · Full guide: ../guides/lisp.md
-· Janet-specific: janet.md
+→ Back to xref:editor/keybindings.adoc[main cheatsheet] · Full guide:
+../guides/janet.md
 
 == Conjure — Evaluation
 
@@ -18,7 +18,6 @@
 |`,er` |Evaluate root (outermost) form
 |`,eb` |Evaluate entire buffer
 |`,e!` |Replace form with its evaluated result
-|`,cc` |Connect to REPL manually
 |===
 
 == Conjure — REPL Log
@@ -64,9 +63,7 @@ the first element _out of_ the form
 |===
 
 ____
-See
-xref:guides/lisp.adoc#structural-editing[../guides/lisp.md]
-for step-by-step examples of each slurp/barf operation.
+See ../guides/janet.md for step-by-step examples and setup instructions.
 ____
 
 == Other Active Plugins
@@ -75,11 +72,11 @@ ____
 (no keymaps)
 * *rainbow-delimiters.nvim* — color-codes matching delimiters by depth
 (no keymaps)
-* *LSP* (none configured by default for Common Lisp) — see lsp.md
+* *LSP* (`janet++_++lsp`) — see lsp.md
 * *Formatting* (conform.nvim, format-on-save) — see formatting.md
 
 '''''
 
 _Conjure prefix configured in `lua/plugins/lisp.lua`. vim-sexp keymaps
 from `tpope/vim-sexp-mappings-for-regular-people`. LocalLeader set in
-`after/ftplugin/lisp.lua`, `clojure.lua`, and `scheme.lua`._
+`after/ftplugin/janet.lua`._

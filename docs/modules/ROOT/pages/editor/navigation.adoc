@@ -2,7 +2,7 @@
 
 *Leader* = `Space`
 
-→ Back to xref:cheatsheets/index.adoc[main cheatsheet]
+→ Back to xref:editor/keybindings.adoc[main cheatsheet]
 
 == Window / Split Navigation
 

@@ -75,7 +75,7 @@ specific `++[++name++]++`
 
 '''''
 
-→ xref:guides/ai-tools.adoc[Full guide] · xref:index.adoc[Back to index]
+→ xref:ai/ai-tools.adoc[Full guide] · xref:index.adoc[Back to index]
 
 '''''
 
@@ -116,4 +116,4 @@ _Keymaps defined in `lua/keymaps.lua`. Plugin configured in
 |`++<++leader++>++ac` |Switch to copilot provider and open avante
 |===
 
-_Plugin configured in `lua/plugins/avante.lua`. See xref:guides/ai-tools.adoc#avante[full Avante guide]._
+_Plugin configured in `lua/plugins/avante.lua`. See xref:ai/ai-tools.adoc#avante[full Avante guide]._

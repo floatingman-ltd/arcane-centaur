@@ -223,7 +223,7 @@ ____
 |`sudo apt install jq`
 
 |*PlantUML server* _(optional)_ |Renders diagrams to PNG |See
-xref:guides/diagrams.adoc[Diagrams Guide]
+xref:content/diagrams.adoc[Diagrams Guide]
 
 |*CONFLUENCE++_++EMAIL* env var |Atlassian account email |See
 xref:#authentication[Authentication]
@@ -232,7 +232,7 @@ xref:#authentication[Authentication]
 xref:#authentication[Authentication]
 
 |*Neovim ≥ 0.12* |Minimum version |See
-xref:guides/getting-started.adoc[Getting Started]
+xref:getting-started.adoc[Getting Started]
 |===
 
 Publish a local markdown file directly to its Confluence page with `,cc`

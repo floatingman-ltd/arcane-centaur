@@ -146,7 +146,7 @@ active.
 [[keybindings]]
 == Keybindings
 
-→ See the xref:cheatsheets/rest.adoc[REST cheatsheet] for the full
+→ See the xref:content/rest-cheatsheet.adoc[REST cheatsheet] for the full
 keybinding reference.
 
 [cols=",",options="header",]
@@ -232,7 +232,7 @@ documentation] for all available options.
 |*curl* |Sends HTTP requests |`sudo apt install curl`
 
 |*Neovim ≥ 0.12* |Minimum version required |See
-xref:guides/getting-started.adoc[Getting Started]
+xref:getting-started.adoc[Getting Started]
 
 |*tree-sitter CLI* |Compiles kulala's custom HTTP parser on first launch
 |see below
