@@ -293,7 +293,7 @@ jpm install janet-lsp
 ----
 
 Make sure `janet-lsp` is on your `$PATH` (typically `~/.jpm/bin/`). See
-link:../../readme.md#lsp-support[readme.md] for the shared LSP
+xref:cheatsheets/code-intelligence.adoc[readme.md] for the shared LSP
 keybindings.
 
 == Quick Start

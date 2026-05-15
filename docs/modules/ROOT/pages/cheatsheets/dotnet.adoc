@@ -2,7 +2,7 @@
 
 *LocalLeader* = `,` in `.cs`, `.fs`, `.fsx`, and `.fsi` buffers.
 
-→ Back to xref:index.adoc[main cheatsheet] · xref:../guides/dotnet.adoc[Full guide]
+→ Back to xref:index.adoc[main cheatsheet] · xref:guides/dotnet.adoc[Full guide]
 
 == REPL — iron.nvim
 

@@ -177,7 +177,7 @@ Then reload your shell or open a new terminal before launching Neovim.
 
 Create Jira issues and stories without leaving Neovim. The Jira
 integration follows the same pattern as the
-link:confluence.md[Confluence integration]: pure Lua, async `curl`
+xref:guides/confluence.adoc[Confluence integration]: pure Lua, async `curl`
 calls, and localleader keymaps in Markdown buffers.
 
 == Prerequisites

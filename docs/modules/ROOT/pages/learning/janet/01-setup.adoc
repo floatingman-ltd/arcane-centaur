@@ -9,7 +9,7 @@ toolchain that is already configured in this repository — LSP, REPL,
 structural editing, formatting, and rainbow delimiters.
 
 ____
-*Series:* 01 Setup ← you are here · link:02-first-steps.md[02 First
+*Series:* 01 Setup ← you are here · xref:learning/janet/02-first-steps.adoc[02 First
 Steps]
 ____
 
@@ -172,5 +172,5 @@ For deeper LSP debugging see `docs/cheatsheets/lsp.md` and run
 
 '''''
 
-*Next:* link:02-first-steps.md[02 — First Steps: syntax&#44; data
+*Next:* xref:learning/janet/02-first-steps.adoc[02 — First Steps: syntax&#44; data
 types&#44; and using the tools]

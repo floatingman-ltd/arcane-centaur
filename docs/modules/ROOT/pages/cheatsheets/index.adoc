@@ -7,30 +7,30 @@
 [width="100%",cols="50%,50%",options="header",]
 |===
 |Plugin / Area |Cheatsheet
-|.NET — C++#++ and F++#++ (Roslyn {plus} iron.nvim {plus} fsautocomplete) |xref:dotnet.adoc[dotnet]
+|.NET — C++#++ and F++#++ (Roslyn {plus} iron.nvim {plus} fsautocomplete) |xref:cheatsheets/dotnet.adoc[dotnet]
 
-|AI Tools (Copilot CLI {plus} OpenSpec {plus} Serena {plus} Avante) |xref:ai-tools.adoc[ai-tools]
+|AI Tools (Copilot CLI {plus} OpenSpec {plus} Serena {plus} Avante) |xref:cheatsheets/ai-tools.adoc[ai-tools]
 
-|Code Intelligence (LSP {plus} Completion {plus} Formatting) |xref:code-intelligence.adoc[code-intelligence]
+|Code Intelligence (LSP {plus} Completion {plus} Formatting) |xref:cheatsheets/code-intelligence.adoc[code-intelligence]
 
-|Clipboard |xref:editing.adoc#system-clipboard[editing] —
-xref:../guides/clipboard.adoc[full guide]
+|Clipboard |xref:cheatsheets/editing.adoc#system-clipboard[editing] —
+xref:guides/clipboard.adoc[full guide]
 
-|Editing (Visual Mode {plus} Clipboard {plus} Comments {plus} Surround) |xref:editing.adoc[editing]
+|Editing (Visual Mode {plus} Clipboard {plus} Comments {plus} Surround) |xref:cheatsheets/editing.adoc[editing]
 
-|Git (vim-fugitive {plus} gitsigns {plus} diffview) |xref:git.adoc[git]
+|Git (vim-fugitive {plus} gitsigns {plus} diffview) |xref:cheatsheets/git.adoc[git]
 
-|Haskell (haskell-tools) |xref:haskell.adoc[haskell]
+|Haskell (haskell-tools) |xref:cheatsheets/haskell.adoc[haskell]
 
-|Janet (Conjure {plus} vim-sexp) |xref:janet.adoc[janet]
+|Janet (Conjure {plus} vim-sexp) |xref:cheatsheets/janet.adoc[janet]
 
-|Lisp / Clojure / Scheme / Fennel (Conjure {plus} vim-sexp) |xref:lisp.adoc[lisp]
+|Lisp / Clojure / Scheme / Fennel (Conjure {plus} vim-sexp) |xref:cheatsheets/lisp.adoc[lisp]
 
-|Markdown Preview {plus} PlantUML {plus} HTML {plus} MARP {plus} Confluence {plus} Jira |xref:markdown.adoc[markdown]
+|Markdown Preview {plus} PlantUML {plus} HTML {plus} MARP {plus} Confluence {plus} Jira |xref:cheatsheets/markdown.adoc[markdown]
 
-|Navigation (Splits {plus} Fuzzy Finder {plus} File Tree {plus} Unimpaired) |xref:navigation.adoc[navigation]
+|Navigation (Splits {plus} Fuzzy Finder {plus} File Tree {plus} Unimpaired) |xref:cheatsheets/navigation.adoc[navigation]
 
-|REST Client (kulala.nvim) |xref:rest.adoc[rest]
+|REST Client (kulala.nvim) |xref:cheatsheets/rest.adoc[rest]
 |===
 
 '''''
@@ -52,7 +52,7 @@ xref:../guides/clipboard.adoc[full guide]
 |`Ctrl-→` |Normal |Grow split width
 |===
 
-→ xref:navigation.adoc[Full reference]
+→ xref:cheatsheets/navigation.adoc[Full reference]
 
 '''''
 
@@ -66,7 +66,7 @@ xref:../guides/clipboard.adoc[full guide]
 |`Ctrl-f` |Normal |Reveal current file in tree
 |===
 
-→ xref:file-tree.adoc[Full reference]
+→ xref:cheatsheets/navigation.adoc[Full reference]
 
 '''''
 
@@ -79,7 +79,7 @@ xref:../guides/clipboard.adoc[full guide]
 |`Esc` |Terminal |Exit terminal insert mode
 |===
 
-→ xref:navigation.adoc[Full reference]
+→ xref:cheatsheets/navigation.adoc[Full reference]
 
 '''''
 
@@ -117,7 +117,7 @@ cursor)
 Works on GUI Linux (xclip/xsel/wl-clipboard), WSL (win32yank.exe), and
 SSH/TTY sessions (OSC 52 — no external tool required).
 
-→ xref:editing.adoc[Full reference]
+→ xref:cheatsheets/editing.adoc[Full reference]
 
 '''''
 
@@ -132,7 +132,7 @@ SSH/TTY sessions (OSC 52 — no external tool required).
 |`Ctrl-/` |Normal |Toggle comment (Kitty / WezTerm)
 |===
 
-→ xref:comments.adoc[Full reference]
+→ xref:cheatsheets/editing.adoc[Full reference]
 
 '''''
 
@@ -148,7 +148,7 @@ SSH/TTY sessions (OSC 52 — no external tool required).
 _Format-on-save is enabled for Lisp, Clojure, Scheme, Fennel, Janet, and
 F++#++ buffers._
 
-→ xref:formatting.adoc[Full reference]
+→ xref:cheatsheets/code-intelligence.adoc[Full reference]
 
 '''''
 
@@ -174,7 +174,7 @@ window)
 window)
 |===
 
-→ xref:copilot.adoc[Full reference] · xref:ai-tools.adoc[AI Tools guide]
+→ xref:cheatsheets/ai-tools.adoc[Full reference] · xref:cheatsheets/ai-tools.adoc[AI Tools guide]
 
 '''''
 
@@ -188,7 +188,7 @@ window)
 |`++<++leader++>++osl` |Normal |List all OpenSpec changes
 |===
 
-→ xref:ai-tools.adoc[Full reference]
+→ xref:cheatsheets/ai-tools.adoc[Full reference]
 
 '''''
 
@@ -207,7 +207,7 @@ window)
 |`++]++d` |Normal |Next diagnostic
 |===
 
-→ xref:lsp.adoc[Full reference]
+→ xref:cheatsheets/code-intelligence.adoc[Full reference]
 
 '''''
 
@@ -225,7 +225,7 @@ window)
 |`Ctrl-b` |Insert |Scroll docs preview up
 |===
 
-→ xref:completion.adoc[Full reference]
+→ xref:cheatsheets/code-intelligence.adoc[Full reference]
 
 '''''
 
@@ -250,7 +250,7 @@ window)
 |`++<++leader++>++gX` |Normal |Close diff view
 |===
 
-→ xref:git.adoc[Full reference]
+→ xref:cheatsheets/git.adoc[Full reference]
 
 '''''
 
@@ -269,7 +269,7 @@ Leader is `Space`; no LocalLeader bindings are used in Haskell buffers.
 |`Space-ea` |Normal |Evaluate all code snippets
 |===
 
-→ xref:haskell.adoc[Full reference] · xref:../guides/haskell.adoc[Guide]
+→ xref:cheatsheets/haskell.adoc[Full reference] · xref:guides/haskell.adoc[Guide]
 
 '''''
 
@@ -299,7 +299,7 @@ LocalLeader is `,` in Lisp/Clojure/Scheme/Fennel/Janet buffers.
 |`,lq` |Close REPL log window
 |===
 
-→ xref:lisp.adoc[Full reference] · xref:../guides/lisp.adoc[Guide]
+→ xref:cheatsheets/lisp.adoc[Full reference] · xref:guides/lisp.adoc[Guide]
 
 '''''
 
@@ -321,7 +321,7 @@ LocalLeader is `,` in Lisp/Clojure/Scheme/Fennel/Janet buffers.
 |`dsf` |Delete surrounding function call (splice)
 |===
 
-→ xref:lisp.adoc[Full reference]
+→ xref:cheatsheets/lisp.adoc[Full reference]
 
 '''''
 
@@ -351,10 +351,10 @@ LocalLeader is `,` in Markdown buffers.
 |`,js` |Create Jira Story (prompts for summary {plus} description)
 |===
 
-→ xref:markdown.adoc[Full reference] · xref:../guides/diagrams.adoc[Diagrams
-guide] · xref:../guides/presentations.adoc[Presentations guide] ·
-xref:../guides/confluence.adoc[Confluence guide] ·
-xref:../guides/jira.adoc[Jira guide]
+→ xref:cheatsheets/markdown.adoc[Full reference] · xref:guides/diagrams.adoc[Diagrams
+guide] · xref:guides/presentations.adoc[Presentations guide] ·
+xref:guides/confluence.adoc[Confluence guide] ·
+xref:guides/jira.adoc[Jira guide]
 
 '''''
 
@@ -369,7 +369,7 @@ LocalLeader is `,` in PlantUML buffers.
 |`++<++leader++>++pa` |Open ASCII preview popup
 |===
 
-→ xref:plantuml.adoc[Full reference]
+→ xref:cheatsheets/markdown.adoc[Full reference]
 
 '''''
 
@@ -385,7 +385,7 @@ LocalLeader is `,` in HTML / CSS / JavaScript buffers.
 |`,r` |Reload the live preview
 |===
 
-→ xref:html.adoc[Full reference]
+→ xref:cheatsheets/markdown.adoc[Full reference]
 
 '''''
 
@@ -402,4 +402,4 @@ LocalLeader is `,` in `.http` buffers.
 |`,e` |Select environment
 |===
 
-→ xref:rest.adoc[Full reference] · xref:../guides/rest.adoc[Guide]
+→ xref:cheatsheets/rest.adoc[Full reference] · xref:guides/rest.adoc[Guide]

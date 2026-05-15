@@ -424,7 +424,7 @@ active.
 
 == Keybindings
 
-→ See the link:../cheatsheets/rest.md[REST cheatsheet] for the full
+→ See the xref:cheatsheets/rest.adoc[REST cheatsheet] for the full
 keybinding reference.
 
 [cols=",",options="header",]

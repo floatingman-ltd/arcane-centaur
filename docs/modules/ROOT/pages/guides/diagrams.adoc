@@ -299,7 +299,7 @@ The `marksman` LSP server provides: - *Link completion* — auto-complete
 links and malformed references are flagged inline - *Go-to-definition*
 (`gd`) — jump to linked documents
 
-See link:../../readme.md#lsp-support[readme.md] for the shared LSP
+See xref:cheatsheets/code-intelligence.adoc[readme.md] for the shared LSP
 keybindings.
 
 [[diagram-types]]
