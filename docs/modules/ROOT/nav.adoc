@@ -1,23 +1,18 @@
 * xref:index.adoc[Home]
-
-.Reference
 * xref:guides/getting-started.adoc[Getting Started]
-* xref:guides/architecture.adoc[Architecture]
-* xref:guides/clipboard.adoc[Clipboard]
 
-.Languages — .NET
-* xref:guides/dotnet.adoc[.NET (C# and F#) Guide]
-* xref:cheatsheets/dotnet.adoc[.NET Cheatsheet]
-
-.Languages — Lisp Family
-* xref:guides/lisp.adoc[Lisp / Clojure / Scheme / Fennel]
-* xref:cheatsheets/lisp.adoc[Lisp Cheatsheet]
-* xref:guides/janet.adoc[Janet Guide]
-* xref:cheatsheets/janet.adoc[Janet Cheatsheet]
-
-.Languages — Haskell
-* xref:guides/haskell.adoc[Haskell Guide]
-* xref:cheatsheets/haskell.adoc[Haskell Cheatsheet]
+.Languages
+* .NET
+** xref:guides/dotnet.adoc[Guide]
+** xref:cheatsheets/dotnet.adoc[Cheatsheet]
+* Lisp Family
+** xref:guides/lisp.adoc[Lisp / Clojure / Scheme / Fennel]
+** xref:cheatsheets/lisp.adoc[Cheatsheet]
+** xref:guides/janet.adoc[Janet Guide]
+** xref:cheatsheets/janet.adoc[Janet Cheatsheet]
+* Haskell
+** xref:guides/haskell.adoc[Guide]
+** xref:cheatsheets/haskell.adoc[Cheatsheet]
 
 .Editor Core
 * xref:cheatsheets/editing.adoc[Editing Cheatsheet]
@@ -25,6 +20,7 @@
 * xref:cheatsheets/code-intelligence.adoc[Code Intelligence Cheatsheet]
 * xref:guides/git.adoc[Git Guide]
 * xref:cheatsheets/git.adoc[Git Cheatsheet]
+* xref:guides/clipboard.adoc[Clipboard]
 
 .AI & Automation
 * xref:guides/ai-tools.adoc[AI Tools Guide]
@@ -43,9 +39,11 @@
 * xref:guides/confluence.adoc[Confluence Publishing]
 
 .Learning
-* xref:learning/janet/01-setup.adoc[Janet: Setup]
-* xref:learning/janet/02-first-steps.adoc[Janet: First Steps]
+* Janet
+** xref:learning/janet/01-setup.adoc[Setup]
+** xref:learning/janet/02-first-steps.adoc[First Steps]
 
 .Other
+* xref:guides/architecture.adoc[Architecture]
 * xref:guides/contributing.adoc[Contributing to Docs]
 * xref:jira-project-map.adoc[Jira Project Map]

@@ -8,6 +8,7 @@ This guide covers everything you need before opening this configuration for the 
 |===
 | xref:#quick-start[Quick Start] | Clone the repo and launch Neovim
 | xref:#docker[Docker] | Required by AI tools, diagrams, Markdown export, and presentations
+| xref:#docker-containers[Docker Containers] | Per-container start/stop reference
 | xref:#neovim[Neovim ≥ 0.12] | AppImage and tarball install methods
 | xref:#system-deps[System Dependencies] | git, curl, unzip, build-essential
 |===
@@ -83,6 +84,84 @@ If `docker compose` (with a space) is not found, you have the legacy v1 plugin (
 ====
 All Docker Compose files in this config use `docker compose` (v2 syntax). The `docker-compose` v1 binary is *not* supported.
 ====
+
+[[docker-containers]]
+=== Docker Containers
+
+Each feature that uses Docker has a dedicated Compose file. Reference this section from the relevant guide rather than duplicating the commands.
+
+[[sbcl-swank]]
+==== SBCL + Swank (Common Lisp REPL)
+
+Compose file: `docker/sbcl-swank/docker-compose.yml`
+
+Runs SBCL with Quicklisp pre-loaded and starts a Swank server on port 4005. Conjure auto-connects when you open a Lisp file.
+
+[source,sh]
+----
+# Build the image (required before first use and after pulling config updates):
+docker compose -f ~/.config/nvim/docker/sbcl-swank/docker-compose.yml build
+
+# Start — --wait blocks until the healthcheck passes so Conjure can connect immediately:
+LISP_DIR=$PWD docker compose -f ~/.config/nvim/docker/sbcl-swank/docker-compose.yml up -d --build --wait
+
+# Stop:
+LISP_DIR=$PWD docker compose -f ~/.config/nvim/docker/sbcl-swank/docker-compose.yml down
+----
+
+NOTE: `LISP_DIR=$PWD` mounts your current working directory into the container so SBCL can load project files.
+
+[[plantuml-server]]
+==== PlantUML Server (Diagrams)
+
+Compose file: `docker/plantuml-server/docker-compose.yml`
+
+Runs a local PlantUML HTTP server. The diagrams plugin sends diagram source to this server and renders the result inline.
+
+[source,sh]
+----
+docker compose -f ~/.config/nvim/docker/plantuml-server/docker-compose.yml up -d
+docker compose -f ~/.config/nvim/docker/plantuml-server/docker-compose.yml down
+----
+
+[[marp]]
+==== MARP CLI (Presentations)
+
+Compose file: `docker/marp/docker-compose.yml`
+
+Converts Markdown slide decks to HTML or PDF using MARP. Invoked on demand by the presentations keybindings.
+
+[source,sh]
+----
+docker compose -f ~/.config/nvim/docker/marp/docker-compose.yml up -d
+docker compose -f ~/.config/nvim/docker/marp/docker-compose.yml down
+----
+
+[[markserv]]
+==== markserv (Markdown Preview)
+
+Compose file: `docker/markserv/docker-compose.yml`
+
+Serves a live-reloading Markdown preview in the browser for project-wide preview (as opposed to the per-buffer `markdown-preview.nvim`).
+
+[source,sh]
+----
+docker compose -f ~/.config/nvim/docker/markserv/docker-compose.yml up -d
+docker compose -f ~/.config/nvim/docker/markserv/docker-compose.yml down
+----
+
+[[ollama]]
+==== Ollama (AI Chat Backend)
+
+Compose file: `docker/ollama/docker-compose.yml`
+
+Runs a local Ollama LLM server used by Avante and other AI tools for offline model inference.
+
+[source,sh]
+----
+docker compose -f ~/.config/nvim/docker/ollama/docker-compose.yml up -d
+docker compose -f ~/.config/nvim/docker/ollama/docker-compose.yml down
+----
 
 ---
 
