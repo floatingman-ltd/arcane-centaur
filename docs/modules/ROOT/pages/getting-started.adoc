@@ -6,12 +6,62 @@ This guide covers everything you need before opening this configuration for the 
 
 [cols="1,3"]
 |===
+| xref:#neovim[Neovim ≥ 0.12] | AppImage and tarball install methods
 | xref:#quick-start[Quick Start] | Clone the repo and launch Neovim
 | xref:#docker[Docker] | Required by AI tools, diagrams, Markdown export, and presentations
 | xref:#docker-containers[Docker Containers] | Per-container start/stop reference
-| xref:#neovim[Neovim ≥ 0.12] | AppImage and tarball install methods
 | xref:#system-deps[System Dependencies] | git, curl, unzip, build-essential
 |===
+
+---
+[[neovim]]
+== Neovim ≥ 0.12
+
+The system package manager (`apt`, `dnf`, etc.) and Snap often lag behind. Use one of the methods below to get a current release directly from GitHub.
+
+=== AppImage (simplest — runs without installation)
+
+[source,sh]
+----
+curl -LO https://github.com/neovim/neovim/releases/download/stable/nvim-linux-x86_64.appimage
+chmod u+x nvim-linux-x86_64.appimage
+
+# Optional: install system-wide so `nvim` works from anywhere
+sudo mv nvim-linux-x86_64.appimage /usr/local/bin/nvim
+----
+
+=== Tarball (extract anywhere, no root required)
+
+[source,sh]
+----
+curl -LO https://github.com/neovim/neovim/releases/download/stable/nvim-linux-x86_64.tar.gz
+mkdir -p ~/.local
+tar -xzf nvim-linux-x86_64.tar.gz -C ~/.local
+
+# Symlink the binary into a directory on your PATH
+ln -sf ~/.local/nvim-linux-x86_64/bin/nvim ~/.local/bin/nvim
+----
+
+Make sure `~/.local/bin` is on your `$PATH`:
+
+[source,sh]
+----
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+----
+
+=== Verify
+
+[source,sh]
+----
+nvim --version
+# Should show: NVIM v0.12.x or higher
+----
+
+[TIP]
+====
+If you see an older version, run `which nvim` to check which binary is being launched. An old `/usr/bin/nvim` can shadow a new `~/.local/bin/nvim` if PATH order is wrong.
+====
 
 ---
 
@@ -162,57 +212,6 @@ Runs a local Ollama LLM server used by Avante and other AI tools for offline mod
 docker compose -f ~/.config/nvim/docker/ollama/docker-compose.yml up -d
 docker compose -f ~/.config/nvim/docker/ollama/docker-compose.yml down
 ----
-
----
-
-[[neovim]]
-== Neovim ≥ 0.12
-
-The system package manager (`apt`, `dnf`, etc.) and Snap often lag behind. Use one of the methods below to get a current release directly from GitHub.
-
-=== AppImage (simplest — runs without installation)
-
-[source,sh]
-----
-curl -LO https://github.com/neovim/neovim/releases/download/stable/nvim-linux-x86_64.appimage
-chmod u+x nvim-linux-x86_64.appimage
-
-# Optional: install system-wide so `nvim` works from anywhere
-sudo mv nvim-linux-x86_64.appimage /usr/local/bin/nvim
-----
-
-=== Tarball (extract anywhere, no root required)
-
-[source,sh]
-----
-curl -LO https://github.com/neovim/neovim/releases/download/stable/nvim-linux-x86_64.tar.gz
-mkdir -p ~/.local
-tar -xzf nvim-linux-x86_64.tar.gz -C ~/.local
-
-# Symlink the binary into a directory on your PATH
-ln -sf ~/.local/nvim-linux-x86_64/bin/nvim ~/.local/bin/nvim
-----
-
-Make sure `~/.local/bin` is on your `$PATH`:
-
-[source,sh]
-----
-echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
-source ~/.bashrc
-----
-
-=== Verify
-
-[source,sh]
-----
-nvim --version
-# Should show: NVIM v0.12.x or higher
-----
-
-[TIP]
-====
-If you see an older version, run `which nvim` to check which binary is being launched. An old `/usr/bin/nvim` can shadow a new `~/.local/bin/nvim` if PATH order is wrong.
-====
 
 ---
 
