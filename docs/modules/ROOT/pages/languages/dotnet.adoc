@@ -288,7 +288,7 @@ cause `unzip` to fail.
 |===
 |Dependency |Purpose |Install hint
 |*.NET SDK ≥ 8* |C# and F# compiler, `dotnet fsi` REPL |https://dotnet.microsoft.com/download
-|*Neovim ≥ 0.12* |Required by roslyn.nvim |See xref:guides/getting-started.adoc[Getting Started]
+|*Neovim ≥ 0.12* |Required by roslyn.nvim |See xref:getting-started.adoc[Getting Started]
 |===
 
 === Installing .NET SDK

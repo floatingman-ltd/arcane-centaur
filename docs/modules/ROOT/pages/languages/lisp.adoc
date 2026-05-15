@@ -25,7 +25,7 @@ All four plugins lazy-load only when you open a *Lisp*, *Clojure*,
 
 ____
 *Janet* shares the same plugin set (Conjure, vim-sexp, parinfer,
-rainbow-delimiters). See xref:guides/janet.adoc[Janet Guide] for the
+rainbow-delimiters). See xref:languages/janet.adoc[Janet Guide] for the
 Janet-specific guide.
 ____
 
@@ -57,7 +57,7 @@ the current buffer or selection.
 *Option A — Docker (recommended for Common Lisp):* A pre-configured
 Docker setup lives in `docker/sbcl-swank/`. It runs SBCL with Quicklisp
 and starts the Swank server on port 4005 automatically.
-See xref:guides/getting-started.adoc#sbcl-swank[Getting Started: SBCL + Swank container]
+See xref:getting-started.adoc#sbcl-swank[Getting Started: SBCL + Swank container]
 for build, start, and stop commands.
 +
 Conjure will auto-connect on the next file open, or use `,cc` to connect
@@ -173,7 +173,7 @@ form at the REPL prompt, or quit the process entirely:
 == LSP
 
 No Common Lisp LSP is configured by default in this repository. See the
-xref:cheatsheets/code-intelligence.adoc[Code Intelligence cheatsheet]
+xref:editor/code-intelligence.adoc[Code Intelligence cheatsheet]
 for shared LSP keybindings that apply in buffers where an LSP client is
 attached.
 
@@ -455,7 +455,7 @@ Start)
 === Neovim
 
 Neovim ≥ 0.12 is required. See
-xref:guides/getting-started.adoc[Getting Started] for install
+xref:getting-started.adoc[Getting Started] for install
 instructions.
 
 This configuration is built around an interactive, REPL-driven Lisp

@@ -28,7 +28,7 @@ These keymaps are active in any buffer where an LSP server has attached
 |===
 |Server |Language |Install
 |`fsautocomplete` |F# |`dotnet tool install -g fsautocomplete`
-|`roslyn` |C# |See xref:guides/dotnet.adoc[.NET guide]
+|`roslyn` |C# |See xref:languages/dotnet.adoc[.NET guide]
 |`marksman` |Markdown |`sudo apt install marksman`
 |`janet_lsp` |Janet |`jpm install janet-lsp`
 |`haskell-language-server` |Haskell |`ghcup install hls` (managed by haskell-tools.nvim)

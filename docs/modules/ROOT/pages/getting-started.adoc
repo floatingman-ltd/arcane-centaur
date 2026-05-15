@@ -273,7 +273,7 @@ Check that `git` and `curl` are installed and that you have internet access. Run
 
 === `:checkhealth` shows clipboard errors
 
-See the xref:guides/clipboard.adoc[Clipboard guide] for provider setup per environment (GUI Linux, WSL, SSH/TTY).
+See the xref:editor/clipboard.adoc[Clipboard guide] for provider setup per environment (GUI Linux, WSL, SSH/TTY).
 
 === A plugin requires a build step that fails
 

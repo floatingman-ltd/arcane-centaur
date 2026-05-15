@@ -10,8 +10,8 @@ cross-page links between `.md` files resolve correctly
 * *PDF export* — Pandoc-based export with rendered diagrams
 
 For diagrams specifically (PlantUML, Mermaid, PDF export), see
-xref:guides/diagrams.adoc[Diagrams Guide]. +
-For MARP presentation slides, see xref:guides/presentations.adoc[Presentations Guide].
+xref:content/diagrams.adoc[Diagrams Guide]. +
+For MARP presentation slides, see xref:content/presentations.adoc[Presentations Guide].
 
 *Quick navigation*
 
@@ -240,7 +240,7 @@ navigation)
 |`,md` |Export MARP slide to PDF
 |===
 
-→ xref:cheatsheets/markdown.adoc[Full cheatsheet]
+→ xref:content/markdown-cheatsheet.adoc[Full cheatsheet]
 
 '''''
 

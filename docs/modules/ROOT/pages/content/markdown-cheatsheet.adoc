@@ -2,7 +2,7 @@
 
 *LocalLeader* = `,` in Markdown buffers
 
-→ Back to xref:cheatsheets/index.adoc[main cheatsheet] · Markdown guide:
+→ Back to xref:editor/keybindings.adoc[main cheatsheet] · Markdown guide:
 ../guides/markdown.md · Diagrams guide: ../guides/diagrams.md ·
 Presentations guide: ../guides/presentations.md · Confluence guide:
 ../guides/confluence.md · Jira guide: ../guides/jira.md
@@ -127,7 +127,7 @@ Requires the PlantUML server
 Docker image (`docker pull pandoc/extra`). Mermaid blocks are rendered
 via the https://kroki.io[Kroki] public API (internet access required).
 The PDF is written to the same directory as the source file. See
-xref:guides/diagrams.adoc#exporting-to-pdf[../guides/diagrams.md].
+xref:content/diagrams.adoc#exporting-to-pdf[../guides/diagrams.md].
 
 == MARP Presentations (requires Docker)
 
@@ -268,7 +268,7 @@ docker compose -f ~/.config/nvim/docker/plantuml-server/docker-compose.yml up -d
 ----
 
 _Keymaps defined in `after/ftplugin/plantuml.lua`. Commands defined in
-`lua/plugins/plantuml.lua`. Full guide: xref:guides/diagrams.adoc[Diagrams guide]._
+`lua/plugins/plantuml.lua`. Full guide: xref:content/diagrams.adoc[Diagrams guide]._
 
 '''''
 

@@ -43,7 +43,7 @@ file-scoped REPL.
 
 `haskell-tools` manages the `hls` LSP connection automatically — no
 manual `lspconfig` setup is needed. See the
-xref:cheatsheets/code-intelligence.adoc[Code Intelligence cheatsheet] for
+xref:editor/code-intelligence.adoc[Code Intelligence cheatsheet] for
 shared LSP keybindings (`gd`, `K`, `gr`, etc.).
 
 '''''
@@ -89,5 +89,5 @@ live in `after/ftplugin/haskell.lua`.
 |*haskell-language-server* |LSP server |`ghcup install hls`
 
 |*Neovim ≥ 0.12* |Minimum version required |See
-xref:guides/getting-started.adoc[Getting Started]
+xref:getting-started.adoc[Getting Started]
 |===

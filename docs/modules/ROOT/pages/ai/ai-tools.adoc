@@ -282,4 +282,4 @@ held by `github/copilot.vim`. If Copilot is not yet authenticated, run
 
 ''''''
 
-→ xref:cheatsheets/ai-tools.adoc[Keybinding cheatsheet]
+→ xref:ai/ai-tools-cheatsheet.adoc[Keybinding cheatsheet]

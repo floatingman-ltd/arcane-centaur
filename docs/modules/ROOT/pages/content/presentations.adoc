@@ -229,7 +229,7 @@ directive reference.
 Linux desktops
 
 |*Neovim ≥ 0.12* |Minimum version |See
-xref:guides/getting-started.adoc[Getting Started]
+xref:getting-started.adoc[Getting Started]
 |===
 
 https://marp.app/[MARP] (Markdown Presentation Ecosystem) turns standard

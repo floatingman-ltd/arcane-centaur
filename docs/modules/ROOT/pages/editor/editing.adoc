@@ -6,7 +6,7 @@
 
 *Leader* = `Space`
 
-→ Back to xref:cheatsheets/index.adoc[main cheatsheet]
+→ Back to xref:editor/keybindings.adoc[main cheatsheet]
 
 == Visual Mode Editing
 
@@ -60,7 +60,7 @@ a supporting terminal
 installer
 |===
 
-→ *xref:guides/clipboard.adoc[Full setup and troubleshooting guide]*
+→ *xref:editor/clipboard.adoc[Full setup and troubleshooting guide]*
 
 '''''
 

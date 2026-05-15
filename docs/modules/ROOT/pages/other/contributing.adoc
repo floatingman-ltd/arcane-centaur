@@ -105,6 +105,6 @@ Page paths in `nav.adoc` are relative to `docs/modules/ROOT/pages/`. The sidebar
 ----
 .Languages
 * Lisp Family
-** xref:guides/lisp.adoc[Guide]
-** xref:cheatsheets/lisp.adoc[Cheatsheet]
+** xref:languages/lisp.adoc[Guide]
+** xref:languages/lisp-cheatsheet.adoc[Cheatsheet]
 ----

@@ -175,5 +175,5 @@ loaded automatically when Neovim starts.
 |===
 |Dependency |Notes
 |*git* |`sudo apt install git`
-|*Neovim ≥ 0.12* |See xref:guides/getting-started.adoc[Getting Started]
+|*Neovim ≥ 0.12* |See xref:getting-started.adoc[Getting Started]
 |===
