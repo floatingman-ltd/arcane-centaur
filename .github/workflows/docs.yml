@@ -2,7 +2,7 @@ name: Build and Deploy Docs
 
 on:
   push:
-    branches: [main, feat/restructure-docs]
+    branches: [main]
     paths:
       - 'docs/**'
       - '*.adoc'
