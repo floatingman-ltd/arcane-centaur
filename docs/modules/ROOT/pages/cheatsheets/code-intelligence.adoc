@@ -1,0 +1,112 @@
+== Code Intelligence Cheatsheet
+
+*Leader* = `Space`
+
+→ Back to xref:index.adoc[main cheatsheet]
+
+== LSP
+
+These keymaps are active in any buffer where an LSP server has attached
+(F#, C#, Markdown, Haskell, Janet).
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`gd` |Normal |Go to definition
+|`K` |Normal |Hover documentation
+|`gr` |Normal |Find all references
+|`++<++leader++>++rn` |Normal |Rename symbol
+|`++<++leader++>++ca` |Normal |Code action
+|`++<++leader++>++e` |Normal |Show diagnostic float
+|`++[++d` |Normal |Jump to previous diagnostic
+|`++]++d` |Normal |Jump to next diagnostic
+|===
+
+=== Configured LSP Servers
+
+[width="100%",cols="34%,33%,33%",options="header",]
+|===
+|Server |Language |Install
+|`fsautocomplete` |F# |`dotnet tool install -g fsautocomplete`
+|`roslyn` |C# |See xref:../guides/dotnet.adoc[.NET guide]
+|`marksman` |Markdown |`sudo apt install marksman`
+|`janet_lsp` |Janet |`jpm install janet-lsp`
+|`haskell-language-server` |Haskell |`ghcup install hls` (managed by haskell-tools.nvim)
+|===
+
+_Keymaps defined in `lua/config/lsp.lua`._
+
+'''''
+
+== Auto-Completion (nvim-cmp)
+
+=== Completion Menu
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`Alt-Space` |Insert |Open completion menu on demand
+|`Ctrl-n` |Insert (menu open) |Select next suggestion
+|`Ctrl-p` |Insert (menu open) |Select previous suggestion
+|`Enter` |Insert |Confirm highlighted suggestion
+|`Ctrl-e` |Insert |Dismiss completion menu
+|`Ctrl-f` |Insert |Scroll documentation preview down
+|`Ctrl-b` |Insert |Scroll documentation preview up
+|===
+
+`Enter` only inserts when an entry is actively highlighted — it will not
+accidentally confirm the first suggestion.
+
+=== Completion Sources
+
+[cols=",",options="header",]
+|===
+|Source |Provides
+|`nvim++_++lsp` |Language server completions
+|`luasnip` |Snippet expansions
+|`buffer` |Words from open buffers
+|`path` |File-system paths
+|`spell` |Dictionary words (when `spell` is active)
+|`cmp-conjure` |Conjure REPL completions (Lisp buffers)
+|===
+
+=== Command-line Completion
+
+[cols=",",options="header",]
+|===
+|Mode |Sources
+|`/` search |Buffer words
+|`:` commands |File paths, then Ex commands
+|===
+
+_Configured in `lua/plugins/nvim-cmp.lua`._
+
+'''''
+
+== Formatting (conform.nvim)
+
+[width="100%",cols="34%,33%,33%",options="header",]
+|===
+|Keys |Mode |Action
+|`++<++leader++>++f` |Normal / Visual |Format buffer or selection (LSP-preferred)
+|===
+
+=== Format-on-Save
+
+Format-on-save is enabled automatically for the following filetypes:
+
+[cols=",",options="header",]
+|===
+|Filetype |Formatter
+|Lisp |LSP (if attached)
+|Clojure |LSP
+|Scheme |LSP
+|Fennel |LSP
+|Janet |LSP
+|F# |LSP (`fsautocomplete`)
+|===
+
+The formatter runs with a 2-second timeout on save. To disable
+format-on-save for a session, use `:ConformDisable`.
+
+_Configured in `lua/plugins/conform.lua`._

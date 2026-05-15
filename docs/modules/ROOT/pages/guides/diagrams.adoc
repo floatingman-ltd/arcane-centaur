@@ -1,7 +1,3 @@
-// :auto-generated: true
-// :source: documentation/guides/diagrams.md
-// Remove this header to take manual ownership of this file
-
 == Working with Diagrams (Markdown {plus} PlantUML {plus} Mermaid)
 
 This configuration supports architectural and documentation diagrams
@@ -370,3 +366,30 @@ Mermaid covers a complementary set of diagram types, all rendered with a
 |Mind map |`mindmap`
 |Timeline |`timeline`
 |===
+
+'''''
+
+[[plantuml-ascii]]
+== PlantUML ASCII Preview
+
+`:PumlPreviewAscii` fetches plain ASCII art from the PlantUML Docker
+server's `/txt/` endpoint and displays it in a scratch buffer inside a
+centered floating window. It is available in all environments (GUI and
+console alike).
+
+In console mode, `,p` is automatically routed to `:PumlPreviewAscii`.
+In GUI mode, `,p` opens the PNG in the browser as before.
+
+[NOTE]
+====
+*Known limitation:* The current image (`plantuml/plantuml-server:jetty`)
+does not support the `/utxt/` endpoint (Unicode box-drawing characters).
+Output uses plain ASCII (`-`, `++|++`, `{plus}`) instead. To enable
+Unicode art, switch the docker-compose image to
+`plantuml/plantuml-server:latest` (or a confirmed `/utxt/`-capable tag)
+and change the endpoint in `lua/plugins/plantuml.lua` from `/txt/` back
+to `/utxt/`.
+====
+
+`:PumlPreviewAscii` is also useful in GUI mode when you want text output
+without opening a browser.

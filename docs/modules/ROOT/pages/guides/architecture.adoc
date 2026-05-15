@@ -1,7 +1,3 @@
-// :auto-generated: true
-// :source: documentation/guides/architecture.md
-// Remove this header to take manual ownership of this file
-
 == Configuration Architecture
 
 This document explains the directory structure of this Neovim
@@ -368,3 +364,48 @@ sessions
 Sample files used for manual testing of preview features
 (e.g. `test.puml` for verifying the PlantUML ASCII preview). Not part of
 the production config.
+
+'''''
+
+[[console-detection]]
+== Console Detection
+
+The configuration detects console mode via a single boolean flag:
+
+[source,lua]
+----
+local term = require("config.terminal")
+if term.is_console then ...
+----
+
+`is++_++console` is `true` when *both* `$DISPLAY` and
+`$WAYLAND++_++DISPLAY` are unset. It is `false` when either is set,
+which covers:
+
+[width="100%",cols="25%,25%,25%,25%",options="header",]
+|===
+|Environment |`$DISPLAY` |`$WAYLAND++_++DISPLAY` |`is++_++console`
+|Physical TTY (`$TERM=linux`) |unset |unset |`true`
+|SSH without X forwarding |unset |unset |`true`
+|tmux on headless server |unset |unset |`true`
+|X11 GUI terminal |set (e.g. `:0`) |unset |`false`
+|Wayland GUI terminal |unset |set (e.g. `wayland-0`) |`false`
+|tmux inside GUI terminal |set (outer terminal sets it) |— |`false`
+|===
+
+No manual override flag is needed. If the detection is wrong for your
+setup, file an issue.
+
+'''''
+
+[[open-url]]
+== Open URL Behaviour
+
+In console mode, `util.open++_++url` skips all browser-opener attempts
+and instead emits an `INFO` notification containing the full URL. Copy
+it and open it manually (e.g. in w3m, or paste it into a GUI browser on
+another machine).
+
+In GUI mode, the existing behaviour is unchanged: `xdg-open` / `open` /
+`wslview` / `explorer.exe` are tried in order, and a `WARN` notification
+is emitted if none are found.

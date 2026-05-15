@@ -1,48 +1,29 @@
-// :auto-generated: true
-// :source: documentation/cheatsheets/dotnet.md
-// Remove this header to take manual ownership of this file
+== .NET Cheatsheet (C# and F#)
 
-== .NET / C++#++ Cheatsheet (Roslyn {plus} iron.nvim)
+*LocalLeader* = `,` in `.cs`, `.fs`, `.fsx`, and `.fsi` buffers.
 
-*LocalLeader* = `,` in `.cs` and `.fsx`/`.fs` buffers.
+→ Back to xref:index.adoc[main cheatsheet] · xref:../guides/dotnet.adoc[Full guide]
 
-'''''
+== REPL — iron.nvim
 
-== C++#++ REPL — iron.nvim {plus} csharprepl
+REPL backend: *csharprepl* for C# buffers · *dotnet fsi* for F# buffers.
 
-[cols=",,",options="header",]
+[cols=",",options="header",]
 |===
-|Keys |Mode |Action
-|`,sl` |Normal |Send current line to REPL
-|`,sc` |Normal / Visual |Send motion or selection to REPL
-|`,sp` |Normal |Send current paragraph to REPL
-|`,sf` |Normal |Send entire file to REPL
-|`,s++<++CR++>++` |Normal |Send carriage return to REPL
-|`,si` |Normal |Interrupt REPL
-|`,sq` |Normal |Quit / exit REPL
-|`,cl` |Normal |Clear REPL output
+|Keys |Action
+|`,sl` |Send current line to REPL
+|`,sc` |Send motion or visual selection to REPL
+|`,sp` |Send current paragraph to REPL
+|`,sf` |Send entire file to REPL
+|`,s++<++CR++>++` |Send carriage return to REPL
+|`,si` |Interrupt REPL
+|`,sq` |Quit / exit REPL
+|`,cl` |Clear REPL output
 |===
 
 '''''
 
-== F++#++ REPL — iron.nvim {plus} dotnet fsi
-
-[cols=",,",options="header",]
-|===
-|Keys |Mode |Action
-|`,sl` |Normal |Send current line to REPL
-|`,sc` |Normal / Visual |Send motion or selection to REPL
-|`,sp` |Normal |Send current paragraph to REPL
-|`,sf` |Normal |Send entire file to REPL
-|`,s++<++CR++>++` |Normal |Send carriage return to REPL
-|`,si` |Normal |Interrupt REPL
-|`,sq` |Normal |Quit / exit REPL
-|`,cl` |Normal |Clear REPL output
-|===
-
-'''''
-
-== LSP (Roslyn — C++#++ buffers only)
+== LSP
 
 [cols=",,",options="header",]
 |===
@@ -57,15 +38,14 @@
 |`++]++d` |Normal |Next diagnostic
 |===
 
+LSP server: *Roslyn* for C# buffers · *fsautocomplete* for F# buffers.
+
 '''''
 
-== Roslyn Commands
+== Roslyn Commands (C# only)
 
 [width="100%",cols="50%,50%",options="header",]
 |===
 |Command |Action
-|`:Roslyn target` |Switch solution target (when multiple `.sln` files
-exist)
+|`:Roslyn target` |Switch solution target (when multiple `.sln` files exist)
 |===
-
-→ link:../guides/dotnet.md[Full guide]
