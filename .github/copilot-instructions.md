@@ -50,14 +50,16 @@ To change the Copilot model, edit the `config` function in `lua/plugins/copilot.
 
 | Change type | Files to update |
 |---|---|
-| New or changed plugin | `readme.md` (Plugin Overview + Project Structure tables), relevant `docs/guides/*.md`, relevant `docs/cheatsheets/*.md` |
-| New or changed keybinding | `readme.md` (General Keybindings), `docs/cheatsheets/index.md`, the specific `docs/cheatsheets/<area>.md` |
-| New language support | `readme.md` (Supported Languages table), new `docs/guides/<lang>.md`, new `docs/cheatsheets/<lang>.md` |
-| New LSP server | `readme.md` (LSP Support), `docs/guides/<lang>.md` |
-| New Docker service | `readme.md` (Working with … section), `docs/guides/<area>.md` |
-| Terminal / font changes | `readme.md` (Terminal Auto-Detection table) |
+| New or changed plugin | relevant `docs/modules/ROOT/pages/guides/*.adoc`, relevant `docs/modules/ROOT/pages/cheatsheets/*.adoc` |
+| New or changed keybinding | `docs/modules/ROOT/pages/cheatsheets/index.adoc`, the specific `docs/modules/ROOT/pages/cheatsheets/<area>.adoc` |
+| New language support | new `docs/modules/ROOT/pages/guides/<lang>.adoc`, new `docs/modules/ROOT/pages/cheatsheets/<lang>.adoc` |
+| New LSP server | `docs/modules/ROOT/pages/guides/<lang>.adoc` |
+| New Docker service | `docs/modules/ROOT/pages/guides/<area>.adoc` |
+| Terminal / font changes | `docs/modules/ROOT/pages/guides/architecture.adoc` |
 
-`docs/cheatsheets/index.md` is the single-page keybinding reference. If a new cheatsheet file is added, add a row in its Plugin Cheatsheets table.
+`docs/modules/ROOT/pages/cheatsheets/index.adoc` is the single-page keybinding reference. If a new cheatsheet file is added, add a row in its Plugin Cheatsheets table and update `docs/modules/ROOT/nav.adoc`.
+
+**AsciiDoc is the source of truth.** All documentation lives in `docs/modules/ROOT/pages/` as `.adoc` files. Do not create or edit `.md` files in `documentation/` — that folder has been removed. The only Markdown file in the repository is `README.md` in the repo root (repo metadata + link to hosted docs site).
 
 ## Validation
 

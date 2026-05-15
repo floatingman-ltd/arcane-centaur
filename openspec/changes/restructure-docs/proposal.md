@@ -1,8 +1,21 @@
 ## Why
 
-The documentation has grown organically across two problems: readers can't tell where to look (guides are a flat alphabetical list with no grouping by topic family), and guides are structurally inconsistent — prerequisites, setup instructions, and usage content are jumbled in different orders across files, making repeat visits frustrating. Fixing both now, before more guides are added, establishes a clear template and taxonomy for all future documentation.
+The documentation has grown organically across two problems: readers can't tell where to look (guides are a flat alphabetical list with no grouping by topic family), and guides are structurally inconsistent — prerequisites, setup instructions, and usage content are jumbled in different orders across files, making repeat visits frustrating. Additionally, the Markdown → AsciiDoc conversion pipeline (pandoc + sentinel system) has been a source of repeated CI friction and a maintenance burden without delivering value now that native AsciiDoc authoring is practical. Fixing all three now, before more guides are added, establishes a clean authoring model and taxonomy for all future documentation.
 
 ## What Changes
+
+**Native AsciiDoc authoring — pipeline eliminated:**
+- `docs/modules/ROOT/pages/*.adoc` become the primary source of truth for all documentation
+- `documentation/` folder deleted entirely (all `.md` source files removed)
+- `scripts/convert-docs.sh` deleted
+- `pandoc` install and conversion step removed from `.github/workflows/docs.yml`
+- Sentinel header system no longer needed — all adoc files are directly owned
+- CI workflow simplified to: Antora build → gh-pages deploy only
+
+**README.md simplified:**
+- Root `README.md` reduced to repo metadata (name, tagline, quick install, requirements)
+- All detailed documentation removed from README and replaced with a link to the hosted docs site
+- README is the only Markdown file that remains
 
 **Guide template — all guides restructured:**
 - Usage-first: Quick Start and capability sections appear at the top
@@ -33,15 +46,15 @@ The documentation has grown organically across two problems: readers can't tell 
 - `fsharp.md` cheatsheet → merged into `dotnet.md` cheatsheet
 
 **New content:**
-- `documentation/guides/git.md` — workflow guide for fugitive + gitsigns + diffview (cheatsheet already exists)
-- `documentation/guides/diagrams.md` — absorbs PlantUML ASCII + Mermaid content
-- `documentation/guides/getting-started.md` — system setup, Neovim install, shared prereqs
-- `documentation/cheatsheets/code-intelligence.md` — LSP + completion + formatting
+- `docs/modules/ROOT/pages/guides/git.adoc` — workflow guide for fugitive + gitsigns + diffview (cheatsheet already exists)
+- `docs/modules/ROOT/pages/guides/diagrams.adoc` — absorbs PlantUML ASCII + Mermaid content (replaces existing stub)
+- `docs/modules/ROOT/pages/guides/getting-started.adoc` — system setup, Neovim install, Docker install, shared prereqs
+- `docs/modules/ROOT/pages/cheatsheets/code-intelligence.adoc` — LSP + completion + formatting
 
 **Removed from site:**
-- `validation.md` — tooling validation, not user-facing documentation
-- `cli-console-mode.md` — dissolved into existing homes
-- `fsharp.md` cheatsheet — content moved to `dotnet.md` cheatsheet
+- `validation.adoc` — tooling validation, not user-facing documentation
+- `cli-console-mode.adoc` — dissolved into existing homes
+- `fsharp.adoc` (cheatsheet) — content moved to `dotnet.adoc` cheatsheet
 
 **Lisp / Janet:** kept as separate files, grouped together in nav sidebar.
 
@@ -59,9 +72,9 @@ The documentation has grown organically across two problems: readers can't tell 
 
 ## Impact
 
-- `documentation/guides/` — all files restructured; several merged or removed
-- `documentation/cheatsheets/` — several files merged; new `code-intelligence.md` added
-- `docs/modules/ROOT/pages/` — all `.adoc` files regenerated from updated sources
+- `docs/modules/ROOT/pages/` — all `.adoc` files restructured, merged, and authored directly
 - `docs/modules/ROOT/nav.adoc` — hand-authored sidebar rewritten with topic groupings
-- `scripts/convert-docs.sh` — no structural changes; runs as-is against updated sources
-- `.github/workflows/docs.yml` — no structural changes needed
+- `documentation/` — entire folder deleted
+- `scripts/convert-docs.sh` — deleted
+- `README.md` — simplified to repo metadata + link to hosted docs site
+- `.github/workflows/docs.yml` — pandoc step removed; Antora build + deploy retained

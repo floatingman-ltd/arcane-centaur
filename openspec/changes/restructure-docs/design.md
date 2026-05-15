@@ -96,24 +96,39 @@ The conversion pipeline (`scripts/convert-docs.sh` and `.github/workflows/docs.y
 
 ---
 
-### 6. Sentinel management for merged files
+### 6. Native AsciiDoc authoring — eliminate the conversion pipeline
 
-**Decision:** When two auto-generated files are merged, the result keeps the sentinel of the primary file. The secondary file's sentinel is removed. Files taken to manual ownership have their sentinel removed entirely.
+**Decision:** `docs/modules/ROOT/pages/*.adoc` files become the primary source of truth. The `documentation/` Markdown source folder, `scripts/convert-docs.sh`, the pandoc CI step, and the sentinel header system are all deleted. `README.md` in the repo root is retained as the only Markdown file, simplified to repo metadata and a link to the hosted docs site.
 
-**Rationale:** The conversion script skips files without a sentinel (treats them as manually owned). Merged files that consolidate content from multiple sources will have structural changes the script cannot reproduce, so manual ownership is appropriate for merged cheatsheets.
+**Rationale:** The conversion pipeline has delivered recurring friction with no offsetting value:
+- Heading levels required an awk workaround (pandoc maps `#` → `==` not `=`)
+- AsciiDoc attribute references (`{motion}`) required passthrough escaping not expressible in Markdown
+- The sentinel system added cognitive overhead to every file edit
+- CI failures traced back to pandoc behaviour on multiple occasions
 
-**Implication:** After this change, the following files become manually owned (no sentinel):
-`editing.md`, `navigation.md`, `code-intelligence.md`, `ai-tools.md`, `markdown.md` (cheatsheet), `dotnet.md` (cheatsheet), `dotnet.md` (guide)
+The timing is ideal: this change already touches every documentation file for the restructuring. Converting to native AsciiDoc authoring as part of the same change costs nothing incremental and eliminates the pipeline permanently.
+
+Neovim AsciiDoc preview (`,p` / `,pp`) is already in place from the `add-asciidoc-preview` change, making the authoring experience first-class.
+
+**Implication for merges:** The "MD source merge vs adoc ownership" dilemma from the previous design draft is fully resolved. Merges happen directly in the adoc files, which are the source. No orphaned MD files, no split source-of-truth.
+
+**Alternative considered:** Merge MD source files (Option A from design exploration). Rejected — cleaning up the pipeline is the correct fix; keeping MD as source continues the maintenance burden for no benefit.
+
+**Alternative considered:** AsciiDoc as source only for merged files (Option B). Rejected — creates a mixed-format authoring model where some files are edited in MD and others in adoc, which is more confusing than either pure approach.
+
+---
 
 ## Risks / Trade-offs
+
+- **README.md simplification loses discoverability** → Mitigated by the docs site link being prominent in the README and GitHub Pages being indexed by search engines.
+
+- **AsciiDoc unfamiliarity for contributors** → Accepted trade-off. Basic AsciiDoc (headings, lists, tables, code blocks) is nearly identical to Markdown. The richer features (xref, include, admonitions) are only needed for advanced edits and are documented in the architecture guide.
 
 - **Nav.adoc maintenance burden** → The hand-authored sidebar must be updated carefully. Missing a new file or leaving a deleted file reference causes a broken nav link. Mitigation: the tasks artifact lists every nav.adoc edit explicitly.
 
 - **Merged cheatsheets grow over time** → `navigation.md` absorbing fzf + file-tree + unimpaired could become long. Mitigation: accepted trade-off; all four are "cursor movement" tools and the combined size (~185 lines) is still one readable page.
 
-- **Sentinel removal is irreversible without git** → Once a file loses its sentinel, the script will never regenerate it. Any future source-MD changes must be manually applied to the adoc too. Mitigation: this is intentional for merged files; git history preserves the original generated versions.
-
-- **dotnet.md guide merge complexity** → The unified .NET guide must clearly separate C# and F# sections without making either feel secondary. Mitigation: use parallel section structure — `## C# (Roslyn)` and `## F# (fsautocomplete)` as siblings under `## LSP`.
+- **dotnet.md guide merge complexity** → The unified .NET guide must clearly separate C# and F# sections without making either feel secondary. Mitigation: use parallel section structure — `== C# (Roslyn)` and `== F# (fsautocomplete)` as siblings under `== LSP`.
 
 ## Migration Plan
 
