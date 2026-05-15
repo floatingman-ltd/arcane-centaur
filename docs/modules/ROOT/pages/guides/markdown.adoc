@@ -10,11 +10,26 @@ cross-page links between `.md` files resolve correctly
 * *PDF export* — Pandoc-based export with rendered diagrams
 
 For diagrams specifically (PlantUML, Mermaid, PDF export), see
-*diagrams.md*. +
-For MARP presentation slides, see *presentations.md*.
+xref:guides/diagrams.adoc[Diagrams Guide]. +
+For MARP presentation slides, see xref:guides/presentations.adoc[Presentations Guide].
+
+*Quick navigation*
+
+[cols="1,3"]
+|===
+| xref:#quick-start[Quick Start] | Single-file and multi-file preview
+| xref:#plantuml-server[PlantUML Server] | Docker server for diagram preview
+| xref:#markdown-preview[markdown-preview.nvim] | Browser preview with diagram support
+| xref:#markserv[Markserv Docker Server] | Project-wide cross-page preview
+| xref:#mkdnflow[In-editor Navigation] | mkdnflow.nvim link following
+| xref:#keybindings[Keybindings Summary] | All local leader keymaps
+| xref:#choosing[Choosing the Right Preview Tool] | Decision guide
+| xref:#glow-preview[Glow (Console)] | In-terminal Markdown rendering
+|===
 
 '''''
 
+[[quick-start]]
 == Quick Start
 
 === Single-file preview (no Docker required)
@@ -54,6 +69,7 @@ because the whole project directory is served.
 
 '''''
 
+[[plantuml-server]]
 == PlantUML Server
 
 The markserv preview server generates `++<++img++>++` URLs pointing at
@@ -71,6 +87,7 @@ running permanently. See diagrams.md for the full guide.
 
 '''''
 
+[[markdown-preview]]
 == markdown-preview.nvim (`,p`)
 
 `markdown-preview.nvim` opens a single-file browser preview that syncs
@@ -95,6 +112,7 @@ between files in the editor.
 
 '''''
 
+[[markserv]]
 == Markserv Docker Server (`,sp`)
 
 The markserv preview server is a custom Node.js server that renders a
@@ -160,6 +178,7 @@ ____
 
 '''''
 
+[[mkdnflow]]
 == In-editor Navigation — mkdnflow.nvim
 
 `mkdnflow.nvim` provides in-editor link following so you can navigate
@@ -183,6 +202,7 @@ the single-file preview, or `,sp` to open it in the markserv server.
 
 '''''
 
+[[keybindings]]
 == Keybindings Summary
 
 LocalLeader is `,` in Markdown buffers.
@@ -220,10 +240,11 @@ navigation)
 |`,md` |Export MARP slide to PDF
 |===
 
-→ link:../cheatsheets/markdown.md[Full cheatsheet]
+→ xref:cheatsheets/markdown.adoc[Full cheatsheet]
 
 '''''
 
+[[choosing]]
 == Choosing the Right Preview Tool
 
 [width="100%",cols="40%,60%",options="header",]

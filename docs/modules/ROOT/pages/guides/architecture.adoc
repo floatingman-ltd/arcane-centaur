@@ -4,8 +4,26 @@ This document explains the directory structure of this Neovim
 configuration — what each directory and file is for, why it is placed
 where it is, and how the pieces fit together at startup.
 
+*Quick navigation*
+
+[cols="1,3"]
+|===
+| xref:#startup-order[Startup Order] | Init file loading sequence
+| xref:#root-level-files[Root-Level Files] | init.lua, lazy-lock.json
+| xref:#lua[lua/] | options, keymaps, plugins, config modules
+| xref:#after-ftplugin[after/ftplugin/] | Filetype-specific overrides
+| xref:#docker[docker/] | Docker service definitions
+| xref:#docs[docs/] | User documentation
+| xref:#scripts[scripts/] | Shell and Pandoc helper scripts
+| xref:#openspec[openspec/] | Change management workflow
+| xref:#github[.github/] | Copilot CLI integration
+| xref:#console-detection[Console Detection] | How is_console is determined
+| xref:#open-url[Open URL Behaviour] | Browser vs. notification
+|===
+
 '''''
 
+[[startup-order]]
 == Startup Order
 
 Neovim always loads files in this sequence:
@@ -24,6 +42,7 @@ is first needed, or by `require()` calls inside plugin config functions.
 
 '''''
 
+[[root-level-files]]
 == Root-Level Files
 
 [width="100%",cols="50%,50%",options="header",]
@@ -46,6 +65,7 @@ Copilot instructions file.
 
 '''''
 
+[[lua]]
 == `lua/` — The Lua Source Tree
 
 All runtime Lua code lives here. Neovim adds `lua/` to the Lua
@@ -173,6 +193,7 @@ management).
 
 '''''
 
+[[after-ftplugin]]
 == `after/ftplugin/` — Filetype-Specific Overrides
 
 Neovim automatically sources `after/ftplugin/++<++filetype++>++.lua`
@@ -213,6 +234,7 @@ search)
 
 '''''
 
+[[docker]]
 == `docker/` — Docker Service Definitions
 
 Each subdirectory is a self-contained Docker Compose service used by a
@@ -242,6 +264,7 @@ PlantUML {plus} Mermaid diagram rendering)
 
 '''''
 
+[[docs]]
 == `docs/` — User Documentation
 
 Human-readable reference material. Not loaded by Neovim.
@@ -264,6 +287,7 @@ when creating issues.
 
 '''''
 
+[[scripts]]
 == `scripts/` — Shell and Pandoc Scripts
 
 Helper scripts invoked by Neovim commands, not intended to be run
@@ -284,6 +308,7 @@ conversion
 
 '''''
 
+[[openspec]]
 == `openspec/` — OpenSpec Change Management
 
 OpenSpec is a lightweight spec-driven workflow for tracking proposed
@@ -312,6 +337,7 @@ directory.
 
 '''''
 
+[[github]]
 == `.github/` — Copilot CLI Integration
 
 [width="100%",cols="50%,50%",options="header",]
@@ -330,6 +356,7 @@ how to invoke an OpenSpec workflow step.
 
 '''''
 
+[[opencode]]
 == `.opencode/` — opencode-ai Integration
 
 Mirror of `.github/skills/` for the opencode-ai editor assistant.
@@ -338,6 +365,7 @@ expects.
 
 '''''
 
+[[serena]]
 == `.serena/` — Serena MCP Server State
 
 Runtime state for the https://github.com/oraios/serena[Serena] MCP
@@ -359,6 +387,7 @@ sessions
 
 '''''
 
+[[testdocs]]
 == `testdocs/`
 
 Sample files used for manual testing of preview features

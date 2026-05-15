@@ -1,8 +1,239 @@
-// :auto-generated: true
-// :source: documentation/guides/confluence.md
-// Remove this header to take manual ownership of this file
-
 == Confluence Publishing Guide
+
+Publish a local markdown file directly to its Confluence page with `,cc`
+(or `:MdToConfluence`).
+
+The publisher converts the markdown to Confluence storage format via
+pandoc (with an optional Lua filter for link substitution, code macros,
+and PlantUML rendering) and updates the Confluence page via the REST
+API. The Neovim integration is implemented in pure Lua — no Python
+required.
+
+*Quick navigation*
+
+[cols="1,3"]
+|===
+| xref:#usage[Usage] | Publish, pull, and fetch comments
+| xref:#authentication[Authentication] | API token setup
+| xref:#page-map[Page Map] | Map local files to Confluence pages
+| xref:#conflict-detection[Conflict Detection] | Detect concurrent edits
+| xref:#link-substitution[Link Substitution] | Code macros and PlantUML
+| xref:#troubleshooting[Troubleshooting] | Common errors
+| xref:#prerequisites[Prerequisites] | pandoc, curl, jq
+|===
+
+'''''
+
+[[usage]]
+== Usage
+
+Open any markdown file that is listed in the page map, then:
+
+=== Publishing
+
+[cols=",",options="header",]
+|===
+|Method |Action
+|`,cc` |Publish current file to Confluence
+|`:MdToConfluence` |Same, via command
+|===
+
+Progress messages appear in the notification area. The final message
+includes the published page URL.
+
+=== Pulling from Confluence
+
+[width="100%",cols="50%,50%",options="header",]
+|===
+|Method |Action
+|`,cf` |Pull the current Confluence page back to the local markdown file
+|`:MdFromConfluence` |Same, via command
+|===
+
+The local file is overwritten with the Confluence content (converted
+back to Markdown via pandoc). A `.bak` backup of the previous local file
+is created automatically before overwriting.
+
+=== Fetching comments
+
+[cols=",",options="header",]
+|===
+|Method |Action
+|`,ck` |Fetch all Confluence page comments to a sidecar file
+|`:MdConfluenceComments` |Same, via command
+|===
+
+Comments are written to `++<++filename++>++.comments.md` in the same
+directory as the source file. Existing comment files are overwritten.
+
+'''''
+
+[[authentication]]
+== Authentication
+
+The publisher reads credentials from environment variables. They are
+never stored in any file.
+
+=== Generating an API token
+
+[arabic]
+. Go to https://id.atlassian.com/manage-profile/security/api-tokens
+. Click *Create API token*
+. Give it a label (e.g. `nvim-confluence-publish`) and copy the token
+
+=== Setting the environment variables
+
+Add these lines to your shell profile (`~/.bashrc`, `~/.zshrc`, or
+`~/.profile`):
+
+[source,sh]
+----
+export CONFLUENCE_EMAIL="your.email@example.com"
+export CONFLUENCE_API_TOKEN="your-api-token-here"
+----
+
+Reload your shell or open a new terminal. Neovim must be launched from a
+shell that has these variables set.
+
+____
+*Never commit these values to any file.* Environment variables in your
+shell profile are not version controlled and are not visible to other
+processes.
+____
+
+'''''
+
+[[page-map]]
+== Page Map
+
+The publisher resolves which Confluence page to update by reading
+`docs/confluence-page-map.md` at the root of the git repository
+containing the open file.
+
+Each entry maps a local file path (relative to `docs/`) to its
+Confluence page URL:
+
+[source,markdown]
+----
+| `lld/0015/0015a_licence-data-persistence-and-synchronisation.md` | DRIVER-LLD-0015: Licence Data Persistence | https://novascotia-rmvmt.atlassian.net/wiki/spaces/ROAD/pages/172065288/... | |
+----
+
+If the current file is not in the page map, the command reports an error
+and does nothing.
+
+'''''
+
+[[conflict-detection]]
+== Conflict Detection
+
+The publisher tracks the last-published Confluence page version in
+`docs/.confluence-state.json` (relative to the git root). When you run
+`,cc`, if the live Confluence version is newer than the stored value,
+someone has edited the page directly on Confluence since your last
+publish — a confirmation dialog is shown so you can choose whether to
+overwrite those changes.
+
+Commit `docs/.confluence-state.json` to your repository so the whole
+team benefits from conflict detection.
+
+'''''
+
+[[link-substitution]]
+== Link Substitution and Code Macros
+
+When `confluence++_++filter.lua` is found (either alongside the publish
+script or via `CONFLUENCE++_++FILTER++_++LUA`), `,cc` automatically:
+
+* Replaces relative markdown links with their Confluence URLs from the
+page map
+* Converts fenced code blocks to Confluence `ac:structured-macro` code
+blocks
+* Renders `plantuml` fenced blocks to inline PNG images via the local
+PlantUML server
+
+If the filter is not found, basic conversion runs without these
+enhancements.
+
+Set `CONFLUENCE++_++FILTER++_++LUA` to the absolute path of
+`confluence++_++filter.lua` if the filter lives in a different
+repository to the page being published:
+
+[source,sh]
+----
+export CONFLUENCE_FILTER_LUA="/home/walt/src/rmv/drive-api/scripts/confluence_filter.lua"
+----
+
+'''''
+
+[[troubleshooting]]
+== Troubleshooting
+
+[width="100%",cols="34%,33%,33%",options="header",]
+|===
+|Symptom |Cause |Fix
+|`CONFLUENCE++_++EMAIL and CONFLUENCE++_++API++_++TOKEN must be set`
+|Env vars missing |Add to shell profile; relaunch Neovim
+
+|`not found in confluence-page-map.md` |File not in page map |Add an
+entry to `docs/confluence-page-map.md`
+
+|`cannot open page map` |`docs/confluence-page-map.md` missing |Create
+the file in the project repository root
+
+|`pandoc failed` |pandoc not installed |`sudo apt install pandoc`
+
+|`jq: command not found` |jq not installed (shell script mode)
+|`sudo apt install jq`
+
+|Links not substituted |Filter not found |Set
+`CONFLUENCE++_++FILTER++_++LUA` to the filter path
+
+|`GET .../content/... → 401` |Invalid credentials |Regenerate API token
+at id.atlassian.com
+
+|`GET .../content/... → 403` |Token lacks page edit permission |Check
+Confluence space permissions
+
+|`cannot parse Confluence URL` |Malformed URL in page map |Ensure the
+URL contains `/pages/++<++numeric-id++>++/`
+
+|Diagrams appear as code blocks |PlantUML server not running |Start the
+PlantUML Docker container
+|===
+
+'''''
+
+[[prerequisites]]
+== Prerequisites
+
+____
+*Required:* `pandoc`, `curl`, and `jq` must be installed before `,cc`
+will work.
+____
+
+[width="100%",cols="34%,33%,33%",options="header",]
+|===
+|Dependency |Purpose |Install hint
+|*pandoc* _(required)_ |Markdown → Confluence storage format
+|`sudo apt install pandoc` · `brew install pandoc`
+
+|*curl* _(required)_ |REST API calls |Pre-installed on most systems
+
+|*jq* _(required when using shell script)_ |JSON parsing
+|`sudo apt install jq`
+
+|*PlantUML server* _(optional)_ |Renders diagrams to PNG |See
+xref:guides/diagrams.adoc[Diagrams Guide]
+
+|*CONFLUENCE++_++EMAIL* env var |Atlassian account email |See
+xref:#authentication[Authentication]
+
+|*CONFLUENCE++_++API++_++TOKEN* env var |Atlassian API token |See
+xref:#authentication[Authentication]
+
+|*Neovim ≥ 0.12* |Minimum version |See
+xref:guides/getting-started.adoc[Getting Started]
+|===
 
 Publish a local markdown file directly to its Confluence page with `,cc`
 (or `:MdToConfluence`).

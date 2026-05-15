@@ -30,55 +30,25 @@ provide syntax highlighting and text objects for both file types.
 https://github.com/artempyanykh/marksman[marksman] LSP is configured for
 Markdown, providing cross-file link completion and diagnostics.
 
-== Prerequisites
+*Quick navigation*
 
-[width="100%",cols="34%,33%,33%",options="header",]
+[cols="1,3"]
 |===
-|Dependency |Purpose |Install hint
-|*PlantUML Docker server* |Render `.puml` diagrams |See
-link:#starting-the-plantuml-server[Docker setup] below
-
-|*Node.js / npm* |Build step for markdown-preview.nvim |Install via nvm
-(see below)
-
-|*python3* |Encode `.puml` buffers for the server API |Pre-installed on
-most Linux distros
-
-|*Browser opener* |Open rendered diagram URLs in the browser |`xdg-open`
-(Linux), `open` (macOS), `wslview`/`explorer.exe` (WSL) — auto-detected
-
-|*marksman* _(optional)_ |Markdown LSP |`sudo apt install marksman`
+| xref:#starting-server[Starting the PlantUML Server] | Docker setup for PlantUML
+| xref:#quick-start[Quick Start] | Mermaid, PlantUML, and standalone .puml
+| xref:#pdf-export[Exporting to PDF] | Pandoc-based export with diagrams
+| xref:#keybindings[Keybindings] | Local leader keymaps
+| xref:#how-puml-works[How PumlPreview Works] | Encoding and URL construction
+| xref:#configuration[Configuration] | Server URL and port settings
+| xref:#lsp[LSP (marksman)] | Markdown link completion
+| xref:#diagram-types[Diagram Types Supported] | PlantUML and Mermaid reference
+| xref:#plantuml-ascii[PlantUML ASCII Preview] | Console-friendly text output
+| xref:#prerequisites[Prerequisites] | Node.js, Docker, python3
 |===
 
-=== Installing Node.js via nvm
+'''''
 
-Using https://github.com/nvm-sh/nvm[nvm] installs the LTS release into a
-user-managed prefix — no `sudo` needed for global packages:
-
-[source,sh]
-----
-# 1. Install nvm
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-
-# 2. Reload your shell
-source ~/.bashrc   # or ~/.zshrc
-
-# 3. Install and use the LTS release
-nvm install --lts
-nvm use --lts
-
-# 4. Persist the default across new shells
-nvm alias default lts/*
-
-# 5. Verify
-node --version
-npm --version
-----
-
-____
-*WSL note:* nvm works identically on WSL — no extra steps required.
-____
-
+[[starting-server]]
 == Starting the PlantUML Server
 
 A Docker Compose file is provided at
@@ -98,6 +68,7 @@ docker compose -f ~/.config/nvim/docker/plantuml-server/docker-compose.yml down
 The server is stateless — no build step or volume is needed. It will be
 available at `http://localhost:8080` immediately after startup.
 
+[[quick-start]]
 == Quick Start
 
 === Markdown with embedded Mermaid
@@ -187,6 +158,7 @@ Bob --> Alice : Hi there
 . Press *`,p`* to render and open the diagram in your browser via the
 Docker server.
 
+[[pdf-export]]
 == Exporting to PDF
 
 The `:MdToPdf` command exports the current Markdown document to PDF,
@@ -263,6 +235,7 @@ fenced plantuml block                  fenced mermaid block
   → embedded as image in PDF             → embedded as image in PDF
 ....
 
+[[keybindings]]
 == Keybindings
 
 `localleader` is *`,`* for both `markdown` and `plantuml` buffers.
@@ -281,6 +254,7 @@ fenced plantuml block                  fenced mermaid block
 (`PumlPreviewAscii`)
 |===
 
+[[how-puml-works]]
 == How PumlPreview Works
 
 The `:PumlPreview` command (defined in `lua/plugins/plantuml.lua`) reads
@@ -296,6 +270,7 @@ on Linux, `open` on macOS, `wslview` or `explorer.exe` on WSL). The
 Docker server renders the diagram and serves it as a PNG directly in
 your browser.
 
+[[configuration]]
 == Configuration
 
 The PlantUML server URL is hardcoded to `http://localhost:8080`. To
@@ -316,6 +291,7 @@ The Mermaid PDF export endpoint defaults to the Kroki public API
 `KROKI++_++BASE++_++URL` at the top of
 `docker/md2pdf/mermaid-filter.lua`.
 
+[[lsp]]
 == LSP (marksman)
 
 The `marksman` LSP server provides: - *Link completion* — auto-complete
@@ -326,6 +302,7 @@ links and malformed references are flagged inline - *Go-to-definition*
 See link:../../readme.md#lsp-support[readme.md] for the shared LSP
 keybindings.
 
+[[diagram-types]]
 == Diagram Types Supported
 
 === PlantUML
@@ -393,3 +370,58 @@ to `/utxt/`.
 
 `:PumlPreviewAscii` is also useful in GUI mode when you want text output
 without opening a browser.
+
+'''''
+
+[[prerequisites]]
+== Prerequisites
+
+[width="100%",cols="34%,33%,33%",options="header",]
+|===
+|Dependency |Purpose |Install hint
+|*PlantUML Docker server* |Render `.puml` diagrams |See
+link:#starting-the-plantuml-server[Docker setup] below
+
+|*Node.js / npm* |Build step for markdown-preview.nvim |Install via nvm
+(see below)
+
+|*python3* |Encode `.puml` buffers for the server API |Pre-installed on
+most Linux distros
+
+|*Browser opener* |Open rendered diagram URLs in the browser |`xdg-open`
+(Linux), `open` (macOS), `wslview`/`explorer.exe` (WSL) — auto-detected
+
+|*marksman* _(optional)_ |Markdown LSP |`sudo apt install marksman`
+|===
+
+=== Installing Node.js via nvm
+
+Using https://github.com/nvm-sh/nvm[nvm] installs the LTS release into a
+user-managed prefix — no `sudo` needed for global packages:
+
+[source,sh]
+----
+# 1. Install nvm
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+
+# 2. Reload your shell
+source ~/.bashrc   # or ~/.zshrc
+
+# 3. Install and use the LTS release
+nvm install --lts
+nvm use --lts
+
+# 4. Persist the default across new shells
+nvm alias default lts/*
+
+# 5. Verify
+node --version
+npm --version
+----
+
+____
+*WSL note:* nvm works identically on WSL — no extra steps required.
+____
+
+Neovim ≥ 0.12 is required. See
+xref:guides/getting-started.adoc[Getting Started] for install instructions.
