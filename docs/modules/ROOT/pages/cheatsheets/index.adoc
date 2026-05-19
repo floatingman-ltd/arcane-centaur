@@ -1,10 +1,10 @@
-// :auto-generated: true
-// :source: documentation/cheatsheets/index.md
 // Remove this header to take manual ownership of this file
 
 == Neovim Keybinding Cheat Sheet
 
 *Leader* = `Space` · *LocalLeader* = `,` (in all language buffers)
+
+NOTE: Press `*<leader>?*` inside Neovim for an instant, context-aware keybinding reference — shows universal bindings plus language-specific bindings for the current filetype. Works in any terminal, including headless SSH sessions.
 
 == Plugin Cheatsheets
 

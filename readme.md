@@ -304,6 +304,7 @@ Leader key is **Space**.
 | `<leader>gcs` | Normal / Visual | Copilot CLI: suggest (send to `copilot`) |
 | `<leader>gce` | Normal / Visual | Copilot CLI: explain (send to `copilot`) |
 | `<leader>pa` | Normal *(plantuml buffers)* | Open ASCII PlantUML preview popup (`PumlPreviewAscii`) |
+| `<leader>?` | Normal | Open context-aware cheatsheet (filetype-sensitive floating window) |
 | `<leader>osn` | Normal | OpenSpec: create new change |
 | `<leader>oss` | Normal | OpenSpec: show status |
 | `<leader>osl` | Normal | OpenSpec: list all changes |
