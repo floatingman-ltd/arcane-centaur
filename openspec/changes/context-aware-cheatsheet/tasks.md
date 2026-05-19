@@ -17,19 +17,20 @@
 ## 3. Lua Module
 
 - [x] 3.1 Create `lua/config/cheatsheet.lua`: filetype-to-cheatsheet mapping table (`ft_map` with `sheet` and `guides` fields)
-- [x] 3.2 Implement `open_cheatsheet()`: read `cheatsheets/core.md` + ft-specific file, write to scratch buffer, open centred bordered float with `filetype=markdown`
-- [x] 3.3 Implement float dismiss keymaps inside the float buffer: `q` and `<Esc>` close the window
-- [x] 3.4 Implement numbered guide shortcuts: detect guide list from `ft_map`, append GUIDES section to buffer, map `1`–`9` keys to open the corresponding `guides/<slug>.md` in a new float
-- [x] 3.5 Implement `open_guide(slug)`: read `guides/<slug>.md`, open in a new centred float with dismiss keymaps
-- [x] 3.6 Wire the module into `lua/keymaps.lua`: add `<leader>?` Normal-mode mapping that calls `require("config.cheatsheet").open_cheatsheet()`
+- [x] 3.2 Implement `open_cheatsheet()`: assemble core.md + ft-specific file into a stable cache path, delegate to `vim.cmd("Glow ...")` via glow.nvim
+- [x] 3.3 Dismiss keymaps handled natively by glow.nvim (`q`/`Esc`)
+- [x] 3.4 Implement `pick_guide()`: show ft-relevant guides (or all guides) via `vim.ui.select`; replaces numbered in-float shortcuts
+- [x] 3.5 Implement `open_guide(slug)`: open `guides/<slug>.md` via `vim.cmd("Glow ...")`
+- [x] 3.6 Wire into `lua/keymaps.lua`: `<leader>?` → `open_cheatsheet()`, `<leader>?g` → `pick_guide()`
+- [x] 3.7 Add `cmd = { "Glow" }` to glow.nvim spec so `:Glow` loads from any filetype
 
 ## 4. Validation
 
 - [x] 4.1 Syntax-check `lua/config/cheatsheet.lua` with `luac -p`
-- [ ] 4.2 Manually verify `<leader>?` opens correct content in a plain buffer (core only)
-- [ ] 4.3 Manually verify `<leader>?` in a `.lisp` buffer shows core + lisp section + guide shortcuts
-- [ ] 4.4 Manually verify guide float opens when pressing `1` from the lisp cheatsheet
-- [ ] 4.5 Manually verify `q` and `<Esc>` dismiss both the cheatsheet and guide floats
+- [ ] 4.2 Manually verify `<leader>?` from a plain buffer opens core-only cheatsheet via glow
+- [ ] 4.3 Manually verify `<leader>?` in a `.lisp` buffer shows core + lisp content via glow
+- [ ] 4.4 Manually verify `<leader>?g` opens guide picker and selected guide renders via glow
+- [ ] 4.5 Manually verify `q` and `<Esc>` dismiss the glow float
 
 ## 5. Documentation Updates
 
