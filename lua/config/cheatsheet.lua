@@ -9,23 +9,23 @@ local guides_dir = config_dir .. "/guides"
 -- Filetype → { sheet = "<filename>", guides = { "<slug>", ... } }
 -- Multiple filetypes may map to the same sheet file.
 local ft_map = {
-  lisp    = { sheet = "lisp.md",     guides = { "sbcl-swank", "clojure-nrepl" } },
-  clojure = { sheet = "lisp.md",     guides = { "clojure-nrepl" } },
-  scheme  = { sheet = "lisp.md",     guides = {} },
-  fennel  = { sheet = "lisp.md",     guides = {} },
-  janet   = { sheet = "janet.md",    guides = {} },
-  fsharp  = { sheet = "fsharp.md",   guides = { "dotnet-fsi" } },
-  cs      = { sheet = "fsharp.md",   guides = { "dotnet-fsi" } },
-  haskell = { sheet = "haskell.md",  guides = { "ghci-workflow" } },
+  lisp     = { sheet = "lisp.md",     guides = { "sbcl-swank", "clojure-nrepl" } },
+  clojure  = { sheet = "lisp.md",     guides = { "clojure-nrepl" } },
+  scheme   = { sheet = "lisp.md",     guides = {} },
+  fennel   = { sheet = "lisp.md",     guides = {} },
+  janet    = { sheet = "janet.md",    guides = {} },
+  fsharp   = { sheet = "fsharp.md",   guides = { "dotnet-fsi" } },
+  cs       = { sheet = "fsharp.md",   guides = { "dotnet-fsi" } },
+  haskell  = { sheet = "haskell.md",  guides = { "ghci-workflow" } },
   markdown = { sheet = "markdown.md", guides = {} },
 }
 
--- Guide slug → { title = "...", file = "<filename>" }
-local guide_meta = {
-  ["sbcl-swank"]    = { title = "sbcl-swank — Common Lisp Docker REPL",  file = "sbcl-swank.md" },
-  ["clojure-nrepl"] = { title = "clojure-nrepl — Clojure nREPL",          file = "clojure-nrepl.md" },
-  ["dotnet-fsi"]    = { title = "dotnet-fsi — F# Interactive REPL",       file = "dotnet-fsi.md" },
-  ["ghci-workflow"] = { title = "ghci-workflow — GHCi via haskell-tools",  file = "ghci-workflow.md" },
+-- Guide slug → file under guides_dir
+local guide_files = {
+  ["sbcl-swank"]    = "sbcl-swank.md",
+  ["clojure-nrepl"] = "clojure-nrepl.md",
+  ["dotnet-fsi"]    = "dotnet-fsi.md",
+  ["ghci-workflow"] = "ghci-workflow.md",
 }
 
 local function read_file(path)
@@ -36,63 +36,84 @@ local function read_file(path)
   return content
 end
 
-local function make_float(lines, title)
-  local buf = vim.api.nvim_create_buf(false, true)
-  vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
-  vim.bo[buf].filetype = "markdown"
-  vim.bo[buf].modifiable = false
-  vim.bo[buf].bufhidden = "wipe"
-
-  local ui = vim.api.nvim_list_uis()[1]
-  local width  = math.min(math.floor(ui.width  * 0.80), 90)
-  local height = math.min(math.floor(ui.height * 0.80), #lines + 2)
-  local row    = math.floor((ui.height - height) / 2)
-  local col    = math.floor((ui.width  - width)  / 2)
-
-  local win = vim.api.nvim_open_win(buf, true, {
-    relative = "editor",
-    row      = row,
-    col      = col,
-    width    = width,
-    height   = height,
-    style    = "minimal",
-    border   = "rounded",
-    title    = " " .. title .. " ",
-    title_pos = "center",
-  })
-  vim.wo[win].wrap = true
-  vim.wo[win].conceallevel = 2
-
-  -- Dismiss keymaps
-  for _, key in ipairs({ "q", "<Esc>" }) do
-    vim.keymap.set("n", key, function()
-      if vim.api.nvim_win_is_valid(win) then
-        vim.api.nvim_win_close(win, true)
-      end
-    end, { buffer = buf, silent = true, nowait = true })
+-- Open a markdown file rendered through glow in a centred floating terminal.
+-- If is_temp is true the file is deleted after glow exits.
+-- Returns the window handle (or nil on error).
+local function open_glow_float(filepath, is_temp, guides)
+  if vim.fn.executable("glow") ~= 1 then
+    vim.notify("glow not found — install with: sudo apt install glow", vim.log.levels.WARN)
+    return nil
   end
 
-  return buf, win
+  local buf = vim.api.nvim_create_buf(false, true)
+  vim.bo[buf].bufhidden = "wipe"
+
+  local ui  = vim.api.nvim_list_uis()[1]
+  local w   = math.min(math.floor(ui.width  * 0.80), 120)
+  local h   = math.min(math.floor(ui.height * 0.85), 80)
+  local row = math.floor((ui.height - h) / 2)
+  local col = math.floor((ui.width  - w) / 2)
+
+  local win = vim.api.nvim_open_win(buf, true, {
+    relative  = "editor",
+    row = row, col = col,
+    width = w, height = h,
+    style  = "minimal",
+    border = "rounded",
+  })
+
+  vim.fn.termopen("glow --style dark " .. vim.fn.shellescape(filepath), {
+    on_exit = function()
+      if is_temp then pcall(os.remove, filepath) end
+      -- Switch to normal mode and add dismiss + guide keymaps after glow exits.
+      vim.schedule(function()
+        if not vim.api.nvim_buf_is_valid(buf) then return end
+        vim.cmd("stopinsert")
+
+        local function close()
+          if vim.api.nvim_win_is_valid(win) then
+            vim.api.nvim_win_close(win, true)
+          end
+        end
+
+        vim.keymap.set("n", "q",     close, { buffer = buf, silent = true, nowait = true })
+        vim.keymap.set("n", "<Esc>", close, { buffer = buf, silent = true, nowait = true })
+
+        -- Numbered shortcuts to open mini-guides (1–9)
+        if guides and #guides > 0 then
+          for i, slug in ipairs(guides) do
+            if i <= 9 then
+              vim.keymap.set("n", tostring(i), function()
+                close()
+                M.open_guide(slug)
+              end, { buffer = buf, silent = true, nowait = true, desc = "Guide: " .. slug })
+            end
+          end
+        end
+      end)
+    end,
+  })
+
+  vim.cmd("startinsert")
+  return win
 end
 
 function M.open_guide(slug)
-  local meta = guide_meta[slug]
-  if not meta then
+  local filename = guide_files[slug]
+  if not filename then
     vim.notify("Cheatsheet: unknown guide '" .. slug .. "'", vim.log.levels.WARN)
     return
   end
-  local path = guides_dir .. "/" .. meta.file
-  local content = read_file(path)
-  if not content then
-    vim.notify("Cheatsheet: guide file not found: " .. path, vim.log.levels.WARN)
+  local path = guides_dir .. "/" .. filename
+  if vim.fn.filereadable(path) == 0 then
+    vim.notify("Cheatsheet: guide not found: " .. path, vim.log.levels.WARN)
     return
   end
-  local lines = vim.split(content, "\n", { plain = true })
-  make_float(lines, meta.title)
+  open_glow_float(path, false, nil)
 end
 
 function M.open_cheatsheet()
-  local ft = vim.bo.filetype
+  local ft    = vim.bo.filetype
   local entry = ft_map[ft]
 
   -- Assemble content: core + optional language section
@@ -104,40 +125,25 @@ function M.open_cheatsheet()
   end
 
   local combined = core
-  local title = "Cheatsheet"
 
   if entry then
-    local lang_path = sheets_dir .. "/" .. entry.sheet
-    local lang = read_file(lang_path)
+    local lang = read_file(sheets_dir .. "/" .. entry.sheet)
     if lang then
       combined = combined .. "\n\n---\n\n" .. lang
     end
-    -- Strip filetype noise from the sheet name for display
-    local sheet_label = entry.sheet:gsub("%.md$", "")
-    title = "Cheatsheet [" .. sheet_label .. "]"
   end
 
-  local lines = vim.split(combined, "\n", { plain = true })
-  local buf = make_float(lines, title)
-
-  -- Wire numbered guide shortcuts if the filetype has guides
-  if entry and #entry.guides > 0 then
-    for i, slug in ipairs(entry.guides) do
-      if i <= 9 then
-        vim.keymap.set("n", tostring(i), function()
-          -- Close cheatsheet float before opening guide
-          local wins = vim.api.nvim_list_wins()
-          for _, w in ipairs(wins) do
-            if vim.api.nvim_win_get_buf(w) == buf then
-              vim.api.nvim_win_close(w, true)
-              break
-            end
-          end
-          M.open_guide(slug)
-        end, { buffer = buf, silent = true, nowait = true, desc = "Open guide: " .. slug })
-      end
-    end
+  -- Write to a temp .md file so glow can render it
+  local tmpfile = vim.fn.tempname() .. ".md"
+  local f = io.open(tmpfile, "w")
+  if not f then
+    vim.notify("Cheatsheet: could not write temp file", vim.log.levels.WARN)
+    return
   end
+  f:write(combined)
+  f:close()
+
+  open_glow_float(tmpfile, true, entry and entry.guides or nil)
 end
 
 return M
