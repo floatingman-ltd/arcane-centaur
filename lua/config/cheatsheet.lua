@@ -1,13 +1,10 @@
 local M = {}
 
--- Root directory for cheatsheet and guide markdown files.
--- Uses the config directory so paths work regardless of cwd.
 local config_dir = vim.fn.stdpath("config")
 local sheets_dir = config_dir .. "/cheatsheets"
 local guides_dir = config_dir .. "/guides"
 
 -- Filetype → { sheet = "<filename>", guides = { "<slug>", ... } }
--- Multiple filetypes may map to the same sheet file.
 local ft_map = {
   lisp     = { sheet = "lisp.md",     guides = { "sbcl-swank", "clojure-nrepl" } },
   clojure  = { sheet = "lisp.md",     guides = { "clojure-nrepl" } },
@@ -36,66 +33,12 @@ local function read_file(path)
   return content
 end
 
--- Open a markdown file rendered through glow in a centred floating terminal.
--- If is_temp is true the file is deleted after glow exits.
--- Returns the window handle (or nil on error).
-local function open_glow_float(filepath, is_temp, guides)
-  if vim.fn.executable("glow") ~= 1 then
-    vim.notify("glow not found — install with: sudo apt install glow", vim.log.levels.WARN)
-    return nil
+-- Delegate rendering to glow.nvim (cmd-loaded so available from any buffer).
+local function glow_open(path)
+  local ok, err = pcall(vim.cmd, "Glow " .. vim.fn.fnameescape(path))
+  if not ok then
+    vim.notify("Cheatsheet: " .. tostring(err), vim.log.levels.WARN)
   end
-
-  local buf = vim.api.nvim_create_buf(false, true)
-  vim.bo[buf].bufhidden = "wipe"
-
-  local ui  = vim.api.nvim_list_uis()[1]
-  local w   = math.min(math.floor(ui.width  * 0.80), 120)
-  local h   = math.min(math.floor(ui.height * 0.85), 80)
-  local row = math.floor((ui.height - h) / 2)
-  local col = math.floor((ui.width  - w) / 2)
-
-  local win = vim.api.nvim_open_win(buf, true, {
-    relative  = "editor",
-    row = row, col = col,
-    width = w, height = h,
-    style  = "minimal",
-    border = "rounded",
-  })
-
-  vim.fn.termopen("glow --style dark " .. vim.fn.shellescape(filepath), {
-    on_exit = function()
-      if is_temp then pcall(os.remove, filepath) end
-      -- Switch to normal mode and add dismiss + guide keymaps after glow exits.
-      vim.schedule(function()
-        if not vim.api.nvim_buf_is_valid(buf) then return end
-        vim.cmd("stopinsert")
-
-        local function close()
-          if vim.api.nvim_win_is_valid(win) then
-            vim.api.nvim_win_close(win, true)
-          end
-        end
-
-        vim.keymap.set("n", "q",     close, { buffer = buf, silent = true, nowait = true })
-        vim.keymap.set("n", "<Esc>", close, { buffer = buf, silent = true, nowait = true })
-
-        -- Numbered shortcuts to open mini-guides (1–9)
-        if guides and #guides > 0 then
-          for i, slug in ipairs(guides) do
-            if i <= 9 then
-              vim.keymap.set("n", tostring(i), function()
-                close()
-                M.open_guide(slug)
-              end, { buffer = buf, silent = true, nowait = true, desc = "Guide: " .. slug })
-            end
-          end
-        end
-      end)
-    end,
-  })
-
-  vim.cmd("startinsert")
-  return win
 end
 
 function M.open_guide(slug)
@@ -109,23 +52,37 @@ function M.open_guide(slug)
     vim.notify("Cheatsheet: guide not found: " .. path, vim.log.levels.WARN)
     return
   end
-  open_glow_float(path, false, nil)
+  glow_open(path)
+end
+
+-- Guide picker for the current filetype (or all guides if no ft match).
+function M.pick_guide()
+  local ft    = vim.bo.filetype
+  local entry = ft_map[ft]
+  local slugs = (entry and #entry.guides > 0) and entry.guides
+                or vim.tbl_keys(guide_files)
+
+  if #slugs == 0 then
+    vim.notify("No guides available for this filetype", vim.log.levels.INFO)
+    return
+  end
+
+  vim.ui.select(slugs, { prompt = "Open guide:" }, function(choice)
+    if choice then M.open_guide(choice) end
+  end)
 end
 
 function M.open_cheatsheet()
   local ft    = vim.bo.filetype
   local entry = ft_map[ft]
 
-  -- Assemble content: core + optional language section
-  local core_path = sheets_dir .. "/core.md"
-  local core = read_file(core_path)
+  local core = read_file(sheets_dir .. "/core.md")
   if not core then
-    vim.notify("Cheatsheet: core.md not found at " .. core_path, vim.log.levels.WARN)
+    vim.notify("Cheatsheet: core.md not found at " .. sheets_dir, vim.log.levels.WARN)
     return
   end
 
   local combined = core
-
   if entry then
     local lang = read_file(sheets_dir .. "/" .. entry.sheet)
     if lang then
@@ -133,17 +90,17 @@ function M.open_cheatsheet()
     end
   end
 
-  -- Write to a temp .md file so glow can render it
-  local tmpfile = vim.fn.tempname() .. ".md"
+  -- Write to a stable cache path (overwritten each call; no cleanup needed).
+  local tmpfile = vim.fn.stdpath("cache") .. "/cheatsheet_preview.md"
   local f = io.open(tmpfile, "w")
   if not f then
-    vim.notify("Cheatsheet: could not write temp file", vim.log.levels.WARN)
+    vim.notify("Cheatsheet: could not write cache file", vim.log.levels.WARN)
     return
   end
   f:write(combined)
   f:close()
 
-  open_glow_float(tmpfile, true, entry and entry.guides or nil)
+  glow_open(tmpfile)
 end
 
 return M
