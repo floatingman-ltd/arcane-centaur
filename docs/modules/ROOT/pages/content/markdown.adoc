@@ -1,0 +1,338 @@
+== Markdown Preview Guide
+
+This guide covers all preview and export options for Markdown files:
+
+* *`markdown-preview.nvim`* — single-file browser preview with PlantUML
+and Mermaid diagram rendering
+* *`markserv` Docker server* — project-wide directory preview where
+cross-page links between `.md` files resolve correctly
+* *`mkdnflow.nvim`* — in-editor cross-page link navigation
+* *PDF export* — Pandoc-based export with rendered diagrams
+
+For diagrams specifically (PlantUML, Mermaid, PDF export), see
+xref:content/diagrams.adoc[Diagrams Guide]. +
+For MARP presentation slides, see xref:content/presentations.adoc[Presentations Guide].
+
+*Quick navigation*
+
+[cols="1,3"]
+|===
+| xref:#quick-start[Quick Start] | Single-file and multi-file preview
+| xref:#plantuml-server[PlantUML Server] | Docker server for diagram preview
+| xref:#markdown-preview[markdown-preview.nvim] | Browser preview with diagram support
+| xref:#markserv[Markserv Docker Server] | Project-wide cross-page preview
+| xref:#mkdnflow[In-editor Navigation] | mkdnflow.nvim link following
+| xref:#keybindings[Keybindings Summary] | All local leader keymaps
+| xref:#choosing[Choosing the Right Preview Tool] | Decision guide
+| xref:#glow-preview[Glow (Console)] | In-terminal Markdown rendering
+|===
+
+'''''
+
+[[quick-start]]
+== Quick Start
+
+=== Single-file preview (no Docker required)
+
+[arabic]
+. Open any `.md` file in Neovim.
+. Press `,p` to toggle the live browser preview.
+. Edit; the preview auto-refreshes in the browser.
+
+=== Project-wide preview with cross-page links (requires Docker)
+
+[arabic]
+. Start the markserv container from your markdown project root:
++
+[source,sh]
+----
+# One-time build + start
+MD_DIR=/path/to/project \
+  docker compose -f ~/.config/nvim/docker/markserv/docker-compose.yml up -d --build
+
+# Subsequent starts (image already built)
+MD_DIR=/path/to/project \
+  docker compose -f ~/.config/nvim/docker/markserv/docker-compose.yml up -d
+----
++
+If your project root is the directory you launched Neovim from, you can
+omit `MD++_++DIR`:
++
+[source,sh]
+----
+docker compose -f ~/.config/nvim/docker/markserv/docker-compose.yml up -d
+----
+. Open any `.md` file and press `,sp` to open it in the markserv server.
+. Click links to other `.md` files — they open and render correctly
+because the whole project directory is served.
+. Edit and save any file; the browser reloads automatically via SSE.
+
+'''''
+
+[[plantuml-server]]
+== PlantUML Server
+
+The markserv preview server generates `++<++img++>++` URLs pointing at
+`http://localhost:8080` for `plantuml` fenced blocks. The browser loads
+those images directly from the PlantUML Docker server, so you must start
+it before using PlantUML in the markserv preview:
+
+[source,sh]
+----
+docker compose -f ~/.config/nvim/docker/plantuml-server/docker-compose.yml up -d
+----
+
+The PlantUML server is stateless and starts instantly. You can leave it
+running permanently. See diagrams.md for the full guide.
+
+'''''
+
+[[markdown-preview]]
+== markdown-preview.nvim (`,p`)
+
+`markdown-preview.nvim` opens a single-file browser preview that syncs
+with your cursor position. It renders:
+
+* Standard Markdown (headings, tables, lists, code blocks)
+* *Mermaid* fenced code blocks natively in the browser — no extra server
+needed
+* *PlantUML* fenced code blocks via the PlantUML Docker server on
+`localhost:8080`
+
+=== Limitation — cross-page links
+
+`markdown-preview.nvim` runs a minimal WebSocket server that serves
+*only the current buffer*. Clicking a relative link such as
+`++[++other page++]++(other.md)` in the browser navigates to a URL that
+the server cannot serve, returning 404.
+
+For projects with multiple interlinked files use the markserv server
+(`,sp`) instead, or use `mkdnflow.nvim` (`++<++CR++>++`) to navigate
+between files in the editor.
+
+'''''
+
+[[markserv]]
+== Markserv Docker Server (`,sp`)
+
+The markserv preview server is a custom Node.js server that renders a
+whole directory tree. Each `.md` file is rendered as GitHub-flavoured
+HTML on demand. Because every file in the directory is reachable,
+relative links between markdown files resolve correctly.
+
+The server also renders diagrams embedded in fenced code blocks:
+
+* *`plantuml`* fenced blocks are converted to `++<++img++>++` tags that
+fetch SVGs from the local PlantUML Docker server on
+`http://localhost:8080`. Start that server first — see
+link:#plantuml-server[Starting the PlantUML Server].
+* *`mermaid`* fenced blocks are rendered client-side by Mermaid.js
+loaded from the jsDelivr CDN — no extra server is needed.
+
+=== How it works
+
+....
+your project/
+├── index.md          ← links to guide.md
+├── guide.md          ← links to reference.md
+└── reference.md
+....
+
+Start the container with `MD++_++DIR` pointing at the project root. The
+container mounts that directory at `/docs` and serves it. Visiting
+`http://localhost:8090/index.md` and clicking
+`++[++guide++]++(guide.md)` navigates to
+`http://localhost:8090/guide.md` — which the server renders correctly.
+
+=== Ports
+
+[width="100%",cols="40%,60%",options="header",]
+|===
+|Port |Purpose
+|`8090` |HTTP preview server (live reload via SSE on
+`/++__++livereload`)
+|===
+
+=== Start / stop commands
+
+[source,sh]
+----
+# Start (builds the image on first run; subsequent starts skip the build)
+MD_DIR=/path/to/project \
+  docker compose -f ~/.config/nvim/docker/markserv/docker-compose.yml up -d --build
+
+# Start without rebuild (image already built)
+MD_DIR=/path/to/project \
+  docker compose -f ~/.config/nvim/docker/markserv/docker-compose.yml up -d
+
+# Stop
+docker compose -f ~/.config/nvim/docker/markserv/docker-compose.yml down
+----
+
+____
+*Tip:* Set `MD++_++DIR` to the project root — the directory that
+contains all the interlinked markdown files. If you start Neovim from
+that directory and omit `MD++_++DIR`, Docker Compose uses `$PWD`
+automatically.
+____
+
+'''''
+
+[[mkdnflow]]
+== In-editor Navigation — mkdnflow.nvim
+
+`mkdnflow.nvim` provides in-editor link following so you can navigate
+between markdown files without leaving Neovim.
+
+[width="100%",cols="39%,61%",options="header",]
+|===
+|Key |Action
+|`++<++CR++>++` |Follow link under cursor — opens the target file in the
+current window
+
+|`++<++BS++>++` |Go back to the previous file
+
+|`++<++Tab++>++` |Jump to the next link in the buffer
+
+|`++<++S-Tab++>++` |Jump to the previous link in the buffer
+|===
+
+After opening a linked file with `++<++CR++>++`, press `,p` to toggle
+the single-file preview, or `,sp` to open it in the markserv server.
+
+'''''
+
+[[keybindings]]
+== Keybindings Summary
+
+LocalLeader is `,` in Markdown buffers.
+
+[width="100%",cols="43%,57%",options="header",]
+|===
+|Keys |Action
+|`,p` |Toggle `markdown-preview.nvim` single-file browser preview (GUI)
+or glow popup (console)
+
+|`,pp` |Force glow popup preview — always in-terminal, regardless of
+environment
+
+|`,sp` |Open current file in markserv Docker server preview
+(`MdServerPreview`)
+
+|`++<++CR++>++` |Follow link under cursor (mkdnflow — in-editor
+navigation)
+
+|`++<++BS++>++` |Go back to previous file (mkdnflow)
+
+|`++<++Tab++>++` |Jump to next link in buffer (mkdnflow)
+
+|`++<++S-Tab++>++` |Jump to previous link in buffer (mkdnflow)
+
+|`,dp` |Export to PDF with PlantUML and Mermaid diagrams rendered
+(`MdToPdf`)
+
+|`,mp` |Open MARP slide in preview server
+
+|`,mx` |Export MARP slide to PowerPoint (`.pptx`)
+
+|`,mh` |Export MARP slide to HTML
+
+|`,md` |Export MARP slide to PDF
+|===
+
+→ xref:content/markdown-cheatsheet.adoc[Full cheatsheet]
+
+'''''
+
+[[choosing]]
+== Choosing the Right Preview Tool
+
+[width="100%",cols="40%,60%",options="header",]
+|===
+|Situation |Recommended tool
+|Single file, diagrams, cursor sync |`,p` — markdown-preview.nvim
+
+|Full-screen terminal, no browser context |`,pp` — glow popup (always
+in-terminal)
+
+|Multi-file project, cross-page links, diagrams |`,sp` — markserv Docker
+server
+
+|Navigate between linked files in editor |`++<++CR++>++` — mkdnflow.nvim
+
+|Export to PDF with diagram rendering |`,dp` — MdToPdf
+
+|MARP presentation slides |`,mp` — MARP Docker server
+|===
+
+'''''
+
+[[glow-preview]]
+== Markdown Preview — Glow (Console)
+
+In console sessions, `,p` is routed to https://github.com/charmbracelet/glow[glow], which renders
+Markdown with colour and tables in a floating popup window. Use `,pp` to
+force the glow popup even in a GUI environment.
+
+[width="100%",cols="34%,33%,33%",options="header",]
+|===
+|Key |Console |GUI
+|`,p` |`:Glow` — floating popup with rendered Markdown
+|`:MarkdownPreviewToggle` — opens in browser
+|===
+
+Press `q` or `++<++Esc++>++` to close the popup.
+
+=== Closing an orphaned popup
+
+Occasionally the Glow popup is left open after navigating away.
+The popup is a regular floating window; use standard Neovim window
+commands to reach and close it.
+
+*Normal close (focus the popup first):*
+
+....
+<C-w>w    " cycle through windows until the popup is focused
+q         " or: :q<CR>  — close the focused window
+....
+
+*Force-close all floating windows (nuclear option):*
+
+[source,vim]
+----
+:lua for _, w in ipairs(vim.api.nvim_list_wins()) do if vim.api.nvim_win_get_config(w).relative ~= "" then vim.api.nvim_win_close(w, true) end end
+----
+
+=== Customising the popup
+
+Override the glow options in `lua/plugins/markdown.lua`:
+
+[source,lua]
+----
+opts = {
+  border = "rounded",   -- "shadow", "none", "double", "solid", "single"
+  width  = 120,         -- max popup width in columns
+  height = 80,          -- max popup height in lines
+  pager  = false,
+},
+----
+
+=== Prerequisites — Installing glow
+
+[source,sh]
+----
+# Debian / Ubuntu (via Charmbracelet apt repo)
+sudo mkdir -p /etc/apt/keyrings
+curl -fsSL https://repo.charm.sh/apt/gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/charm.gpg
+echo "deb [signed-by=/etc/apt/keyrings/charm.gpg] https://repo.charm.sh/apt/ * *" \
+  | sudo tee /etc/apt/sources.list.d/charm.list
+sudo apt update && sudo apt install glow
+
+# macOS
+brew install glow
+
+# Other: https://github.com/charmbracelet/glow#installation
+----
+
+Neovim will emit a `WARN` notification at preview time if `glow` is not
+found on `$PATH` — it will not crash.

@@ -9,7 +9,7 @@ to use each Neovim tool hands-on. Work through it interactively —
 evaluate every snippet as you read.
 
 ____
-*Series:* link:01-setup.md[01 Setup] · 02 First Steps ← you are here
+*Series:* xref:learning/janet/01-setup.adoc[01 Setup] · 02 First Steps ← you are here
 ____
 
 '''''
@@ -296,7 +296,7 @@ The `janet++_++lsp` server activates automatically when you open a
 |`++[++d` / `++]++d` |Jump to previous / next diagnostic
 |===
 
-Check the server is running: `:LspInfo`
+Check the server is running: `:lua =vim.lsp.get_clients({bufnr=0})`
 
 === conform.nvim — Formatting
 

@@ -86,3 +86,49 @@ end
 -- Both keymaps trigger the same one-shot convert-and-open flow (no popup equivalent for HTML output).
 vim.keymap.set("n", "<localleader>p",  asciidoc_preview, { buffer = true, desc = "AsciiDoc browser preview (Docker asciidoctor → HTML)" })
 vim.keymap.set("n", "<localleader>pp", asciidoc_preview, { buffer = true, desc = "AsciiDoc browser preview (Docker asciidoctor → HTML)" })
+
+-- ,pa — full Antora site build + open in browser (reads working tree via antora-playbook-local.yml)
+local function antora_preview()
+  if term.is_console then
+    vim.notify("Antora preview requires a graphical environment.", vim.log.levels.WARN)
+    return
+  end
+  if vim.fn.executable("docker") ~= 1 then
+    vim.notify("docker not found — install Docker to use Antora preview.", vim.log.levels.ERROR)
+    return
+  end
+
+  local repo_root = vim.fn.systemlist("git -C " .. vim.fn.shellescape(vim.fn.expand("%:p:h")) .. " rev-parse --show-toplevel")[1]
+  if not repo_root or repo_root == "" then
+    vim.notify("Antora preview: could not find git repo root.", vim.log.levels.ERROR)
+    return
+  end
+
+  local playbook   = repo_root .. "/antora-playbook-local.yml"
+  local index_html = repo_root .. "/build/site/index.html"
+
+  vim.notify("Antora preview: building site…", vim.log.levels.INFO)
+
+  vim.fn.jobstart({
+    "docker", "run", "--rm",
+    "-v", repo_root .. ":/antora",
+    "antora/antora",
+    "antora-playbook-local.yml",
+  }, {
+    on_exit = function(_, code)
+      vim.schedule(function()
+        if code ~= 0 then
+          vim.notify(
+            "Antora build failed (exit " .. code .. "). Check :messages for details.",
+            vim.log.levels.ERROR
+          )
+          return
+        end
+        vim.notify("Antora preview: build complete — opening browser.", vim.log.levels.INFO)
+        open_in_browser(index_html)
+      end)
+    end,
+  })
+end
+
+vim.keymap.set("n", "<localleader>pa", antora_preview, { buffer = true, desc = "Antora full-site preview (Docker → build/site/index.html)" })

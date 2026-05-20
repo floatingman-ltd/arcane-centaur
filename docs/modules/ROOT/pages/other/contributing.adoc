@@ -1,0 +1,110 @@
+== Contributing to the Documentation
+
+This guide explains how to author and maintain the AsciiDoc documentation
+that powers the https://floatingman-ltd.github.io/arcane-centaur[Arcane Centaur docs site].
+
+== Authoring Workflow
+
+AsciiDoc files in `docs/modules/ROOT/pages/` are the *source of truth* for all documentation. There is no conversion pipeline and no auto-generated files. Edit `.adoc` files directly.
+
+The only Markdown file in the repository is `README.md` in the repo root (repository metadata and a link to the hosted docs site). Do not create `.md` files elsewhere.
+
+=== Editing an Existing Page
+
+Open the relevant `.adoc` file under `docs/modules/ROOT/pages/` and edit it directly. Changes are published on the next push to `main`.
+
+=== Adding a New Page
+
+. Create a new `.adoc` file under the appropriate subdirectory:
++
+[cols="1,2"]
+|===
+|`docs/modules/ROOT/pages/guides/` |Full how-to guides
+|`docs/modules/ROOT/pages/cheatsheets/` |Quick reference tables
+|`docs/modules/ROOT/pages/learning/` |Step-by-step learning paths
+|===
+. Add an `xref:` entry in `docs/modules/ROOT/nav.adoc` to make it reachable from the sidebar.
+. Follow the guide template (see below).
+
+=== Removing a Page
+
+. Delete the `.adoc` file with `git rm`.
+. Remove its entry from `docs/modules/ROOT/nav.adoc`.
+. Update any `xref:` links pointing to the deleted file in other pages.
+
+== Guide Template
+
+All guides follow a consistent structure:
+
+[source,asciidoc]
+----
+== Title
+
+Intro paragraph.
+
+*Quick navigation*
+
+[cols="1,3"]
+|===
+| xref:#quick-start[Quick Start] | One-line description
+| xref:#setup[Setup] | One-line description
+| xref:#prerequisites[Prerequisites] | One-line description
+|===
+
+'''''
+
+[[quick-start]]
+== Quick Start
+
+...
+
+[[setup]]
+== Setup
+
+...
+
+[[prerequisites]]
+== Prerequisites
+
+...
+----
+
+Key rules:
+
+* Jump navigation table immediately after the intro.
+* `'''''` (five single quotes) as horizontal rule — not `---`.
+* `[[anchor]]` tag immediately before each `==` section heading.
+* Quick Start first, Prerequisites last.
+* Use `xref:` for internal links, never `link:`.
+
+== Local Build
+
+Preview the full site locally before pushing:
+
+[source,sh]
+----
+docker compose -f antora-playbook.yml run --rm antora antora-playbook.yml
+# Then open build/site/index.html in a browser
+----
+
+The first run pulls the `antora/antora` Docker image (~150 MB). Subsequent runs use the cache.
+
+== nav.adoc Maintenance
+
+`docs/modules/ROOT/nav.adoc` drives the sidebar navigation. It is authored manually and must be updated whenever a page is added or removed.
+
+[source,asciidoc]
+----
+.Section Name
+* xref:guides/my-new-guide.adoc[My New Guide]
+----
+
+Page paths in `nav.adoc` are relative to `docs/modules/ROOT/pages/`. The sidebar supports up to five levels of nesting (`*` through `*****`). Use unlinked plain-text items as sub-headers within a section:
+
+[source,asciidoc]
+----
+.Languages
+* Lisp Family
+** xref:languages/lisp.adoc[Guide]
+** xref:languages/lisp-cheatsheet.adoc[Cheatsheet]
+----

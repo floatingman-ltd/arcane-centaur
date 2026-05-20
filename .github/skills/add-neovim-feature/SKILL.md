@@ -126,171 +126,123 @@ Stop and fix any errors before continuing.
 
 ## Step 3 — Documentation
 
-All four documentation targets are **required**. Do not skip any.
+All three documentation targets are **required**. Do not skip any.
 
-### 3a. Feature guide — `docs/guides/<name>.md`
+### 3a. Feature guide — `docs/modules/ROOT/pages/guides/<name>.adoc`
 
 Structure:
-```markdown
-# <Feature Name> Guide
+```asciidoc
+= <Feature Name> Guide
 
 One-sentence description.
 
-## Prerequisites
+*Jump to:* <<quick-start>> · <<keybindings>> · <<configuration>> · <<troubleshooting>> · <<setup>> · <<prerequisites>>
 
-Dependencies the user must install before this feature works.
-Include install commands for Debian/Ubuntu, Fedora, macOS, WSL.
-
-## Quick Start
+== Quick Start
 
 Numbered steps to get the feature working from zero.
 
-## How It Works
+== Keybindings
+
+[width="100%",cols="25%,15%,60%",options="header"]
+|===
+|Keys |Mode |Action
+|`<key>` |Normal |What it does
+|===
+
+== How It Works
 
 Brief technical explanation (architecture-level, not code-level).
 
-## Keybindings
-
-| Keys | Mode | Action |
-|---|---|---|
-| ... | ... | ... |
-
-## Configuration
+== Configuration
 
 How to customise the feature (options, override locations).
 
-## Troubleshooting
+'''
 
-| Symptom | Cause | Fix |
-|---|---|---|
-| ... | ... | ... |
+== Troubleshooting
+
+[width="100%",cols="30%,30%,40%",options="header"]
+|===
+|Symptom |Cause |Fix
+|... |... |...
+|===
+
+== Setup
+
+Step-by-step install procedures (only if non-trivial).
+
+== Prerequisites
+
+[width="100%",cols="30%,30%,40%",options="header"]
+|===
+|Dependency |Purpose |Install hint
+|... |... |...
+|===
 ```
 
-### 3b. Cheatsheet — `docs/cheatsheets/<name>.md`
+### 3b. Cheatsheet — `docs/modules/ROOT/pages/cheatsheets/<name>.adoc`
 
 Structure:
-```markdown
-# <Feature Name> Cheatsheet
+```asciidoc
+= <Feature Name> Cheatsheet
 
-**Leader** = `Space` · **LocalLeader** = `,`
+*Leader* = `Space` · *LocalLeader* = `,`
 
-→ Back to [main cheatsheet](index.md) · Guide: [../guides/<name>.md](../guides/<name>.md)
+→ Back to xref:cheatsheets/index.adoc[main cheatsheet] · Guide: xref:guides/<name>.adoc[<Feature Name> guide]
 
-## <Section>
+== <Section>
 
-| Keys | Mode | Action |
-|---|---|---|
-| ... | ... | ... |
+[width="100%",cols="25%,15%,60%",options="header"]
+|===
+|Keys |Mode |Action
+|`<key>` |Normal |What it does
+|===
 
-## User Commands
+== User Commands
 
-| Command | Description |
-|---|---|
-| `:CommandName` | What it does |
+[width="100%",cols="40%,60%",options="header"]
+|===
+|Command |Description
+|`:CommandName` |What it does
+|===
 
----
+'''
 
-*Defined in `<source file>`.*
+_Defined in `<source file>`._
 ```
 
-### 3c. Update `docs/cheatsheets/index.md`
+### 3c. Update `docs/modules/ROOT/pages/cheatsheets/index.adoc`
 
-1. Add a row to the **Plugin Cheatsheets** table at the top:
-   ```markdown
-   | <Feature name> | [<name>.md](<name>.md) |
+1. Add a row to the **Plugin Cheatsheets** table:
+   ```asciidoc
+   |<Feature name> |xref:cheatsheets/<name>.adoc[<name>.adoc]
    ```
-2. Add a **Quick Reference** section (or add rows to an existing section if
-   the feature is small enough not to warrant its own section):
-   ```markdown
-   ### <Feature Name>
+2. Add a **Quick Reference** section (or rows to an existing section):
+   ```asciidoc
+   === <Feature Name>
 
-   | Keys | Mode | Action |
-   |---|---|---|
-   | ... | ... | ... |
+   [width="100%",cols="25%,15%,60%",options="header"]
+   |===
+   |Keys |Mode |Action
+   |`<key>` |Normal |What it does
+   |===
 
-   → [Full reference](<name>.md)
+   → xref:cheatsheets/<name>.adoc[Full reference]
    ```
 
-### 3d. Update `readme.md`
+### 3d. Update `docs/modules/ROOT/nav.adoc`
 
-Depending on the feature type, update **one or more** of:
+Add the new guide and cheatsheet entries under the appropriate topic group. The nav is hand-authored — do not leave orphaned entries for deleted files.
 
-| Feature type | Section(s) to update |
-|---|---|
-| New plugin | Prerequisites table, Plugin Overview, Project Structure |
-| New keybinding | General Keybindings table |
-| New language support | Supported Languages table; add a "Working with <Lang>" section |
-| New LSP server | LSP Support table |
-| New Docker service | Add a "Working with <Feature>" section with start/stop commands |
-| Terminal / font | Terminal Auto-Detection table |
-
-Also add the new guide link to the prerequisites paragraph:
-```markdown
-... · [<Feature Name>](docs/guides/<name>.md)
+```asciidoc
+** xref:guides/<name>.adoc[<Feature Name>]
+** xref:cheatsheets/<name>.adoc[<Feature Name> Cheatsheet]
 ```
 
 ---
 
-## Step 4 — Validation tests
-
-Add a new numbered section to `docs/guides/validation.md`.
-
-### Finding the next section number
-
-```bash
-grep -c "^## [0-9]" docs/guides/validation.md
-```
-
-The new section number is that count + 1.
-
-### Section structure
-
-```markdown
-## <N>. <Feature Name>
-
-**Precondition:** <what must be true / installed before running these tests>
-
-- [ ] <N>.1 Confirm the feature loaded (`:Lazy` / `:checkhealth` / command exists):
-  ```
-  <command>
-  ```
-  **Expected:** <what a passing result looks like>
-
-- [ ] <N>.2 Test the primary happy path:
-  <steps>
-  **Expected:** <result>
-
-- [ ] <N>.3 Test the primary keybinding:
-  ```
-  <key sequence>
-  ```
-  **Expected:** <result>
-
-- [ ] <N>.4 Test graceful failure / error handling:
-  <steps to trigger the error case>
-  **Expected:** <meaningful error message or notification, no crash>
-
-<!-- Add more steps for additional scenarios, edge cases, and each keybinding -->
-```
-
-**Requirements for validation steps:**
-- At least one step **verifies the feature loaded** (plugin present, command registered, or module requires cleanly).
-- At least one step **tests the primary user-facing action** (the main keybinding or command).
-- At least one step **tests graceful failure** (missing prerequisite, wrong filetype, etc.).
-- One step per distinct keybinding.
-- Steps must be **executable by the reader with exact commands** — no vague "test it works".
-
-### Update the Summary Checklist
-
-Add a row to the table at the bottom of `validation.md`:
-
-```markdown
-| <N> | <Feature name> | [ ] |
-```
-
----
-
-## Step 5 — Final verification
+## Step 4 — Final verification
 
 Run all checks in sequence:
 

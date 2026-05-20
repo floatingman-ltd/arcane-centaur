@@ -9,7 +9,7 @@ toolchain that is already configured in this repository — LSP, REPL,
 structural editing, formatting, and rainbow delimiters.
 
 ____
-*Series:* 01 Setup ← you are here · link:02-first-steps.md[02 First
+*Series:* 01 Setup ← you are here · xref:learning/janet/02-first-steps.adoc[02 First
 Steps]
 ____
 
@@ -142,7 +142,7 @@ nvim hello.janet
 ----
 . Evaluate the buffer with `,eb` — the Conjure log should print
 `Hello from Janet!`.
-. Check LSP is attached: `:LspInfo` → you should see `janet++_++lsp`
+. Check LSP is attached: `:lua =vim.lsp.get_clients({bufnr=0})` → you should see `janet_lsp`
 listed as active for the current buffer.
 . Hover over a symbol and press `K` — a documentation popup should
 appear.
@@ -160,17 +160,17 @@ install Janet or fix your PATH
 |No completions / hover |`janet-lsp` not found |`which janet-lsp`; add
 `~/.jpm/bin` to PATH
 
-|LSP shows as inactive |Server crashed |`:LspLog` for details; check
+|LSP shows as inactive |Server crashed |`:lua vim.cmd('e '..vim.lsp.get_log_path())` for details; check
 `janet-lsp` binary works standalone
 
 |Parinfer fights your edits |Working against the paradigm |Edit
 _indentation_, not parens — parinfer infers parens from indent
 |===
 
-For deeper LSP debugging see `docs/cheatsheets/lsp.md` and run
-`:LspInfo` / `:LspLog` inside Neovim.
+For deeper LSP debugging run `:checkhealth lsp` or
+`:lua =vim.lsp.get_clients({bufnr=0})` inside Neovim.
 
 '''''
 
-*Next:* link:02-first-steps.md[02 — First Steps: syntax&#44; data
+*Next:* xref:learning/janet/02-first-steps.adoc[02 — First Steps: syntax&#44; data
 types&#44; and using the tools]
