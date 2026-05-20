@@ -27,10 +27,10 @@
 ## 4. Validation
 
 - [x] 4.1 Syntax-check `lua/config/cheatsheet.lua` with `luac -p`
-- [ ] 4.2 Manually verify `<leader>?` from a plain buffer opens core-only cheatsheet via glow
-- [ ] 4.3 Manually verify `<leader>?` in a `.lisp` buffer shows core + lisp content via glow
-- [ ] 4.4 Manually verify `<leader>?g` opens guide picker and selected guide renders via glow
-- [ ] 4.5 Manually verify `q` and `<Esc>` dismiss the glow float
+- [x] 4.2 Manually verify `<leader>?` from a plain buffer opens core-only cheatsheet via glow
+- [x] 4.3 Manually verify `<leader>?` in a `.lisp` buffer shows core + lisp content via glow
+- [x] 4.4 Manually verify `<leader>?g` opens guide picker and selected guide renders via glow
+- [x] 4.5 Manually verify `q` and `<Esc>` dismiss the glow float
 
 ## 5. Documentation Updates
 
