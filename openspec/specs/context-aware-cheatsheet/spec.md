@@ -47,23 +47,23 @@ For filetypes with a registered cheatsheet file the float SHALL append that file
 - **THEN** the content from `cheatsheets/lisp.md` is shown (same as for `lisp` or `clojure` filetypes)
 
 ### Requirement: Mini-guide shortcuts visible and navigable
-When the current filetype's mapping includes one or more guide slugs, the float SHALL display a numbered list of guide shortcuts at the bottom (e.g. `[1] sbcl-swank  [2] clojure-nrepl`). Pressing the corresponding number key while the float is focused SHALL close the cheatsheet float and open the guide content in a new floating window.
+When the current filetype's mapping includes one or more guide slugs, the user SHALL be able to open a separate guide picker with `<leader>?g`. The picker SHALL list the registered guide slugs for the current buffer's filetype, and selecting one entry SHALL open the guide content in a new floating window.
 
-#### Scenario: Guide shortcuts appear for filetype with guides
-- **WHEN** the cheatsheet float is opened in a `lisp` buffer
-- **THEN** a GUIDES section is visible at the bottom listing the registered guide slugs with numeric labels
+#### Scenario: Guide picker lists guides for filetype with guides
+- **WHEN** the user presses `<leader>?g` in a `lisp` buffer
+- **THEN** a guide picker opens listing the registered guide slugs for `lisp`
 
-#### Scenario: No guides section for filetype with empty guide list
-- **WHEN** the cheatsheet float is opened in a `scheme` buffer (guides list is empty)
-- **THEN** no GUIDES section appears at the bottom of the float
+#### Scenario: No guides are offered for filetype with empty guide list
+- **WHEN** the user presses `<leader>?g` in a `scheme` buffer where the guide list is empty
+- **THEN** no guide is opened and no selectable guide entries are presented
 
-#### Scenario: Pressing a guide number opens the guide
-- **WHEN** the cheatsheet float is open and the user presses `1`
-- **THEN** the cheatsheet float closes and a new float opens with the content of the first listed guide file
+#### Scenario: Selecting a guide from the picker opens the guide
+- **WHEN** the user presses `<leader>?g` and selects the first listed guide
+- **THEN** a new float opens with the content of the selected guide file
 
-#### Scenario: Pressing an out-of-range number does nothing
-- **WHEN** the cheatsheet float is open with two guides and the user presses `5`
-- **THEN** nothing happens; the cheatsheet float remains open
+#### Scenario: Cancelling the picker does nothing
+- **WHEN** the user presses `<leader>?g` and dismisses the picker without selecting a guide
+- **THEN** nothing happens; the current window state remains unchanged
 
 ### Requirement: Float is dismissible and scrollable
 The cheatsheet float SHALL be closed by pressing `q` or `<Esc>` while it is focused. The float SHALL support standard Neovim scroll keys (`Ctrl-d`, `Ctrl-u`, `j`, `k`) for navigating long content.
