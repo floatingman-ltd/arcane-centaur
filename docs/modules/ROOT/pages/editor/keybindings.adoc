@@ -2,6 +2,8 @@
 
 *Leader* = `Space` · *LocalLeader* = `,` (in all language buffers)
 
+TIP: Press any prefix key (e.g. `Space`, `Space g`, `Space o`) and *pause* — **which-key** will pop up a menu showing all available keymaps and their descriptions. Keep typing to dismiss it instantly.
+
 == Plugin Cheatsheets
 
 [width="100%",cols="50%,50%",options="header",]
