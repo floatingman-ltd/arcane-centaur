@@ -59,8 +59,11 @@ end
 function M.pick_guide()
   local ft    = vim.bo.filetype
   local entry = ft_map[ft]
-  local slugs = (entry and #entry.guides > 0) and entry.guides
-                or vim.tbl_keys(guide_files)
+  local slugs = (entry and #entry.guides > 0)
+    and vim.list_extend({}, entry.guides)
+    or vim.tbl_keys(guide_files)
+
+  table.sort(slugs)
 
   if #slugs == 0 then
     vim.notify("No guides available for this filetype", vim.log.levels.INFO)
