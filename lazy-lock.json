@@ -42,5 +42,6 @@
   "vim-sexp": { "branch": "master", "commit": "1bf50921308f0188d1c1ecf8a712cc72ab2775e5" },
   "vim-sexp-mappings-for-regular-people": { "branch": "master", "commit": "4debb74b0a3e530f1b18e5b7dff98a40b2ad26f1" },
   "vim-surround": { "branch": "master", "commit": "3d188ed2113431cf8dac77be61b842acb64433d9" },
-  "vim-unimpaired": { "branch": "master", "commit": "db65482581a28e4ccf355be297f1864a4e66985c" }
+  "vim-unimpaired": { "branch": "master", "commit": "db65482581a28e4ccf355be297f1864a4e66985c" },
+  "which-key.nvim": { "branch": "main", "commit": "3aab2147e74890957785941f0c1ad87d0a44c15a" }
 }
