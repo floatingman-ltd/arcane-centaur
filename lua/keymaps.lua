@@ -3,6 +3,9 @@ local opts = {
     noremap = true,      -- non-recursive
     silent = true,       -- do not show message
 }
+local function desc_opts(desc)
+  return vim.tbl_extend("force", opts, { desc = desc })
+end
 
 -----------------
 -- Normal mode --
@@ -10,10 +13,10 @@ local opts = {
 
 -- Hint: see `:h vim.map.set()`
 -- Better window navigation
-vim.keymap.set('n', '<C-h>', '<C-w>h', { noremap = true, silent = true, desc = "Window: move left" })
-vim.keymap.set('n', '<C-j>', '<C-w>j', { noremap = true, silent = true, desc = "Window: move down" })
-vim.keymap.set('n', '<C-k>', '<C-w>k', { noremap = true, silent = true, desc = "Window: move up" })
-vim.keymap.set('n', '<C-l>', '<C-w>l', { noremap = true, silent = true, desc = "Window: move right" })
+vim.keymap.set('n', '<C-h>', '<C-w>h', desc_opts("Window: move left"))
+vim.keymap.set('n', '<C-j>', '<C-w>j', desc_opts("Window: move down"))
+vim.keymap.set('n', '<C-k>', '<C-w>k', desc_opts("Window: move up"))
+vim.keymap.set('n', '<C-l>', '<C-w>l', desc_opts("Window: move right"))
 
 -- Resize with arrows
 -- delta: 2 lines
