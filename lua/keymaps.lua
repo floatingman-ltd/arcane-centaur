@@ -100,6 +100,15 @@ vim.keymap.set({ "n", "v" }, "<leader>gcs", "<cmd>CopilotSuggest<CR>",
 vim.keymap.set({ "n", "v" }, "<leader>gce", "<cmd>CopilotExplain<CR>",
   { noremap = true, silent = true, desc = "Copilot CLI: explain" })
 
+-- Context-aware cheatsheet
+vim.keymap.set("n", "<leader>?", function()
+  require("config.cheatsheet").open_cheatsheet()
+end, { noremap = true, silent = true, desc = "Open context-aware cheatsheet" })
+
+vim.keymap.set("n", "<leader>?g", function()
+  require("config.cheatsheet").pick_guide()
+end, { noremap = true, silent = true, desc = "Open guide picker" })
+
 -- OpenSpec
 vim.keymap.set("n", "<leader>osn", "<cmd>OpenspecNew<CR>",
   { noremap = true, silent = true, desc = "OpenSpec: new change" })
