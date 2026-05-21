@@ -92,7 +92,7 @@ vim.api.nvim_set_keymap("i", "<C-J>", 'copilot#Accept("<CR>")', { silent = true,
 -- Accept only the next word of a Copilot suggestion (instead of the whole completion)
 -- <M-f> follows the readline/Emacs "Alt-f = forward word" convention — same semantic intent.
 vim.api.nvim_set_keymap("i", "<M-f>", 'copilot#AcceptWord()', { silent = true, expr = true })
-vim.api.nvim_set_keymap("n", "<leader>c", "<C-w> h", { noremap = true, silent = true, desc = "Window: focus left" })
+vim.api.nvim_set_keymap("n", "<leader>c", "<C-w>h", { noremap = true, silent = true, desc = "Window: focus left" })
 
 -- Copilot CLI
 vim.keymap.set({ "n", "v" }, "<leader>gcs", "<cmd>CopilotSuggest<CR>",
