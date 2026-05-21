@@ -34,6 +34,12 @@ o.scrolloff = 8               -- an 8 line vertical margin
 o.signcolumn = "yes"          -- disable the ugly column
 o.colorcolumn = ""
 
+-- Folding (nvim-ufo)
+o.foldlevel      = 99         -- open all folds by default
+o.foldlevelstart = 99         -- files always open fully expanded
+o.foldenable     = true       -- enable folding
+o.foldcolumn     = "1"        -- thin gutter indicator
+
 -- Spelling
 o.spell = true
 o.spelllang = "en_ca"

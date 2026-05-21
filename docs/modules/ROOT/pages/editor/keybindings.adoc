@@ -72,6 +72,24 @@ xref:editor/clipboard.adoc[full guide]
 
 '''''
 
+=== Folding (nvim-ufo)
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`za` |Normal |Toggle fold under cursor
+|`zc` |Normal |Close fold under cursor
+|`zo` |Normal |Open fold under cursor
+|`zM` |Normal |Close all folds in buffer
+|`zR` |Normal |Open all folds in buffer
+|`zj` |Normal |Jump to next fold
+|`zk` |Normal |Jump to previous fold
+|===
+
+Closed folds display `▸ <name> ··· N lines`. C# buffers use Roslyn LSP for precise `#region` folds; all other languages use treesitter with indent fallback.
+
+'''''
+
 === Terminal
 
 [cols=",,",options="header",]
