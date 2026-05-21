@@ -87,9 +87,15 @@ function M.open_cheatsheet()
 
   local combined = core
   if entry then
-    local lang = read_file(sheets_dir .. "/" .. entry.sheet)
+    local lang_path = sheets_dir .. "/" .. entry.sheet
+    local lang = read_file(lang_path)
     if lang then
       combined = combined .. "\n\n---\n\n" .. lang
+    else
+      vim.notify(
+        "Cheatsheet: mapped sheet for filetype '" .. ft .. "' is missing or unreadable: " .. lang_path,
+        vim.log.levels.WARN
+      )
     end
   end
 
