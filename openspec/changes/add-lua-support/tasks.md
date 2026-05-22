@@ -24,4 +24,4 @@
 - [x] 5.1 Syntax-check all modified Lua files with `luac -p` (or `:luafile %` in Neovim)
 - [x] 5.2 Open a `.lua` file in Neovim and confirm `lua_ls` attaches (`:LspInfo`)
 - [x] 5.3 Save a Lua file and confirm `stylua` formats it
-- [ ] 5.4 Open a Lua buffer and confirm `shiftwidth` is 2 (`:set shiftwidth?`)
+- [x] 5.4 Open a Lua buffer and confirm `shiftwidth` is 2 (`:set shiftwidth?`)
