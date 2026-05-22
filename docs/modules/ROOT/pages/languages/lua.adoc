@@ -88,17 +88,48 @@ Indent settings for Lua buffers (set in `after/ftplugin/lua.lua`):
 
 === Installing lua-language-server
 
-NOTE: `lua-language-server` is *not* available via `apt` on Ubuntu/Debian.
-Use snap (`--classic` required) or download a binary release.
+NOTE: `lua-language-server` is *not* available via `apt` or snap on Ubuntu 24.04.
+Install from the GitHub releases page.
 
 [cols=",",options="header",]
 |===
-|Platform |Command
-|*Ubuntu / Debian (snap)* |`sudo snap install lua-language-server --classic`
-|*Ubuntu / Debian (binary)* |Download from https://github.com/LuaLS/lua-language-server/releases[LuaLS releases], extract, add `bin/` to `$PATH`
+|Platform |Method
+|*Ubuntu / Debian* |Binary download — see below
 |*Arch Linux* |`sudo pacman -S lua-language-server`
 |*macOS (Homebrew)* |`brew install lua-language-server`
 |===
+
+==== Ubuntu / Debian — binary install
+
+Download and extract the latest release (check https://github.com/LuaLS/lua-language-server/releases[releases] for the current version):
+
+[source,sh]
+----
+VERSION=3.18.2
+wget https://github.com/LuaLS/lua-language-server/releases/download/${VERSION}/lua-language-server-${VERSION}-linux-x64.tar.gz
+mkdir -p ~/.local/opt/lua-language-server
+tar -xzf lua-language-server-${VERSION}-linux-x64.tar.gz -C ~/.local/opt/lua-language-server
+----
+
+The binary must run from its extracted location (it resolves scripts relative to itself).
+Do **not** symlink the binary directly — create a wrapper script in `~/.local/bin` instead
+(`~/.local/bin` is already on `$PATH` on Ubuntu 24.04):
+
+[source,sh]
+----
+cat > ~/.local/bin/lua-language-server << 'EOF'
+#!/bin/sh
+exec "$HOME/.local/opt/lua-language-server/bin/lua-language-server" "$@"
+EOF
+chmod +x ~/.local/bin/lua-language-server
+----
+
+Verify:
+
+[source,sh]
+----
+lua-language-server --version
+----
 
 Verify:
 
