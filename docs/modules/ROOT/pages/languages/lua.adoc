@@ -1,0 +1,133 @@
+== Working with Lua
+
+This configuration provides full LSP support and format-on-save for Lua
+via `lua-language-server` and `stylua`.
+
+*Quick navigation*
+
+[cols="1,3"]
+|===
+| xref:#quick-start[Quick Start] | Open a Lua file and start editing
+| xref:#lsp[LSP] | Language server setup
+| xref:#formatting[Formatting] | stylua format-on-save
+| xref:#prerequisites[Prerequisites] | Install lua-language-server and stylua
+|===
+
+'''''
+
+[[quick-start]]
+== Quick Start
+
+. *Open a Lua file* — LSP attaches automatically:
++
+[source,sh]
+----
+nvim lua/config/lsp.lua
+----
+. *Use LSP keymaps* (see xref:../editor/code-intelligence.adoc[Code Intelligence cheatsheet] for the full list):
++
+[cols=",",options="header",]
+|===
+|Keys |Action
+|`gd` |Go to definition
+|`K` |Hover documentation
+|`gr` |Find references
+|`<leader>rn` |Rename symbol
+|`<leader>ca` |Code action
+|`<leader>e` |Show diagnostics
+|===
+. *Format on save* — `stylua` runs automatically when you write a `.lua` file.
+  Manual format: `<leader>f` in normal or visual mode.
+
+'''''
+
+[[lsp]]
+== LSP
+
+`lua_ls` (lua-language-server) is configured in `lua/config/lsp.lua` and
+attaches automatically when a Lua buffer is opened. It provides
+completions, diagnostics, go-to-definition, and hover docs.
+
+Verify the server is attached with:
+
+[source,vim]
+----
+:lua =vim.lsp.get_clients({bufnr=0})
+----
+
+'''''
+
+[[formatting]]
+== Formatting
+
+`stylua` runs via conform.nvim on every save (2-second timeout). It also
+respects a `stylua.toml` or `.stylua.toml` in the project root.
+
+To format manually:
+
+[cols=",",options="header",]
+|===
+|Keys |Action
+|`<leader>f` |Format buffer or visual selection
+|===
+
+Indent settings for Lua buffers (set in `after/ftplugin/lua.lua`):
+2-space tabs, spaces only.
+
+'''''
+
+[[prerequisites]]
+== Prerequisites
+
+[width="100%",cols="34%,33%,33%",options="header",]
+|===
+|Dependency |Purpose |Install hint
+|`lua-language-server` |LSP (completions, diagnostics, go-to-def) |See below
+|`stylua` |Format-on-save |`cargo install stylua` or package manager
+|===
+
+=== Installing lua-language-server
+
+[cols=",",options="header",]
+|===
+|Platform |Command
+|*Ubuntu / Debian* |`sudo snap install lua-language-server` or https://github.com/LuaLS/lua-language-server/releases[download binary]
+|*Arch Linux* |`sudo pacman -S lua-language-server`
+|*macOS (Homebrew)* |`brew install lua-language-server`
+|*Cargo / source* |https://github.com/LuaLS/lua-language-server[LuaLS/lua-language-server]
+|===
+
+Verify:
+
+[source,sh]
+----
+lua-language-server --version
+----
+
+=== Installing stylua
+
+[source,sh]
+----
+cargo install stylua
+----
+
+Or via package manager:
+
+[cols=",",options="header",]
+|===
+|Platform |Command
+|*Arch Linux* |`sudo pacman -S stylua`
+|*macOS (Homebrew)* |`brew install stylua`
+|===
+
+Verify:
+
+[source,sh]
+----
+stylua --version
+----
+
+=== Neovim
+
+Neovim ≥ 0.12 is required. See
+xref:../getting-started.adoc[Getting Started] for install instructions.

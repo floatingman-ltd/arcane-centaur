@@ -37,3 +37,7 @@ vim.lsp.enable("janet_lsp")
 -- C# LSP (roslyn.nvim manages the server; we attach shared keymaps here)
 -- Requires the Roslyn server binary on $PATH — see docs/guides/dotnet.md.
 vim.lsp.config("roslyn", { on_attach = on_attach, capabilities = capabilities })
+
+-- Lua LSP (requires: lua-language-server on $PATH)
+vim.lsp.config("lua_ls", { on_attach = on_attach, capabilities = capabilities })
+vim.lsp.enable("lua_ls")

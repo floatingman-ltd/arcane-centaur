@@ -7,7 +7,7 @@
 == LSP
 
 These keymaps are active in any buffer where an LSP server has attached
-(F#, C#, Markdown, Haskell, Janet).
+(F#, C#, Markdown, Haskell, Janet, Lua).
 
 [cols=",,",options="header",]
 |===
@@ -32,6 +32,7 @@ These keymaps are active in any buffer where an LSP server has attached
 |`marksman` |Markdown |`sudo apt install marksman`
 |`janet_lsp` |Janet |`jpm install janet-lsp`
 |`haskell-language-server` |Haskell |`ghcup install hls` (managed by haskell-tools.nvim)
+|`lua_ls` |Lua |See xref:languages/lua.adoc[Lua guide]
 |===
 
 _Keymaps defined in `lua/config/lsp.lua`._
@@ -104,6 +105,7 @@ Format-on-save is enabled automatically for the following filetypes:
 |Fennel |LSP
 |Janet |LSP
 |F# |LSP (`fsautocomplete`)
+|Lua |`stylua`
 |===
 
 The formatter runs with a 2-second timeout on save. To disable
