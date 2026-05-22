@@ -88,13 +88,16 @@ Indent settings for Lua buffers (set in `after/ftplugin/lua.lua`):
 
 === Installing lua-language-server
 
+NOTE: `lua-language-server` is *not* available via `apt` on Ubuntu/Debian.
+Use snap (`--classic` required) or download a binary release.
+
 [cols=",",options="header",]
 |===
 |Platform |Command
-|*Ubuntu / Debian* |`sudo snap install lua-language-server` or https://github.com/LuaLS/lua-language-server/releases[download binary]
+|*Ubuntu / Debian (snap)* |`sudo snap install lua-language-server --classic`
+|*Ubuntu / Debian (binary)* |Download from https://github.com/LuaLS/lua-language-server/releases[LuaLS releases], extract, add `bin/` to `$PATH`
 |*Arch Linux* |`sudo pacman -S lua-language-server`
 |*macOS (Homebrew)* |`brew install lua-language-server`
-|*Cargo / source* |https://github.com/LuaLS/lua-language-server[LuaLS/lua-language-server]
 |===
 
 Verify:
