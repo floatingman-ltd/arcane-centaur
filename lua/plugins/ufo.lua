@@ -4,7 +4,10 @@ return {
     dependencies = { "kevinhwang91/promise-async" },
     event = "BufReadPost",
     opts = {
-      provider_selector = function()
+      provider_selector = function(_, filetype, _)
+        if filetype == "markdown" then
+          return { "treesitter", "indent" }
+        end
         return { "lsp", "treesitter" }
       end,
       fold_virt_text_handler = function(virtText, lnum, endLnum, width, truncate)
