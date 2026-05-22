@@ -119,3 +119,7 @@ vim.keymap.set("n", "<leader>oss", "<cmd>OpenspecStatus<CR>",
   { noremap = true, silent = true, desc = "OpenSpec: status" })
 vim.keymap.set("n", "<leader>osl", "<cmd>OpenspecList<CR>",
   { noremap = true, silent = true, desc = "OpenSpec: list changes" })
+
+-- Folding (nvim-ufo)
+vim.keymap.set("n", "zR", function() require("ufo").openAllFolds()  end, { noremap = true, silent = true, desc = "Fold: open all" })
+vim.keymap.set("n", "zM", function() require("ufo").closeAllFolds() end, { noremap = true, silent = true, desc = "Fold: close all" })
