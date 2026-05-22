@@ -2,6 +2,10 @@
 
 *Leader* = `Space` · *LocalLeader* = `,` (in all language buffers)
 
+TIP: Press any prefix key (e.g. `Space`, `Space g`, `Space o`) and *pause* — **which-key** will pop up a menu showing all available keymaps and their descriptions. Keep typing to dismiss it instantly.
+
+NOTE: Press `*<leader>?*` inside Neovim for an instant, context-aware keybinding reference — shows universal bindings plus language-specific bindings for the current filetype. Works in any terminal, including headless SSH sessions.
+
 == Plugin Cheatsheets
 
 [width="100%",cols="50%,50%",options="header",]
@@ -67,6 +71,24 @@ xref:editor/clipboard.adoc[full guide]
 |===
 
 → xref:editor/navigation.adoc[Full reference]
+
+'''''
+
+=== Folding (nvim-ufo)
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`za` |Normal |Toggle fold under cursor
+|`zc` |Normal |Close fold under cursor
+|`zo` |Normal |Open fold under cursor
+|`zM` |Normal |Close all folds in buffer
+|`zR` |Normal |Open all folds in buffer
+|`zj` |Normal |Jump to next fold
+|`zk` |Normal |Jump to previous fold
+|===
+
+Closed folds display `▸ <name> ··· N lines`. C# buffers use Roslyn LSP for precise `#region` folds; all other languages use treesitter with indent fallback.
 
 '''''
 

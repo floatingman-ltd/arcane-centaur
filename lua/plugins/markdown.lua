@@ -22,7 +22,8 @@ return {
   },
   {
     "ellisonleao/glow.nvim",
-    ft = { "markdown" },
+    ft  = { "markdown" },
+    cmd = { "Glow" },
     opts = {
       style = "dark",
       border = "rounded",
