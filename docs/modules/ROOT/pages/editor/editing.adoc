@@ -1,7 +1,3 @@
-// :auto-generated: true
-// :source: documentation/cheatsheets/editing.md
-// Remove this header to take manual ownership of this file
-
 == Editing Cheatsheet (Visual Mode {plus} Clipboard)
 
 *Leader* = `Space`
@@ -13,6 +9,7 @@
 [cols=",,",options="header",]
 |===
 |Keys |Mode |Action
+|`ggVG` |Normal |Select all lines (go to top → Visual Line → go to bottom)
 |`++<++` |Visual |Outdent selection and reselect
 |`++>++` |Visual |Indent selection and reselect
 |`++<++Tab++>++` |Visual |Indent selection
