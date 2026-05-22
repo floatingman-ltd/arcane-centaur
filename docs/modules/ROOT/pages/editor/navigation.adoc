@@ -1,0 +1,205 @@
+== Navigation & Terminal Cheatsheet
+
+*Leader* = `Space`
+
+→ Back to xref:editor/keybindings.adoc[main cheatsheet]
+
+== Window / Split Navigation
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`Ctrl-h` |Normal |Move to left split
+|`Ctrl-j` |Normal |Move to split below
+|`Ctrl-k` |Normal |Move to split above
+|`Ctrl-l` |Normal |Move to right split
+|`Ctrl-↑` |Normal |Shrink split height
+|`Ctrl-↓` |Normal |Grow split height
+|`Ctrl-←` |Normal |Shrink split width
+|`Ctrl-→` |Normal |Grow split width
+|===
+
+== Terminal
+
+[width="100%",cols="34%,33%,33%",options="header",]
+|===
+|Keys |Mode |Action
+|`++<++leader++>++t` |Normal |Toggle terminal split (15-line split at
+bottom)
+
+|`Esc` |Terminal |Exit terminal insert mode
+|===
+
+The terminal toggle reuses the same terminal buffer across open/close
+cycles. Press `++<++C-k++>++` after `Esc` to jump back to the editor
+window.
+
+== Copilot Chat Window
+
+[width="100%",cols="34%,33%,33%",options="header",]
+|===
+|Keys |Mode |Action
+|`++<++leader++>++c` |Normal |Move focus to left window (jump back from
+Copilot chat panel)
+|===
+
+'''''
+
+_Defined in `lua/keymaps.lua`._
+
+'''''
+
+== Fuzzy Finder (fzf-lua)
+
+fzf-lua uses the default fzf key bindings inside its popup window. Open
+the picker with any `:FzfLua ++<++command++>++` call.
+
+[cols=",",options="header",]
+|===
+|Keys |Action
+|`Ctrl-j` / `↓` |Move to next item
+|`Ctrl-k` / `↑` |Move to previous item
+|`Enter` |Open selected file (default split)
+|`Ctrl-v` |Open selected file in vertical split
+|`Ctrl-s` / `Ctrl-x` |Open selected file in horizontal split
+|`Ctrl-t` |Open selected file in new tab
+|`Ctrl-c` / `Esc` |Close the picker
+|`Ctrl-a` |Select all items
+|`Ctrl-d` |Deselect all items
+|===
+
+=== Example Commands
+
+....
+:FzfLua files          — fuzzy-find files
+:FzfLua live_grep      — live ripgrep across project
+:FzfLua buffers        — switch between open buffers
+:FzfLua lsp_references — LSP references for symbol under cursor
+:FzfLua help_tags      — search Neovim help topics
+....
+
+_Plugin configured in `lua/plugins/fzf-lua.lua`._
+
+'''''
+
+== File Tree (nvim-tree)
+
+*Leader* = `Space`
+
+=== Opening the Tree
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`++<++leader++>++n` or `Ctrl-n` |Normal |Open file tree
+|`Ctrl-t` |Normal |Toggle file tree (open/close)
+|`Ctrl-f` |Normal |Reveal current file in tree
+|===
+
+=== Inside the Tree Window
+
+[cols=",",options="header",]
+|===
+|Keys |Action
+|`Enter` or `o` |Open file / expand directory
+|`v` |Open in vertical split
+|`s` |Open in horizontal split
+|`t` |Open in new tab
+|`a` |Create new file or directory
+|`d` |Delete file or directory
+|`r` |Rename file or directory
+|`x` |Cut file
+|`c` |Copy file
+|`p` |Paste file
+|`y` |Copy filename
+|`Y` |Copy relative path
+|`gy` |Copy absolute path
+|`H` |Toggle hidden / dotfiles visibility
+|`R` |Refresh the tree
+|`q` |Close the tree window
+|`g?` |Show nvim-tree help
+|===
+
+_Global keymaps defined in `lua/keymaps.lua`. Tree plugin configured in
+`lua/plugins/nvim-tree.lua`._
+
+'''''
+
+== Unimpaired (vim-unimpaired)
+
+vim-unimpaired provides pairs of bracket mappings — `++[++` for
+"`previous / enable`" and `++]++` for "`next / disable`".
+
+=== Buffer navigation
+
+[cols=",",options="header",]
+|===
+|Keys |Action
+|`++[++b` |Previous buffer
+|`++]++b` |Next buffer
+|`++[++B` |First buffer
+|`++]++B` |Last buffer
+|===
+
+=== Quickfix / location list
+
+[cols=",",options="header",]
+|===
+|Keys |Action
+|`++[++q` |Previous quickfix entry
+|`++]++q` |Next quickfix entry
+|`++[++Q` |First quickfix entry
+|`++]++Q` |Last quickfix entry
+|`++[++l` |Previous location list entry
+|`++]++l` |Next location list entry
+|===
+
+=== Argument list
+
+[cols=",",options="header",]
+|===
+|Keys |Action
+|`++[++a` |Previous file in argument list
+|`++]++a` |Next file in argument list
+|===
+
+=== Line operations
+
+[cols=",",options="header",]
+|===
+|Keys |Action
+|`++[<++Space++>++` |Add blank line above cursor
+|`++]<++Space++>++` |Add blank line below cursor
+|`++[++e` |Exchange current line with line above
+|`++]++e` |Exchange current line with line below
+|===
+
+=== Option toggles
+
+Prefix with `++[++o` to enable, `++]++o` to disable, `yo` to toggle.
+
+[cols=",",options="header",]
+|===
+|Keys |Option toggled
+|`++[++oh` / `++]++oh` / `yoh` |`hlsearch` (search highlight)
+|`++[++oi` / `++]++oi` / `yoi` |`ignorecase`
+|`++[++on` / `++]++on` / `yon` |`number` (line numbers)
+|`++[++or` / `++]++or` / `yor` |`relativenumber`
+|`++[++os` / `++]++os` / `yos` |`spell`
+|`++[++ow` / `++]++ow` / `yow` |`wrap`
+|`++[++ox` / `++]++ox` / `yox` |`cursorline` {plus} `cursorcolumn`
+|===
+
+=== URL / XML encoding
+
+[cols=",",options="header",]
+|===
+|Keys |Action
+|`++[++u++{motion}++` |URL-encode text
+|`++]++u++{motion}++` |URL-decode text
+|`++[++x++{motion}++` |XML-encode text (`&amp;`, `&lt;`, etc.)
+|`++]++x++{motion}++` |XML-decode text
+|===
+
+_Plugin loaded via `lua/plugins/init.lua`. No custom configuration —
+default vim-unimpaired keybindings apply._

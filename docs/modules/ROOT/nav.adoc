@@ -1,0 +1,49 @@
+* xref:index.adoc[Home]
+* xref:getting-started.adoc[Getting Started]
+
+.Languages
+* .NET
+** xref:languages/dotnet.adoc[Guide]
+** xref:languages/dotnet-cheatsheet.adoc[Cheatsheet]
+* Lisp Family
+** xref:languages/lisp.adoc[Lisp / Clojure / Scheme / Fennel]
+** xref:languages/lisp-cheatsheet.adoc[Cheatsheet]
+** xref:languages/janet.adoc[Janet Guide]
+** xref:languages/janet-cheatsheet.adoc[Janet Cheatsheet]
+* Haskell
+** xref:languages/haskell.adoc[Guide]
+** xref:languages/haskell-cheatsheet.adoc[Cheatsheet]
+
+.Editor Core
+* xref:editor/editing.adoc[Editing Cheatsheet]
+* xref:editor/navigation.adoc[Navigation Cheatsheet]
+* xref:editor/code-intelligence.adoc[Code Intelligence Cheatsheet]
+* xref:editor/git.adoc[Git Guide]
+* xref:editor/git-cheatsheet.adoc[Git Cheatsheet]
+* xref:editor/clipboard.adoc[Clipboard]
+
+.AI & Automation
+* xref:ai/ai-tools.adoc[AI Tools Guide]
+* xref:ai/ai-tools-cheatsheet.adoc[AI Tools Cheatsheet]
+
+.Content Creation
+* xref:content/markdown.adoc[Markdown Guide]
+* xref:content/markdown-cheatsheet.adoc[Markdown Cheatsheet]
+* xref:content/diagrams.adoc[Diagrams & PlantUML]
+* xref:content/presentations.adoc[Presentations (MARP)]
+* xref:content/rest.adoc[REST / HTTP Guide]
+* xref:content/rest-cheatsheet.adoc[REST Cheatsheet]
+
+.Project Tooling
+* xref:tooling/jira.adoc[Jira Integration]
+* xref:tooling/confluence.adoc[Confluence Publishing]
+
+.Learning
+* Janet
+** xref:learning/janet/01-setup.adoc[Setup]
+** xref:learning/janet/02-first-steps.adoc[First Steps]
+
+.Other
+* xref:other/architecture.adoc[Architecture]
+* xref:other/contributing.adoc[Contributing to Docs]
+* xref:other/jira-project-map.adoc[Jira Project Map]

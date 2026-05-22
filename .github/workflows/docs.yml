@@ -1,0 +1,38 @@
+name: Build and Deploy Docs
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/**'
+      - '*.adoc'
+      - 'antora-playbook.yml'
+      - 'antora.yml'
+      - '.github/workflows/docs.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6.0.2
+        with:
+          fetch-depth: 0
+
+      - name: Build Antora site
+        run: |
+          docker run --rm \
+            -v "$(pwd)":/antora \
+            antora/antora antora-playbook.yml
+
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v4.1.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build/site
+          publish_branch: gh-pages
+          force_orphan: true

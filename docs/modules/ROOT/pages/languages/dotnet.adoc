@@ -1,0 +1,312 @@
+== .NET Guide (C# and F#)
+
+Full support for C# and F# including LSP, REPL-driven development, and
+format-on-save. Both languages share the .NET SDK and the same iron.nvim
+REPL keymaps.
+
+*Quick navigation*
+
+[cols="1,3"]
+|===
+| xref:#quick-start[Quick Start] | Open a file and start the REPL
+| xref:#csharp-lsp[C# — LSP (Roslyn)] | Go-to-definition, hover, code actions
+| xref:#csharp-repl[C# — REPL (csharprepl)] | REPL keymaps
+| xref:#csharp-formatting[C# — Formatting] | CSharpier format-on-save
+| xref:#fsharp-lsp[F# — LSP (fsautocomplete)] | Go-to-definition, hover, code actions
+| xref:#fsharp-repl[F# — REPL (dotnet fsi)] | REPL keymaps
+| xref:#fsharp-formatting[F# — Formatting] | fsautocomplete format-on-save
+| xref:#workflow[Typical Workflow] | Side-by-side editor + REPL
+| xref:#setup[Setup] | .NET SDK, language servers, and tools
+| xref:#prerequisites[Prerequisites] | System requirements
+|===
+
+---
+
+[[quick-start]]
+== Quick Start
+
+=== C#
+
+[arabic]
+. Open any `.cs` file — Roslyn attaches automatically.
+. If the project has multiple `.sln` files, run `:Roslyn target` to
+pick the solution.
+. Start the REPL with `,sl` on any line, or open it explicitly via
+iron.nvim's `:IronRepl`.
+
+=== F#
+
+[arabic]
+. Verify prerequisites:
++
+[source,sh]
+----
+dotnet --version
+dotnet tool list -g | grep fsautocomplete
+----
+. Open a `.fs` source file — plugins and LSP attach automatically.
+. Start the REPL with `,sl` on any line.
+
+---
+
+[[csharp-lsp]]
+== C# — LSP (Roslyn)
+
+All standard LSP keybindings apply in `.cs` buffers:
+
+[width="100%",cols="50%,50%",options="header",]
+|===
+|Keys |Action
+|`gd` |Go to definition
+|`K` |Hover documentation
+|`gr` |Find references
+|`++<++leader++>++rn` |Rename symbol
+|`++<++leader++>++ca` |Code action (includes _Fix all_, _Nested actions_, _Complex edits_)
+|`++<++leader++>++e` |Show diagnostic float
+|`++[++d` / `++]++d` |Previous / next diagnostic
+|===
+
+Roslyn also supports:
+
+* *Multiple solution files* — use `:Roslyn target` to switch between them.
+* *Source-generated files* — navigates into generated code transparently.
+* *Broad root detection* — set `broad++_++search = true` in the plugin opts if your `.sln` lives above the project root.
+
+---
+
+[[csharp-repl]]
+== C# — REPL (csharprepl via iron.nvim)
+
+LocalLeader is `,` in `.cs` buffers.
+
+[cols=",",options="header",]
+|===
+|Keys |Action
+|`,sl` |Send current line to REPL
+|`,sc` |Send motion or visual selection
+|`,sp` |Send current paragraph
+|`,sf` |Send entire file
+|`,s++<++CR++>++` |Send carriage return
+|`,si` |Interrupt REPL
+|`,sq` |Quit / exit REPL
+|`,cl` |Clear REPL output
+|===
+
+The REPL opens as a horizontal split (40% height) at the bottom of the window.
+
+---
+
+[[csharp-formatting]]
+== C# — Formatting (CSharpier)
+
+Format-on-save is enabled automatically in `.cs` buffers via `conform.nvim`. Manual trigger:
+
+[cols=",",options="header",]
+|===
+|Keys |Action
+|`++<++leader++>++f` |Format buffer or visual selection
+|===
+
+CSharpier is opinionated and zero-config — no project-level configuration file required.
+
+---
+
+[[fsharp-lsp]]
+== F# — LSP (fsautocomplete)
+
+The `fsautocomplete` server is configured in `lua/config/lsp.lua`. All
+standard LSP keybindings apply in `.fs`, `.fsx`, and `.fsi` buffers:
+
+[width="100%",cols="50%,50%",options="header",]
+|===
+|Keys |Action
+|`gd` |Go to definition
+|`K` |Hover documentation
+|`gr` |Find references
+|`++<++leader++>++rn` |Rename symbol
+|`++<++leader++>++ca` |Code action
+|`++<++leader++>++e` |Show diagnostic float
+|`++[++d` / `++]++d` |Previous / next diagnostic
+|===
+
+---
+
+[[fsharp-repl]]
+== F# — REPL (dotnet fsi via iron.nvim)
+
+LocalLeader is `,` in F# buffers. The REPL opens as a horizontal split
+(40% height) at the bottom of the window.
+
+[cols=",",options="header",]
+|===
+|Keys |Action
+|`,sl` |Send current line to `dotnet fsi`
+|`,sc` |Send motion / visual selection
+|`,sp` |Send paragraph
+|`,sf` |Send entire file
+|`,s++<++CR++>++` |Send carriage return
+|`,si` |Interrupt the REPL
+|`,sq` |Quit the REPL
+|`,cl` |Clear the REPL buffer
+|===
+
+---
+
+[[fsharp-formatting]]
+== F# — Formatting (fsautocomplete)
+
+Format-on-save is enabled via `conform.nvim` using the fsautocomplete formatter. Manual trigger:
+
+[cols=",",options="header",]
+|===
+|Keys |Action
+|`++<++leader++>++f` |Format buffer or visual selection
+|===
+
+---
+
+[[workflow]]
+== Typical Workflow
+
+....
+ +------------------------------------------------------+
+ |  Neovim                                              |
+ |  +--------------------------+---------------------+  |
+ |  |  Program.cs / hello.fs   |  REPL               |  |
+ |  |                          |                     |  |
+ |  |  var x = 42;             |  > var x = 42;      |  |
+ |  |  Console.WriteLine(x);   |  42                 |  |
+ |  |                          |                     |  |
+ |  |  ,sl to send line -------+                     |  |
+ |  +--------------------------+---------------------+  |
+ +------------------------------------------------------+
+....
+
+[arabic]
+. Open a `.cs` or `.fs` file — LSP starts and diagnostics appear.
+. Send snippets to the REPL with `,sl` / `,sc` to explore APIs interactively.
+. `++<++leader++>++f` (or save) formats with CSharpier / fsautocomplete.
+. Use `gd` / `gr` / `++<++leader++>++ca` for full IDE-style navigation and refactoring.
+
+---
+
+== Troubleshooting
+
+=== Roslyn does not attach
+
+Check that `Microsoft.CodeAnalysis.LanguageServer` is on your `$PATH`:
+
+[source,sh]
+----
+which Microsoft.CodeAnalysis.LanguageServer
+----
+
+If not found, re-run the install steps in xref:#prerequisites[Prerequisites].
+
+=== fsautocomplete does not attach
+
+Check that it's installed:
+
+[source,sh]
+----
+dotnet tool list -g | grep fsautocomplete
+----
+
+Run `:lua =vim.lsp.get_clients({bufnr=0})` inside Neovim to check whether
+the server is attached to the current buffer. To open the LSP log:
+
+[source,vim]
+----
+:lua vim.cmd('e ' .. vim.lsp.get_log_path())
+----
+
+`:checkhealth lsp` gives a broader overview of LSP status.
+
+=== REPL does not open
+
+Check that the REPL backend binary is on your `$PATH`:
+
+[source,sh]
+----
+which csharprepl      # C#
+dotnet fsi --version  # F#
+----
+
+---
+
+[[setup]]
+== Setup
+
+=== Installing .NET Global Tools
+
+[source,sh]
+----
+dotnet tool install -g csharpier    # C# formatter
+dotnet tool install -g csharprepl   # C# interactive REPL
+dotnet tool install -g fsautocomplete  # F# language server
+----
+
+=== Installing the Roslyn Language Server
+
+The Roslyn LSP is the official Microsoft C# language server used in
+VS Code's C# Dev Kit. It is *not* installed via `dotnet tool install`;
+download the native binary for your platform from the NuGet feed.
+
+*Linux / WSL2 (x64):*
+
+[source,sh]
+----
+# 1. Create an install directory
+mkdir -p ~/.local/share/roslyn
+
+# 2. Download the latest linux-x64 package.
+#    Find the current version at:
+#    https://www.nuget.org/packages/Microsoft.CodeAnalysis.LanguageServer.linux-x64
+VERSION="5.0.0-1.25277.114"   # replace with the latest shown on the NuGet page
+curl -L "https://api.nuget.org/v3-flatcontainer/microsoft.codeanalysis.languageserver.linux-x64/${VERSION}/microsoft.codeanalysis.languageserver.linux-x64.${VERSION}.nupkg" \
+     -o /tmp/roslyn.nupkg
+
+# 3. Extract into the install directory and make executable
+unzip -o /tmp/roslyn.nupkg -d ~/.local/share/roslyn
+chmod +x ~/.local/share/roslyn/content/LanguageServer/linux-x64/Microsoft.CodeAnalysis.LanguageServer
+
+# 4. Add to PATH in your shell rc file, then reload
+echo 'export PATH="$HOME/.local/share/roslyn/content/LanguageServer/linux-x64:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+
+# 5. Verify
+Microsoft.CodeAnalysis.LanguageServer --version
+----
+
+[TIP]
+====
+The NuGet page above lists all available versions. Always pick the
+highest stable version. Use the NuGet v3 API URL shown above — the
+older v2 URL may return a 404 HTML page for some versions, which will
+cause `unzip` to fail.
+====
+
+---
+
+[[prerequisites]]
+== Prerequisites
+
+[width="100%",cols="34%,33%,33%",options="header",]
+|===
+|Dependency |Purpose |Install hint
+|*.NET SDK ≥ 8* |C# and F# compiler, `dotnet fsi` REPL |https://dotnet.microsoft.com/download
+|*Neovim ≥ 0.12* |Required by roslyn.nvim |See xref:getting-started.adoc[Getting Started]
+|===
+
+=== Installing .NET SDK
+
+Follow the official guide for Ubuntu / WSL:
+
+[source,sh]
+----
+wget https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb
+sudo dpkg -i packages-microsoft-prod.deb
+sudo apt update && sudo apt install -y dotnet-sdk-8.0
+----
+
+Or download directly from https://dotnet.microsoft.com/download.

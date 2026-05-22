@@ -1,0 +1,51 @@
+== .NET Cheatsheet (C# and F#)
+
+*LocalLeader* = `,` in `.cs`, `.fs`, `.fsx`, and `.fsi` buffers.
+
+→ Back to xref:index.adoc[main cheatsheet] · xref:languages/dotnet.adoc[Full guide]
+
+== REPL — iron.nvim
+
+REPL backend: *csharprepl* for C# buffers · *dotnet fsi* for F# buffers.
+
+[cols=",",options="header",]
+|===
+|Keys |Action
+|`,sl` |Send current line to REPL
+|`,sc` |Send motion or visual selection to REPL
+|`,sp` |Send current paragraph to REPL
+|`,sf` |Send entire file to REPL
+|`,s++<++CR++>++` |Send carriage return to REPL
+|`,si` |Interrupt REPL
+|`,sq` |Quit / exit REPL
+|`,cl` |Clear REPL output
+|===
+
+'''''
+
+== LSP
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`gd` |Normal |Go to definition
+|`K` |Normal |Hover documentation
+|`gr` |Normal |Find references
+|`++<++leader++>++rn` |Normal |Rename symbol
+|`++<++leader++>++ca` |Normal |Code action
+|`++<++leader++>++e` |Normal |Show diagnostic float
+|`++[++d` |Normal |Previous diagnostic
+|`++]++d` |Normal |Next diagnostic
+|===
+
+LSP server: *Roslyn* for C# buffers · *fsautocomplete* for F# buffers.
+
+'''''
+
+== Roslyn Commands (C# only)
+
+[width="100%",cols="50%,50%",options="header",]
+|===
+|Command |Action
+|`:Roslyn target` |Switch solution target (when multiple `.sln` files exist)
+|===

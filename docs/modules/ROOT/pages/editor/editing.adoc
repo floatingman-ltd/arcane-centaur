@@ -1,0 +1,156 @@
+== Editing Cheatsheet (Visual Mode {plus} Clipboard)
+
+*Leader* = `Space`
+
+→ Back to xref:editor/keybindings.adoc[main cheatsheet]
+
+== Visual Mode Editing
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`ggVG` |Normal |Select all lines (go to top → Visual Line → go to bottom)
+|`++<++` |Visual |Outdent selection and reselect
+|`++>++` |Visual |Indent selection and reselect
+|`++<++Tab++>++` |Visual |Indent selection
+|`++<++S-Tab++>++` |Visual |Outdent selection
+|`++<++S-Down++>++` |Visual |Move selected block down
+|`++<++S-Up++>++` |Visual |Move selected block up
+|`++<++leader++>++p` |Visual |Paste without overwriting clipboard
+|===
+
+== System Clipboard
+
+With `clipboard=unnamedplus` set, the default `y`, `d`, and `p` already
+use the system clipboard on most platforms. The shortcuts below use the
+explicit `"{plus}` register for unambiguous clipboard access (useful
+when you need to be certain you are targeting the system clipboard, not
+just the unnamed register).
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`++<++leader++>++y` |Normal / Visual |Yank to system clipboard
+|`++<++leader++>++Y` |Normal |Yank line to system clipboard
+|`++<++leader++>++d` |Normal / Visual |Cut (delete) to system clipboard
+|`++<++leader++>++p` |Normal |Paste from system clipboard after cursor
+|`++<++leader++>++P` |Normal |Paste from system clipboard before cursor
+|===
+
+=== Platform notes
+
+[width="100%",cols="34%,33%,33%",options="header",]
+|===
+|Environment |Clipboard tool |Install needed?
+|GUI Linux (X11) |`xclip` or `xsel` |Yes — `sudo apt install xclip`
+
+|GUI Linux (Wayland) |`wl-clipboard` |Yes —
+`sudo apt install wl-clipboard`
+
+|WSL |`win32yank.exe` |Yes — install on the *Windows* side
+(Scoop/Chocolatey)
+
+|SSH / TTY / console |OSC 52 (built-in) |No — requires Neovim ≥ 0.10 and
+a supporting terminal
+
+|Native Windows |`win32yank.exe` |Usually bundled with Neovim Windows
+installer
+|===
+
+→ *xref:editor/clipboard.adoc[Full setup and troubleshooting guide]*
+
+'''''
+
+_Clipboard keymaps defined in `lua/keymaps.lua`. Clipboard provider
+configured in `lua/options.lua`. Full installation guide:
+../guides/clipboard.md._
+
+'''''
+
+== Commenting (vim-commentary)
+
+[width="100%",cols="34%,33%,33%",options="header",]
+|===
+|Keys |Mode |Action
+|`gcc` |Normal |Toggle comment on current line
+
+|`gc` |Visual |Toggle comment on selection
+
+|`gc++<++motion++>++` |Normal |Toggle comment over a motion (e.g. `gcap`
+= paragraph, `gc2j` = 3 lines)
+
+|`:Commentary` |Command |Toggle comment on current line or range
+(e.g. `:'++<++,'++>++Commentary`)
+|===
+
+`vim-commentary` uses the correct comment syntax for each filetype
+automatically (`--` for Lua, `//` for JavaScript, `;;` for Lisp, `++#++`
+for Python, etc.).
+
+_Plugin configured in `lua/plugins/vim-commentary.lua`._
+
+'''''
+
+== Surround (vim-surround)
+
+vim-surround adds keybindings to add, change, and delete surrounding
+characters (quotes, brackets, tags, etc.) around text objects.
+
+=== Change surroundings
+
+[cols=",,",options="header",]
+|===
+|Keys |Action |Example
+|`cs"'` |Change `"` to `'` |`"hello"` → `'hello'`
+
+|`cs'++<++q++>++` |Change `'` to `++<++q++>++` tags |`'hello'` →
+`++<++q++>++hello++<++/q++>++`
+
+|`cst"` |Change tag to `"` |`++<++q++>++hello++<++/q++>++` → `"hello"`
+|===
+
+=== Delete surroundings
+
+[cols=",,",options="header",]
+|===
+|Keys |Action |Example
+|`ds"` |Delete surrounding `"` |`"hello"` → `hello`
+
+|`dst` |Delete surrounding HTML tag |`++<++p++>++hello++<++/p++>++` →
+`hello`
+|===
+
+=== Add surroundings
+
+Cursor must be inside (or on) the text to surround. `ys` = "`you surround`".
+
+[width="100%",cols="34%,33%,33%",options="header",]
+|===
+|Keys |Action |Example
+|`ysiw"` |Surround word with `"` |`hello` → `"hello"`
+
+|`ysiw(` |Surround word with `( )` (with spaces) |`hello` → `( hello )`
+
+|`ysiw)` |Surround word with `()` (no spaces) |`hello` → `(hello)`
+
+|`yss)` |Surround entire line with `()` |`hello world` → `(hello world)`
+
+|`ysit++<++em++>++` |Surround inner tag content with `++<++em++>++`
+|`++<++p++>++hello++<++/p++>++` →
+`++<++p++><++em++>++hello++<++/em++><++/p++>++`
+|===
+
+=== Visual mode
+
+Select text in visual mode, then press `S` followed by the surround character.
+
+[cols=",",options="header",]
+|===
+|Keys |Action
+|`S"` |Surround selection with `"`
+|`S)` |Surround selection with `()`
+|`S++<++p++>++` |Surround selection with `++<++p++><++/p++>++` tags
+|===
+
+_Plugin loaded via `lua/plugins/init.lua`. No custom configuration —
+default vim-surround keybindings apply._

@@ -1,0 +1,178 @@
+== Git Guide
+
+This configuration bundles three complementary git tools that work together as a workflow: *vim-fugitive* for full git operations, *gitsigns.nvim* for in-buffer hunk management, and *diffview.nvim* for side-by-side diffs and file history.
+
+*Quick navigation*
+
+[cols="1,3"]
+|===
+| xref:#quick-start[Quick Start] | Stage, commit, and push from Neovim
+| xref:#reviewing[Reviewing Changes] | Diff view and hunk navigation
+| xref:#staging[Staging Hunks] | Stage partial changes with gitsigns
+| xref:#committing[Committing with Fugitive] | Full commit workflow
+| xref:#conflicts[Resolving Conflicts] | Three-way merge with diffview
+| xref:#history[File History] | Browse commit history per file
+| xref:#workflow[Typical Workflow] | Day-to-day git in Neovim
+|===
+
+---
+
+[[quick-start]]
+== Quick Start
+
+[arabic]
+. Press `++<++leader++>++gs` to open the fugitive status window.
+. Navigate to a file and press `s` to stage it (or `u` to unstage).
+. Press `cc` to open the commit message editor.
+. Write your commit message, then save and quit (`:wq`) to commit.
+. Use `++<++leader++>++gp` to push.
+
+---
+
+[[reviewing]]
+== Reviewing Changes
+
+=== In-buffer signs (gitsigns)
+
+Changed lines are marked in the sign column:
+
+* `▎` added
+* `▎` changed
+* `▁` / `▔` deleted line
+
+Navigate between hunks with `++]++h` (next) and `++[++h` (previous).
+
+=== Full diff view (diffview.nvim)
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`++<++leader++>++gD` |Normal |Open diffview — all unstaged changes
+|`++<++leader++>++gX` |Normal |Close diffview
+|===
+
+The diffview panel shows all changed files on the left; click any file
+to open a side-by-side diff. Diffview also supports comparing against
+any git ref:
+
+[source,vim]
+----
+:DiffviewOpen HEAD~3    " diff last 3 commits
+:DiffviewOpen main      " diff against main branch
+----
+
+---
+
+[[staging]]
+== Staging Hunks
+
+Stage (or reset) individual hunks without opening the fugitive status:
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`++<++leader++>++hs` |Normal / Visual |Stage hunk (or selected lines)
+|`++<++leader++>++hr` |Normal / Visual |Reset hunk (or selected lines)
+|`++<++leader++>++hu` |Normal |Undo last stage
+|`++<++leader++>++hp` |Normal |Preview hunk inline
+|===
+
+In Visual mode, only the lines in the selection are staged / reset.
+
+---
+
+[[committing]]
+== Committing with Fugitive
+
+[cols=",,",options="header",]
+|===
+|Keys |Action
+|`++<++leader++>++gs` |Open git status (`:Git`)
+|`s` _(inside status)_ |Stage file / hunk under cursor
+|`u` _(inside status)_ |Unstage file / hunk
+|`=` _(inside status)_ |Toggle inline diff for file under cursor
+|`cc` _(inside status)_ |Commit staged changes — opens message editor
+|`q` _(inside status)_ |Close the status window
+|===
+
+Additional fugitive keymaps:
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`++<++leader++>++gb` |Normal |Git blame for current file
+|`++<++leader++>++gl` |Normal |Git log
+|`++<++leader++>++gd` |Normal |Git diff (unstaged changes)
+|`++<++leader++>++gp` |Normal |Git push
+|===
+
+---
+
+[[conflicts]]
+== Resolving Conflicts
+
+Use diffview.nvim's merge-conflict panel:
+
+[source,vim]
+----
+:DiffviewOpen     " opens showing unresolved conflicts with a 3-way layout
+----
+
+In the merge panel:
+* Left pane — `OURS`
+* Middle pane — working copy (edit here)
+* Right pane — `THEIRS`
+
+Stage the file with `++<++leader++>++hs` (or from `:Git`) once resolved.
+
+---
+
+[[history]]
+== File History
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`++<++leader++>++gH` |Normal |Open diffview file history for current file
+|`++<++leader++>++gX` |Normal |Close diffview
+|===
+
+The file history panel lists all commits that touched the current file.
+Press `Enter` on any commit to open a diff of that commit.
+
+---
+
+[[workflow]]
+== Typical Workflow
+
+[arabic]
+. Edit code.
+. `++<++leader++>++hs` — stage individual hunks as you work.
+. `++<++leader++>++gs` — open status window for a final review.
+. `cc` — write commit message and commit.
+. `++<++leader++>++gp` — push.
+. `++<++leader++>++gD` — verify the diff before and after.
+
+---
+
+== Setup
+
+Git itself must be installed and on your `$PATH`:
+
+[source,sh]
+----
+sudo apt install git
+git --version
+----
+
+No additional plugin configuration is required — all three plugins are
+loaded automatically when Neovim starts.
+
+== Prerequisites
+
+[cols="1,2"]
+|===
+|Dependency |Notes
+|*git* |`sudo apt install git`
+|*Neovim ≥ 0.12* |See xref:getting-started.adoc[Getting Started]
+|===

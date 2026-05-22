@@ -1,0 +1,14 @@
+site:
+  title: Arcane Centaur Docs (local)
+  url: http://localhost
+  start_page: arcane-centaur::index.adoc
+content:
+  sources:
+    - url: .
+      branches: HEAD
+      worktrees: true
+      start_path: docs
+ui:
+  bundle:
+    url: https://gitlab.com/antora/antora-ui-default/-/jobs/artifacts/HEAD/raw/build/ui-bundle.zip?job=bundle-stable
+    snapshot: true

@@ -17,6 +17,11 @@ return {
       vim.g["conjure#client#common_lisp#swank#connection#default_host"] = "127.0.0.1"
       vim.g["conjure#client#common_lisp#swank#connection#default_port"] = 4005
 
+      -- Janet: use the stdio client (spawns `janet -n -s` as a subprocess).
+      -- -n -s produces the `repl:N:> ` prompt that Conjure's prompt_pattern expects.
+      -- Overriding the command with plain `janet` breaks response parsing.
+      vim.g["conjure#filetype#janet"] = "conjure.client.janet.stdio"
+
       -- Enable the HUD floating popup so evaluation results are visible even
       -- when the log buffer is not open.  Must be set here (init) rather than
       -- config so the flag is in place before Conjure's own startup code runs.

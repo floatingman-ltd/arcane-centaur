@@ -1,0 +1,279 @@
+== Getting Started
+
+This guide covers everything you need before opening this configuration for the first time: installing Neovim, Docker, and the shared system dependencies that multiple features depend on.
+
+*Quick navigation*
+
+[cols="1,3"]
+|===
+| xref:#neovim[Neovim ≥ 0.12] | AppImage and tarball install methods
+| xref:#quick-start[Quick Start] | Clone the repo and launch Neovim
+| xref:#docker[Docker] | Required by AI tools, diagrams, Markdown export, and presentations
+| xref:#docker-containers[Docker Containers] | Per-container start/stop reference
+| xref:#system-deps[System Dependencies] | git, curl, unzip, build-essential
+|===
+
+---
+[[neovim]]
+== Neovim ≥ 0.12
+
+The system package manager (`apt`, `dnf`, etc.) and Snap often lag behind. Use one of the methods below to get a current release directly from GitHub.
+
+=== AppImage (simplest — runs without installation)
+
+[source,sh]
+----
+curl -LO https://github.com/neovim/neovim/releases/download/stable/nvim-linux-x86_64.appimage
+chmod u+x nvim-linux-x86_64.appimage
+
+# Optional: install system-wide so `nvim` works from anywhere
+sudo mv nvim-linux-x86_64.appimage /usr/local/bin/nvim
+----
+
+=== Tarball (extract anywhere, no root required)
+
+[source,sh]
+----
+curl -LO https://github.com/neovim/neovim/releases/download/stable/nvim-linux-x86_64.tar.gz
+mkdir -p ~/.local
+tar -xzf nvim-linux-x86_64.tar.gz -C ~/.local
+
+# Symlink the binary into a directory on your PATH
+ln -sf ~/.local/nvim-linux-x86_64/bin/nvim ~/.local/bin/nvim
+----
+
+Make sure `~/.local/bin` is on your `$PATH`:
+
+[source,sh]
+----
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+----
+
+=== Verify
+
+[source,sh]
+----
+nvim --version
+# Should show: NVIM v0.12.x or higher
+----
+
+[TIP]
+====
+If you see an older version, run `which nvim` to check which binary is being launched. An old `/usr/bin/nvim` can shadow a new `~/.local/bin/nvim` if PATH order is wrong.
+====
+
+---
+
+[[quick-start]]
+== Quick Start
+
+[arabic]
+. Clone the repository into your Neovim config directory:
++
+[source,sh]
+----
+git clone https://github.com/floatingman-ltd/arcane-centaur ~/.config/nvim
+----
+. Launch Neovim:
++
+[source,sh]
+----
+nvim
+----
++
+https://github.com/folke/lazy.nvim[lazy.nvim] bootstraps itself on first launch and installs all plugins automatically. Wait for the installation to complete, then restart Neovim.
+. Verify the install:
++
+[source,vim]
+----
+:checkhealth
+----
++
+Review any `ERROR` items. `WARN` items for optional features (LSP servers, runtime tools) can be addressed as you enable each language.
+
+---
+
+[[docker]]
+== Docker
+
+Docker Engine and Docker Compose are required by several features:
+
+[width="100%",cols="34%,33%,33%",options="header",]
+|===
+|Feature |Docker service |Compose file
+|AI chat (ollama backend) |Ollama LLM server |`docker/ollama/docker-compose.yml`
+|Diagrams |PlantUML server |`docker/plantuml-server/docker-compose.yml`
+|Markdown PDF export |pandoc/extra |`docker/md2pdf/` (via `docker run`)
+|Project-wide Markdown preview |markserv |`docker/markserv/docker-compose.yml`
+|Presentations |MARP CLI |`docker/marp/docker-compose.yml`
+|Common Lisp REPL |SBCL + Swank |`docker/sbcl-swank/docker-compose.yml`
+|===
+
+=== Installing Docker Engine
+
+Follow the official guide for your platform:
+
+* *Ubuntu / Debian:* https://docs.docker.com/engine/install/ubuntu/
+* *Other Linux:* https://docs.docker.com/engine/install/
+* *WSL2:* https://docs.docker.com/desktop/windows/wsl/ (Docker Desktop with WSL2 backend)
+
+=== Installing Docker Compose
+
+Docker Compose v2 is included with Docker Desktop and the modern Docker Engine packages. Verify:
+
+[source,sh]
+----
+docker compose version
+# Should output: Docker Compose version v2.x.x
+----
+
+If `docker compose` (with a space) is not found, you have the legacy v1 plugin (`docker-compose` with a hyphen). Update to Docker Engine ≥ 20.10 or install the Compose plugin manually — see https://docs.docker.com/compose/install/.
+
+[NOTE]
+====
+All Docker Compose files in this config use `docker compose` (v2 syntax). The `docker-compose` v1 binary is *not* supported.
+====
+
+[[docker-containers]]
+=== Docker Containers
+
+Each feature that uses Docker has a dedicated Compose file. Reference this section from the relevant guide rather than duplicating the commands.
+
+[[sbcl-swank]]
+==== SBCL + Swank (Common Lisp REPL)
+
+Compose file: `docker/sbcl-swank/docker-compose.yml`
+
+Runs SBCL with Quicklisp pre-loaded and starts a Swank server on port 4005. Conjure auto-connects when you open a Lisp file.
+
+[source,sh]
+----
+# Build the image (required before first use and after pulling config updates):
+docker compose -f ~/.config/nvim/docker/sbcl-swank/docker-compose.yml build
+
+# Start — --wait blocks until the healthcheck passes so Conjure can connect immediately:
+LISP_DIR=$PWD docker compose -f ~/.config/nvim/docker/sbcl-swank/docker-compose.yml up -d --build --wait
+
+# Stop:
+LISP_DIR=$PWD docker compose -f ~/.config/nvim/docker/sbcl-swank/docker-compose.yml down
+----
+
+NOTE: `LISP_DIR=$PWD` mounts your current working directory into the container so SBCL can load project files.
+
+[[plantuml-server]]
+==== PlantUML Server (Diagrams)
+
+Compose file: `docker/plantuml-server/docker-compose.yml`
+
+Runs a local PlantUML HTTP server. The diagrams plugin sends diagram source to this server and renders the result inline.
+
+[source,sh]
+----
+docker compose -f ~/.config/nvim/docker/plantuml-server/docker-compose.yml up -d
+docker compose -f ~/.config/nvim/docker/plantuml-server/docker-compose.yml down
+----
+
+[[marp]]
+==== MARP CLI (Presentations)
+
+Compose file: `docker/marp/docker-compose.yml`
+
+Converts Markdown slide decks to HTML or PDF using MARP. Invoked on demand by the presentations keybindings.
+
+[source,sh]
+----
+docker compose -f ~/.config/nvim/docker/marp/docker-compose.yml up -d
+docker compose -f ~/.config/nvim/docker/marp/docker-compose.yml down
+----
+
+[[markserv]]
+==== markserv (Markdown Preview)
+
+Compose file: `docker/markserv/docker-compose.yml`
+
+Serves a live-reloading Markdown preview in the browser for project-wide preview (as opposed to the per-buffer `markdown-preview.nvim`).
+
+[source,sh]
+----
+docker compose -f ~/.config/nvim/docker/markserv/docker-compose.yml up -d
+docker compose -f ~/.config/nvim/docker/markserv/docker-compose.yml down
+----
+
+[[ollama]]
+==== Ollama (AI Chat Backend)
+
+Compose file: `docker/ollama/docker-compose.yml`
+
+Runs a local Ollama LLM server used by Avante and other AI tools for offline model inference.
+
+[source,sh]
+----
+docker compose -f ~/.config/nvim/docker/ollama/docker-compose.yml up -d
+docker compose -f ~/.config/nvim/docker/ollama/docker-compose.yml down
+----
+
+---
+
+[[system-deps]]
+== System Dependencies
+
+These packages are needed by lazy.nvim's LuaRocks support and various plugin build steps:
+
+[source,sh]
+----
+sudo apt install -y \
+  build-essential \
+  git \
+  curl \
+  unzip \
+  lua5.4 \
+  luarocks
+----
+
+[cols="1,2"]
+|===
+|Package |Why it's needed
+|`build-essential` |Compiles native plugin components (e.g. telescope-fzf-native)
+|`git` |lazy.nvim fetches plugins via git
+|`curl` |Used by install scripts and plugin build steps
+|`unzip` |Needed to extract some plugin archives
+|`lua5.4` |Required by lazy.nvim's LuaRocks support
+|`luarocks` |Plugin dependency manager used by lazy.nvim
+|===
+
+=== Node.js (optional — required for markdown-preview.nvim and Copilot)
+
+Use https://github.com/nvm-sh/nvm[nvm] to install Node.js without root:
+
+[source,sh]
+----
+# Install nvm
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+source ~/.bashrc
+
+# Install and use the LTS release
+nvm install --lts
+nvm use --lts
+nvm alias default lts/*
+
+# Verify
+node --version
+npm --version
+----
+
+---
+
+== Troubleshooting
+
+=== lazy.nvim fails to install plugins
+
+Check that `git` and `curl` are installed and that you have internet access. Run `:Lazy` inside Neovim to see the plugin install log.
+
+=== `:checkhealth` shows clipboard errors
+
+See the xref:editor/clipboard.adoc[Clipboard guide] for provider setup per environment (GUI Linux, WSL, SSH/TTY).
+
+=== A plugin requires a build step that fails
+
+Most build failures are caused by missing `build-essential` or `node`. Install the system deps above and run `:Lazy build <plugin-name>` to retry.

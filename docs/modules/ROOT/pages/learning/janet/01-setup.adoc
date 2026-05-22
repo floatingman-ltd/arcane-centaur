@@ -1,0 +1,176 @@
+// :auto-generated: true
+// :source: documentation/learning/janet/01-setup.md
+// Remove this header to take manual ownership of this file
+
+== 01 — Janet in Neovim: Setup
+
+This guide walks you through installing Janet and activating the Neovim
+toolchain that is already configured in this repository — LSP, REPL,
+structural editing, formatting, and rainbow delimiters.
+
+____
+*Series:* 01 Setup ← you are here · xref:learning/janet/02-first-steps.adoc[02 First
+Steps]
+____
+
+'''''
+
+== 1. Install Janet
+
+Janet has no runtime dependencies and ships as a single binary.
+
+[width="100%",cols="50%,50%",options="header",]
+|===
+|Platform |Command
+|*Ubuntu / Debian* |Build from source — see
+https://janet-lang.org/[janet-lang.org]
+
+|*Arch Linux* |`sudo pacman -S janet`
+
+|*macOS* |`brew install janet`
+
+|*Windows* |Download from https://janet-lang.org/[janet-lang.org]
+|===
+
+Verify after installing:
+
+[source,sh]
+----
+janet -v
+----
+
+'''''
+
+== 2. Install jpm (Janet Package Manager)
+
+`jpm` is the standard package manager for Janet libraries and tools. It
+is bundled with most Janet installations. Confirm it is available:
+
+[source,sh]
+----
+which jpm
+----
+
+If it is missing, bootstrap it manually:
+
+[source,sh]
+----
+git clone https://github.com/janet-lang/jpm.git
+cd jpm
+janet bootstrap.janet
+----
+
+See https://github.com/janet-lang/jpm[janet-lang/jpm] for full bootstrap
+instructions.
+
+'''''
+
+== 3. Install the LSP Server
+
+`janet-lsp` provides completions, hover documentation, go-to-definition,
+and inline diagnostics inside Neovim.
+
+[source,sh]
+----
+jpm install janet-lsp
+----
+
+`jpm` installs binaries to `~/.jpm/bin/`. Add that to your `$PATH` if it
+is not already there:
+
+[source,sh]
+----
+# Add to ~/.bashrc or ~/.zshrc
+export PATH="$HOME/.jpm/bin:$PATH"
+----
+
+Verify Neovim can find the binary:
+
+[source,sh]
+----
+which janet-lsp
+----
+
+'''''
+
+== 4. How the Neovim Plugins Are Wired
+
+Everything is pre-configured. When you open any `.janet` file the
+following plugins load automatically:
+
+[width="100%",cols="34%,33%,33%",options="header",]
+|===
+|Plugin |What it does |Config file
+|*Conjure* |Spawns a Janet REPL; evaluates code without leaving the
+editor |`lua/plugins/lisp.lua`
+
+|*vim-sexp* {plus} *mappings* |Structural editing — slurp, barf, move
+S-expressions |`lua/plugins/lisp.lua`
+
+|*nvim-parinfer* |Keeps parentheses balanced as you edit indentation
+|`lua/plugins/lisp.lua`
+
+|*rainbow-delimiters.nvim* |Colour-codes matching brackets by nesting
+depth |`lua/plugins/lisp.lua`
+
+|*conform.nvim* |Format-on-save (via LSP) {plus} `++<++leader++>++f`
+manual format |`lua/plugins/conform.lua`
+
+|*janet++_++lsp* |LSP completions, hover, go-to-definition, diagnostics
+|`lua/config/lsp.lua`
+|===
+
+Filetype-specific settings (lisp indent, spell off, `localleader = ,`)
+live in `after/ftplugin/janet.lua`.
+
+'''''
+
+== 5. Verify the Setup
+
+[arabic]
+. Open (or create) a Janet file:
++
+[source,sh]
+----
+nvim hello.janet
+----
+. Write a minimal expression:
++
+[source,janet]
+----
+(print "Hello from Janet!")
+----
+. Evaluate the buffer with `,eb` — the Conjure log should print
+`Hello from Janet!`.
+. Check LSP is attached: `:lua =vim.lsp.get_clients({bufnr=0})` → you should see `janet_lsp`
+listed as active for the current buffer.
+. Hover over a symbol and press `K` — a documentation popup should
+appear.
+
+'''''
+
+== 6. Troubleshooting
+
+[width="100%",cols="34%,33%,33%",options="header",]
+|===
+|Symptom |Likely cause |Fix
+|Conjure never starts a REPL |`janet` not on `$PATH` |`which janet`;
+install Janet or fix your PATH
+
+|No completions / hover |`janet-lsp` not found |`which janet-lsp`; add
+`~/.jpm/bin` to PATH
+
+|LSP shows as inactive |Server crashed |`:lua vim.cmd('e '..vim.lsp.get_log_path())` for details; check
+`janet-lsp` binary works standalone
+
+|Parinfer fights your edits |Working against the paradigm |Edit
+_indentation_, not parens — parinfer infers parens from indent
+|===
+
+For deeper LSP debugging run `:checkhealth lsp` or
+`:lua =vim.lsp.get_clients({bufnr=0})` inside Neovim.
+
+'''''
+
+*Next:* xref:learning/janet/02-first-steps.adoc[02 — First Steps: syntax&#44; data
+types&#44; and using the tools]
