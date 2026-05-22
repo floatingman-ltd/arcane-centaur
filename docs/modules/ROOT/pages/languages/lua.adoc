@@ -83,7 +83,7 @@ Indent settings for Lua buffers (set in `after/ftplugin/lua.lua`):
 |===
 |Dependency |Purpose |Install hint
 |`lua-language-server` |LSP (completions, diagnostics, go-to-def) |See below
-|`stylua` |Format-on-save |`cargo install stylua` or package manager
+|`stylua` |Format-on-save |Binary download — see below
 |===
 
 === Installing lua-language-server
@@ -131,21 +131,18 @@ Verify:
 lua-language-server --version
 ----
 
-Verify:
-
-[source,sh]
-----
-lua-language-server --version
-----
-
 === Installing stylua
 
+NOTE: `stylua` is not available via `apt` on Ubuntu 24.04. Install the binary directly from GitHub releases:
+
 [source,sh]
 ----
-cargo install stylua
+curl -sLo /tmp/stylua.zip https://github.com/JohnnyMorganz/StyLua/releases/latest/download/stylua-linux-x86_64.zip
+unzip /tmp/stylua.zip -d ~/.local/bin/
+chmod +x ~/.local/bin/stylua
 ----
 
-Or via package manager:
+Or via package manager on other platforms:
 
 [cols=",",options="header",]
 |===
