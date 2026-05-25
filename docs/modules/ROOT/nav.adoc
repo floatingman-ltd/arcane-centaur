@@ -42,8 +42,14 @@
 
 .Learning
 * Janet
-** xref:learning/janet/01-setup.adoc[Setup]
-** xref:learning/janet/02-first-steps.adoc[First Steps]
+** xref:learning/janet/index.adoc[Series Index]
+** xref:learning/janet/01-setup.adoc[01 — Setup]
+** xref:learning/janet/02-first-steps.adoc[02 — First Steps]
+** xref:learning/janet/03-functions.adoc[03 — Functions in Depth]
+** xref:learning/janet/04-sequences.adoc[04 — Sequences]
+** xref:learning/janet/05-modules.adoc[05 — Modules]
+** xref:learning/janet/06-error-handling.adoc[06 — Error Handling]
+** xref:learning/janet/07-macros.adoc[07 — Macros]
 
 .Other
 * xref:other/architecture.adoc[Architecture]

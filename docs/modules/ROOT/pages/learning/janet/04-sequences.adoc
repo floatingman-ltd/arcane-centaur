@@ -1,0 +1,289 @@
+← xref:learning/janet/03-functions.adoc[Previous] | xref:learning/janet/index.adoc[Index] | xref:learning/janet/05-modules.adoc[Next] →
+
+'''''
+
+== 04 — Sequences with Janet
+
+Janet provides a rich set of tools for working with sequences: the `seq` macro for comprehensions, generators for lazy iteration, and destructuring for pulling apart data structures.
+This lesson covers each of these, with a focus on the REPL-driven workflow.
+
+Open a scratch file and the Conjure log before starting:
+
+[source,sh]
+----
+nvim scratch.janet
+----
+
+....
+,lv
+....
+
+'''''
+
+=== 1. Arrays and Tuples Recap
+
+Janet has two ordered sequence types: mutable arrays (`@[...]`) and immutable tuples (`[...]`).
+Most sequence functions return tuples.
+
+[source,janet]
+----
+(def arr @[1 2 3])
+(def tup [4 5 6])
+
+(length arr)      # => 3
+(get arr 0)       # => 1
+(get tup 2)       # => 6
+
+# Array mutation
+(array/push arr 4)
+arr               # => @[1 2 3 4]
+
+# Tuples are immutable — array/push would error
+----
+
+*Try it:* evaluate each line with `,ee` and watch values appear in the Conjure log.
+
+'''''
+
+=== 2. The seq Macro
+
+`seq` is Janet's sequence comprehension macro.
+It generates a tuple by iterating and filtering, similar to `for` in Python or list comprehensions.
+
+[source,janet]
+----
+# Basic range
+(seq [i :range [0 5]] i)
+# => (0 1 2 3 4)
+
+# With a transformation
+(seq [i :range [1 6]] (* i i))
+# => (1 4 9 16 25)
+
+# With a guard (:when)
+(seq [i :range [0 10] :when (even? i)] i)
+# => (0 2 4 6 8)
+----
+
+*Try it:* evaluate each `seq` form with `,ee`.
+
+Multiple bindings create nested iteration (like a nested loop):
+
+[source,janet]
+----
+(seq [x :range [1 4]
+      y :range [1 4]
+      :when (not= x y)]
+  [x y])
+# => ([1 2] [1 3] [2 1] [2 3] [3 1] [3 2])
+----
+
+Iterating over a collection directly with `:in`:
+
+[source,janet]
+----
+(seq [name :in ["Alice" "Bob" "Carol"]]
+  (string/upcase name))
+# => ("ALICE" "BOB" "CAROL")
+----
+
+'''''
+
+=== 3. each and loop
+
+`each` iterates for side effects (printing, mutation).
+`loop` is the general-purpose iteration form.
+
+[source,janet]
+----
+# each — for side effects
+(each item [:a :b :c]
+  (print item))
+
+# loop with :range
+(loop [i :range [0 5]]
+  (print i))
+
+# loop with :in and index
+(loop [i :iterate 0 item :in ["x" "y" "z"]]
+  (print i item))
+----
+
+*Try it:* evaluate the `each` form with `,ee` and watch output in the Conjure log.
+
+'''''
+
+=== 4. Generators and Lazy Sequences
+
+Janet uses fibers to implement lazy sequences.
+`generate` is like `seq` but returns a fiber that yields values on demand — useful for large or infinite sequences.
+
+[source,janet]
+----
+# generate returns a fiber
+(def gen (generate [i :range [0 1000000]] (* i i)))
+
+# Pull values one at a time
+(resume gen)   # => 0
+(resume gen)   # => 1
+(resume gen)   # => 4
+(resume gen)   # => 9
+----
+
+*Try it:* evaluate `(def gen ...)` then call `(resume gen)` repeatedly with `,ee`.
+Notice that values are computed only when you call `resume` — the million iterations never run up front.
+
+Converting a generator to a concrete tuple (only for finite generators):
+
+[source,janet]
+----
+(def small (generate [i :range [0 5]] (* i i)))
+(def result (seq [v :generate small] v))
+result   # => (0 1 4 9 16)
+----
+
+'''''
+
+=== 5. Destructuring
+
+Janet supports destructuring in `let`, `def`, and function parameters.
+Use it to unpack tuples, arrays, and tables.
+
+==== Tuple/Array destructuring
+
+[source,janet]
+----
+(let [[a b c] [1 2 3]]
+  (+ a b c))
+# => 6
+
+# Ignore elements with _
+(let [[_ second _] [10 20 30]]
+  second)
+# => 20
+
+# Nested
+(let [[x [y z]] [1 [2 3]]]
+  [x y z])
+# => (1 2 3)
+----
+
+==== Table/Struct destructuring
+
+[source,janet]
+----
+(let [{:name n :age a} {:name "Alice" :age 30}]
+  (string n " is " a))
+# => "Alice is 30"
+----
+
+==== In function parameters
+
+[source,janet]
+----
+(defn display-point [[x y]]
+  (string "(" x ", " y ")"))
+
+(display-point [3 4])   # => "(3, 4)"
+
+(defn greet [{:name n}]
+  (string "Hello, " n "!"))
+
+(greet {:name "Bob"})   # => "Hello, Bob!"
+----
+
+*Try it:* evaluate `(display-point [3 4])` with `,ee`.
+
+'''''
+
+=== 6. Useful Sequence Functions
+
+[source,janet]
+----
+# take / drop
+(take 3 [1 2 3 4 5])    # => (1 2 3)
+(drop 2 [1 2 3 4 5])    # => (3 4 5)
+
+# first / last
+(first [10 20 30])       # => 10
+(last  [10 20 30])       # => 30
+
+# flatten
+(flatten [[1 2] [3 4] [5]])   # => (1 2 3 4 5)
+
+# zip (pairs of elements from two sequences)
+(map tuple [1 2 3] [:a :b :c])
+# => ((1 :a) (2 :b) (3 :c))
+
+# any? / all?
+(any? even? [1 3 5 6])   # => true
+(all? even? [2 4 6])     # => true
+(all? even? [2 3 6])     # => false
+----
+
+*Try it:* call `(doc take)` in the REPL to read the built-in documentation.
+
+'''''
+
+=== 7. Mini-Project: Statistics on a Dataset
+
+Build a small stats library using `seq`, destructuring, and sequence functions.
+Put each block in `scratch.janet` and evaluate top-to-bottom with `,eb`:
+
+[source,janet]
+----
+(def scores
+  [{:name "Alice" :score 88}
+   {:name "Bob"   :score 72}
+   {:name "Carol" :score 95}
+   {:name "Dave"  :score 61}])
+
+(defn average [nums]
+  (/ (reduce + 0 nums) (length nums)))
+
+(defn passing? [{:score s}]
+  (>= s 70))
+----
+
+[source,janet]
+----
+# All scores
+(def all-scores (seq [{:score s} :in scores] s))
+all-scores   # => (88 72 95 61)
+
+# Class average
+(average all-scores)   # => 79.0
+
+# Passing students only
+(seq [s :in scores :when (passing? s)] (s :name))
+# => ("Alice" "Bob" "Carol")
+----
+
+[source,janet]
+----
+# Top scorer via reduce
+(reduce (fn [best s]
+          (if (> (s :score) (best :score)) s best))
+        (first scores)
+        (drop 1 scores))
+# => {:name "Carol" :score 95}
+----
+
+*Workflow:*
+
+. Evaluate the definitions block with `,eb`.
+. Evaluate `(def all-scores ...)` with `,er` and inspect with `,ee`.
+. Evaluate the average and passing forms one at a time with `,ee`.
+. Try adding a new student to `scores` and re-running.
+
+'''''
+
+=== 8. What to Explore Next
+
+* Call `(doc seq)`, `(doc generate)`, `(doc take)` in the REPL for built-in documentation
+* https://janet-lang.org/docs/[janet-lang.org/docs/] — Core library, Fibers
+* xref:learning/janet/05-modules.adoc[Next: 05 — Modules]
+
+'''''
+
+← xref:learning/janet/03-functions.adoc[Previous] | xref:learning/janet/index.adoc[Index] | xref:learning/janet/05-modules.adoc[Next] →
