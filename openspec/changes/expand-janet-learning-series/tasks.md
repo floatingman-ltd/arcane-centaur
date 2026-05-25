@@ -28,11 +28,11 @@
 ### 7. Navigation
 
 - [x] 7.1 Update `docs/modules/ROOT/nav.adoc` — add index and lessons 03–07 under the Janet Learning section, following the existing pattern for 01 and 02
-- [ ] 7.2 Verify all xref links in new `.adoc` files resolve (no broken cross-references)
-- [ ] 7.3 Run Antora build and confirm build succeeds, sidebar lists all seven lessons under Janet Learning, and new pages render without errors
+- [x] 7.2 Verify all xref links in new `.adoc` files resolve (no broken cross-references)
+- [x] 7.3 Run Antora build and confirm build succeeds, sidebar lists all seven lessons under Janet Learning, and new pages render without errors
 
 ### 8. Remove stale Markdown files
 
-- [ ] 8.1 Delete `docs/learning/janet/03-functions.md` (superseded by `03-functions.adoc`)
-- [ ] 8.2 Delete `docs/learning/janet/README.md` (superseded by `index.adoc`)
-- [ ] 8.3 Delete `docs/learning/janet/` directory if empty after removals
+- [x] 8.1 Delete `docs/learning/janet/03-functions.md` (superseded by `03-functions.adoc`)
+- [x] 8.2 Delete `docs/learning/janet/README.md` (superseded by `index.adoc`)
+- [x] 8.3 Delete `docs/learning/janet/` directory if empty after removals
