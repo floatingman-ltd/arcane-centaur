@@ -1,0 +1,327 @@
+← xref:learning/janet/02-first-steps.adoc[Previous] | xref:learning/janet/index.adoc[Index] | xref:learning/janet/04-sequences.adoc[Next] →
+
+'''''
+
+== 03 — Functions in Depth with Janet
+
+Functions are the primary building block in Janet.
+This lesson goes beyond `defn` to cover closures, short-hand syntax, higher-order functions, threading macros, and `apply`.
+Work through every snippet interactively — evaluate as you read.
+
+Open a scratch file and the Conjure log before starting:
+
+[source,sh]
+----
+nvim scratch.janet
+----
+
+....
+,lv
+....
+
+'''''
+
+=== 1. Functions Are Values
+
+In Janet, functions are first-class values.
+You can pass them to other functions, return them, and store them in data structures.
+
+[source,janet]
+----
+# Named function
+(defn square [x] (* x x))
+
+# Anonymous function stored in a binding
+(def cube (fn [x] (* x x x)))
+
+# Short-hand: # creates an anonymous fn, % is the first argument
+(def double #(* % 2))
+
+(square 5)    # => 25
+(cube 3)      # => 27
+(double 7)    # => 14
+----
+
+*Try it:* evaluate `(square 5)` with `,ee`, then `(double 7)`.
+Notice all three definitions behave identically from the caller's perspective.
+
+The short-hand `#(...)` is handy for small inline functions.
+`%` is the first argument, `%2` the second, `%3` the third:
+
+[source,janet]
+----
+(def add #(+ % %2))
+(add 3 4)   # => 7
+----
+
+'''''
+
+=== 2. Closures
+
+A function defined inside another function *closes over* the bindings visible at the point of definition.
+Those bindings survive as long as the closure does.
+
+[source,janet]
+----
+(defn make-adder [n]
+  (fn [x] (+ x n)))   # closes over n
+
+(def add10  (make-adder 10))
+(def add100 (make-adder 100))
+
+(add10 5)    # => 15
+(add100 5)   # => 105
+----
+
+*Try it:* evaluate `(def add10 (make-adder 10))` with `,er`, then call `(add10 42)` with `,ee`.
+
+Closures are useful for building configurable functions:
+
+[source,janet]
+----
+(defn make-greeter [greeting]
+  (fn [name] (string greeting ", " name "!")))
+
+(def hi  (make-greeter "Hi"))
+(def hey (make-greeter "Hey"))
+
+(hi "Alice")    # => "Hi, Alice!"
+(hey "Bob")     # => "Hey, Bob!"
+----
+
+'''''
+
+=== 3. Higher-Order Functions
+
+Janet's standard library is built around passing functions to other functions.
+
+==== map
+
+Apply a function to every element of a sequence and collect results into a tuple:
+
+[source,janet]
+----
+(map square [1 2 3 4 5])
+# => (1 4 9 16 25)
+
+(map string/upcase ["alice" "bob" "carol"])
+# => ("ALICE" "BOB" "CAROL")
+----
+
+*Try it:* evaluate `(map square [1 2 3 4 5])` with `,ee`.
+
+==== filter
+
+Keep only elements for which the predicate returns truthy:
+
+[source,janet]
+----
+(filter even? [1 2 3 4 5 6])
+# => (2 4 6)
+
+(filter #(> % 3) [1 2 3 4 5])
+# => (4 5)
+----
+
+==== reduce
+
+Fold a sequence into a single value using an accumulator:
+
+[source,janet]
+----
+(reduce + 0 [1 2 3 4 5])    # => 15  (sum)
+(reduce * 1 [1 2 3 4 5])    # => 120 (product)
+(reduce max 0 [3 1 4 1 5])  # => 5
+----
+
+`reduce` takes `(reduce f init seq)` — `f` receives the running accumulator and the current element.
+
+*Try it:* evaluate `(reduce + 0 [1 2 3 4 5])` then modify the initial value and observe the shift.
+
+==== Composing map and filter
+
+[source,janet]
+----
+(->> [1 2 3 4 5 6 7 8 9 10]
+     (filter even?)
+     (map square))
+# => (4 16 36 64 100)
+----
+
+(The `->>` threading macro is covered next — evaluate this after section 4.)
+
+'''''
+
+=== 4. Threading Macros
+
+Nested function calls can be hard to read.
+Threading macros pipe the result of each expression into the next as the *last* (`->>`) or *first* (`\->`) argument.
+
+==== -> (thread-first)
+
+[source,janet]
+----
+# Without threading:
+(string/upcase (string/trim "  hello  "))
+
+# With ->:
+(-> "  hello  "
+    string/trim
+    string/upcase)
+# => "HELLO"
+----
+
+Each step receives the previous result as its *first* argument.
+
+*Try it:* evaluate both forms with `,ee` — confirm they produce the same result.
+
+==== ->> (thread-last)
+
+[source,janet]
+----
+# Without threading:
+(map square (filter even? [1 2 3 4 5 6]))
+
+# With ->>:
+(->> [1 2 3 4 5 6]
+     (filter even?)
+     (map square))
+# => (4 16 36)
+----
+
+Each step receives the previous result as its *last* argument — ideal for sequence pipelines.
+
+*Try it:* use vim-sexp `>)` to slurp an extra step into the `->>` form, then `,ee` to re-evaluate.
+
+==== When to use which
+
+[cols="1,3,2",options="header"]
+|===
+| Macro | Use when | Data position
+
+| `\->`
+| String transforms, record updates
+| First arg
+
+| `->>`
+| Sequence pipelines (map/filter/reduce)
+| Last arg
+|===
+
+'''''
+
+=== 5. apply
+
+`apply` calls a function with a sequence as its argument list.
+Useful when arguments are already in a collection:
+
+[source,janet]
+----
+(apply + [1 2 3 4 5])         # => 15
+(apply string ["a" "b" "c"])  # => "abc"
+(apply max [3 1 4 1 5 9])     # => 9
+----
+
+You can mix fixed args with a trailing sequence:
+
+[source,janet]
+----
+(apply + 10 20 [1 2 3])   # => 36  (10 + 20 + 1 + 2 + 3)
+----
+
+*Try it:* evaluate `(apply max [3 1 4 1 5 9])` with `,ee`.
+
+'''''
+
+=== 6. Variadic Functions
+
+A function can accept any number of arguments with `& rest`:
+
+[source,janet]
+----
+(defn sum [& nums]
+  (reduce + 0 nums))
+
+(sum 1 2 3)           # => 6
+(sum 1 2 3 4 5 6 7)   # => 28
+----
+
+Required arguments come before `&`:
+
+[source,janet]
+----
+(defn greet-many [greeting & names]
+  (each name names
+    (print (string greeting ", " name "!"))))
+
+(greet-many "Hello" "Alice" "Bob" "Carol")
+----
+
+*Try it:* evaluate `(greet-many "Hi" "Alice" "Bob")` and watch the Conjure log.
+
+'''''
+
+=== 7. Mini-Project: Word Frequency Pipeline
+
+Build a small word-frequency counter using closures, higher-order functions, and threading.
+Put this in `scratch.janet` and evaluate each block in order with `,eb` or `,er`:
+
+[source,janet]
+----
+# Step 1: helpers
+
+(defn words [text]
+  (string/split " " (string/trim (string/lower-case text))))
+
+(defn count-words [acc word]
+  (put acc word (inc (get acc word 0)))
+  acc)
+
+(defn top-n [n freq-table]
+  (->> (pairs freq-table)
+       (sort-by (fn [[_ count]] (- count)))
+       (take n)))
+----
+
+[source,janet]
+----
+# Step 2: build the pipeline
+
+(def sample
+  "the quick brown fox jumps over the lazy dog the fox")
+
+(def frequencies
+  (->> sample
+       words
+       (reduce count-words @{})))
+
+frequencies   # evaluate with ,ee — inspect the table
+----
+
+[source,janet]
+----
+# Step 3: find the top 3 words
+
+(top-n 3 frequencies)
+# => (("the" 3) ("fox" 2) ...)
+----
+
+*Workflow:*
+
+. Evaluate the helpers block with `,eb` — all three functions enter the REPL state.
+. Evaluate `(def frequencies ...)` with `,er`.
+. Place the cursor on `frequencies` and press `,ee` — inspect the table in the Conjure log.
+. Evaluate `(top-n 3 frequencies)` with `,ee`.
+. Change `sample` to your own sentence and re-run from step 2.
+
+'''''
+
+=== 8. What to Explore Next
+
+* Call `(doc map)`, `(doc filter)`, `(doc reduce)` in the REPL for built-in documentation inline
+* https://janet-lang.org/docs/[janet-lang.org/docs/] — Functions, Macros, Core library reference
+* xref:learning/janet/04-sequences.adoc[Next: 04 — Sequences]
+
+'''''
+
+← xref:learning/janet/02-first-steps.adoc[Previous] | xref:learning/janet/index.adoc[Index] | xref:learning/janet/04-sequences.adoc[Next] →

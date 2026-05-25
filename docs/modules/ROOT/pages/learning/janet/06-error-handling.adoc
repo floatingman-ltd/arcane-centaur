@@ -1,0 +1,249 @@
+← xref:learning/janet/05-modules.adoc[Previous] | xref:learning/janet/index.adoc[Index] | xref:learning/janet/07-macros.adoc[Next] →
+
+'''''
+
+== 06 — Error Handling with Janet
+
+Janet provides several strategies for handling failure: `try`/`catch` for imperative error handling, `protect` for capturing outcomes as values, and fibers as the underlying mechanism that makes both possible.
+This lesson explores each in turn.
+
+Open a scratch file and the Conjure log before starting:
+
+[source,sh]
+----
+nvim scratch.janet
+----
+
+....
+,lv
+....
+
+'''''
+
+=== 1. error and try/catch
+
+`error` throws a value.
+`try` evaluates a form and, if it throws, runs a `catch` clause.
+
+[source,janet]
+----
+# Throw a string message
+(error "something went wrong")
+
+# try/catch — catch :all catches any throw value
+(try
+  (error "oops")
+  (catch :all e
+    (string "caught: " e)))
+# => "caught: oops"
+----
+
+The catch pattern `:all` matches any thrown value.
+You can also catch by value type:
+
+[source,janet]
+----
+(try
+  (error {:type :not-found :msg "user missing"})
+  (catch {:type :not-found} e
+    (string "not found: " (e :msg)))
+  (catch :all e
+    (string "unexpected error: " e)))
+# => "not found: user missing"
+----
+
+*Try it:* evaluate the first `try` form with `,ee`.
+Then change `"oops"` to a table like `{:code 404}` and update the catch accordingly.
+
+'''''
+
+=== 2. protect
+
+`protect` evaluates a form and returns a two-element tuple `[ok value]`.
+If the form succeeds, `ok` is `true` and `value` is the result.
+If it throws, `ok` is `false` and `value` is the thrown error.
+
+[source,janet]
+----
+# Success
+(protect (+ 1 2))
+# => (true 3)
+
+# Failure
+(protect (error "bad input"))
+# => (false "bad input")
+
+# Pattern: destructure the result
+(let [[ok result] (protect (/ 10 0))]
+  (if ok
+    (string "result: " result)
+    (string "error: " result)))
+# => "error: divide by zero"
+----
+
+`protect` is useful when you want to treat errors as values without a try/catch block.
+
+*Try it:* evaluate `(protect (/ 10 0))` with `,ee` and inspect the tuple.
+
+'''''
+
+=== 3. Propagating Errors
+
+Functions can propagate errors by calling `error` themselves.
+The caller decides whether to catch or let it bubble up:
+
+[source,janet]
+----
+(defn parse-age [s]
+  (let [n (scan-number s)]
+    (if (nil? n)
+      (error (string "not a number: " s))
+      (if (< n 0)
+        (error "age cannot be negative")
+        n))))
+
+(try
+  (parse-age "abc")
+  (catch :all e
+    (string "invalid: " e)))
+# => "invalid: not a number: abc"
+
+(parse-age "30")   # => 30
+----
+
+*Try it:* evaluate the full block, then call `(parse-age "-5")` with `,ee`.
+
+'''''
+
+=== 4. Fibers: The Underlying Mechanism
+
+Everything in Janet's error handling is built on fibers.
+A fiber is a coroutine — a lightweight thread of execution that can be suspended and resumed.
+
+[source,janet]
+----
+# Create a fiber from a function
+(def f (fiber/new (fn []
+                    (print "step 1")
+                    (yield 42)
+                    (print "step 2")
+                    99)))
+
+# Resume runs until the next yield or completion
+(resume f)   # prints "step 1", returns 42
+(resume f)   # prints "step 2", returns 99
+(resume f)   # fiber is dead — returns nil
+----
+
+*Try it:* evaluate the fiber definition then call `(resume f)` repeatedly with `,ee`.
+Watch how execution pauses at `yield` and picks up from the same point on the next `resume`.
+
+When a fiber calls `error`, `resume` returns the error value and the fiber enters the `:error` status:
+
+[source,janet]
+----
+(def bad (fiber/new (fn [] (error "boom"))))
+(resume bad)          # => "boom"  (error value, not an exception here)
+(fiber/status bad)    # => :error
+----
+
+`try` and `protect` are syntactic sugar that create and resume fibers for you.
+
+'''''
+
+=== 5. Checking Fiber Status
+
+[source,janet]
+----
+(def f (fiber/new (fn [] (yield 1) (yield 2))))
+
+(fiber/status f)   # => :new
+(resume f)         # => 1
+(fiber/status f)   # => :suspended
+(resume f)         # => 2
+(resume f)         # => nil  (function returned)
+(fiber/status f)   # => :dead
+----
+
+[cols="2,5",options="header"]
+|===
+| Status | Meaning
+
+| `:new`
+| Created but never resumed
+
+| `:suspended`
+| Yielded and waiting for the next `resume`
+
+| `:running`
+| Currently executing
+
+| `:dead`
+| Completed normally
+
+| `:error`
+| Terminated with an unhandled `error`
+|===
+
+'''''
+
+=== 6. Mini-Project: Safe Division Pipeline
+
+Build a pipeline that propagates errors cleanly using `protect` and `seq`:
+
+[source,janet]
+----
+(defn safe-div [a b]
+  (if (zero? b)
+    (error (string "division by zero: " a "/" b))
+    (/ a b)))
+
+(defn run-divisions [pairs]
+  (seq [[a b] :in pairs]
+    (let [[ok result] (protect (safe-div a b))]
+      (if ok
+        {:ok true  :value result}
+        {:ok false :error result}))))
+----
+
+[source,janet]
+----
+(def inputs [[10 2] [6 0] [9 3] [5 0] [8 4]])
+
+(def results (run-divisions inputs))
+results
+# => ({:ok true :value 5}
+#     {:ok false :error "division by zero: 6/0"}
+#     {:ok true :value 3}
+#     {:ok false :error "division by zero: 5/0"}
+#     {:ok true :value 2})
+----
+
+[source,janet]
+----
+# Separate successes from failures
+(def successes (filter (fn [r] (r :ok))  results))
+(def failures  (filter (fn [r] (not (r :ok))) results))
+
+(length successes)   # => 3
+(length failures)    # => 2
+----
+
+*Workflow:*
+
+. Evaluate the function definitions with `,eb`.
+. Evaluate `(def results ...)` with `,er`.
+. Inspect `results` with `,ee`.
+. Evaluate the `successes`/`failures` forms and inspect counts.
+
+'''''
+
+=== 7. What to Explore Next
+
+* Call `(doc fiber/new)`, `(doc protect)`, `(doc try)` in the REPL for built-in documentation
+* https://janet-lang.org/docs/fibers.html[janet-lang.org/docs/fibers] — fibers deep-dive
+* xref:learning/janet/07-macros.adoc[Next: 07 — Macros]
+
+'''''
+
+← xref:learning/janet/05-modules.adoc[Previous] | xref:learning/janet/index.adoc[Index] | xref:learning/janet/07-macros.adoc[Next] →
