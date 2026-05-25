@@ -50,6 +50,15 @@
 ** xref:learning/janet/05-modules.adoc[05 — Modules]
 ** xref:learning/janet/06-error-handling.adoc[06 — Error Handling]
 ** xref:learning/janet/07-macros.adoc[07 — Macros]
+* Ollama
+** xref:learning/ollama/index.adoc[Series Index]
+** xref:learning/ollama/01-setup.adoc[01 — Setup & Verification]
+** xref:learning/ollama/02-first-conversations.adoc[02 — First Conversations]
+** xref:learning/ollama/03-prompting-fundamentals.adoc[03 — Prompting Fundamentals]
+** xref:learning/ollama/04-code-assistance.adoc[04 — Code Assistance]
+** xref:learning/ollama/05-model-selection.adoc[05 — Model Selection]
+** xref:learning/ollama/06-system-prompts.adoc[06 — System Prompts & Context]
+** xref:learning/ollama/07-the-api.adoc[07 — The Ollama API]
 
 .Other
 * xref:other/architecture.adoc[Architecture]
