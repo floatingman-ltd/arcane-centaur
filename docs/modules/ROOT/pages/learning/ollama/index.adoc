@@ -40,4 +40,11 @@ Work through each lesson with your editor open and the Ollama service running.
 
 == Deep-Dives
 
-_(none yet — future additions start at 08 and do not require renaming existing files)_
+[cols="^1,3,8",options="header"]
+|===
+| # | Lesson | Topic
+
+| 08
+| xref:learning/ollama/08-rag-basics.adoc[RAG Basics]
+| Local retrieval-augmented generation workflow with embeddings, retrieval, and grounded prompts
+|===

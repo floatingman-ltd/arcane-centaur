@@ -1,4 +1,4 @@
-← xref:learning/ollama/06-system-prompts.adoc[Previous] | xref:learning/ollama/index.adoc[Index]
+← xref:learning/ollama/06-system-prompts.adoc[Previous] | xref:learning/ollama/index.adoc[Index] | xref:learning/ollama/08-rag-basics.adoc[Next] →
 
 '''''
 
@@ -188,8 +188,8 @@ ask-ollama "What is the Neovim filetype for Janet source files?"
 
 * https://github.com/ollama/ollama/blob/main/docs/api.md[Ollama API reference] — full endpoint documentation
 * https://ollama.com/library[ollama.com/library] — browse available models
-* xref:learning/ollama/index.adoc[Series index] — Deep-Dives start at lesson 08 (coming soon)
+* xref:learning/ollama/08-rag-basics.adoc[08 — RAG Basics] — first Deep-Dive lesson
 
 '''''
 
-← xref:learning/ollama/06-system-prompts.adoc[Previous] | xref:learning/ollama/index.adoc[Index]
+← xref:learning/ollama/06-system-prompts.adoc[Previous] | xref:learning/ollama/index.adoc[Index] | xref:learning/ollama/08-rag-basics.adoc[Next] →
