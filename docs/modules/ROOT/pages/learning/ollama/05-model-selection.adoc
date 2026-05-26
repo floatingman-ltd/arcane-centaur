@@ -1,0 +1,162 @@
+← xref:learning/ollama/04-code-assistance.adoc[Previous] | xref:learning/ollama/index.adoc[Index] | xref:learning/ollama/06-system-prompts.adoc[Next] →
+
+'''''
+
+== 05 — Model Selection
+
+The default model (`llama3.1:8b`) is a good general-purpose starting point, but it is
+not the only option. This lesson covers the tradeoffs, how to pull a different model,
+and how to make it active in Avante.
+
+For in-depth coverage of specific model families, see the Deep-Dives section of the
+xref:learning/ollama/index.adoc[series index] (future lessons 08+).
+
+'''''
+
+=== 1. The Core Tradeoff
+
+Every local model involves a three-way tradeoff:
+
+....
+        Quality
+           ▲
+           │        large models
+           │         (13b, 70b)
+           │
+           │    medium
+           │   (7b, 8b) ← default
+           │
+           │  small
+           │ (1b, 3b)
+           └──────────────────────► Speed
+           │
+           ▼
+         RAM
+....
+
+[cols="2,2,2,2,3",options="header"]
+|===
+| Model | RAM needed | Disk | Speed | Best for
+
+| `llama3.2:1b`
+| ~1 GB
+| ~1 GB
+| Very fast
+| Quick lookups, simple Q&A
+
+| `llama3.2:3b`
+| ~2–3 GB
+| ~2 GB
+| Fast
+| Low-RAM machines, fast iteration
+
+| `llama3.1:8b` *(default)*
+| ~5–6 GB
+| ~4 GB
+| Moderate
+| General use, explanation, light code
+
+| `llama3.1:70b`
+| ~40 GB
+| ~40 GB
+| Slow (CPU)
+| High quality — only practical with GPU
+|===
+
+If your machine has < 8 GB of RAM and feels sluggish, switch to `llama3.2:3b`.
+If you have a GPU, see the GPU section in `docs/modules/ROOT/pages/ai/ai-tools.adoc`.
+
+'''''
+
+=== 2. Browse Available Models
+
+Visit https://ollama.com/library[ollama.com/library] to see all available models.
+
+To see which models you have already pulled locally:
+
+[source,sh]
+----
+docker compose -f ~/.config/nvim/docker/ollama/docker-compose.yml \
+  exec ollama ollama list
+----
+
+*Confirm you see:* a table of model names, sizes, and last-modified dates.
+
+'''''
+
+=== 3. Pull a New Model
+
+Replace `<model>` with the model name from the library (e.g., `llama3.2:3b`):
+
+[source,sh]
+----
+docker compose -f ~/.config/nvim/docker/ollama/docker-compose.yml \
+  exec ollama ollama pull llama3.2:3b
+----
+
+*Confirm you see:* a progress bar, then a `success` message.
+
+Verify it is listed:
+
+[source,sh]
+----
+docker compose -f ~/.config/nvim/docker/ollama/docker-compose.yml \
+  exec ollama ollama list
+----
+
+*Confirm you see:* both the new model and any previously pulled models.
+
+'''''
+
+=== 4. Switch the Active Model in Avante
+
+Open `~/.config/nvim/lua/plugins/avante.lua` and update the `model` field in the
+`ollama` provider block:
+
+[source,lua]
+----
+providers = {
+  ollama = {
+    endpoint = "http://127.0.0.1:11434",
+    model = "llama3.2:3b",   -- change this line
+  },
+},
+----
+
+Save the file. The change takes effect on the next Neovim restart (or `:source %` if
+lazy.nvim hot-reloads the config).
+
+*Try it:* after updating `avante.lua`, press `<leader>ao` and send:
+
+....
+Reply with exactly: MODEL SWITCH CONFIRMED
+....
+
+*Confirm you see:* `MODEL SWITCH CONFIRMED` — the new model is active.
+
+'''''
+
+=== 5. Remove a Model
+
+To free disk space from a model you no longer use:
+
+[source,sh]
+----
+docker compose -f ~/.config/nvim/docker/ollama/docker-compose.yml \
+  exec ollama ollama rm llama3.1:8b
+----
+
+*Confirm you see:* `deleted 'llama3.1:8b'`
+
+NOTE: Make sure you are not removing the model currently active in `avante.lua`.
+
+'''''
+
+=== 6. What to Explore Next
+
+* Deep-dives on specific model families are coming in lessons 08+ — see the series index
+* xref:learning/ollama/06-system-prompts.adoc[06 — System Prompts & Context] — shape how any model responds
+
+'''''
+
+← xref:learning/ollama/04-code-assistance.adoc[Previous] | xref:learning/ollama/index.adoc[Index] | xref:learning/ollama/06-system-prompts.adoc[Next] →
