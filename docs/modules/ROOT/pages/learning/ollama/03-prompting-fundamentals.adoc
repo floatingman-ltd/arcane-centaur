@@ -1,0 +1,174 @@
+← xref:learning/ollama/02-first-conversations.adoc[Previous] | xref:learning/ollama/index.adoc[Index] | xref:learning/ollama/04-code-assistance.adoc[Next] →
+
+'''''
+
+== 03 — Prompting Fundamentals
+
+The quality of an LLM response is largely determined by the quality of the prompt.
+This lesson covers the core techniques: specificity, providing context, and role-setting.
+All exercises use real examples from this Neovim configuration.
+
+Open Avante with `<leader>ao` before starting.
+
+'''''
+
+=== 1. Why Prompts Matter
+
+A vague prompt produces a vague response. Compare:
+
+*Vague:*
+
+....
+What's wrong with this?
+....
+
+*Specific:*
+
+....
+The following Lua function is supposed to return the active LSP client names
+for the current buffer, but it always returns an empty table. What's wrong?
+
+(defn get-lsp-clients []
+  (vim.lsp.get_clients {bufnr 0}))
+....
+
+The second prompt gives the model: what language, what the function should do, what
+symptom you're observing, and the actual code. It has everything needed to give a useful answer.
+
+*Try it:* send both prompts to Avante with `<leader>ao`. Compare the depth of the responses.
+
+'''''
+
+=== 2. Specificity
+
+The single most effective improvement to any prompt is being specific about:
+
+* **What you have** — paste the actual code, error, or config
+* **What you want** — "explain", "fix", "rewrite", "summarise", "list alternatives"
+* **What format you want** — "in one sentence", "as a bullet list", "with code examples"
+
+*Before:*
+
+....
+Explain LSP.
+....
+
+*After:*
+
+....
+In two sentences, explain what an LSP server does and why Neovim needs one to provide
+completions and go-to-definition for a language like Janet.
+....
+
+*Try it:* send both versions. Notice how the constrained format produces a more useful answer
+for someone already familiar with editors.
+
+'''''
+
+=== 3. Providing Context
+
+Avante does not automatically know what file you have open or what codebase you're working in.
+You need to provide relevant context explicitly.
+
+*Pattern: paste the relevant code in the prompt*
+
+....
+Here is the Ollama Docker Compose config for this Neovim setup:
+
+```yaml
+services:
+  ollama:
+    image: ollama/ollama
+    ports:
+      - "127.0.0.1:11434:11434"
+    volumes:
+      - ollama_models:/root/.ollama
+    restart: unless-stopped
+```
+
+Why is the port bound to 127.0.0.1 instead of 0.0.0.0?
+....
+
+*Confirm you see:* an explanation about loopback-only binding for security (not exposing
+the API on external interfaces).
+
+In lesson 04 we'll see how to use visual selection to send code directly — the manual
+paste pattern is useful when the relevant code is elsewhere or you want to be selective.
+
+'''''
+
+=== 4. Role-Setting
+
+You can instruct the model to respond from a particular perspective or expertise level.
+This is done at the start of a fresh conversation.
+
+*Pattern: open a fresh session, set the role first*
+
+Close and reopen Avante with `<leader>ao` to start fresh, then send:
+
+....
+You are an expert Neovim plugin developer familiar with the Lua API.
+Respond concisely and assume I know Lua and Neovim basics.
+....
+
+*Confirm you see:* an acknowledgement. Now ask a follow-up:
+
+....
+What's the difference between vim.api.nvim_buf_set_keymap and vim.keymap.set?
+....
+
+*Confirm you see:* a more technical, concise response than you'd get without the role framing.
+
+Role-setting is most useful for:
+
+* Getting answers at the right expertise level (not over-explained)
+* Staying in a consistent mode across a long conversation
+* Simulating a specific reviewer ("You are a security-focused code reviewer...")
+
+'''''
+
+=== 5. Prompt Patterns Cheatsheet
+
+[cols="2,5",options="header"]
+|===
+| Pattern | Example
+
+| Constrain the format
+| "In one paragraph…", "As a bullet list…", "With a code example…"
+
+| State what you have
+| "Here is my current `lua/config/lsp.lua`: …"
+
+| State what you want
+| "Explain why…", "Rewrite this to…", "List three alternatives to…"
+
+| Set expertise level
+| "Assume I know Lua. Skip the basics."
+
+| Set a role
+| "You are a Janet language expert."
+
+| Verify deterministically
+| "Reply with exactly: CONFIRMED" (useful for smoke tests)
+|===
+
+'''''
+
+=== 6. Mini-Exercise: Prompt Comparison
+
+Write two prompts about something in this config that you want to understand better.
+The first should be as vague as possible; the second should apply all four techniques
+from this lesson. Compare the responses.
+
+*Suggestion:* ask about `lua/plugins/ufo.lua`, the code-folding plugin — it has a
+non-obvious `provider_selector` function that's a good candidate for explanation.
+
+'''''
+
+=== 7. What to Explore Next
+
+* Next: xref:learning/ollama/04-code-assistance.adoc[04 — Code Assistance Workflow] — visual selection + Avante in practice
+
+'''''
+
+← xref:learning/ollama/02-first-conversations.adoc[Previous] | xref:learning/ollama/index.adoc[Index] | xref:learning/ollama/04-code-assistance.adoc[Next] →

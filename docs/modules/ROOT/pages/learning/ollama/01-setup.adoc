@@ -1,0 +1,214 @@
+xref:learning/ollama/index.adoc[Index] | xref:learning/ollama/02-first-conversations.adoc[Next] →
+
+'''''
+
+== 01 — Setup & Verification
+
+This lesson gets Ollama running end-to-end: Docker service up, model pulled, Avante
+connected, and a smoke-test prompt returning a response.
+Work through each section in order — each step verifies the one before it.
+
+'''''
+
+=== Prerequisites
+
+Before starting, confirm these are in place:
+
+[cols="1,4",options="header"]
+|===
+| Requirement | How to check
+
+| Docker installed and running
+| `docker info` exits with code 0
+
+| This Neovim config installed
+| `nvim --version` shows Neovim ≥ 0.12
+
+| avante.nvim loaded
+| Open Neovim — no error about avante on startup
+
+| ~4 GB free disk (8B model) or ~2 GB (3B model)
+| `df -h ~` to check available space
+|===
+
+If Docker is not installed, see https://docs.docker.com/engine/install/[docs.docker.com/engine/install].
+
+'''''
+
+=== 1. Start the Ollama service
+
+[source,sh]
+----
+docker compose -f ~/.config/nvim/docker/ollama/docker-compose.yml up -d
+----
+
+*Confirm you see:*
+
+....
+✔ Container ollama-ollama-1  Started
+....
+
+(Or `Running` if it was already started.)
+
+Verify the container is up:
+
+[source,sh]
+----
+docker ps --filter name=ollama --format "table {{.Names}}\t{{.Status}}"
+----
+
+*Confirm you see:* a row with `ollama` and status `Up`.
+
+'''''
+
+=== 2. Health-check the API
+
+[source,sh]
+----
+curl -s http://127.0.0.1:11434/
+----
+
+*Confirm you see:*
+
+....
+Ollama is running
+....
+
+If this fails, the container may still be starting — wait five seconds and retry.
+If it continues to fail, see the <<troubleshooting,Troubleshooting>> section.
+
+'''''
+
+=== 3. Choose your model
+
+Pick based on available RAM:
+
+[cols="2,2,3",options="header"]
+|===
+| Available RAM | Model | Notes
+
+| ≥ 8 GB
+| `llama3.1:8b` (default)
+| Better quality; ~4 GB on disk
+
+| < 8 GB
+| `llama3.2:3b`
+| Faster; ~2 GB on disk — update `model =` in `lua/plugins/avante.lua`
+|===
+
+If choosing `llama3.2:3b`, open `~/.config/nvim/lua/plugins/avante.lua` and change:
+
+[source,lua]
+----
+model = "llama3.2:3b",
+----
+
+'''''
+
+=== 4. Pull the model
+
+Replace `<model>` with your chosen model name:
+
+[source,sh]
+----
+docker compose -f ~/.config/nvim/docker/ollama/docker-compose.yml \
+  exec ollama ollama pull llama3.1:8b
+----
+
+This is a one-time download (~4 GB for 8b). The model is stored in a named Docker volume
+and survives container restarts.
+
+Verify the model is available:
+
+[source,sh]
+----
+docker compose -f ~/.config/nvim/docker/ollama/docker-compose.yml \
+  exec ollama ollama list
+----
+
+*Confirm you see:* a row showing `llama3.1:8b` (or `llama3.2:3b`) with a size and date.
+
+'''''
+
+=== 5. Connect via Avante
+
+Open Neovim and press `<leader>ao` to switch to the ollama provider and open Avante.
+
+The Avante panel opens on the right. In the input area at the bottom, type this exact prompt:
+
+....
+Reply with exactly the words: OLLAMA IS WORKING
+....
+
+Press `Enter` to submit.
+
+*Confirm you see:* a response containing `OLLAMA IS WORKING` in the Avante buffer within a
+few seconds. Response time varies by hardware — CPU inference on an 8B model may take 10–30
+seconds on first run.
+
+'''''
+
+=== 6. What you now have
+
+[source,sh]
+----
+# Service status
+docker ps --filter name=ollama
+
+# Model list
+docker compose -f ~/.config/nvim/docker/ollama/docker-compose.yml \
+  exec ollama ollama list
+----
+
+....
+┌──────────────────────────────────────────────────┐
+│  Service    ollama/ollama (Docker)               │
+│  Port       127.0.0.1:11434  (loopback only)     │
+│  Model      llama3.1:8b  (or llama3.2:3b)        │
+│  Storage    ollama_models volume  (persistent)   │
+│  Auto-start unless-stopped                       │
+│                                                  │
+│  Avante keymaps                                  │
+│    <leader>ao  → switch to ollama + open         │
+│    <leader>ac  → switch to copilot + open        │
+│    <leader>aa  → open with current provider      │
+└──────────────────────────────────────────────────┘
+....
+
+'''''
+
+[[troubleshooting]]
+=== Troubleshooting
+
+[cols="3,3,4",options="header"]
+|===
+| Symptom | Likely cause | Fix
+
+| `curl` returns connection refused
+| Container not running
+| `docker ps --filter name=ollama` — if empty, re-run the `up -d` command
+
+| `curl` times out
+| Container still starting
+| Wait 10 seconds and retry
+
+| `ollama pull` fails with "manifest unknown"
+| Model tag has changed
+| Check available tags: `docker compose exec ollama ollama list` then visit https://ollama.com/library[ollama.com/library]
+
+| Avante shows HTTP error
+| Service not reachable from Neovim
+| Confirm `curl 127.0.0.1:11434` works, then restart Neovim
+
+| Avante hangs indefinitely
+| Model too large for available RAM
+| Switch to `llama3.2:3b` and update `avante.lua`
+
+| Port 11434 already in use
+| Another Ollama instance running outside Docker
+| `lsof -i :11434` to find and stop it, then retry `up -d`
+|===
+
+'''''
+
+xref:learning/ollama/index.adoc[Index] | xref:learning/ollama/02-first-conversations.adoc[Next] →
