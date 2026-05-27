@@ -4,11 +4,12 @@ return {
     dependencies = { "kevinhwang91/promise-async" },
     event = "BufReadPost",
     opts = {
-      provider_selector = function(_, filetype, _)
+      provider_selector = function(bufnr, filetype, _)
+        -- Disable treesitter folding entirely (causes errors on special buffers like glow)
         if filetype == "markdown" then
-          return { "treesitter", "indent" }
+          return { "indent" }
         end
-        return { "lsp", "treesitter" }
+        return { "lsp", "indent" }
       end,
       fold_virt_text_handler = function(virtText, lnum, endLnum, width, truncate)
         local newVirtText = {}
