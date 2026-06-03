@@ -88,10 +88,6 @@ end
 global.mapleader = " "
 global.maplocalleader = ","
 
--- copilot
-global.copilot_no_tab_map = true
--- global.copilot_auto_trigger = true
-
 -- fsharp
 -- global['fsharp#fsautocomplete_command'] = {'dotnet','fsautocomplete','--background-service-enabled'}
 -- global['deoplete#enable_at_startup'] = 1

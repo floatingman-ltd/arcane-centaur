@@ -1,1 +1,0 @@
-../../../.github/skills/openspec-verify-change/SKILL.md

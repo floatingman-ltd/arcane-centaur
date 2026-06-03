@@ -36,7 +36,7 @@ Requires *Neovim ≥ 0.12*. On first launch, https://github.com/folke/lazy.nvim[
 | xref:editor/navigation.adoc[Navigation] | Splits, fuzzy finder, file tree, unimpaired
 | xref:editor/code-intelligence.adoc[Code Intelligence] | LSP, completion, formatting
 | xref:editor/git.adoc[Git] | fugitive, gitsigns, diffview workflow
-| xref:ai/ai-tools.adoc[AI Tools] | Copilot CLI, OpenSpec, Serena, Avante
+| xref:ai/ai-tools.adoc[AI Tools] | Claude CLI, OpenSpec, Serena, Avante
 |===
 
 == Content & Publishing

@@ -242,7 +242,7 @@ sudo apt install -y \
 |`luarocks` |Plugin dependency manager used by lazy.nvim
 |===
 
-=== Node.js (optional — required for markdown-preview.nvim and Copilot)
+=== Node.js (optional — required for markdown-preview.nvim)
 
 Use https://github.com/nvm-sh/nvm[nvm] to install Node.js without root:
 

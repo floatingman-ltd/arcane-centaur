@@ -17,7 +17,8 @@ where it is, and how the pieces fit together at startup.
 | xref:#docker[docker/] | Docker service definitions
 | xref:#docs[docs/] | User documentation
 | xref:#openspec[openspec/] | Change management workflow
-| xref:#github[.github/] | Copilot CLI integration
+| xref:#github[.github/] | GitHub Actions (docs CI)
+| xref:#claude[.claude/] | Claude Code skills & settings
 | xref:#console-detection[Console Detection] | How is_console is determined
 | xref:#open-url[Open URL Behaviour] | Browser vs. notification
 |===
@@ -222,8 +223,7 @@ All plugins are managed by https://github.com/folke/lazy.nvim[lazy.nvim]. Specs 
 
 [cols="1,3"]
 |===
-|https://github.com/github/copilot.vim[copilot.vim] |GitHub Copilot inline completions
-|https://github.com/yetone/avante.nvim[avante.nvim] |AI chat panel (Copilot {plus} Ollama backends)
+|https://github.com/yetone/avante.nvim[avante.nvim] |AI chat panel (Claude API {plus} Ollama backends)
 |https://github.com/MunifTanjim/nui.nvim[nui.nvim] |UI component library (required by avante)
 |https://github.com/stevearc/dressing.nvim[dressing.nvim] |Improved `vim.ui.input` / `vim.ui.select` (required by avante)
 |https://github.com/nvim-lua/plenary.nvim[plenary.nvim] |Lua utility library (required by avante)
@@ -277,9 +277,8 @@ machines stay in sync.
 |`readme.md` |Human-readable overview: keybindings, supported languages,
 plugin list, Docker services.
 
-|`opencode.json` |Configuration for the opencode-ai editor assistant
-(separate from Copilot CLI). Points at the Serena MCP server and the
-Copilot instructions file.
+|`CLAUDE.md` |Project guidance for Claude Code (architecture, conventions,
+commands).
 |===
 
 '''''
@@ -332,11 +331,9 @@ surround, etc.)
 |`colorscheme.lua` |TokyoNight theme; change `style =` to switch
 variants
 
-|`avante.lua` |avante.nvim AI chat (ollama {plus} copilot backends)
+|`avante.lua` |avante.nvim AI chat (ollama {plus} Claude API backends)
 
 |`conform.lua` |Format-on-save via conform.nvim
-
-|`copilot.lua` |GitHub Copilot inline completion
 
 |`fzf-lua.lua` |Fuzzy finder (files, grep, buffers)
 
@@ -407,7 +404,8 @@ markserv Docker container (handles cross-page links).
 |`openspec.lua` |OpenSpec workflow integration (proposal/spec/task
 management).
 
-|`copilot++_++cli.lua` |Helpers for the GitHub Copilot CLI integration.
+|`claude++_++cli.lua` |Helpers for the Claude CLI integration
+(`:ClaudeSuggest` / `:ClaudeExplain`).
 |===
 
 '''''
@@ -544,8 +542,8 @@ conversion
 == `openspec/` — OpenSpec Change Management
 
 OpenSpec is a lightweight spec-driven workflow for tracking proposed
-changes to this configuration. It is used by the Copilot CLI and
-opencode-ai assistants.
+changes to this configuration. Its workflow steps are available to
+Claude Code as skills in `.claude/skills/` (e.g. `/openspec-propose`).
 
 ....
 openspec/
@@ -570,30 +568,30 @@ directory.
 '''''
 
 [[github]]
-== `.github/` — Copilot CLI Integration
+== `.github/` — GitHub Actions
 
 [width="100%",cols="50%,50%",options="header",]
 |===
 |Path |Purpose
-|`copilot-instructions.md` |Loaded as system context by GitHub Copilot
-CLI for every session in this repo. Describes architecture, conventions,
-and documentation policy.
-
-|`prompts/` |Named prompt files for OpenSpec workflow steps (invoked via
-`/` commands in Copilot CLI).
-
-|`skills/` |Copilot CLI skill definitions — each `SKILL.md` describes
-how to invoke an OpenSpec workflow step.
+|`workflows/docs.yml` |CI workflow that builds and publishes the Antora
+documentation site.
 |===
 
 '''''
 
-[[opencode]]
-== `.opencode/` — opencode-ai Integration
+[[claude]]
+== `.claude/` — Claude Code Integration
 
-Mirror of `.github/skills/` for the opencode-ai editor assistant.
-Contains the same OpenSpec skill definitions in the format opencode-ai
-expects.
+[width="100%",cols="50%,50%",options="header",]
+|===
+|Path |Purpose
+|`skills/` |Claude Code skill definitions — each `SKILL.md` is invocable
+as a slash command (`/openspec-propose`, `/add-neovim-feature`, etc.).
+Project guidance lives in `CLAUDE.md` at the repo root.
+
+|`settings.local.json` |Project-local Claude Code settings (e.g.
+permission allowlist).
+|===
 
 '''''
 

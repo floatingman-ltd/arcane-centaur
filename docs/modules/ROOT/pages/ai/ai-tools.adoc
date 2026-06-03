@@ -1,19 +1,19 @@
 == AI Tools Guide
 
-This guide covers three AI / workflow tools that are integrated directly
+This guide covers the AI / workflow tools that are integrated directly
 into Neovim:
 
 [width="100%",cols="50%,50%",options="header",]
 |===
 |Tool |What it does
-|*GitHub Copilot CLI* |Ask Copilot to suggest shell commands or explain
+|*Claude CLI* |Ask Claude to suggest shell commands or explain
 code without leaving the editor
 
 |*OpenSpec* |Drive the in-repo OpenSpec change workflow from Neovim
 keymaps
 
-|*Serena MCP server* |Provides symbol-aware code intelligence to GitHub
-Copilot chat and completions
+|*Serena MCP server* |Provides symbol-aware code intelligence to AI
+assistants such as Claude Code
 |===
 
 '''''
@@ -21,16 +21,16 @@ Copilot chat and completions
 
 [cols="1,3"]
 |===
-| xref:#copilot-cli[GitHub Copilot CLI] | Suggest commands, explain code
+| xref:#claude-cli[Claude CLI] | Suggest commands, explain code
 | xref:#openspec[OpenSpec] | Change workflow from Neovim keymaps
 | xref:#serena[Serena MCP Server] | Symbol-aware code intelligence
-| xref:#avante[Avante] | Q&A chat with ollama or Copilot
+| xref:#avante[Avante] | Q&A chat with ollama or Claude
 |===
 
 '''''
 
-[[copilot-cli]]
-== GitHub Copilot CLI
+[[claude-cli]]
+== Claude CLI
 
 === Usage
 
@@ -40,45 +40,33 @@ buffer), then:
 [width="100%",cols="50%,50%",options="header",]
 |===
 |Keys |Action
-|`++<++leader++>++gcs` |Ask Copilot to *suggest* a shell command based
+|`++<++leader++>++gcs` |Ask Claude to *suggest* a shell command based
 on context
 
-|`++<++leader++>++gce` |Ask Copilot to *explain* the selected code
+|`++<++leader++>++gce` |Ask Claude to *explain* the selected code
 |===
 
 The response appears in a floating window. Press `q` or `++<++Esc++>++`
 to close it.
 
-You can also run the commands directly: - `:CopilotSuggest` — suggest -
-`:CopilotExplain` — explain
+You can also run the commands directly: - `:ClaudeSuggest` — suggest -
+`:ClaudeExplain` — explain
 
 === How it works
 
-`lua/config/copilot++_++cli.lua` uses `vim.system()` to invoke
-`copilot -sp "++<++prompt++>++"` non-interactively. The `-s` flag
-suppresses usage metadata so only the AI response is captured. The
-result is rendered in a scratch buffer inside a `nvim++_++open++_++win`
-floating window.
+`lua/config/claude++_++cli.lua` uses `vim.system()` to invoke
+`claude -p "++<++prompt++>++"` non-interactively, relying on Claude
+Code's own authentication. The result is rendered in a scratch buffer
+inside a `nvim++_++open++_++win` floating window.
 
 '''''
 
 === Prerequisites
 
-[arabic]
-. Install https://nodejs.org/[Node.js 22{plus}].
-. Install the GitHub Copilot CLI:
-+
-[source,sh]
-----
-npm install -g @github/copilot
-----
-. Authenticate (first run only):
-+
-[source,sh]
-----
-copilot
-# then enter: /login
-----
+The `claude` CLI (Claude Code) must be on your `$PATH`. Install it from
+https://claude.com/claude-code[claude.com/claude-code] and sign in once
+(`claude` then follow the login prompt). No `ANTHROPIC_API_KEY` is
+required for these commands — they use Claude Code's built-in auth.
 
 ''''''
 
@@ -105,7 +93,7 @@ create it
 that change:
 
 ....
-:OpenspecStatus add-copilot-openspec-serena
+:OpenspecStatus add-ollama-learning-path
 ....
 
 Output is shown in a read-only bottom split (15 lines tall). Press `q`
@@ -116,6 +104,11 @@ or `++<++Esc++>++` to close it.
 `lua/config/openspec.lua` uses synchronous `vim.fn.system()`
 (appropriate because `openspec` commands complete in well under a
 second) and opens a scratch buffer in a `botright split`.
+
+The same OpenSpec workflows are also available as Claude Code skills in
+`.claude/skills/` — invoke them as slash commands (`/openspec-propose`,
+`/openspec-apply-change`, `/openspec-continue-change`,
+`/openspec-verify-change`, `/openspec-archive-change`).
 
 '''''
 
@@ -131,48 +124,41 @@ own README, or check `openspec --help` to confirm it’s available.
 
 https://github.com/oramasearch/serena[Serena] is a symbol-aware
 code-intelligence MCP (Model Context Protocol) server. When running, it
-allows GitHub Copilot to perform semantic operations — go-to-definition,
-find-references, workspace symbol search — that it cannot do from text
-alone.
+allows AI assistants such as Claude Code to perform semantic operations —
+go-to-definition, find-references, workspace symbol search — that they
+cannot do from text alone.
 
 === Configuration
 
-Serena is declared in `lua/plugins/copilot.lua` via
-`vim.g.copilot++_++mcp++_++servers`. No extra setup is needed — it is
-auto-discovered by `copilot.vim` at startup.
-
-The config prefers the global `serena` binary when found on `$PATH`;
-otherwise it falls back to `npx -y @oramasearch/serena`.
+Serena is configured for Claude Code at the user level in
+`~/.claude.json` as a local MCP server, using the `serena` binary with
+`serena start-mcp-server --context=claude-code --project-from-cwd`. With
+`--project-from-cwd`, Serena picks up the `.serena/project.yml` in the
+repo root automatically when Claude Code is launched from this directory.
 
 === Verifying
 
-To confirm the MCP server is configured, run inside Neovim:
+To confirm the MCP server is registered, run from a shell in the repo
+root:
 
-[source,vim]
+[source,sh]
 ----
-:lua print(vim.inspect(vim.g.copilot_mcp_servers))
+claude mcp list
 ----
 
-You should see a table with a `serena` key containing `type = "stdio"`
-and the launch command.
+You should see a `serena` entry. Inside a Claude Code session you can
+also confirm the `serena` tools are available.
 
 '''''
 
 === Prerequisites
 
-Node.js 18{plus} is required. Install Serena globally to avoid `npx`
-startup latency on every request:
+Install Serena so the `serena` binary is on `$PATH` (recommended via
+`uv`):
 
 [source,sh]
 ----
-npm install -g @oramasearch/serena
-----
-
-Or rely on on-demand `npx` (slower first call, no install needed):
-
-[source,sh]
-----
-# No install needed; npx downloads on first use
+uv tool install serena-agent
 ----
 
 ''''''
@@ -188,7 +174,7 @@ at any time:
 |===
 |Backend |When to use
 |*ollama* (default) |Offline / air-gapped / low-latency — runs locally via Docker
-|*copilot* |Online — uses the existing `github/copilot.vim` authentication
+|*claude* |Online — uses the Claude API (`claude-3-5-haiku`) via `ANTHROPIC_API_KEY`
 |===
 
 [NOTE]
@@ -208,7 +194,7 @@ will not load.
 |Key |Action
 |`++<++leader++>++aa` |Open avante with the current provider
 |`++<++leader++>++ao` |Switch to ollama provider and open avante
-|`++<++leader++>++ac` |Switch to copilot provider and open avante
+|`++<++leader++>++ac` |Switch to Claude API provider and open avante
 |===
 
 === Ollama Setup
@@ -274,11 +260,19 @@ If the ollama service is not running when you submit a question, avante
 will display the HTTP error in its buffer. Neovim will not crash. Start
 the service and retry.
 
-=== Copilot Backend
+=== Claude API Backend
 
-No additional setup is required. Avante reuses the credentials already
-held by `github/copilot.vim`. If Copilot is not yet authenticated, run
-`:Copilot setup` first.
+The `claude` provider talks to the Claude API and requires an
+`ANTHROPIC_API_KEY` in your environment:
+
+[source,sh]
+----
+export ANTHROPIC_API_KEY='your-api-key-here'   # from https://platform.claude.com/
+----
+
+The model is set to `claude-3-5-haiku-20241022` in
+`lua/plugins/avante.lua` for cost-effectiveness; change `model` under the
+`claude` provider to use a different model.
 
 ''''''
 

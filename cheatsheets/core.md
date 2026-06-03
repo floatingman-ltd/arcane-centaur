@@ -82,15 +82,13 @@
 
 ---
 
-## Copilot
+## Claude
 
 | Key | Mode | Action |
 |-----|------|--------|
-| `Ctrl-j` | Insert | Accept full inline suggestion |
-| `Alt-f` | Insert | Accept next word of suggestion |
-| `<leader>gcs` | Normal/Visual | Copilot CLI: suggest |
-| `<leader>gce` | Normal/Visual | Copilot CLI: explain |
-| `<leader>c` | Normal | Jump back from Copilot chat panel |
+| `<leader>gcs` | Normal/Visual | Claude CLI: suggest shell command |
+| `<leader>gce` | Normal/Visual | Claude CLI: explain code |
+| `<leader>c` | Normal | Jump back from the Avante chat panel |
 
 ---
 

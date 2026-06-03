@@ -90,18 +90,15 @@ end
 vim.keymap.set("n", "<leader>t", toggle_terminal, { noremap = true, silent = true, desc = "Toggle terminal split" })
 vim.keymap.set("t", "<Esc>", "<C-\\><C-n>", { noremap = true, silent = true, desc = "Exit terminal insert mode" })
 
--- Copilot chat
-vim.api.nvim_set_keymap("i", "<C-J>", 'copilot#Accept("<CR>")', { silent = true, expr = true })
--- Accept only the next word of a Copilot suggestion (instead of the whole completion)
--- <M-f> follows the readline/Emacs "Alt-f = forward word" convention — same semantic intent.
-vim.api.nvim_set_keymap("i", "<M-f>", 'copilot#AcceptWord()', { silent = true, expr = true })
-vim.api.nvim_set_keymap("n", "<leader>c", "<C-w>h", { noremap = true, silent = true, desc = "Window: focus left" })
+-- GitHub Copilot has been removed; AI assistance is now provided by Claude.
+-- Use Avante.nvim (<leader>aa) or the Claude CLI (<leader>gcs) for AI assistance.
+vim.keymap.set("n", "<leader>c", "<C-w>h", { noremap = true, silent = true, desc = "Window: focus left" })
 
--- Copilot CLI
-vim.keymap.set({ "n", "v" }, "<leader>gcs", "<cmd>CopilotSuggest<CR>",
-  { noremap = true, silent = true, desc = "Copilot CLI: suggest" })
-vim.keymap.set({ "n", "v" }, "<leader>gce", "<cmd>CopilotExplain<CR>",
-  { noremap = true, silent = true, desc = "Copilot CLI: explain" })
+-- Claude CLI (uses Claude Code's built-in authentication)
+vim.keymap.set({ "n", "v" }, "<leader>gcs", "<cmd>ClaudeSuggest<CR>",
+  { noremap = true, silent = true, desc = "Claude: suggest shell command" })
+vim.keymap.set({ "n", "v" }, "<leader>gce", "<cmd>ClaudeExplain<CR>",
+  { noremap = true, silent = true, desc = "Claude: explain code" })
 
 -- Context-aware cheatsheet
 vim.keymap.set("n", "<leader>?", function()
