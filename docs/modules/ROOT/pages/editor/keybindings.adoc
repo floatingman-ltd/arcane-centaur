@@ -13,7 +13,7 @@ NOTE: Press `*<leader>?*` inside Neovim for an instant, context-aware keybinding
 |Plugin / Area |Cheatsheet
 |.NET — C++#++ and F++#++ (Roslyn {plus} iron.nvim {plus} fsautocomplete) |xref:languages/dotnet-cheatsheet.adoc[dotnet]
 
-|AI Tools (Copilot CLI {plus} OpenSpec {plus} Serena {plus} Avante) |xref:ai/ai-tools-cheatsheet.adoc[ai-tools]
+|AI Tools (Claude CLI {plus} OpenSpec {plus} Serena {plus} Avante) |xref:ai/ai-tools-cheatsheet.adoc[ai-tools]
 
 |Code Intelligence (LSP {plus} Completion {plus} Formatting) |xref:editor/code-intelligence.adoc[code-intelligence]
 
@@ -174,25 +174,15 @@ F++#++ buffers._
 
 '''''
 
-=== Copilot
+=== Claude CLI
 
 [width="100%",cols="34%,33%,33%",options="header",]
 |===
 |Keys |Mode |Action
-|`Ctrl-j` |Insert |Accept full inline suggestion
-
-|`Alt-f` |Insert |Accept next word of suggestion
-
-|`++<++leader++>++gcs` |Normal / Visual |Copilot CLI: suggest (floating
+|`++<++leader++>++gcs` |Normal / Visual |Claude CLI: suggest (floating
 window)
 
-|`++<++leader++>++gce` |Normal / Visual |Copilot CLI: explain (floating
-window)
-
-|`++<++leader++>++gcs` |Normal / Visual |Copilot CLI: suggest (floating
-window)
-
-|`++<++leader++>++gce` |Normal / Visual |Copilot CLI: explain (floating
+|`++<++leader++>++gce` |Normal / Visual |Claude CLI: explain (floating
 window)
 |===
 

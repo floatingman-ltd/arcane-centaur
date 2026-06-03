@@ -5,17 +5,13 @@
 Defines the behaviour of the `add-learning-lesson` Copilot CLI skill, which guides an agent to author a well-structured language-learning lesson file, wire it into the existing series navigation, and keep the README index up to date.
 
 ---
-
 ## Requirements
-
 ### Requirement: Skill is invocable as add-learning-lesson
-The repository SHALL contain a skill at `.github/skills/add-learning-lesson/SKILL.md` that is loadable by the Copilot CLI skill system.
+The repository SHALL contain a skill at `.claude/skills/add-learning-lesson/SKILL.md` that is loadable by Claude Code and invocable as the `/add-learning-lesson` slash command.
 
 #### Scenario: Skill loads successfully
-- **WHEN** a user invokes the `add-learning-lesson` skill
+- **WHEN** a user invokes the `add-learning-lesson` skill (e.g. `/add-learning-lesson`)
 - **THEN** the skill context is injected and the agent follows its workflow
-
----
 
 ### Requirement: Skill reads existing series before authoring
 Before creating any file, the skill SHALL scan the target language's learning directory and read the README index and the two most recent lesson files to ground its output in current conventions.
@@ -104,3 +100,4 @@ Every language directory under `docs/learning/` SHALL have a `README.md` with tw
 #### Scenario: README does not exist
 - **WHEN** the skill is invoked and no README.md exists for the language
 - **THEN** the skill creates one with the two required sections before adding the new lesson row
+

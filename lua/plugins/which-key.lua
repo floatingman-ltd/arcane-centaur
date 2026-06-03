@@ -7,7 +7,7 @@ return {
       local wk = require("which-key")
       wk.setup(opts)
       wk.add({
-        { "<leader>gc", group = "Copilot" },
+        { "<leader>gc", group = "Claude" },
         { "<leader>os", group = "OpenSpec" },
       })
     end,
