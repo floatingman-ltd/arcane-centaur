@@ -59,6 +59,7 @@
 ** xref:learning/ollama/05-model-selection.adoc[05 — Model Selection]
 ** xref:learning/ollama/06-system-prompts.adoc[06 — System Prompts & Context]
 ** xref:learning/ollama/07-the-api.adoc[07 — The Ollama API]
+** xref:learning/ollama/08-rag-basics.adoc[08 — RAG Basics (Deep-Dive)]
 
 .Other
 * xref:other/architecture.adoc[Architecture]

@@ -1,0 +1,179 @@
+← xref:learning/ollama/07-the-api.adoc[Previous] | xref:learning/ollama/index.adoc[Index] | Next: coming soon
+
+'''''
+
+== 08 — RAG Basics
+
+RAG (Retrieval-Augmented Generation) means: fetch relevant source text first, then ask the model
+to answer using only that retrieved context.
+This deep-dive keeps everything local and practical using Ollama plus docs already in this repo.
+
+'''''
+
+=== 1. What RAG Is (and When to Use It)
+
+RAG is a two-step pattern:
+
+. *Retrieval*: find the most relevant source chunks for a question
+. *Generation*: ask the model to answer from those chunks
+
+Use RAG when you want answers grounded in your own material (project docs, runbooks, policies),
+instead of generic model memory.
+
+Use plain prompting when the question is general and does not depend on local knowledge.
+
+*Confirm you see:* this distinction in your own words — “RAG for private/source-specific answers,
+plain prompting for broad/general questions.”
+
+'''''
+
+=== 2. Minimal Local RAG Flow
+
+For this lesson, we use the smallest useful pipeline:
+
+. Select a few source chunks from local docs
+. Create embeddings for each chunk (`/api/embed`)
+. Embed the question
+. Compute similarity and pick top matches
+. Build a grounded prompt with those matches
+. Generate final answer (`/api/generate`)
+
+No hosted vector database is required for this first version — we keep vectors in memory during the run.
+
+'''''
+
+=== 3. End-to-End Exercise (Local Docs → Grounded Answer)
+
+Create a temporary script:
+
+[source,sh]
+----
+cat > /tmp/rag-local.py <<'PY'
+import json, math, urllib.request
+
+DOCS = [
+    "Learning/Ollama 07 says Avante uses POST /api/chat with stream true for progressive token rendering.",
+    "Learning/Ollama 05 describes model tradeoffs: smaller models are faster but may reduce answer quality.",
+    "Learning/Ollama 06 explains that system prompts shape behavior across the entire session.",
+]
+
+QUESTION = "Which endpoint does Avante use for multi-turn chats, and how are responses rendered?"
+MODEL = "llama3.1:8b"
+EMBED_MODEL = "nomic-embed-text"
+
+def post(path, payload):
+    req = urllib.request.Request(
+        "http://127.0.0.1:11434" + path,
+        data=json.dumps(payload).encode("utf-8"),
+        headers={"Content-Type": "application/json"},
+    )
+    with urllib.request.urlopen(req) as r:
+        return json.loads(r.read().decode("utf-8"))
+
+def cosine(a, b):
+    dot = sum(x*y for x, y in zip(a, b))
+    na = math.sqrt(sum(x*x for x in a))
+    nb = math.sqrt(sum(x*x for x in b))
+    return dot / (na * nb + 1e-12)
+
+doc_vecs = []
+for d in DOCS:
+    emb = post("/api/embed", {"model": EMBED_MODEL, "input": d})
+    doc_vecs.append((d, emb["embeddings"][0]))
+
+qv = post("/api/embed", {"model": EMBED_MODEL, "input": QUESTION})["embeddings"][0]
+ranked = sorted(((cosine(qv, v), d) for d, v in doc_vecs), reverse=True)
+top = ranked[:2]
+
+context = "\n\n".join(f"- {d}" for _, d in top)
+prompt = (
+    "Answer ONLY from the context.\n"
+    "If context is insufficient, say 'I don't know from the provided context.'\n\n"
+    f"Question: {QUESTION}\n\nContext:\n{context}\n\nAnswer:"
+)
+
+answer = post("/api/generate", {"model": MODEL, "prompt": prompt, "stream": False})["response"]
+
+print("TOP MATCHES:")
+for s, d in top:
+    print(f"{s:.4f} | {d}")
+print("\nGROUNDED ANSWER:\n" + answer)
+PY
+python3 /tmp/rag-local.py
+----
+
+*Confirm you see:*
+
+* A `TOP MATCHES:` section where the `/api/chat` chunk is ranked near the top
+* A `GROUNDED ANSWER:` that references multi-turn chat via `POST /api/chat`
+* No invented endpoint names
+
+If `nomic-embed-text` is missing, pull it first:
+
+[source,sh]
+----
+ollama pull nomic-embed-text
+----
+
+'''''
+
+=== 4. Prompt Grounding Patterns That Reduce Hallucination
+
+Use these patterns in the generation prompt:
+
+[cols="3,5",options="header"]
+|===
+| Pattern | Example
+
+| Scope lock
+| “Answer only from the provided context.”
+
+| Explicit fallback
+| “If context is insufficient, say: I don't know from the provided context.”
+
+| Citation style
+| “List supporting snippets as bullets after the answer.”
+
+| Output constraint
+| “Use three sentences maximum.”
+|===
+
+*Try it:* modify the script prompt to request two supporting bullets after the answer.
+
+*Confirm you see:* the model stays tied to retrieved text and gives a clear fallback when context is weak.
+
+'''''
+
+=== 5. Common RAG Failure Modes (and Fast Fixes)
+
+[cols="3,5",options="header"]
+|===
+| Failure mode | Quick remediation
+
+| Bad chunking (too large or mixed topics)
+| Split text into smaller, coherent chunks (single topic per chunk).
+
+| Weak retrieval quality
+| Improve chunk text quality, increase candidate pool, verify embed model choice.
+
+| Stale corpus
+| Re-embed after docs changes; version your source snapshots.
+
+| Prompt drift
+| Reassert “answer only from context” and explicit fallback language.
+
+| Missing relevant source
+| Add the missing document before tuning prompt/model settings.
+|===
+
+'''''
+
+=== 6. What to Explore Next
+
+* xref:learning/ollama/07-the-api.adoc[07 — The Ollama API] — revisit request/response payloads used in this lesson
+* xref:ai/ai-tools.adoc[AI Tools Guide] — broader AI workflow context in this configuration
+* https://github.com/ollama/ollama/blob/main/docs/api.md[Ollama API reference] — endpoint and payload details
+
+'''''
+
+← xref:learning/ollama/07-the-api.adoc[Previous] | xref:learning/ollama/index.adoc[Index] | Next: coming soon
