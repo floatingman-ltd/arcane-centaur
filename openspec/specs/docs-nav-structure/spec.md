@@ -1,15 +1,13 @@
 ## Purpose
 
 Defines the structure and grouping of the Antora nav sidebar (`docs/modules/ROOT/nav.adoc`).
-
 ## Requirements
-
 ### Requirement: Nav sidebar grouped by topic family
 `docs/modules/ROOT/nav.adoc` SHALL organise all pages into named topic groups rather
 than a flat alphabetical list. The groups SHALL be:
 - **Languages** — .NET Ecosystem (C# + F#), Lisp Family (Lisp + Janet), Haskell
 - **Editor Core** — Editing, Navigation, Code Intelligence, Git
-- **AI & Automation** — AI Tools, Copilot
+- **AI & Automation** — AI Tools
 - **Content Creation** — Markdown, Diagrams, Presentations, REST Client
 - **Project Tooling** — Jira, Confluence
 - **Reference** — Architecture, Clipboard, Getting Started
@@ -39,3 +37,4 @@ Lisp Family sub-grouping within Languages. They SHALL remain separate files.
 #### Scenario: Lisp and Janet are adjacent in nav
 - **WHEN** a reader browses the Languages section
 - **THEN** Lisp and Janet entries SHALL appear consecutively under a Lisp Family label
+

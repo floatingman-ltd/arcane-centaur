@@ -6,7 +6,7 @@ The implementing files have already been removed on branch `chore/remove-copilot
 
 ## What Changes
 
-- **Remove** the `copilot-cli-integration` capability — `:CopilotSuggest` / `:CopilotExplain` (backed by the `copilot` CLI in `lua/config/copilot_cli.lua`) no longer exist.
+- **Remove** the `copilot-cli-integration` capability — `:CopilotSuggest` / `:CopilotExplain` (backed by the `copilot` CLI in `lua/config/copilot_cli.lua`) no longer exist. (OpenSpec's archiver cannot empty a capability, so the `copilot-cli-integration` and `ai-research-copilot` spec directories are deleted directly rather than via requirement deltas.)
 - **Add** the `claude-cli-integration` capability — `:ClaudeSuggest` / `:ClaudeExplain` in `lua/config/claude_cli.lua`, backed by `claude -p` (Claude Code auth, no API key), bound to `<leader>gcs` / `<leader>gce`.
 - **Remove** the `ai-research-copilot` capability — Avante's `copilot` provider (using `github/copilot.vim` auth) no longer exists.
 - **Add** the `ai-research-claude` capability — Avante's `claude` provider (Claude API via `ANTHROPIC_API_KEY`, model `claude-3-5-haiku`), opened with `<leader>ac`; `<leader>aa` opens with the current provider.

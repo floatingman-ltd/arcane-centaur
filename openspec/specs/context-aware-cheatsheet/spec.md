@@ -1,5 +1,7 @@
-## ADDED Requirements
+## Purpose
 
+Provides a context-aware floating cheatsheet, opened with `<leader>?`, that always shows a universal core keybinding section and appends a language-specific section for the current buffer's filetype.
+## Requirements
 ### Requirement: Cheatsheet float opens from any buffer
 Pressing `<leader>?` in Normal mode SHALL open a centred, bordered floating window containing the context-aware cheatsheet content. The float SHALL be reachable from any buffer regardless of filetype.
 
@@ -24,7 +26,7 @@ Pressing `<leader>?` in Normal mode SHALL open a centred, bordered floating wind
 - **THEN** a floating window opens containing the universal core section followed by the Markdown workflow section
 
 ### Requirement: Universal core section always present
-The floating window SHALL always display a universal core section covering LSP bindings, window/split navigation, git (fugitive, gitsigns, diffview), GitHub Copilot, visual editing, system clipboard, formatting, and auto-completion.
+The floating window SHALL always display a universal core section covering LSP bindings, window/split navigation, git (fugitive, gitsigns, diffview), the Claude CLI, visual editing, system clipboard, formatting, and auto-completion.
 
 #### Scenario: Core content visible regardless of filetype
 - **WHEN** the cheatsheet float is opened from any buffer
@@ -90,3 +92,4 @@ All cheatsheet and guide content SHALL live in plain Markdown files under `cheat
 #### Scenario: Per-language cheatsheet files exist for all registered filetypes
 - **WHEN** a filetype is registered in the Lua mapping table
 - **THEN** the corresponding `cheatsheets/<name>.md` file exists in the repository
+
