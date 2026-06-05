@@ -92,13 +92,15 @@ Closed folds display `▸ <name> ··· N lines`. C# buffers use Roslyn LSP for 
 
 '''''
 
-=== Terminal
+=== Terminal & IDE Layout
 
 [cols=",,",options="header",]
 |===
 |Keys |Mode |Action
-|`++<++leader++>++t` |Normal |Toggle terminal split
+|`++<++leader++>++L` |Normal |Assemble IDE layout (tree + editor + full-width terminal)
+|`++<++leader++>++t` |Normal |Toggle full-width terminal split
 |`Esc` |Terminal |Exit terminal insert mode
+|`:Bd` |Normal |Delete buffer, keep window open (layout-preserving)
 |===
 
 → xref:editor/navigation.adoc[Full reference]

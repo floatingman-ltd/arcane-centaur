@@ -76,8 +76,10 @@ local function toggle_terminal()
     end
   end
   -- Open a new split and start/reuse terminal
-  vim.cmd("split")
+  vim.cmd("botright split")
   vim.cmd("resize 15")
+  vim.wo.winfixheight = true
+  vim.wo.winfixheight = true
   if vim.api.nvim_buf_is_valid(term_buf) then
     vim.api.nvim_set_current_buf(term_buf)
   else
@@ -87,8 +89,83 @@ local function toggle_terminal()
   vim.cmd("startinsert")
 end
 
+local function ide_layout()
+  -- Find a normal editor window (not the tree, not a float, not a terminal)
+  local editor_win = nil
+  for _, win in ipairs(vim.api.nvim_list_wins()) do
+    if vim.api.nvim_win_get_config(win).relative == "" then  -- not a float
+      local buf = vim.api.nvim_win_get_buf(win)
+      if vim.bo[buf].buftype == "" and vim.bo[buf].filetype ~= "NvimTree" then
+        editor_win = win
+        break
+      end
+    end
+  end
+
+  -- Open tree via Lua API (avoids E464 ambiguous-command when called from tree buffer)
+  require("nvim-tree.api").tree.open()
+
+  -- Ensure terminal is visible; reuse the same open path as toggle_terminal
+  local term_visible = false
+  for _, win in ipairs(vim.api.nvim_list_wins()) do
+    if vim.api.nvim_win_get_buf(win) == term_buf then
+      term_visible = true
+      break
+    end
+  end
+  if not term_visible then
+    vim.cmd("botright split")
+    vim.cmd("resize 15")
+    vim.wo.winfixheight = true
+    if vim.api.nvim_buf_is_valid(term_buf) then
+      vim.api.nvim_set_current_buf(term_buf)
+    else
+      vim.cmd("term")
+      term_buf = vim.api.nvim_get_current_buf()
+    end
+    vim.cmd("stopinsert")
+  end
+
+  -- Return focus to the editor window; fall back to tree→right if needed
+  if editor_win and vim.api.nvim_win_is_valid(editor_win) then
+    vim.api.nvim_set_current_win(editor_win)
+  else
+    vim.cmd("wincmd t")
+    vim.cmd("wincmd l")
+  end
+end
+
 vim.keymap.set("n", "<leader>t", toggle_terminal, { noremap = true, silent = true, desc = "Toggle terminal split" })
+vim.keymap.set("n", "<leader>L", ide_layout,       { noremap = true, silent = true, desc = "IDE layout: tree + editor + terminal" })
 vim.keymap.set("t", "<Esc>", "<C-\\><C-n>", { noremap = true, silent = true, desc = "Exit terminal insert mode" })
+
+-- Layout-preserving buffer delete: switches every window showing the buffer to
+-- an alternate before deleting, so the window (and tree width) survives.
+vim.api.nvim_create_user_command("Bd", function()
+  local target = vim.api.nvim_get_current_buf()
+  local alt = vim.fn.bufnr("#")
+  -- Find a fallback: alternate buffer if listed, otherwise next listed buffer
+  local fallback = (alt > 0 and vim.fn.buflisted(alt) == 1 and alt ~= target) and alt or nil
+  if not fallback then
+    for _, b in ipairs(vim.api.nvim_list_bufs()) do
+      if vim.fn.buflisted(b) == 1 and b ~= target then
+        fallback = b
+        break
+      end
+    end
+  end
+  -- Switch every window showing the target buffer away before deleting
+  for _, win in ipairs(vim.api.nvim_list_wins()) do
+    if vim.api.nvim_win_get_buf(win) == target then
+      if fallback then
+        vim.api.nvim_win_set_buf(win, fallback)
+      else
+        vim.cmd("enew")  -- last buffer: open a new empty one
+      end
+    end
+  end
+  vim.cmd("bdelete " .. target)
+end, { desc = "Delete buffer without closing window" })
 
 -- GitHub Copilot has been removed; AI assistance is now provided by Claude.
 -- Use Avante.nvim (<leader>aa) or the Claude CLI (<leader>gcs) for AI assistance.

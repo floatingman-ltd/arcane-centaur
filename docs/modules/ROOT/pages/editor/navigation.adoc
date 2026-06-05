@@ -19,20 +19,43 @@
 |`Ctrl-→` |Normal |Grow split width
 |===
 
+== IDE Layout
+
+Press `++<++leader++>++L` to assemble the IDE workspace in one keystroke:
+
+....
+┌────────────┬───────────────────┐
+│  nvim-tree │      editor       │
+├────────────┴───────────────────┤
+│   terminal (full width, 15)    │
+└────────────────────────────────┘
+....
+
+The operation is idempotent — invoking it when the layout is already
+assembled does nothing, and focus always returns to the editor window.
+
+=== Layout stability
+
+* `:Bd` — layout-preserving buffer delete. Switches the window to
+  another listed buffer (or a new empty one) before deleting, so the
+  window and the tree's width survive.
+* The tree closes automatically when quitting would leave it (and/or
+  the terminal panel) as the only remaining window — no more full-width
+  tree after `:q` on the last editor.
+
 == Terminal
 
 [width="100%",cols="34%,33%,33%",options="header",]
 |===
 |Keys |Mode |Action
-|`++<++leader++>++t` |Normal |Toggle terminal split (15-line split at
-bottom)
-
+|`++<++leader++>++t` |Normal |Toggle full-width terminal (persistent shell)
 |`Esc` |Terminal |Exit terminal insert mode
 |===
 
-The terminal toggle reuses the same terminal buffer across open/close
-cycles. Press `++<++C-k++>++` after `Esc` to jump back to the editor
-window.
+The terminal always opens as a full-width bottom split regardless of
+which window has focus. The shell buffer is reused across open/close
+cycles — history and running jobs survive window toggles. Press
+`++<++C-k++>++` after `Esc` to jump back to the editor window.
 
 == AI Chat Window
 
