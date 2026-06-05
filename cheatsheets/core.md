@@ -40,12 +40,14 @@
 | `Ctrl-t` | Toggle file tree |
 | `Ctrl-f` | Reveal current file in tree |
 
-## Terminal
+## IDE Layout & Terminal
 
 | Key | Action |
 |-----|--------|
-| `<leader>t` | Toggle terminal split (15-line) |
+| `<leader>L` | Assemble IDE layout (tree + editor + full-width terminal) |
+| `<leader>t` | Toggle full-width terminal (persistent shell) |
 | `Esc` | Exit terminal insert mode |
+| `:Bd` | Delete buffer, keep window open |
 
 ---
 
