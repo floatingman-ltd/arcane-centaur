@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Untitled :: Arcane Centaur Docs</title>
+    <link rel="canonical" href="https://floatingman-ltd.github.io/arcane-centaur/arcane-centaur/learning/ollama/01-setup.html">
+    <meta name="generator" content="Antora 3.1.15">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://floatingman-ltd.github.io/arcane-centaur">Arcane Centaur Docs</a>
+      <button class="navbar-burger" aria-controls="topbar-nav" aria-expanded="false" aria-label="Toggle main menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="#">Home</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Products</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Product A</a>
+            <a class="navbar-item" href="#">Product B</a>
+            <a class="navbar-item" href="#">Product C</a>
+          </div>
+        </div>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Services</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Service A</a>
+            <a class="navbar-item" href="#">Service B</a>
+            <a class="navbar-item" href="#">Service C</a>
+          </div>
+        </div>
+        <div class="navbar-item">
+          <span class="control">
+            <a class="button is-primary" href="#">Download</a>
+          </span>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="arcane-centaur" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../../index.html">Arcane Centaur</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../index.html">Home</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../getting-started.html">Getting Started</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Languages</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">.NET</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/dotnet.html">Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/dotnet-cheatsheet.html">Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Lisp Family</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/lisp.html">Lisp / Clojure / Scheme / Fennel</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/lisp-cheatsheet.html">Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/janet.html">Janet Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/janet-cheatsheet.html">Janet Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Haskell</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/haskell.html">Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/haskell-cheatsheet.html">Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Lua</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/lua.html">Guide</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Editor Core</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../editor/editing.html">Editing Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../editor/navigation.html">Navigation Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../editor/code-intelligence.html">Code Intelligence Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../editor/git.html">Git Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../editor/git-cheatsheet.html">Git Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../editor/clipboard.html">Clipboard</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">AI &amp; Automation</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../ai/ai-tools.html">AI Tools Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../ai/ai-tools-cheatsheet.html">AI Tools Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Content Creation</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../content/markdown.html">Markdown Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../content/markdown-cheatsheet.html">Markdown Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../content/diagrams.html">Diagrams &amp; PlantUML</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../content/presentations.html">Presentations (MARP)</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../content/rest.html">REST / HTTP Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../content/rest-cheatsheet.html">REST Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Project Tooling</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../tooling/jira.html">Jira Integration</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../tooling/confluence.html">Confluence Publishing</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Learning</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Janet</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../janet/index.html">Series Index</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../janet/01-setup.html">01 — Setup</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../janet/02-first-steps.html">02 — First Steps</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../janet/03-functions.html">03 — Functions in Depth</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../janet/04-sequences.html">04 — Sequences</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../janet/05-modules.html">05 — Modules</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../janet/06-error-handling.html">06 — Error Handling</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../janet/07-macros.html">07 — Macros</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Ollama</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="index.html">Series Index</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="01-setup.html">01 — Setup &amp; Verification</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="02-first-conversations.html">02 — First Conversations</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="03-prompting-fundamentals.html">03 — Prompting Fundamentals</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="04-code-assistance.html">04 — Code Assistance</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="05-model-selection.html">05 — Model Selection</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="06-system-prompts.html">06 — System Prompts &amp; Context</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="07-the-api.html">07 — The Ollama API</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="08-rag-basics.html">08 — RAG Basics (Deep-Dive)</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Other</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../other/architecture.html">Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../other/contributing.html">Contributing to Docs</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../other/jira-project-map.html">Jira Project Map</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Arcane Centaur</span>
+    <span class="version"></span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <div class="title"><a href="../../index.html">Arcane Centaur</a></div>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">Arcane Centaur</a></li>
+    <li>Learning</li>
+    <li>Ollama</li>
+    <li><a href="01-setup.html">01 — Setup &amp; Verification</a></li>
+  </ul>
+</nav>
+<div class="edit-this-page"><a href="file:///antora/docs/modules/ROOT/pages/learning/ollama/01-setup.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<div class="paragraph">
+<p><a href="index.html" class="xref page">Index</a> | <a href="02-first-conversations.html" class="xref page">Next</a> →</p>
+</div>
+<hr>
+<div class="sect1">
+<h2 id="_01_setup_verification"><a class="anchor" href="#_01_setup_verification"></a>01 — Setup &amp; Verification</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This lesson gets Ollama running end-to-end: Docker service up, model pulled, Avante
+connected, and a smoke-test prompt returning a response.
+Work through each section in order — each step verifies the one before it.</p>
+</div>
+<hr>
+<div class="sect2">
+<h3 id="_prerequisites"><a class="anchor" href="#_prerequisites"></a>Prerequisites</h3>
+<div class="paragraph">
+<p>Before starting, confirm these are in place:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 80%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Requirement</th>
+<th class="tableblock halign-left valign-top">How to check</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Docker installed and running</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>docker info</code> exits with code 0</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This Neovim config installed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>nvim --version</code> shows Neovim ≥ 0.12</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">avante.nvim loaded</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Open Neovim — no error about avante on startup</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">~4 GB free disk (8B model) or ~2 GB (3B model)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>df -h ~</code> to check available space</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>If Docker is not installed, see <a href="https://docs.docker.com/engine/install/">docs.docker.com/engine/install</a>.</p>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_1_start_the_ollama_service"><a class="anchor" href="#_1_start_the_ollama_service"></a>1. Start the Ollama service</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">docker compose -f ~/.config/nvim/docker/ollama/docker-compose.yml up -d</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Confirm you see:</strong></p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>✔ Container ollama-ollama-1  Started</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>(Or <code>Running</code> if it was already started.)</p>
+</div>
+<div class="paragraph">
+<p>Verify the container is up:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">docker ps --filter name=ollama --format "table {{.Names}}\t{{.Status}}"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Confirm you see:</strong> a row with <code>ollama</code> and status <code>Up</code>.</p>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_2_health_check_the_api"><a class="anchor" href="#_2_health_check_the_api"></a>2. Health-check the API</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">curl -s http://127.0.0.1:11434/</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Confirm you see:</strong></p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>Ollama is running</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If this fails, the container may still be starting — wait five seconds and retry.
+If it continues to fail, see the <a href="#troubleshooting">Troubleshooting</a> section.</p>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_3_choose_your_model"><a class="anchor" href="#_3_choose_your_model"></a>3. Choose your model</h3>
+<div class="paragraph">
+<p>Pick based on available RAM:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 28.5714%;">
+<col style="width: 28.5714%;">
+<col style="width: 42.8572%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Available RAM</th>
+<th class="tableblock halign-left valign-top">Model</th>
+<th class="tableblock halign-left valign-top">Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">≥ 8 GB</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>llama3.1:8b</code> (default)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Better quality; ~4 GB on disk</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&lt; 8 GB</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>llama3.2:3b</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Faster; ~2 GB on disk — update <code>model =</code> in <code>lua/plugins/avante.lua</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>If choosing <code>llama3.2:3b</code>, open <code>~/.config/nvim/lua/plugins/avante.lua</code> and change:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-lua hljs" data-lang="lua">model = "llama3.2:3b",</code></pre>
+</div>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_4_pull_the_model"><a class="anchor" href="#_4_pull_the_model"></a>4. Pull the model</h3>
+<div class="paragraph">
+<p>Replace <code>&lt;model&gt;</code> with your chosen model name:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">docker compose -f ~/.config/nvim/docker/ollama/docker-compose.yml \
+  exec ollama ollama pull llama3.1:8b</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This is a one-time download (~4 GB for 8b). The model is stored in a named Docker volume
+and survives container restarts.</p>
+</div>
+<div class="paragraph">
+<p>Verify the model is available:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">docker compose -f ~/.config/nvim/docker/ollama/docker-compose.yml \
+  exec ollama ollama list</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Confirm you see:</strong> a row showing <code>llama3.1:8b</code> (or <code>llama3.2:3b</code>) with a size and date.</p>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_5_connect_via_avante"><a class="anchor" href="#_5_connect_via_avante"></a>5. Connect via Avante</h3>
+<div class="paragraph">
+<p>Open Neovim and press <code>&lt;leader&gt;ao</code> to switch to the ollama provider and open Avante.</p>
+</div>
+<div class="paragraph">
+<p>The Avante panel opens on the right. In the input area at the bottom, type this exact prompt:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>Reply with exactly the words: OLLAMA IS WORKING</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Press <code>Enter</code> to submit.</p>
+</div>
+<div class="paragraph">
+<p><strong>Confirm you see:</strong> a response containing <code>OLLAMA IS WORKING</code> in the Avante buffer within a
+few seconds. Response time varies by hardware — CPU inference on an 8B model may take 10–30
+seconds on first run.</p>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_6_what_you_now_have"><a class="anchor" href="#_6_what_you_now_have"></a>6. What you now have</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"># Service status
+docker ps --filter name=ollama
+
+# Model list
+docker compose -f ~/.config/nvim/docker/ollama/docker-compose.yml \
+  exec ollama ollama list</code></pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>┌──────────────────────────────────────────────────┐
+│  Service    ollama/ollama (Docker)               │
+│  Port       127.0.0.1:11434  (loopback only)     │
+│  Model      llama3.1:8b  (or llama3.2:3b)        │
+│  Storage    ollama_models volume  (persistent)   │
+│  Auto-start unless-stopped                       │
+│                                                  │
+│  Avante keymaps                                  │
+│    &lt;leader&gt;ao  → switch to ollama + open         │
+│    &lt;leader&gt;ac  → switch to copilot + open        │
+│    &lt;leader&gt;aa  → open with current provider      │
+└──────────────────────────────────────────────────┘</pre>
+</div>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="troubleshooting"><a class="anchor" href="#troubleshooting"></a>Troubleshooting</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 30%;">
+<col style="width: 30%;">
+<col style="width: 40%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Symptom</th>
+<th class="tableblock halign-left valign-top">Likely cause</th>
+<th class="tableblock halign-left valign-top">Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>curl</code> returns connection refused</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Container not running</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>docker ps --filter name=ollama</code> — if empty, re-run the <code>up -d</code> command</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>curl</code> times out</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Container still starting</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Wait 10 seconds and retry</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ollama pull</code> fails with "manifest unknown"</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Model tag has changed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Check available tags: <code>docker compose exec ollama ollama list</code> then visit <a href="https://ollama.com/library">ollama.com/library</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Avante shows HTTP error</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service not reachable from Neovim</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Confirm <code>curl 127.0.0.1:11434</code> works, then restart Neovim</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Avante hangs indefinitely</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Model too large for available RAM</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Switch to <code>llama3.2:3b</code> and update <code>avante.lua</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Port 11434 already in use</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Another Ollama instance running outside Docker</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>lsof -i :11434</code> to find and stop it, then retry <code>up -d</code></p></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<div class="paragraph">
+<p><a href="index.html" class="xref page">Index</a> | <a href="02-first-conversations.html" class="xref page">Next</a> →</p>
+</div>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>This page was built using the Antora default UI.</p>
+  <p>The source code for this UI is licensed under the terms of the MPL-2.0 license.</p>
+</footer>
+<script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

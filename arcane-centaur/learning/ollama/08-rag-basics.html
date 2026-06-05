@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Untitled :: Arcane Centaur Docs</title>
+    <link rel="canonical" href="https://floatingman-ltd.github.io/arcane-centaur/arcane-centaur/learning/ollama/08-rag-basics.html">
+    <meta name="generator" content="Antora 3.1.15">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://floatingman-ltd.github.io/arcane-centaur">Arcane Centaur Docs</a>
+      <button class="navbar-burger" aria-controls="topbar-nav" aria-expanded="false" aria-label="Toggle main menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="#">Home</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Products</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Product A</a>
+            <a class="navbar-item" href="#">Product B</a>
+            <a class="navbar-item" href="#">Product C</a>
+          </div>
+        </div>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Services</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Service A</a>
+            <a class="navbar-item" href="#">Service B</a>
+            <a class="navbar-item" href="#">Service C</a>
+          </div>
+        </div>
+        <div class="navbar-item">
+          <span class="control">
+            <a class="button is-primary" href="#">Download</a>
+          </span>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="arcane-centaur" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../../index.html">Arcane Centaur</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../index.html">Home</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../getting-started.html">Getting Started</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Languages</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">.NET</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/dotnet.html">Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/dotnet-cheatsheet.html">Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Lisp Family</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/lisp.html">Lisp / Clojure / Scheme / Fennel</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/lisp-cheatsheet.html">Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/janet.html">Janet Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/janet-cheatsheet.html">Janet Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Haskell</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/haskell.html">Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/haskell-cheatsheet.html">Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Lua</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/lua.html">Guide</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Editor Core</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../editor/editing.html">Editing Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../editor/navigation.html">Navigation Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../editor/code-intelligence.html">Code Intelligence Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../editor/git.html">Git Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../editor/git-cheatsheet.html">Git Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../editor/clipboard.html">Clipboard</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">AI &amp; Automation</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../ai/ai-tools.html">AI Tools Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../ai/ai-tools-cheatsheet.html">AI Tools Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Content Creation</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../content/markdown.html">Markdown Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../content/markdown-cheatsheet.html">Markdown Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../content/diagrams.html">Diagrams &amp; PlantUML</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../content/presentations.html">Presentations (MARP)</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../content/rest.html">REST / HTTP Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../content/rest-cheatsheet.html">REST Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Project Tooling</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../tooling/jira.html">Jira Integration</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../tooling/confluence.html">Confluence Publishing</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Learning</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Janet</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../janet/index.html">Series Index</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../janet/01-setup.html">01 — Setup</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../janet/02-first-steps.html">02 — First Steps</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../janet/03-functions.html">03 — Functions in Depth</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../janet/04-sequences.html">04 — Sequences</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../janet/05-modules.html">05 — Modules</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../janet/06-error-handling.html">06 — Error Handling</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../janet/07-macros.html">07 — Macros</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Ollama</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="index.html">Series Index</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="01-setup.html">01 — Setup &amp; Verification</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="02-first-conversations.html">02 — First Conversations</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="03-prompting-fundamentals.html">03 — Prompting Fundamentals</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="04-code-assistance.html">04 — Code Assistance</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="05-model-selection.html">05 — Model Selection</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="06-system-prompts.html">06 — System Prompts &amp; Context</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="07-the-api.html">07 — The Ollama API</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="08-rag-basics.html">08 — RAG Basics (Deep-Dive)</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Other</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../other/architecture.html">Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../other/contributing.html">Contributing to Docs</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../other/jira-project-map.html">Jira Project Map</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Arcane Centaur</span>
+    <span class="version"></span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <div class="title"><a href="../../index.html">Arcane Centaur</a></div>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">Arcane Centaur</a></li>
+    <li>Learning</li>
+    <li>Ollama</li>
+    <li><a href="08-rag-basics.html">08 — RAG Basics (Deep-Dive)</a></li>
+  </ul>
+</nav>
+<div class="edit-this-page"><a href="file:///antora/docs/modules/ROOT/pages/learning/ollama/08-rag-basics.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<div class="paragraph">
+<p>← <a href="07-the-api.html" class="xref page">Previous</a> | <a href="index.html" class="xref page">Index</a> | Next: coming soon</p>
+</div>
+<hr>
+<div class="sect1">
+<h2 id="_08_rag_basics"><a class="anchor" href="#_08_rag_basics"></a>08 — RAG Basics</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>RAG (Retrieval-Augmented Generation) means: fetch relevant source text first, then ask the model
+to answer using only that retrieved context.
+This deep-dive keeps everything local and practical using Ollama plus docs already in this repo.</p>
+</div>
+<hr>
+<div class="sect2">
+<h3 id="_1_what_rag_is_and_when_to_use_it"><a class="anchor" href="#_1_what_rag_is_and_when_to_use_it"></a>1. What RAG Is (and When to Use It)</h3>
+<div class="paragraph">
+<p>RAG is a two-step pattern:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>Retrieval</strong>: find the most relevant source chunks for a question</p>
+</li>
+<li>
+<p><strong>Generation</strong>: ask the model to answer from those chunks</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Use RAG when you want answers grounded in your own material (project docs, runbooks, policies),
+instead of generic model memory.</p>
+</div>
+<div class="paragraph">
+<p>Use plain prompting when the question is general and does not depend on local knowledge.</p>
+</div>
+<div class="paragraph">
+<p><strong>Confirm you see:</strong> this distinction in your own words — “RAG for private/source-specific answers,
+plain prompting for broad/general questions.”</p>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_2_minimal_local_rag_flow"><a class="anchor" href="#_2_minimal_local_rag_flow"></a>2. Minimal Local RAG Flow</h3>
+<div class="paragraph">
+<p>For this lesson, we use the smallest useful pipeline:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Select a few source chunks from local docs</p>
+</li>
+<li>
+<p>Create embeddings for each chunk (<code>/api/embed</code>)</p>
+</li>
+<li>
+<p>Embed the question</p>
+</li>
+<li>
+<p>Compute similarity and pick top matches</p>
+</li>
+<li>
+<p>Build a grounded prompt with those matches</p>
+</li>
+<li>
+<p>Generate final answer (<code>/api/generate</code>)</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>No hosted vector database is required for this first version — we keep vectors in memory during the run.</p>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_3_end_to_end_exercise_local_docs_grounded_answer"><a class="anchor" href="#_3_end_to_end_exercise_local_docs_grounded_answer"></a>3. End-to-End Exercise (Local Docs → Grounded Answer)</h3>
+<div class="paragraph">
+<p>Create a temporary script:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">cat &gt; /tmp/rag-local.py &lt;&lt;'PY'
+import json, math, urllib.request
+
+DOCS = [
+    "Learning/Ollama 07 says Avante uses POST /api/chat with stream true for progressive token rendering.",
+    "Learning/Ollama 05 describes model tradeoffs: smaller models are faster but may reduce answer quality.",
+    "Learning/Ollama 06 explains that system prompts shape behavior across the entire session.",
+]
+
+QUESTION = "Which endpoint does Avante use for multi-turn chats, and how are responses rendered?"
+MODEL = "llama3.1:8b"
+EMBED_MODEL = "nomic-embed-text"
+
+def post(path, payload):
+    req = urllib.request.Request(
+        "http://127.0.0.1:11434" + path,
+        data=json.dumps(payload).encode("utf-8"),
+        headers={"Content-Type": "application/json"},
+    )
+    with urllib.request.urlopen(req) as r:
+        return json.loads(r.read().decode("utf-8"))
+
+def cosine(a, b):
+    dot = sum(x*y for x, y in zip(a, b))
+    na = math.sqrt(sum(x*x for x in a))
+    nb = math.sqrt(sum(x*x for x in b))
+    return dot / (na * nb + 1e-12)
+
+doc_vecs = []
+for d in DOCS:
+    emb = post("/api/embed", {"model": EMBED_MODEL, "input": d})
+    doc_vecs.append((d, emb["embeddings"][0]))
+
+qv = post("/api/embed", {"model": EMBED_MODEL, "input": QUESTION})["embeddings"][0]
+ranked = sorted(((cosine(qv, v), d) for d, v in doc_vecs), reverse=True)
+top = ranked[:2]
+
+context = "\n\n".join(f"- {d}" for _, d in top)
+prompt = (
+    "Answer ONLY from the context.\n"
+    "If context is insufficient, say 'I don't know from the provided context.'\n\n"
+    f"Question: {QUESTION}\n\nContext:\n{context}\n\nAnswer:"
+)
+
+answer = post("/api/generate", {"model": MODEL, "prompt": prompt, "stream": False})["response"]
+
+print("TOP MATCHES:")
+for s, d in top:
+    print(f"{s:.4f} | {d}")
+print("\nGROUNDED ANSWER:\n" + answer)
+PY
+python3 /tmp/rag-local.py</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Confirm you see:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A <code>TOP MATCHES:</code> section where the <code>/api/chat</code> chunk is ranked near the top</p>
+</li>
+<li>
+<p>A <code>GROUNDED ANSWER:</code> that references multi-turn chat via <code>POST /api/chat</code></p>
+</li>
+<li>
+<p>No invented endpoint names</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>If <code>nomic-embed-text</code> is missing, pull it first:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">ollama pull nomic-embed-text</code></pre>
+</div>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_4_prompt_grounding_patterns_that_reduce_hallucination"><a class="anchor" href="#_4_prompt_grounding_patterns_that_reduce_hallucination"></a>4. Prompt Grounding Patterns That Reduce Hallucination</h3>
+<div class="paragraph">
+<p>Use these patterns in the generation prompt:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 37.5%;">
+<col style="width: 62.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Pattern</th>
+<th class="tableblock halign-left valign-top">Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Scope lock</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">“Answer only from the provided context.”</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Explicit fallback</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">“If context is insufficient, say: I don&#8217;t know from the provided context.”</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Citation style</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">“List supporting snippets as bullets after the answer.”</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Output constraint</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">“Use three sentences maximum.”</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Try it:</strong> modify the script prompt to request two supporting bullets after the answer.</p>
+</div>
+<div class="paragraph">
+<p><strong>Confirm you see:</strong> the model stays tied to retrieved text and gives a clear fallback when context is weak.</p>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_5_common_rag_failure_modes_and_fast_fixes"><a class="anchor" href="#_5_common_rag_failure_modes_and_fast_fixes"></a>5. Common RAG Failure Modes (and Fast Fixes)</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 37.5%;">
+<col style="width: 62.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Failure mode</th>
+<th class="tableblock halign-left valign-top">Quick remediation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Bad chunking (too large or mixed topics)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Split text into smaller, coherent chunks (single topic per chunk).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Weak retrieval quality</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Improve chunk text quality, increase candidate pool, verify embed model choice.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Stale corpus</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Re-embed after docs changes; version your source snapshots.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Prompt drift</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Reassert “answer only from context” and explicit fallback language.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Missing relevant source</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Add the missing document before tuning prompt/model settings.</p></td>
+</tr>
+</tbody>
+</table>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_6_what_to_explore_next"><a class="anchor" href="#_6_what_to_explore_next"></a>6. What to Explore Next</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="07-the-api.html" class="xref page">07 — The Ollama API</a> — revisit request/response payloads used in this lesson</p>
+</li>
+<li>
+<p><a href="../../ai/ai-tools.html" class="xref page">AI Tools Guide</a> — broader AI workflow context in this configuration</p>
+</li>
+<li>
+<p><a href="https://github.com/ollama/ollama/blob/main/docs/api.md">Ollama API reference</a> — endpoint and payload details</p>
+</li>
+</ul>
+</div>
+<hr>
+<div class="paragraph">
+<p>← <a href="07-the-api.html" class="xref page">Previous</a> | <a href="index.html" class="xref page">Index</a> | Next: coming soon</p>
+</div>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>This page was built using the Antora default UI.</p>
+  <p>The source code for this UI is licensed under the terms of the MPL-2.0 license.</p>
+</footer>
+<script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

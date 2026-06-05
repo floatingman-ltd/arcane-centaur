@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Untitled :: Arcane Centaur Docs</title>
+    <link rel="canonical" href="https://floatingman-ltd.github.io/arcane-centaur/arcane-centaur/learning/janet/07-macros.html">
+    <meta name="generator" content="Antora 3.1.15">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://floatingman-ltd.github.io/arcane-centaur">Arcane Centaur Docs</a>
+      <button class="navbar-burger" aria-controls="topbar-nav" aria-expanded="false" aria-label="Toggle main menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="#">Home</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Products</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Product A</a>
+            <a class="navbar-item" href="#">Product B</a>
+            <a class="navbar-item" href="#">Product C</a>
+          </div>
+        </div>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Services</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Service A</a>
+            <a class="navbar-item" href="#">Service B</a>
+            <a class="navbar-item" href="#">Service C</a>
+          </div>
+        </div>
+        <div class="navbar-item">
+          <span class="control">
+            <a class="button is-primary" href="#">Download</a>
+          </span>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="arcane-centaur" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../../index.html">Arcane Centaur</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../index.html">Home</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../getting-started.html">Getting Started</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Languages</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">.NET</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/dotnet.html">Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/dotnet-cheatsheet.html">Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Lisp Family</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/lisp.html">Lisp / Clojure / Scheme / Fennel</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/lisp-cheatsheet.html">Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/janet.html">Janet Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/janet-cheatsheet.html">Janet Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Haskell</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/haskell.html">Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/haskell-cheatsheet.html">Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Lua</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/lua.html">Guide</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Editor Core</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../editor/editing.html">Editing Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../editor/navigation.html">Navigation Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../editor/code-intelligence.html">Code Intelligence Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../editor/git.html">Git Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../editor/git-cheatsheet.html">Git Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../editor/clipboard.html">Clipboard</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">AI &amp; Automation</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../ai/ai-tools.html">AI Tools Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../ai/ai-tools-cheatsheet.html">AI Tools Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Content Creation</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../content/markdown.html">Markdown Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../content/markdown-cheatsheet.html">Markdown Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../content/diagrams.html">Diagrams &amp; PlantUML</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../content/presentations.html">Presentations (MARP)</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../content/rest.html">REST / HTTP Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../content/rest-cheatsheet.html">REST Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Project Tooling</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../tooling/jira.html">Jira Integration</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../tooling/confluence.html">Confluence Publishing</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Learning</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Janet</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="index.html">Series Index</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="01-setup.html">01 — Setup</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="02-first-steps.html">02 — First Steps</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="03-functions.html">03 — Functions in Depth</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="04-sequences.html">04 — Sequences</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="05-modules.html">05 — Modules</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="06-error-handling.html">06 — Error Handling</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="07-macros.html">07 — Macros</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Ollama</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ollama/index.html">Series Index</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ollama/01-setup.html">01 — Setup &amp; Verification</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ollama/02-first-conversations.html">02 — First Conversations</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ollama/03-prompting-fundamentals.html">03 — Prompting Fundamentals</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ollama/04-code-assistance.html">04 — Code Assistance</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ollama/05-model-selection.html">05 — Model Selection</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ollama/06-system-prompts.html">06 — System Prompts &amp; Context</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ollama/07-the-api.html">07 — The Ollama API</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ollama/08-rag-basics.html">08 — RAG Basics (Deep-Dive)</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Other</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../other/architecture.html">Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../other/contributing.html">Contributing to Docs</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../other/jira-project-map.html">Jira Project Map</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Arcane Centaur</span>
+    <span class="version"></span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <div class="title"><a href="../../index.html">Arcane Centaur</a></div>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">Arcane Centaur</a></li>
+    <li>Learning</li>
+    <li>Janet</li>
+    <li><a href="07-macros.html">07 — Macros</a></li>
+  </ul>
+</nav>
+<div class="edit-this-page"><a href="file:///antora/docs/modules/ROOT/pages/learning/janet/07-macros.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<div class="paragraph">
+<p>← <a href="06-error-handling.html" class="xref page">Previous</a> | <a href="index.html" class="xref page">Index</a></p>
+</div>
+<hr>
+<div class="sect1">
+<h2 id="_07_macros_with_janet"><a class="anchor" href="#_07_macros_with_janet"></a>07 — Macros with Janet</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Macros let you extend Janet&#8217;s syntax by transforming code before it is evaluated.
+Used well, they eliminate repetition and enable expressive DSLs.
+Used poorly, they create hard-to-read, hard-to-debug code.
+This lesson covers quasiquoting, <code>defmacro</code>, macro expansion, and when to reach for a macro vs a function.</p>
+</div>
+<div class="paragraph">
+<p>Open a scratch file and the Conjure log before starting:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">nvim scratch.janet</code></pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>,lv</pre>
+</div>
+</div>
+<hr>
+<div class="sect2">
+<h3 id="_1_code_is_data"><a class="anchor" href="#_1_code_is_data"></a>1. Code Is Data</h3>
+<div class="paragraph">
+<p>In Janet, code and data share the same structure — both are tuples, tables, and symbols.
+Macros receive unevaluated code as their arguments and return new code to be evaluated in its place.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet"># This is data (a tuple)
+'(+ 1 2)
+
+# This is also data — a nested structure
+'(defn greet [name] (string "Hello, " name))
+
+# eval turns data into code
+(eval '(+ 1 2))   # =&gt; 3</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Try it:</strong> evaluate <code>'(+ 1 2)</code> with <code>,ee</code> — confirm it returns a tuple, not a number.</p>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_2_quasiquoting"><a class="anchor" href="#_2_quasiquoting"></a>2. Quasiquoting</h3>
+<div class="paragraph">
+<p>Quasiquoting builds code templates.
+A quasiquoted form is like a quoted form, except you can splice in runtime values with <code>,</code> (unquote) and <code>,;</code> (splice-unquote).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet">(def x 42)
+
+# quote — x is not evaluated
+'(the answer is x)
+# =&gt; (the answer is x)
+
+# quasiquote with ~ — x is still not evaluated
+~(the answer is x)
+# =&gt; (the answer is x)
+
+# unquote with , — x IS evaluated
+~(the answer is ,x)
+# =&gt; (the answer is 42)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Splice-unquote (<code>,;</code>) inserts the contents of a sequence, not the sequence itself:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet">(def items [1 2 3])
+
+~(list ,items)     # =&gt; (list (1 2 3))   — items as a single value
+~(list ,;items)    # =&gt; (list 1 2 3)     — items spliced in</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Try it:</strong> evaluate both quasiquoted forms with <code>,ee</code> and compare the results.</p>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_3_defmacro"><a class="anchor" href="#_3_defmacro"></a>3. defmacro</h3>
+<div class="paragraph">
+<p><code>defmacro</code> defines a macro.
+The body returns a piece of code (a data structure) that replaces the macro call at compile time.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet"># unless: run body when condition is false
+(defmacro unless [condition &amp; body]
+  ~(when (not ,condition)
+     ,;body))
+
+# Usage — expands before evaluation
+(unless false
+  (print "this runs"))
+
+(unless true
+  (print "this never runs"))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Try it:</strong> evaluate the <code>defmacro</code> form, then both <code>unless</code> calls with <code>,ee</code>.</p>
+</div>
+<div class="paragraph">
+<p>Another example — <code>swap!</code> to exchange two mutable bindings:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet">(defmacro swap! [a b]
+  ~(let [tmp ,a]
+     (set ,a ,b)
+     (set ,b tmp)))
+
+(var p 1)
+(var q 2)
+(swap! p q)
+[p q]   # =&gt; (2 1)</code></pre>
+</div>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_4_macex_inspecting_expansion"><a class="anchor" href="#_4_macex_inspecting_expansion"></a>4. macex — Inspecting Expansion</h3>
+<div class="paragraph">
+<p><code>macex</code> expands a macro call one level and returns the generated code.
+Use it to understand what a macro produces:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet">(macex '(unless false (print "hi")))
+# =&gt; (when (not false) (print "hi"))
+
+(macex '(swap! p q))
+# =&gt; (let (tmp p) (set p q) (set q tmp))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Try it:</strong> wrap any macro call in <code>macex</code> and evaluate with <code>,ee</code> to see what code it generates.
+This is your primary debugging tool for macros.</p>
+</div>
+<div class="paragraph">
+<p><code>macex1</code> expands only one level; <code>macex</code> keeps expanding until no more macros remain:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet">(macex1 '(unless false (print "hi")))
+# =&gt; (when (not false) (print "hi"))
+
+(macex '(unless false (print "hi")))
+# =&gt; (if (not false) (do (print "hi")))</code></pre>
+</div>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_5_when_to_use_a_macro_vs_a_function"><a class="anchor" href="#_5_when_to_use_a_macro_vs_a_function"></a>5. When to Use a Macro vs a Function</h3>
+<div class="paragraph">
+<p>Most problems should be solved with functions.
+Reach for a macro only when a function cannot do the job.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 40%;">
+<col style="width: 40%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Situation</th>
+<th class="tableblock halign-left valign-top">Use</th>
+<th class="tableblock halign-left valign-top">Reason</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Delay evaluation of arguments</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Macro</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Functions always evaluate all arguments before the call</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Introduce new binding forms (<code>let</code>-like)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Macro</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Functions cannot introduce bindings in the caller&#8217;s scope</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Log with source location / form text</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Macro</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The macro can capture the unevaluated form as a string</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Wrap repeated code pattern with no new syntax</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Function</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Simpler to test, debug, and compose</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Transform a data structure at runtime</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Function</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Macros run at compile time — runtime data is unavailable</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Example of a case that <strong>looks</strong> like it needs a macro but does not — a retry helper:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet"># As a function — works fine because the body is a function
+(defn retry [n f]
+  (var attempts 0)
+  (var done false)
+  (var result nil)
+  (while (and (not done) (&lt; attempts n))
+    (let [[ok val] (protect (f))]
+      (if ok
+        (do (set result val) (set done true))
+        (++ attempts))))
+  result)
+
+(retry 3 (fn []
+           (print "trying...")
+           (if (&lt; (math/random) 0.7)
+             (error "unlucky")
+             42)))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Try it:</strong> evaluate <code>retry</code> with <code>,er</code>, then call it with <code>,ee</code> a few times — watch the Conjure log.</p>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_6_mini_project_a_simple_assert_macro"><a class="anchor" href="#_6_mini_project_a_simple_assert_macro"></a>6. Mini-Project: A Simple Assert Macro</h3>
+<div class="paragraph">
+<p>Build an <code>assert-eq</code> macro that checks equality and prints a meaningful failure message including the original expressions.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet">(defmacro assert-eq [expected actual]
+  ~(let [e ,expected
+         a ,actual]
+     (if (= e a)
+       (print "PASS")
+       (print (string "FAIL: expected " (describe e)
+                      " but got " (describe a)
+                      " (form: " ,(string actual) ")")))))</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet"># Tests
+(assert-eq 4 (+ 2 2))        # PASS
+(assert-eq 10 (* 3 3))       # FAIL: expected 10 but got 9 (form: (* 3 3))
+(assert-eq "hi" (string "h" "i"))  # PASS</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Workflow:</strong></p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Evaluate the macro definition with <code>,er</code>.</p>
+</li>
+<li>
+<p>Evaluate each test with <code>,ee</code> and read the output in the Conjure log.</p>
+</li>
+<li>
+<p>Use <code>macex</code> to inspect what <code>(assert-eq 4 (+ 2 2))</code> expands to.</p>
+</li>
+<li>
+<p>Add a third argument for a custom message and update the macro.</p>
+</li>
+</ol>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_7_what_to_explore_next"><a class="anchor" href="#_7_what_to_explore_next"></a>7. What to Explore Next</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Call <code>(doc defmacro)</code>, <code>(doc macex)</code>, <code>(doc quasiquote)</code> in the REPL for built-in documentation</p>
+</li>
+<li>
+<p><a href="https://janet-lang.org/docs/macros.html">janet-lang.org/docs/macros</a> — macros deep-dive</p>
+</li>
+<li>
+<p><a href="https://janet-lang.org/docs/specials.html">janet-lang.org/docs/specials</a> — all special forms, including quasiquote and unquote</p>
+</li>
+<li>
+<p><a href="index.html" class="xref page">Back to series index</a></p>
+</li>
+</ul>
+</div>
+<hr>
+<div class="paragraph">
+<p>← <a href="06-error-handling.html" class="xref page">Previous</a> | <a href="index.html" class="xref page">Index</a></p>
+</div>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>This page was built using the Antora default UI.</p>
+  <p>The source code for this UI is licensed under the terms of the MPL-2.0 license.</p>
+</footer>
+<script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

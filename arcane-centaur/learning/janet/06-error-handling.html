@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Untitled :: Arcane Centaur Docs</title>
+    <link rel="canonical" href="https://floatingman-ltd.github.io/arcane-centaur/arcane-centaur/learning/janet/06-error-handling.html">
+    <meta name="generator" content="Antora 3.1.15">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://floatingman-ltd.github.io/arcane-centaur">Arcane Centaur Docs</a>
+      <button class="navbar-burger" aria-controls="topbar-nav" aria-expanded="false" aria-label="Toggle main menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="#">Home</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Products</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Product A</a>
+            <a class="navbar-item" href="#">Product B</a>
+            <a class="navbar-item" href="#">Product C</a>
+          </div>
+        </div>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Services</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Service A</a>
+            <a class="navbar-item" href="#">Service B</a>
+            <a class="navbar-item" href="#">Service C</a>
+          </div>
+        </div>
+        <div class="navbar-item">
+          <span class="control">
+            <a class="button is-primary" href="#">Download</a>
+          </span>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="arcane-centaur" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../../index.html">Arcane Centaur</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../index.html">Home</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../getting-started.html">Getting Started</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Languages</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">.NET</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/dotnet.html">Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/dotnet-cheatsheet.html">Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Lisp Family</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/lisp.html">Lisp / Clojure / Scheme / Fennel</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/lisp-cheatsheet.html">Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/janet.html">Janet Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/janet-cheatsheet.html">Janet Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Haskell</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/haskell.html">Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/haskell-cheatsheet.html">Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Lua</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/lua.html">Guide</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Editor Core</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../editor/editing.html">Editing Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../editor/navigation.html">Navigation Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../editor/code-intelligence.html">Code Intelligence Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../editor/git.html">Git Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../editor/git-cheatsheet.html">Git Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../editor/clipboard.html">Clipboard</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">AI &amp; Automation</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../ai/ai-tools.html">AI Tools Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../ai/ai-tools-cheatsheet.html">AI Tools Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Content Creation</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../content/markdown.html">Markdown Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../content/markdown-cheatsheet.html">Markdown Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../content/diagrams.html">Diagrams &amp; PlantUML</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../content/presentations.html">Presentations (MARP)</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../content/rest.html">REST / HTTP Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../content/rest-cheatsheet.html">REST Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Project Tooling</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../tooling/jira.html">Jira Integration</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../tooling/confluence.html">Confluence Publishing</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Learning</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Janet</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="index.html">Series Index</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="01-setup.html">01 — Setup</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="02-first-steps.html">02 — First Steps</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="03-functions.html">03 — Functions in Depth</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="04-sequences.html">04 — Sequences</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="05-modules.html">05 — Modules</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="06-error-handling.html">06 — Error Handling</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="07-macros.html">07 — Macros</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Ollama</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ollama/index.html">Series Index</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ollama/01-setup.html">01 — Setup &amp; Verification</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ollama/02-first-conversations.html">02 — First Conversations</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ollama/03-prompting-fundamentals.html">03 — Prompting Fundamentals</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ollama/04-code-assistance.html">04 — Code Assistance</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ollama/05-model-selection.html">05 — Model Selection</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ollama/06-system-prompts.html">06 — System Prompts &amp; Context</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ollama/07-the-api.html">07 — The Ollama API</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ollama/08-rag-basics.html">08 — RAG Basics (Deep-Dive)</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Other</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../other/architecture.html">Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../other/contributing.html">Contributing to Docs</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../other/jira-project-map.html">Jira Project Map</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Arcane Centaur</span>
+    <span class="version"></span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <div class="title"><a href="../../index.html">Arcane Centaur</a></div>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">Arcane Centaur</a></li>
+    <li>Learning</li>
+    <li>Janet</li>
+    <li><a href="06-error-handling.html">06 — Error Handling</a></li>
+  </ul>
+</nav>
+<div class="edit-this-page"><a href="file:///antora/docs/modules/ROOT/pages/learning/janet/06-error-handling.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<div class="paragraph">
+<p>← <a href="05-modules.html" class="xref page">Previous</a> | <a href="index.html" class="xref page">Index</a> | <a href="07-macros.html" class="xref page">Next</a> →</p>
+</div>
+<hr>
+<div class="sect1">
+<h2 id="_06_error_handling_with_janet"><a class="anchor" href="#_06_error_handling_with_janet"></a>06 — Error Handling with Janet</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Janet provides several strategies for handling failure: <code>try</code>/<code>catch</code> for imperative error handling, <code>protect</code> for capturing outcomes as values, and fibers as the underlying mechanism that makes both possible.
+This lesson explores each in turn.</p>
+</div>
+<div class="paragraph">
+<p>Open a scratch file and the Conjure log before starting:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">nvim scratch.janet</code></pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>,lv</pre>
+</div>
+</div>
+<hr>
+<div class="sect2">
+<h3 id="_1_error_and_trycatch"><a class="anchor" href="#_1_error_and_trycatch"></a>1. error and try/catch</h3>
+<div class="paragraph">
+<p><code>error</code> throws a value.
+<code>try</code> evaluates a form and, if it throws, runs a <code>catch</code> clause.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet"># Throw a string message
+(error "something went wrong")
+
+# try/catch — catch :all catches any throw value
+(try
+  (error "oops")
+  (catch :all e
+    (string "caught: " e)))
+# =&gt; "caught: oops"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The catch pattern <code>:all</code> matches any thrown value.
+You can also catch by value type:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet">(try
+  (error {:type :not-found :msg "user missing"})
+  (catch {:type :not-found} e
+    (string "not found: " (e :msg)))
+  (catch :all e
+    (string "unexpected error: " e)))
+# =&gt; "not found: user missing"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Try it:</strong> evaluate the first <code>try</code> form with <code>,ee</code>.
+Then change <code>"oops"</code> to a table like <code>{:code 404}</code> and update the catch accordingly.</p>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_2_protect"><a class="anchor" href="#_2_protect"></a>2. protect</h3>
+<div class="paragraph">
+<p><code>protect</code> evaluates a form and returns a two-element tuple <code>[ok value]</code>.
+If the form succeeds, <code>ok</code> is <code>true</code> and <code>value</code> is the result.
+If it throws, <code>ok</code> is <code>false</code> and <code>value</code> is the thrown error.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet"># Success
+(protect (+ 1 2))
+# =&gt; (true 3)
+
+# Failure
+(protect (error "bad input"))
+# =&gt; (false "bad input")
+
+# Pattern: destructure the result
+(let [[ok result] (protect (/ 10 0))]
+  (if ok
+    (string "result: " result)
+    (string "error: " result)))
+# =&gt; "error: divide by zero"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>protect</code> is useful when you want to treat errors as values without a try/catch block.</p>
+</div>
+<div class="paragraph">
+<p><strong>Try it:</strong> evaluate <code>(protect (/ 10 0))</code> with <code>,ee</code> and inspect the tuple.</p>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_3_propagating_errors"><a class="anchor" href="#_3_propagating_errors"></a>3. Propagating Errors</h3>
+<div class="paragraph">
+<p>Functions can propagate errors by calling <code>error</code> themselves.
+The caller decides whether to catch or let it bubble up:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet">(defn parse-age [s]
+  (let [n (scan-number s)]
+    (if (nil? n)
+      (error (string "not a number: " s))
+      (if (&lt; n 0)
+        (error "age cannot be negative")
+        n))))
+
+(try
+  (parse-age "abc")
+  (catch :all e
+    (string "invalid: " e)))
+# =&gt; "invalid: not a number: abc"
+
+(parse-age "30")   # =&gt; 30</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Try it:</strong> evaluate the full block, then call <code>(parse-age "-5")</code> with <code>,ee</code>.</p>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_4_fibers_the_underlying_mechanism"><a class="anchor" href="#_4_fibers_the_underlying_mechanism"></a>4. Fibers: The Underlying Mechanism</h3>
+<div class="paragraph">
+<p>Everything in Janet&#8217;s error handling is built on fibers.
+A fiber is a coroutine — a lightweight thread of execution that can be suspended and resumed.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet"># Create a fiber from a function
+(def f (fiber/new (fn []
+                    (print "step 1")
+                    (yield 42)
+                    (print "step 2")
+                    99)))
+
+# Resume runs until the next yield or completion
+(resume f)   # prints "step 1", returns 42
+(resume f)   # prints "step 2", returns 99
+(resume f)   # fiber is dead — returns nil</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Try it:</strong> evaluate the fiber definition then call <code>(resume f)</code> repeatedly with <code>,ee</code>.
+Watch how execution pauses at <code>yield</code> and picks up from the same point on the next <code>resume</code>.</p>
+</div>
+<div class="paragraph">
+<p>When a fiber calls <code>error</code>, <code>resume</code> returns the error value and the fiber enters the <code>:error</code> status:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet">(def bad (fiber/new (fn [] (error "boom"))))
+(resume bad)          # =&gt; "boom"  (error value, not an exception here)
+(fiber/status bad)    # =&gt; :error</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>try</code> and <code>protect</code> are syntactic sugar that create and resume fibers for you.</p>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_5_checking_fiber_status"><a class="anchor" href="#_5_checking_fiber_status"></a>5. Checking Fiber Status</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet">(def f (fiber/new (fn [] (yield 1) (yield 2))))
+
+(fiber/status f)   # =&gt; :new
+(resume f)         # =&gt; 1
+(fiber/status f)   # =&gt; :suspended
+(resume f)         # =&gt; 2
+(resume f)         # =&gt; nil  (function returned)
+(fiber/status f)   # =&gt; :dead</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 28.5714%;">
+<col style="width: 71.4286%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Status</th>
+<th class="tableblock halign-left valign-top">Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:new</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Created but never resumed</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:suspended</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yielded and waiting for the next <code>resume</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:running</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Currently executing</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:dead</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Completed normally</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:error</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Terminated with an unhandled <code>error</code></p></td>
+</tr>
+</tbody>
+</table>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_6_mini_project_safe_division_pipeline"><a class="anchor" href="#_6_mini_project_safe_division_pipeline"></a>6. Mini-Project: Safe Division Pipeline</h3>
+<div class="paragraph">
+<p>Build a pipeline that propagates errors cleanly using <code>protect</code> and <code>seq</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet">(defn safe-div [a b]
+  (if (zero? b)
+    (error (string "division by zero: " a "/" b))
+    (/ a b)))
+
+(defn run-divisions [pairs]
+  (seq [[a b] :in pairs]
+    (let [[ok result] (protect (safe-div a b))]
+      (if ok
+        {:ok true  :value result}
+        {:ok false :error result}))))</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet">(def inputs [[10 2] [6 0] [9 3] [5 0] [8 4]])
+
+(def results (run-divisions inputs))
+results
+# =&gt; ({:ok true :value 5}
+#     {:ok false :error "division by zero: 6/0"}
+#     {:ok true :value 3}
+#     {:ok false :error "division by zero: 5/0"}
+#     {:ok true :value 2})</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet"># Separate successes from failures
+(def successes (filter (fn [r] (r :ok))  results))
+(def failures  (filter (fn [r] (not (r :ok))) results))
+
+(length successes)   # =&gt; 3
+(length failures)    # =&gt; 2</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Workflow:</strong></p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Evaluate the function definitions with <code>,eb</code>.</p>
+</li>
+<li>
+<p>Evaluate <code>(def results &#8230;&#8203;)</code> with <code>,er</code>.</p>
+</li>
+<li>
+<p>Inspect <code>results</code> with <code>,ee</code>.</p>
+</li>
+<li>
+<p>Evaluate the <code>successes</code>/<code>failures</code> forms and inspect counts.</p>
+</li>
+</ol>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_7_what_to_explore_next"><a class="anchor" href="#_7_what_to_explore_next"></a>7. What to Explore Next</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Call <code>(doc fiber/new)</code>, <code>(doc protect)</code>, <code>(doc try)</code> in the REPL for built-in documentation</p>
+</li>
+<li>
+<p><a href="https://janet-lang.org/docs/fibers.html">janet-lang.org/docs/fibers</a> — fibers deep-dive</p>
+</li>
+<li>
+<p><a href="07-macros.html" class="xref page">Next: 07 — Macros</a></p>
+</li>
+</ul>
+</div>
+<hr>
+<div class="paragraph">
+<p>← <a href="05-modules.html" class="xref page">Previous</a> | <a href="index.html" class="xref page">Index</a> | <a href="07-macros.html" class="xref page">Next</a> →</p>
+</div>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>This page was built using the Antora default UI.</p>
+  <p>The source code for this UI is licensed under the terms of the MPL-2.0 license.</p>
+</footer>
+<script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

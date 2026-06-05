@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Untitled :: Arcane Centaur Docs</title>
+    <link rel="canonical" href="https://floatingman-ltd.github.io/arcane-centaur/arcane-centaur/editor/clipboard.html">
+    <meta name="generator" content="Antora 3.1.15">
+    <link rel="stylesheet" href="../../_/css/site.css">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://floatingman-ltd.github.io/arcane-centaur">Arcane Centaur Docs</a>
+      <button class="navbar-burger" aria-controls="topbar-nav" aria-expanded="false" aria-label="Toggle main menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="#">Home</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Products</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Product A</a>
+            <a class="navbar-item" href="#">Product B</a>
+            <a class="navbar-item" href="#">Product C</a>
+          </div>
+        </div>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Services</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Service A</a>
+            <a class="navbar-item" href="#">Service B</a>
+            <a class="navbar-item" href="#">Service C</a>
+          </div>
+        </div>
+        <div class="navbar-item">
+          <span class="control">
+            <a class="button is-primary" href="#">Download</a>
+          </span>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="arcane-centaur" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../index.html">Arcane Centaur</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Home</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../getting-started.html">Getting Started</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Languages</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">.NET</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../languages/dotnet.html">Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../languages/dotnet-cheatsheet.html">Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Lisp Family</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../languages/lisp.html">Lisp / Clojure / Scheme / Fennel</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../languages/lisp-cheatsheet.html">Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../languages/janet.html">Janet Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../languages/janet-cheatsheet.html">Janet Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Haskell</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../languages/haskell.html">Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../languages/haskell-cheatsheet.html">Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Lua</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../languages/lua.html">Guide</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Editor Core</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="editing.html">Editing Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="navigation.html">Navigation Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="code-intelligence.html">Code Intelligence Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="git.html">Git Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="git-cheatsheet.html">Git Cheatsheet</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="1">
+    <a class="nav-link" href="clipboard.html">Clipboard</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">AI &amp; Automation</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../ai/ai-tools.html">AI Tools Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../ai/ai-tools-cheatsheet.html">AI Tools Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Content Creation</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/markdown.html">Markdown Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/markdown-cheatsheet.html">Markdown Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/diagrams.html">Diagrams &amp; PlantUML</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/presentations.html">Presentations (MARP)</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/rest.html">REST / HTTP Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/rest-cheatsheet.html">REST Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Project Tooling</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../tooling/jira.html">Jira Integration</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../tooling/confluence.html">Confluence Publishing</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Learning</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Janet</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../learning/janet/index.html">Series Index</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../learning/janet/01-setup.html">01 — Setup</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../learning/janet/02-first-steps.html">02 — First Steps</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../learning/janet/03-functions.html">03 — Functions in Depth</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../learning/janet/04-sequences.html">04 — Sequences</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../learning/janet/05-modules.html">05 — Modules</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../learning/janet/06-error-handling.html">06 — Error Handling</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../learning/janet/07-macros.html">07 — Macros</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Ollama</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../learning/ollama/index.html">Series Index</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../learning/ollama/01-setup.html">01 — Setup &amp; Verification</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../learning/ollama/02-first-conversations.html">02 — First Conversations</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../learning/ollama/03-prompting-fundamentals.html">03 — Prompting Fundamentals</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../learning/ollama/04-code-assistance.html">04 — Code Assistance</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../learning/ollama/05-model-selection.html">05 — Model Selection</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../learning/ollama/06-system-prompts.html">06 — System Prompts &amp; Context</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../learning/ollama/07-the-api.html">07 — The Ollama API</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../learning/ollama/08-rag-basics.html">08 — RAG Basics (Deep-Dive)</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Other</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../other/architecture.html">Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../other/contributing.html">Contributing to Docs</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../other/jira-project-map.html">Jira Project Map</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Arcane Centaur</span>
+    <span class="version"></span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <div class="title"><a href="../index.html">Arcane Centaur</a></div>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Arcane Centaur</a></li>
+    <li>Editor Core</li>
+    <li><a href="clipboard.html">Clipboard</a></li>
+  </ul>
+</nav>
+<div class="edit-this-page"><a href="file:///antora/docs/modules/ROOT/pages/editor/clipboard.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<div class="sect1">
+<h2 id="_clipboard_integration_guide"><a class="anchor" href="#_clipboard_integration_guide"></a>Clipboard Integration Guide</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Neovim uses the system clipboard through a <strong>provider</strong> — an external tool
+(or terminal escape sequence) that bridges Neovim’s registers and the OS
+clipboard. This config selects the provider automatically based on the
+environment.</p>
+</div>
+<div class="paragraph">
+<p><strong>Quick navigation</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#how-chosen">How Provider Is Chosen</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Auto-selection logic</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#gui-x11">GUI Linux — X11</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">xclip / xsel setup</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#gui-wayland">GUI Linux — Wayland</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">wl-clipboard setup</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#wsl">WSL</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">win32yank.exe setup</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#osc52">SSH / TTY / Console</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">OSC 52 terminal clipboard</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#troubleshooting">Troubleshooting</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Common issues and fixes</p></td>
+</tr>
+</tbody>
+</table>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="how-chosen"><a class="anchor" href="#how-chosen"></a>How the provider is chosen</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The selection logic is in <code>lua/options.lua</code>:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>WSL + win32yank.exe detected  →  win32yank  (bidirectional, fast)
+is_console (no $DISPLAY / $WAYLAND_DISPLAY)  →  OSC 52  (terminal escape)
+GUI Linux  →  auto-detected: wl-clipboard → xclip → xsel</pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>clipboard=unnamedplus</code> is set globally, so the default <code>y</code>, <code>d</code>, and
+<code>p</code> operators already target the system clipboard on every platform once
+the provider is working.</p>
+</div>
+<div class="paragraph">
+<p>The <code>&lt;leader&gt;y</code> / <code>&lt;leader&gt;d</code> / <code>&lt;leader&gt;p</code>
+shortcuts use the explicit <code>"&#43;</code> register as an unambiguous
+alternative.</p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gui-x11"><a class="anchor" href="#gui-x11"></a>GUI Linux — X11</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_tool_xclip_or_xsel"><a class="anchor" href="#_tool_xclip_or_xsel"></a>Tool: xclip or xsel</h3>
+<div class="paragraph">
+<p>Neovim checks for <code>xclip</code> first, then <code>xsel</code>. Install one of them:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"># Debian / Ubuntu / Mint
+sudo apt install xclip
+
+# or xsel
+sudo apt install xsel
+
+# Fedora
+sudo dnf install xclip
+
+# Arch Linux
+sudo pacman -S xclip</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_verify"><a class="anchor" href="#_verify"></a>Verify</h3>
+<div class="paragraph">
+<p>Open Neovim and run:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-vim hljs" data-lang="vim">:checkhealth</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Look for the <code>clipboard</code> section — it will list which provider was
+found. Or from a shell:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">nvim --headless "+checkhealth clipboard" +qa
+# review the clipboard section for detected provider/tool status</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Quick functional test:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">echo "hello" | xclip -selection clipboard
+# then in Neovim: &lt;leader&gt;p  — should paste "hello"</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_troubleshooting"><a class="anchor" href="#_troubleshooting"></a>Troubleshooting</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Symptom</th>
+<th class="tableblock halign-left valign-top">Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>clipboard: No provider found</code> in <code>:checkhealth</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Install <code>xclip</code> or
+<code>xsel</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Copying works but nothing appears in other apps</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Make sure you are
+copying to <code>CLIPBOARD</code> (the <code>&#43;</code> register), not <code>PRIMARY</code> (the
+<code>*</code> register)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Running inside tmux on X11</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Add <code>set-clipboard on</code> to <code>~/.tmux.conf</code> —
+tmux intercepts OSC 52 by default</p></td>
+</tr>
+</tbody>
+</table>
+<hr>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gui-wayland"><a class="anchor" href="#gui-wayland"></a>GUI Linux — Wayland</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_tool_wl_clipboard"><a class="anchor" href="#_tool_wl_clipboard"></a>Tool: wl-clipboard</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"># Debian / Ubuntu / Mint
+sudo apt install wl-clipboard
+
+# Fedora
+sudo dnf install wl-clipboard
+
+# Arch Linux
+sudo pacman -S wl-clipboard</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>wl-clipboard</code> provides two binaries: <code>wl-copy</code> and <code>wl-paste</code>. Neovim
+detects them automatically when <code>$WAYLAND_DISPLAY</code> is set.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_verify_2"><a class="anchor" href="#_verify_2"></a>Verify</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">echo "hello" | wl-copy
+wl-paste          # should print: hello</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then in Neovim <code>&lt;leader&gt;p</code> should paste &#8220;hello&#8221;.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_wayland_x11_compatibility_xwayland"><a class="anchor" href="#_wayland_x11_compatibility_xwayland"></a>Wayland &#43; X11 compatibility (XWayland)</h3>
+<div class="paragraph">
+<p>If you start Neovim from an XWayland application (e.g. a legacy X11
+terminal inside a Wayland session), <code>$DISPLAY</code> may be set but
+<code>$WAYLAND_DISPLAY</code> may not be inherited. In that case Neovim falls
+back to <code>xclip</code>/<code>xsel</code>. Either:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Install both <code>wl-clipboard</code> <strong>and</strong> <code>xclip</code>, or</p>
+</li>
+<li>
+<p>Launch Neovim from a native Wayland terminal (e.g. foot, kitty,
+Ghostty) so that <code>$WAYLAND_DISPLAY</code> is inherited.</p>
+</li>
+</ul>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="wsl"><a class="anchor" href="#wsl"></a>WSL (Windows Subsystem for Linux)</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_tool_win32yank_exe"><a class="anchor" href="#_tool_win32yank_exe"></a>Tool: win32yank.exe</h3>
+<div class="paragraph">
+<p><code>win32yank.exe</code> is a small Windows utility that reads and writes the
+Windows clipboard. Because it runs as a Windows <code>.exe</code>, it is accessible
+from WSL without X11 forwarding.</p>
+</div>
+<div class="sect3">
+<h4 id="_install_on_the_windows_side"><a class="anchor" href="#_install_on_the_windows_side"></a>Install on the Windows side</h4>
+<div class="paragraph">
+<p>Open a <strong>Windows</strong> PowerShell or Command Prompt (not a WSL shell):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-powershell hljs" data-lang="powershell"># Option 1 — Scoop (recommended)
+scoop install win32yank
+
+# Option 2 — Chocolatey
+choco install win32yank
+
+# Option 3 — Manual
+# Download win32yank.exe from https://github.com/equalsraf/win32yank/releases
+# Place it anywhere on your Windows PATH, e.g. C:\Windows\System32\</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_make_it_visible_from_wsl"><a class="anchor" href="#_make_it_visible_from_wsl"></a>Make it visible from WSL</h4>
+<div class="paragraph">
+<p>WSL inherits the Windows <code>PATH</code> by default (controlled by
+<code>appendWindowsPath = true</code> in <code>/etc/wsl.conf</code>). No extra steps are
+needed if you installed via Scoop or Chocolatey. Verify:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">which win32yank.exe        # should print something like /mnt/c/Users/.../win32yank.exe
+win32yank.exe --version    # should print a version string</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If <code>which</code> prints nothing, add the directory containing <code>win32yank.exe</code>
+to your shell’s <code>$PATH</code> in <code>~/.bashrc</code> / <code>~/.zshrc</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">export PATH="$PATH:/mnt/c/path/to/win32yank/directory"</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_how_the_config_uses_it"><a class="anchor" href="#_how_the_config_uses_it"></a>How the config uses it</h4>
+<div class="paragraph">
+<p>When <code>WSL_DISTRO_NAME</code> is set and <code>win32yank.exe</code> is on <code>$PATH</code>,
+the config registers it as a custom <code>vim.g.clipboard</code> provider that
+handles both <code>&#43;</code> and <code>*</code> registers. The <code>--crlf</code> / <code>--lf</code> flags
+handle the Windows line-ending difference automatically.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_verify_3"><a class="anchor" href="#_verify_3"></a>Verify</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">echo "hello from WSL" | win32yank.exe -i --crlf
+win32yank.exe -o --lf     # should print: hello from WSL</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then open Notepad on Windows and paste — you should see the text.</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p><strong>Tip:</strong> If <code>win32yank.exe</code> is not available Neovim falls back to built-in
+provider detection. On WSL without a running X server this means
+clipboard will silently not work, so installing <code>win32yank.exe</code> is
+strongly recommended.</p>
+</div>
+</blockquote>
+</div>
+<hr>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="osc52"><a class="anchor" href="#osc52"></a>SSH / TTY / Console — OSC 52</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_no_external_tool_required"><a class="anchor" href="#_no_external_tool_required"></a>No external tool required</h3>
+<div class="paragraph">
+<p>When Neovim detects no graphical display (<code>$DISPLAY</code> and
+<code>$WAYLAND_DISPLAY</code> are both unset), it uses the <strong>OSC 52</strong> terminal
+escape sequence (<code>ESC ] 52 ; c ; &lt;base64-data&gt; BEL</code>). This
+sequence instructs the <strong>host terminal</strong> to place data into the system
+clipboard.</p>
+</div>
+<div class="paragraph">
+<p>Because the escape sequence travels through the SSH byte stream, OSC 52
+copies directly to the <strong>local machine’s clipboard</strong> without X11
+forwarding or any tool on the remote server.</p>
+</div>
+<div class="paragraph">
+<p><strong>Minimum requirement:</strong> Neovim ≥ 0.10 (the built-in
+<code>vim.ui.clipboard.osc52</code> module).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_terminal_support_matrix"><a class="anchor" href="#_terminal_support_matrix"></a>Terminal support matrix</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Terminal</th>
+<th class="tableblock halign-left valign-top">Copy (→ clipboard)</th>
+<th class="tableblock halign-left valign-top">Paste (← clipboard)</th>
+<th class="tableblock halign-left valign-top">Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Windows Terminal</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">❌</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Paste disabled by default for security</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Alacritty</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Full support</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>kitty</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Full support</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>WezTerm</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Full support</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>iTerm2</strong> (macOS)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enable in Prefs → General → Selection</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Ghostty</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Full support</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>GNOME Terminal</strong> (VTE)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">❌</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">❌</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">VTE does not support OSC 52</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>xterm</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Requires <code>allowWindowOps: true</code> in <code>~/.Xresources</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p><strong>GNOME Terminal users over SSH:</strong> GNOME Terminal does not support OSC 52.
+You have two options: - Connect from a terminal that does support it
+(Windows Terminal, kitty, etc.) - Use X11 forwarding (<code>ssh -X</code>) with
+<code>xclip</code>/<code>xsel</code> installed on the server</p>
+</div>
+</blockquote>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_paste_over_ssh"><a class="anchor" href="#_paste_over_ssh"></a>Paste over SSH</h3>
+<div class="paragraph">
+<p>Most terminals block OSC 52 paste for security (to prevent a remote host
+from reading your clipboard). If <code>&lt;leader&gt;p</code> does not work in an
+SSH session, use the terminal’s own paste shortcut to inject from the
+local clipboard:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Terminal</th>
+<th class="tableblock halign-left valign-top">Paste shortcut</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Windows Terminal</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Ctrl&#43;Shift&#43;V</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GNOME Terminal</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Ctrl&#43;Shift&#43;V</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Alacritty</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Ctrl&#43;Shift&#43;V</code> (Linux) / <code>Cmd&#43;V</code> (macOS)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kitty</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Ctrl&#43;Shift&#43;V</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Most Linux terminals</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Shift&#43;Insert</code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_tmux_inside_ssh"><a class="anchor" href="#_tmux_inside_ssh"></a>tmux inside SSH</h3>
+<div class="paragraph">
+<p>tmux intercepts OSC 52 by default and does not forward it to the outer
+terminal. To enable clipboard pass-through, add this to <code>~/.tmux.conf</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">set -g set-clipboard on</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then reload: <code>tmux source ~/.tmux.conf</code>.</p>
+</div>
+<div class="paragraph">
+<p>With <code>set-clipboard on</code>, tmux forwards OSC 52 to the outer terminal,
+which then writes to the local clipboard.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_rdp_sessions"><a class="anchor" href="#_rdp_sessions"></a>RDP sessions</h3>
+<div class="paragraph">
+<p>RDP clipboard is a separate channel from the terminal clipboard. OSC 52
+works if the RDP client renders a terminal that supports it
+(e.g. Windows Terminal running inside an RDP session to a Windows
+machine). On Linux desktops inside RDP (e.g. xrdp &#43; GNOME), you are
+back in a graphical session so <code>$DISPLAY</code> is set — the config will use
+<code>xclip</code>/<code>xsel</code> automatically.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_verify_osc_52_is_working"><a class="anchor" href="#_verify_osc_52_is_working"></a>Verify OSC 52 is working</h3>
+<div class="paragraph">
+<p>In an SSH session, run:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">nvim --headless -c 'lua vim.fn.setreg("+","osc52test")' -c 'qa'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then try to paste in the local terminal — if you see <code>osc52test</code> it is
+working. Alternatively, open Neovim, type some text, visually select it,
+and press <code>&lt;leader&gt;y</code>. Switch to a local application and paste.</p>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="troubleshooting"><a class="anchor" href="#troubleshooting"></a>Troubleshooting</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_checkhealth_clipboard"><a class="anchor" href="#_checkhealth_clipboard"></a><code>:checkhealth clipboard</code></h3>
+<div class="paragraph">
+<p>Always start here. Run <code>:checkhealth</code> in Neovim and read the <code>clipboard</code>
+section:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>clipboard
+  - OK: Clipboard tool found: win32yank      ← WSL, working
+  - OK: Clipboard tool found: wl-copy        ← Wayland, working
+  - OK: Clipboard tool found: xclip          ← X11, working
+  - WARNING: No clipboard tool found         ← need to install one</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If the provider shows as <code>OSC 52</code> there will be no checkhealth entry —
+OSC 52 is transparent to Neovim’s health check system. Verify it
+empirically (see above).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_common_issues"><a class="anchor" href="#_common_issues"></a>Common issues</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 34%;">
+<col style="width: 33%;">
+<col style="width: 33%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Problem</th>
+<th class="tableblock halign-left valign-top">Likely cause</th>
+<th class="tableblock halign-left valign-top">Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>y</code> copies but paste in other app is empty</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Wrong register — <code>"*</code>
+vs <code>"&#43;"</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Use <code>&lt;leader&gt;y</code> (explicit <code>"&#43;</code> register)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Works locally, broken in SSH</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No clipboard provider on the server</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">OSC
+52 is active in console mode — check terminal support</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>win32yank.exe: not found</code> in WSL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Not on <code>$PATH</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Verify Windows PATH
+is inherited; export manually if needed</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">OSC 52 works in tmux locally but not over SSH</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">tmux blocking OSC 52</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Add <code>set -g set-clipboard on</code> to <code>~/.tmux.conf</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Wayland — copies but other Wayland apps can’t paste</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Using X11 xclip
+instead of wl-clipboard</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Check that <code>$WAYLAND_DISPLAY</code> is set in the
+shell that launches Neovim</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>This page was built using the Antora default UI.</p>
+  <p>The source code for this UI is licensed under the terms of the MPL-2.0 license.</p>
+</footer>
+<script id="site-script" src="../../_/js/site.js" data-ui-root-path="../../_"></script>
+<script async src="../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

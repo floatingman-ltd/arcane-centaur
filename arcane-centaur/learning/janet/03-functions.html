@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Untitled :: Arcane Centaur Docs</title>
+    <link rel="canonical" href="https://floatingman-ltd.github.io/arcane-centaur/arcane-centaur/learning/janet/03-functions.html">
+    <meta name="generator" content="Antora 3.1.15">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://floatingman-ltd.github.io/arcane-centaur">Arcane Centaur Docs</a>
+      <button class="navbar-burger" aria-controls="topbar-nav" aria-expanded="false" aria-label="Toggle main menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="#">Home</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Products</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Product A</a>
+            <a class="navbar-item" href="#">Product B</a>
+            <a class="navbar-item" href="#">Product C</a>
+          </div>
+        </div>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Services</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Service A</a>
+            <a class="navbar-item" href="#">Service B</a>
+            <a class="navbar-item" href="#">Service C</a>
+          </div>
+        </div>
+        <div class="navbar-item">
+          <span class="control">
+            <a class="button is-primary" href="#">Download</a>
+          </span>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="arcane-centaur" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../../index.html">Arcane Centaur</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../index.html">Home</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../getting-started.html">Getting Started</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Languages</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">.NET</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/dotnet.html">Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/dotnet-cheatsheet.html">Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Lisp Family</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/lisp.html">Lisp / Clojure / Scheme / Fennel</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/lisp-cheatsheet.html">Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/janet.html">Janet Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/janet-cheatsheet.html">Janet Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Haskell</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/haskell.html">Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/haskell-cheatsheet.html">Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Lua</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/lua.html">Guide</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Editor Core</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../editor/editing.html">Editing Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../editor/navigation.html">Navigation Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../editor/code-intelligence.html">Code Intelligence Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../editor/git.html">Git Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../editor/git-cheatsheet.html">Git Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../editor/clipboard.html">Clipboard</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">AI &amp; Automation</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../ai/ai-tools.html">AI Tools Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../ai/ai-tools-cheatsheet.html">AI Tools Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Content Creation</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../content/markdown.html">Markdown Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../content/markdown-cheatsheet.html">Markdown Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../content/diagrams.html">Diagrams &amp; PlantUML</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../content/presentations.html">Presentations (MARP)</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../content/rest.html">REST / HTTP Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../content/rest-cheatsheet.html">REST Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Project Tooling</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../tooling/jira.html">Jira Integration</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../tooling/confluence.html">Confluence Publishing</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Learning</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Janet</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="index.html">Series Index</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="01-setup.html">01 — Setup</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="02-first-steps.html">02 — First Steps</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="03-functions.html">03 — Functions in Depth</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="04-sequences.html">04 — Sequences</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="05-modules.html">05 — Modules</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="06-error-handling.html">06 — Error Handling</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="07-macros.html">07 — Macros</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Ollama</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ollama/index.html">Series Index</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ollama/01-setup.html">01 — Setup &amp; Verification</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ollama/02-first-conversations.html">02 — First Conversations</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ollama/03-prompting-fundamentals.html">03 — Prompting Fundamentals</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ollama/04-code-assistance.html">04 — Code Assistance</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ollama/05-model-selection.html">05 — Model Selection</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ollama/06-system-prompts.html">06 — System Prompts &amp; Context</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ollama/07-the-api.html">07 — The Ollama API</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ollama/08-rag-basics.html">08 — RAG Basics (Deep-Dive)</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Other</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../other/architecture.html">Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../other/contributing.html">Contributing to Docs</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../other/jira-project-map.html">Jira Project Map</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Arcane Centaur</span>
+    <span class="version"></span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <div class="title"><a href="../../index.html">Arcane Centaur</a></div>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">Arcane Centaur</a></li>
+    <li>Learning</li>
+    <li>Janet</li>
+    <li><a href="03-functions.html">03 — Functions in Depth</a></li>
+  </ul>
+</nav>
+<div class="edit-this-page"><a href="file:///antora/docs/modules/ROOT/pages/learning/janet/03-functions.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<div class="paragraph">
+<p>← <a href="02-first-steps.html" class="xref page">Previous</a> | <a href="index.html" class="xref page">Index</a> | <a href="04-sequences.html" class="xref page">Next</a> →</p>
+</div>
+<hr>
+<div class="sect1">
+<h2 id="_03_functions_in_depth_with_janet"><a class="anchor" href="#_03_functions_in_depth_with_janet"></a>03 — Functions in Depth with Janet</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Functions are the primary building block in Janet.
+This lesson goes beyond <code>defn</code> to cover closures, short-hand syntax, higher-order functions, threading macros, and <code>apply</code>.
+Work through every snippet interactively — evaluate as you read.</p>
+</div>
+<div class="paragraph">
+<p>Open a scratch file and the Conjure log before starting:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">nvim scratch.janet</code></pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>,lv</pre>
+</div>
+</div>
+<hr>
+<div class="sect2">
+<h3 id="_1_functions_are_values"><a class="anchor" href="#_1_functions_are_values"></a>1. Functions Are Values</h3>
+<div class="paragraph">
+<p>In Janet, functions are first-class values.
+You can pass them to other functions, return them, and store them in data structures.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet"># Named function
+(defn square [x] (* x x))
+
+# Anonymous function stored in a binding
+(def cube (fn [x] (* x x x)))
+
+# Short-hand: # creates an anonymous fn, % is the first argument
+(def double #(* % 2))
+
+(square 5)    # =&gt; 25
+(cube 3)      # =&gt; 27
+(double 7)    # =&gt; 14</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Try it:</strong> evaluate <code>(square 5)</code> with <code>,ee</code>, then <code>(double 7)</code>.
+Notice all three definitions behave identically from the caller&#8217;s perspective.</p>
+</div>
+<div class="paragraph">
+<p>The short-hand <code>#(&#8230;&#8203;)</code> is handy for small inline functions.
+<code>%</code> is the first argument, <code>%2</code> the second, <code>%3</code> the third:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet">(def add #(+ % %2))
+(add 3 4)   # =&gt; 7</code></pre>
+</div>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_2_closures"><a class="anchor" href="#_2_closures"></a>2. Closures</h3>
+<div class="paragraph">
+<p>A function defined inside another function <strong>closes over</strong> the bindings visible at the point of definition.
+Those bindings survive as long as the closure does.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet">(defn make-adder [n]
+  (fn [x] (+ x n)))   # closes over n
+
+(def add10  (make-adder 10))
+(def add100 (make-adder 100))
+
+(add10 5)    # =&gt; 15
+(add100 5)   # =&gt; 105</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Try it:</strong> evaluate <code>(def add10 (make-adder 10))</code> with <code>,er</code>, then call <code>(add10 42)</code> with <code>,ee</code>.</p>
+</div>
+<div class="paragraph">
+<p>Closures are useful for building configurable functions:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet">(defn make-greeter [greeting]
+  (fn [name] (string greeting ", " name "!")))
+
+(def hi  (make-greeter "Hi"))
+(def hey (make-greeter "Hey"))
+
+(hi "Alice")    # =&gt; "Hi, Alice!"
+(hey "Bob")     # =&gt; "Hey, Bob!"</code></pre>
+</div>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_3_higher_order_functions"><a class="anchor" href="#_3_higher_order_functions"></a>3. Higher-Order Functions</h3>
+<div class="paragraph">
+<p>Janet&#8217;s standard library is built around passing functions to other functions.</p>
+</div>
+<div class="sect3">
+<h4 id="_map"><a class="anchor" href="#_map"></a>map</h4>
+<div class="paragraph">
+<p>Apply a function to every element of a sequence and collect results into a tuple:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet">(map square [1 2 3 4 5])
+# =&gt; (1 4 9 16 25)
+
+(map string/upcase ["alice" "bob" "carol"])
+# =&gt; ("ALICE" "BOB" "CAROL")</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Try it:</strong> evaluate <code>(map square [1 2 3 4 5])</code> with <code>,ee</code>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_filter"><a class="anchor" href="#_filter"></a>filter</h4>
+<div class="paragraph">
+<p>Keep only elements for which the predicate returns truthy:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet">(filter even? [1 2 3 4 5 6])
+# =&gt; (2 4 6)
+
+(filter #(&gt; % 3) [1 2 3 4 5])
+# =&gt; (4 5)</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_reduce"><a class="anchor" href="#_reduce"></a>reduce</h4>
+<div class="paragraph">
+<p>Fold a sequence into a single value using an accumulator:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet">(reduce + 0 [1 2 3 4 5])    # =&gt; 15  (sum)
+(reduce * 1 [1 2 3 4 5])    # =&gt; 120 (product)
+(reduce max 0 [3 1 4 1 5])  # =&gt; 5</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>reduce</code> takes <code>(reduce f init seq)</code> — <code>f</code> receives the running accumulator and the current element.</p>
+</div>
+<div class="paragraph">
+<p><strong>Try it:</strong> evaluate <code>(reduce + 0 [1 2 3 4 5])</code> then modify the initial value and observe the shift.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_composing_map_and_filter"><a class="anchor" href="#_composing_map_and_filter"></a>Composing map and filter</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet">(-&gt;&gt; [1 2 3 4 5 6 7 8 9 10]
+     (filter even?)
+     (map square))
+# =&gt; (4 16 36 64 100)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>(The <code>&#8594;&gt;</code> threading macro is covered next — evaluate this after section 4.)</p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_4_threading_macros"><a class="anchor" href="#_4_threading_macros"></a>4. Threading Macros</h3>
+<div class="paragraph">
+<p>Nested function calls can be hard to read.
+Threading macros pipe the result of each expression into the next as the <strong>last</strong> (<code>&#8594;&gt;</code>) or <strong>first</strong> (<code>-&gt;</code>) argument.</p>
+</div>
+<div class="sect3">
+<h4 id="_thread_first"><a class="anchor" href="#_thread_first"></a>&#8594; (thread-first)</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet"># Without threading:
+(string/upcase (string/trim "  hello  "))
+
+# With -&gt;:
+(-&gt; "  hello  "
+    string/trim
+    string/upcase)
+# =&gt; "HELLO"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Each step receives the previous result as its <strong>first</strong> argument.</p>
+</div>
+<div class="paragraph">
+<p><strong>Try it:</strong> evaluate both forms with <code>,ee</code> — confirm they produce the same result.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_thread_last"><a class="anchor" href="#_thread_last"></a>&#8594;&gt; (thread-last)</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet"># Without threading:
+(map square (filter even? [1 2 3 4 5 6]))
+
+# With -&gt;&gt;:
+(-&gt;&gt; [1 2 3 4 5 6]
+     (filter even?)
+     (map square))
+# =&gt; (4 16 36)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Each step receives the previous result as its <strong>last</strong> argument — ideal for sequence pipelines.</p>
+</div>
+<div class="paragraph">
+<p><strong>Try it:</strong> use vim-sexp <code>&gt;)</code> to slurp an extra step into the <code>&#8594;&gt;</code> form, then <code>,ee</code> to re-evaluate.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_when_to_use_which"><a class="anchor" href="#_when_to_use_which"></a>When to use which</h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 50%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Macro</th>
+<th class="tableblock halign-left valign-top">Use when</th>
+<th class="tableblock halign-left valign-top">Data position</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-&gt;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String transforms, record updates</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">First arg</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&#8594;&gt;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sequence pipelines (map/filter/reduce)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Last arg</p></td>
+</tr>
+</tbody>
+</table>
+<hr>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_5_apply"><a class="anchor" href="#_5_apply"></a>5. apply</h3>
+<div class="paragraph">
+<p><code>apply</code> calls a function with a sequence as its argument list.
+Useful when arguments are already in a collection:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet">(apply + [1 2 3 4 5])         # =&gt; 15
+(apply string ["a" "b" "c"])  # =&gt; "abc"
+(apply max [3 1 4 1 5 9])     # =&gt; 9</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can mix fixed args with a trailing sequence:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet">(apply + 10 20 [1 2 3])   # =&gt; 36  (10 + 20 + 1 + 2 + 3)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Try it:</strong> evaluate <code>(apply max [3 1 4 1 5 9])</code> with <code>,ee</code>.</p>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_6_variadic_functions"><a class="anchor" href="#_6_variadic_functions"></a>6. Variadic Functions</h3>
+<div class="paragraph">
+<p>A function can accept any number of arguments with <code>&amp; rest</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet">(defn sum [&amp; nums]
+  (reduce + 0 nums))
+
+(sum 1 2 3)           # =&gt; 6
+(sum 1 2 3 4 5 6 7)   # =&gt; 28</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Required arguments come before <code>&amp;</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet">(defn greet-many [greeting &amp; names]
+  (each name names
+    (print (string greeting ", " name "!"))))
+
+(greet-many "Hello" "Alice" "Bob" "Carol")</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Try it:</strong> evaluate <code>(greet-many "Hi" "Alice" "Bob")</code> and watch the Conjure log.</p>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_7_mini_project_word_frequency_pipeline"><a class="anchor" href="#_7_mini_project_word_frequency_pipeline"></a>7. Mini-Project: Word Frequency Pipeline</h3>
+<div class="paragraph">
+<p>Build a small word-frequency counter using closures, higher-order functions, and threading.
+Put this in <code>scratch.janet</code> and evaluate each block in order with <code>,eb</code> or <code>,er</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet"># Step 1: helpers
+
+(defn words [text]
+  (string/split " " (string/trim (string/lower-case text))))
+
+(defn count-words [acc word]
+  (put acc word (inc (get acc word 0)))
+  acc)
+
+(defn top-n [n freq-table]
+  (-&gt;&gt; (pairs freq-table)
+       (sort-by (fn [[_ count]] (- count)))
+       (take n)))</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet"># Step 2: build the pipeline
+
+(def sample
+  "the quick brown fox jumps over the lazy dog the fox")
+
+(def frequencies
+  (-&gt;&gt; sample
+       words
+       (reduce count-words @{})))
+
+frequencies   # evaluate with ,ee — inspect the table</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet"># Step 3: find the top 3 words
+
+(top-n 3 frequencies)
+# =&gt; (("the" 3) ("fox" 2) ...)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Workflow:</strong></p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Evaluate the helpers block with <code>,eb</code> — all three functions enter the REPL state.</p>
+</li>
+<li>
+<p>Evaluate <code>(def frequencies &#8230;&#8203;)</code> with <code>,er</code>.</p>
+</li>
+<li>
+<p>Place the cursor on <code>frequencies</code> and press <code>,ee</code> — inspect the table in the Conjure log.</p>
+</li>
+<li>
+<p>Evaluate <code>(top-n 3 frequencies)</code> with <code>,ee</code>.</p>
+</li>
+<li>
+<p>Change <code>sample</code> to your own sentence and re-run from step 2.</p>
+</li>
+</ol>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_8_what_to_explore_next"><a class="anchor" href="#_8_what_to_explore_next"></a>8. What to Explore Next</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Call <code>(doc map)</code>, <code>(doc filter)</code>, <code>(doc reduce)</code> in the REPL for built-in documentation inline</p>
+</li>
+<li>
+<p><a href="https://janet-lang.org/docs/">janet-lang.org/docs/</a> — Functions, Macros, Core library reference</p>
+</li>
+<li>
+<p><a href="04-sequences.html" class="xref page">Next: 04 — Sequences</a></p>
+</li>
+</ul>
+</div>
+<hr>
+<div class="paragraph">
+<p>← <a href="02-first-steps.html" class="xref page">Previous</a> | <a href="index.html" class="xref page">Index</a> | <a href="04-sequences.html" class="xref page">Next</a> →</p>
+</div>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>This page was built using the Antora default UI.</p>
+  <p>The source code for this UI is licensed under the terms of the MPL-2.0 license.</p>
+</footer>
+<script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

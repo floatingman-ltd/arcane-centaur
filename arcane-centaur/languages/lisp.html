@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Untitled :: Arcane Centaur Docs</title>
+    <link rel="canonical" href="https://floatingman-ltd.github.io/arcane-centaur/arcane-centaur/languages/lisp.html">
+    <meta name="generator" content="Antora 3.1.15">
+    <link rel="stylesheet" href="../../_/css/site.css">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://floatingman-ltd.github.io/arcane-centaur">Arcane Centaur Docs</a>
+      <button class="navbar-burger" aria-controls="topbar-nav" aria-expanded="false" aria-label="Toggle main menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="#">Home</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Products</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Product A</a>
+            <a class="navbar-item" href="#">Product B</a>
+            <a class="navbar-item" href="#">Product C</a>
+          </div>
+        </div>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Services</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Service A</a>
+            <a class="navbar-item" href="#">Service B</a>
+            <a class="navbar-item" href="#">Service C</a>
+          </div>
+        </div>
+        <div class="navbar-item">
+          <span class="control">
+            <a class="button is-primary" href="#">Download</a>
+          </span>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="arcane-centaur" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../index.html">Arcane Centaur</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Home</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../getting-started.html">Getting Started</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Languages</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">.NET</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="dotnet.html">Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="dotnet-cheatsheet.html">Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Lisp Family</span>
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="lisp.html">Lisp / Clojure / Scheme / Fennel</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lisp-cheatsheet.html">Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="janet.html">Janet Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="janet-cheatsheet.html">Janet Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Haskell</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="haskell.html">Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="haskell-cheatsheet.html">Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Lua</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lua.html">Guide</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Editor Core</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../editor/editing.html">Editing Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../editor/navigation.html">Navigation Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../editor/code-intelligence.html">Code Intelligence Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../editor/git.html">Git Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../editor/git-cheatsheet.html">Git Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../editor/clipboard.html">Clipboard</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">AI &amp; Automation</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../ai/ai-tools.html">AI Tools Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../ai/ai-tools-cheatsheet.html">AI Tools Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Content Creation</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/markdown.html">Markdown Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/markdown-cheatsheet.html">Markdown Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/diagrams.html">Diagrams &amp; PlantUML</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/presentations.html">Presentations (MARP)</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/rest.html">REST / HTTP Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/rest-cheatsheet.html">REST Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Project Tooling</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../tooling/jira.html">Jira Integration</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../tooling/confluence.html">Confluence Publishing</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Learning</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Janet</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../learning/janet/index.html">Series Index</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../learning/janet/01-setup.html">01 — Setup</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../learning/janet/02-first-steps.html">02 — First Steps</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../learning/janet/03-functions.html">03 — Functions in Depth</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../learning/janet/04-sequences.html">04 — Sequences</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../learning/janet/05-modules.html">05 — Modules</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../learning/janet/06-error-handling.html">06 — Error Handling</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../learning/janet/07-macros.html">07 — Macros</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Ollama</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../learning/ollama/index.html">Series Index</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../learning/ollama/01-setup.html">01 — Setup &amp; Verification</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../learning/ollama/02-first-conversations.html">02 — First Conversations</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../learning/ollama/03-prompting-fundamentals.html">03 — Prompting Fundamentals</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../learning/ollama/04-code-assistance.html">04 — Code Assistance</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../learning/ollama/05-model-selection.html">05 — Model Selection</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../learning/ollama/06-system-prompts.html">06 — System Prompts &amp; Context</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../learning/ollama/07-the-api.html">07 — The Ollama API</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../learning/ollama/08-rag-basics.html">08 — RAG Basics (Deep-Dive)</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Other</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../other/architecture.html">Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../other/contributing.html">Contributing to Docs</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../other/jira-project-map.html">Jira Project Map</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Arcane Centaur</span>
+    <span class="version"></span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <div class="title"><a href="../index.html">Arcane Centaur</a></div>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Arcane Centaur</a></li>
+    <li>Languages</li>
+    <li>Lisp Family</li>
+    <li><a href="lisp.html">Lisp / Clojure / Scheme / Fennel</a></li>
+  </ul>
+</nav>
+<div class="edit-this-page"><a href="file:///antora/docs/modules/ROOT/pages/languages/lisp.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<div class="sect1">
+<h2 id="_working_with_lisp"><a class="anchor" href="#_working_with_lisp"></a>Working with Lisp</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This configuration is built around an interactive, REPL-driven Lisp
+workflow. Four plugins work together to give you a seamless experience:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Plugin</th>
+<th class="tableblock halign-left valign-top">Role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/Olical/conjure">Conjure</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Connect to a REPL and
+evaluate code without leaving the editor</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/guns/vim-sexp">vim-sexp</a> &#43;
+<a href="https://github.com/tpope/vim-sexp-mappings-for-regular-people">mappings</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Structural editing — slurp, barf, and move S-expressions</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/gpanders/nvim-parinfer">nvim-parinfer</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Keeps
+parentheses balanced automatically as you edit indentation</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/HiPhish/rainbow-delimiters.nvim">rainbow-delimiters.nvim</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Color-codes matching delimiters so you can see nesting at a glance</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>All four plugins lazy-load only when you open a <strong>Lisp</strong>, <strong>Clojure</strong>,
+<strong>Scheme</strong>, or <strong>Fennel</strong> file.</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p><strong>Janet</strong> shares the same plugin set (Conjure, vim-sexp, parinfer,
+rainbow-delimiters). See <a href="janet.html" class="xref page">Janet Guide</a> for the
+Janet-specific guide.</p>
+</div>
+</blockquote>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/stevearc/conform.nvim">conform.nvim</a> is also loaded
+for these filetypes and provides <strong>format-on-save</strong> as well as a manual
+<strong><code>&lt;leader&gt;f</code></strong> keybinding (normal and visual mode) to reformat
+the current buffer or selection.</p>
+</div>
+<div class="paragraph">
+<p><strong>Quick navigation</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#quick-start">Quick Start</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Start the REPL and evaluate code</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#lsp">LSP</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Language server notes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#structural-editing">Structural Editing</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Slurp &amp; barf reference</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#typical-workflow">Typical Workflow</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Day-to-day Lisp in Neovim</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#troubleshooting">Troubleshooting</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">REPL connection issues</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#prerequisites">Prerequisites</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SBCL, Clojure, Scheme options</p></td>
+</tr>
+</tbody>
+</table>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="quick-start"><a class="anchor" href="#quick-start"></a>Quick Start</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>Start your REPL</strong> in a terminal (Conjure connects to it):</p>
+<div class="paragraph">
+<p><strong>Option A — Docker (recommended for Common Lisp):</strong> A pre-configured
+Docker setup lives in <code>docker/sbcl-swank/</code>. It runs SBCL with Quicklisp
+and starts the Swank server on port 4005 automatically.
+See <a href="../getting-started.html#sbcl-swank" class="xref page">Getting Started: SBCL + Swank container</a>
+for build, start, and stop commands.</p>
+</div>
+<div class="paragraph">
+<p>Conjure will auto-connect on the next file open, or use <code>,cc</code> to connect
+manually.</p>
+</div>
+<div class="paragraph">
+<p><strong>Option B — local SBCL:</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"># Common Lisp (SBCL via Swank).
+# - :style :spawn creates a new thread per connection.
+# - swank::*use-dedicated-output-stream* nil (double colon — internal symbol)
+#   keeps all traffic on the single control connection; without it Swank
+#   sends a :new-port handshake that Conjure does not implement, causing
+#   the connection to be closed with "end of file".
+# - :interface is not needed for local SBCL (Conjure connects to 127.0.0.1
+#   which is the default); only required inside a Docker container where
+#   port-forwarding routes to a different network interface.
+sbcl --load ~/.quicklisp/setup.lisp \
+     --eval '(ql:quickload :swank)' \
+     --eval '(ignore-errors (setf swank::*use-dedicated-output-stream* nil))' \
+     --eval '(swank:create-server :dont-close t :style :spawn)'
+
+# Clojure (nREPL)
+clj -Sdeps '{:deps {nrepl/nrepl {:mvn/version "1.0.0"} cider/cider-nrepl {:mvn/version "0.30.0"}}}' -M -m nrepl.cmdline --middleware '["cider.nrepl/cider-middleware"]'
+
+# Scheme (MIT Scheme)
+mit-scheme   # Conjure connects via its built-in Scheme client</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p><strong>Open a source file</strong> in Neovim — plugins load automatically:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">nvim hello.lisp    # or hello.clj, hello.scm, hello.fnl</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p><strong>Evaluate code</strong> using Conjure (local leader is <code>,</code>):</p>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Keys</th>
+<th class="tableblock halign-left valign-top">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,ee</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Evaluate the form under the cursor</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,er</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Evaluate the root (outermost) form</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,eb</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Evaluate the entire buffer</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,e!</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Replace the form with its result</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,lv</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Open the REPL log in a vertical split</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,ls</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Open the REPL log in a horizontal split</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,lq</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Close the REPL log window</p></td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p><strong>Edit structure</strong> with vim-sexp (normal mode):</p>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Keys</th>
+<th class="tableblock halign-left valign-top">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&gt;)</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Slurp forward</strong> — extend the closing <code>)</code> rightward, pulling
+the next sibling <em>into</em> the form</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;)</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Barf forward</strong> — shrink the closing <code>)</code> leftward, pushing the
+last element <em>out of</em> the form</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;(</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Slurp backward</strong> — extend the opening <code>(</code> leftward, pulling
+the previous sibling <em>into</em> the form</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&gt;(</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Barf backward</strong> — shrink the opening <code>(</code> rightward, pushing
+the first element <em>out of</em> the form</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;f</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Move the current form left among its siblings</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&gt;f</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Move the current form right among its siblings</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;e</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Move the current element left</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&gt;e</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Move the current element right</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>cse(</code> or <code>cse)</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Surround the element with <code>()</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>cse[</code> or <code>cse]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Surround the element with <code>[]</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>dsf</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Delete surrounding function call (splice)</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>See <a href="#structural-editing">Structural Editing: Slurp &amp; Barf</a> below
+for step-by-step examples.</p>
+</div>
+</li>
+<li>
+<p><strong>Parinfer</strong> runs in the background — just adjust indentation and parens
+follow. No keys needed.</p>
+</li>
+<li>
+<p><strong>Stop the Swank server</strong> when you are done (Common Lisp only):</p>
+<div class="paragraph">
+<p>If using <strong>Docker</strong>, stop the container:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">LISP_DIR=$PWD docker compose -f ~/.config/nvim/docker/sbcl-swank/docker-compose.yml down</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If running <strong>SBCL locally</strong>, evaluate the following with <code>,ee</code> (cursor on
+the form) or <code>,eb</code> (entire buffer):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-lisp hljs" data-lang="lisp">(swank:stop-server 4005)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Alternatively, switch to the terminal running SBCL and call the same
+form at the REPL prompt, or quit the process entirely:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-lisp hljs" data-lang="lisp">(quit)</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="lsp"><a class="anchor" href="#lsp"></a>LSP</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>No Common Lisp LSP is configured by default in this repository. See the
+<a href="../editor/code-intelligence.html" class="xref page">Code Intelligence cheatsheet</a>
+for shared LSP keybindings that apply in buffers where an LSP client is
+attached.</p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="structural-editing"><a class="anchor" href="#structural-editing"></a>Structural Editing: Slurp &amp; Barf</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Slurp and barf let you <strong>reshape S-expressions without manually counting
+or moving parentheses</strong>. The cursor can be anywhere inside (or on the
+delimiter of) the target form when you press the key.</p>
+</div>
+<div class="paragraph">
+<p>Each example below shows the code before and after the operation.</p>
+</div>
+<hr>
+<div class="sect2">
+<h3 id="_slurp_forward"><a class="anchor" href="#_slurp_forward"></a>Slurp forward — <code>&gt;)</code></h3>
+<div class="paragraph">
+<p>Moves the <strong>closing</strong> <code>)</code> one step to the right, pulling the <strong>next
+sibling</strong> element into the form.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-lisp hljs" data-lang="lisp">; Before — cursor anywhere inside (foo bar); 'baz' is a sibling outside the form
+(foo bar) baz
+
+; After &gt;)  — 'baz' is now inside the form
+(foo bar baz)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Useful when you realise a following expression belongs inside the
+current call. Press <code>&gt;)</code> again to pull in the next sibling, and so
+on.</p>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_barf_forward"><a class="anchor" href="#_barf_forward"></a>Barf forward — <code>&lt;)</code></h3>
+<div class="paragraph">
+<p>Moves the <strong>closing</strong> <code>)</code> one step to the left, pushing the <strong>last element</strong>
+out of the form.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-lisp hljs" data-lang="lisp">; Before — cursor anywhere inside (foo bar baz)
+(foo bar baz)
+
+; After &lt;)  — 'baz' has been expelled; it is now a sibling after the form
+(foo bar) baz</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This is the reverse of slurp forward. Use it to trim an element you
+accidentally slurped in, or to split a call up.</p>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_slurp_backward"><a class="anchor" href="#_slurp_backward"></a>Slurp backward — <code>&lt;(</code></h3>
+<div class="paragraph">
+<p>Moves the <strong>opening</strong> <code>(</code> one step to the left, pulling the <strong>previous
+sibling</strong> element into the form.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-lisp hljs" data-lang="lisp">; Before — cursor anywhere inside (bar baz); 'foo' is a sibling before the form
+foo (bar baz)
+
+; After &lt;(  — 'foo' is now the first element inside the form
+(foo bar baz)</code></pre>
+</div>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_barf_backward"><a class="anchor" href="#_barf_backward"></a>Barf backward — <code>&gt;(</code></h3>
+<div class="paragraph">
+<p>Moves the <strong>opening</strong> <code>(</code> one step to the right, pushing the <strong>first
+element</strong> out of the form.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-lisp hljs" data-lang="lisp">; Before — cursor anywhere inside (foo bar baz)
+(foo bar baz)
+
+; After &gt;(  — 'foo' has been expelled; it is now a sibling before the form
+foo (bar baz)</code></pre>
+</div>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_combining_operations"><a class="anchor" href="#_combining_operations"></a>Combining operations</h3>
+<div class="paragraph">
+<p>Slurp/barf pairs let you migrate elements between adjacent forms without
+cutting and pasting:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-lisp hljs" data-lang="lisp">; Start: two separate forms (cursor inside the defun)
+(defun greet (name)) (format t "Hello ~a!" name)
+
+; &gt;)  slurp the format call into defun
+(defun greet (name)
+  (format t "Hello ~a!" name))</code></pre>
+</div>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="typical-workflow"><a class="anchor" href="#typical-workflow"></a>Typical Workflow</h2>
+<div class="sectionbody">
+<div class="literalblock">
+<div class="content">
+<pre> +----------------------------------------------+
+ |  Docker: sbcl-swank (or local REPL server)   |
+ +----------------------------------------------+
+         ^  Conjure connects on 127.0.0.1:4005
+         |
+ +----------------------------------------------+
+ |  Neovim                                      |
+ |  +-------------------+------------------+    |
+ |  |  source.lisp      |  Conjure log     |    |
+ |  |                   |  (REPL output)   |    |
+ |  |  (defun greet (n) |  =&gt; "Hello!"     |    |
+ |  |    (format t      |                  |    |
+ |  |      "Hello ~a" n)|                  |    |
+ |  |  )                |                  |    |
+ |  |                   |                  |    |
+ |  |  ,ee to eval -----+                  |    |
+ |  +-------------------+------------------+    |
+ +----------------------------------------------+</pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Write or edit code in the left pane.</p>
+</li>
+<li>
+<p>Press <code>,ee</code> to evaluate the expression under the cursor — the result
+appears in the Conjure log.</p>
+</li>
+<li>
+<p>Use <code>,lv</code> to open the log in a vertical split if it isn&#8217;t visible.</p>
+</li>
+<li>
+<p>Use vim-sexp motions (<code>&gt;)</code>, <code>&lt;(</code>, etc.) to restructure
+S-expressions without counting parentheses.</p>
+</li>
+<li>
+<p>Parinfer keeps parens balanced automatically as you change
+indentation.</p>
+</li>
+<li>
+<p>Rainbow delimiters let you visually match nesting depth.</p>
+</li>
+</ol>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="troubleshooting"><a class="anchor" href="#troubleshooting"></a>Troubleshooting</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_hud_shows_nothing_close_connection_end_of_file"><a class="anchor" href="#_hud_shows_nothing_close_connection_end_of_file"></a>HUD shows nothing / <code>close-connection: end of file</code></h3>
+<div class="paragraph">
+<p>There are <strong>three distinct failure modes</strong>. Read all three before
+rebuilding.</p>
+</div>
+<hr>
+<div class="paragraph">
+<p><strong>Failure mode 1 — port 4005 never opens (SBCL crashed at startup)</strong></p>
+</div>
+<div class="paragraph">
+<p>Symptoms: <code>docker compose logs</code> shows an error <em>before</em> the
+<code>Swank started at port: 4005.</code> line; the container status stays
+<code>starting</code> and never reaches <code>healthy</code>.</p>
+</div>
+<hr>
+<div class="paragraph">
+<p><strong>Failure mode 2 — Conjure&#8217;s connection is refused (HUD shows nothing, no
+<code>close-connection</code>)</strong></p>
+</div>
+<div class="paragraph">
+<p>Symptoms: The container is <code>healthy</code>, port 4005 is open on the host, but
+Conjure cannot connect and the HUD stays silent.</p>
+</div>
+<div class="paragraph">
+<p>Root cause: <code>swank:create-server</code> binds to <code>127.0.0.1</code> (loopback) by
+default. Docker port-forwarding routes host connections to the
+<strong>container&#8217;s eth0 interface</strong> (e.g. <code>172.17.0.2</code>), not to its loopback.
+The TCP connection is refused at the network level — Swank never sees
+it, so no <code>close-connection</code> appears in the logs.</p>
+</div>
+<div class="paragraph">
+<p>Fix: the <code>swank-start.lisp</code> in this repo passes <code>:interface "0.0.0.0"</code>
+so Swank listens on all interfaces.</p>
+</div>
+<hr>
+<div class="paragraph">
+<p><strong>Failure mode 3 — connection drops immediately (spurious
+<code>close-connection: end of file</code>)</strong></p>
+</div>
+<div class="paragraph">
+<p>Symptoms: <code>docker compose logs</code> prints <code>close-connection: end of file</code>
+repeatedly.</p>
+</div>
+<div class="paragraph">
+<p>There are two sources for this message:</p>
+</div>
+<div class="paragraph">
+<p><strong>(a) Healthcheck noise (harmless)</strong> — the old healthcheck opened a TCP
+connection to Swank every 5 seconds to test reachability. Swank accepted
+the connection, read EOF when the healthcheck exited, and logged
+<code>close-connection: end of file</code>. The current healthcheck reads
+<code>/proc/net/tcp</code> instead and makes no TCP connection.</p>
+</div>
+<div class="paragraph">
+<p><strong>(b) The <code>:new-port</code> handshake</strong> —
+<code>*use-dedicated-output-stream*</code> defaults to <code>t</code>. When Conjure
+connects, Swank immediately sends <code>:new-port</code> asking the client to open
+a second socket for output. Conjure does not implement this handshake;
+it stops reading, Swank reads EOF, and logs
+<code>close-connection: end of file</code>. The <code>swank-start.lisp</code> sets
+<code>swank::*use-dedicated-output-stream* nil</code> to disable this. Note
+the <strong>double colon</strong> (<code>swank::</code>): the symbol is internal to the package
+and not exported, so the single-colon form raises a package error.</p>
+</div>
+<hr>
+<div class="paragraph">
+<p><strong>Applying the fixes</strong></p>
+</div>
+<div class="paragraph">
+<p>All three fixes are already in the repository (<code>swank-start.lisp</code>,
+updated <code>Dockerfile</code>, updated <code>docker-compose.yml</code>). They only take
+effect after a full image rebuild:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"># 1. Pull the latest config
+cd ~/.config/nvim &amp;&amp; git pull
+
+# 2. Stop any running container and rebuild from scratch
+docker compose -f ~/.config/nvim/docker/sbcl-swank/docker-compose.yml down
+docker compose -f ~/.config/nvim/docker/sbcl-swank/docker-compose.yml build --no-cache
+
+# 3. Start and wait until healthy before opening a Lisp file
+LISP_DIR=$PWD docker compose -f ~/.config/nvim/docker/sbcl-swank/docker-compose.yml up -d --wait</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Verifying it worked:</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"># Status should be 'healthy'
+docker compose -f ~/.config/nvim/docker/sbcl-swank/docker-compose.yml ps
+
+# Logs should show 'Swank started at port: 4005.' with no errors
+# (no repeated 'close-connection' lines — those came from the old healthcheck)
+docker compose -f ~/.config/nvim/docker/sbcl-swank/docker-compose.yml logs</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Reconnecting after a rebuild:</strong></p>
+</div>
+<div class="paragraph">
+<p>Conjure does not retry a failed auto-connect. After the container is
+healthy, reconnect manually if you already have a <code>.lisp</code> buffer open:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Keys</th>
+<th class="tableblock halign-left valign-top">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,cs</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Show current connection status</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,cc</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Connect (or reconnect) to Swank</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_checking_the_full_evaluation_log"><a class="anchor" href="#_checking_the_full_evaluation_log"></a>Checking the full evaluation log</h3>
+<div class="paragraph">
+<p>The HUD shows the last few lines of Conjure&#8217;s log buffer as a floating
+popup. To see the complete history:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Keys</th>
+<th class="tableblock halign-left valign-top">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,lv</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Open the log in a vertical split</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,ls</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Open the log in a horizontal split</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,lq</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Close the log window</p></td>
+</tr>
+</tbody>
+</table>
+<hr>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="prerequisites"><a class="anchor" href="#prerequisites"></a>Prerequisites</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_choosing_a_repl"><a class="anchor" href="#_choosing_a_repl"></a>Choosing a REPL</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 34%;">
+<col style="width: 33%;">
+<col style="width: 33%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Language</th>
+<th class="tableblock halign-left valign-top">REPL</th>
+<th class="tableblock halign-left valign-top">Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Common Lisp</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SBCL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Recommended — Docker setup included (see Quick
+Start)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Clojure</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Clojure nREPL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Start with <code>clojure -M:nrepl</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Scheme</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MIT Scheme</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>sudo apt install mit-scheme</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fennel</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fennel REPL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>fennel --repl</code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_neovim"><a class="anchor" href="#_neovim"></a>Neovim</h3>
+<div class="paragraph">
+<p>Neovim ≥ 0.12 is required. See
+<a href="../getting-started.html" class="xref page">Getting Started</a> for install
+instructions.</p>
+</div>
+<div class="paragraph">
+<p>This configuration is built around an interactive, REPL-driven Lisp
+workflow. Four plugins work together to give you a seamless experience:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Plugin</th>
+<th class="tableblock halign-left valign-top">Role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/Olical/conjure">Conjure</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Connect to a REPL and
+evaluate code without leaving the editor</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/guns/vim-sexp">vim-sexp</a> &#43;
+<a href="https://github.com/tpope/vim-sexp-mappings-for-regular-people">mappings</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Structural editing — slurp, barf, and move S-expressions</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/gpanders/nvim-parinfer">nvim-parinfer</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Keeps
+parentheses balanced automatically as you edit indentation</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/HiPhish/rainbow-delimiters.nvim">rainbow-delimiters.nvim</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Color-codes matching delimiters so you can see nesting at a glance</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>All four plugins lazy-load only when you open a <strong>Lisp</strong>, <strong>Clojure</strong>,
+<strong>Scheme</strong>, or <strong>Fennel</strong> file.</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p><strong>Janet</strong> shares the same plugin set (Conjure, vim-sexp, parinfer,
+rainbow-delimiters). See janet.md for the Janet-specific guide.</p>
+</div>
+</blockquote>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/stevearc/conform.nvim">conform.nvim</a> is also loaded
+for these filetypes and provides <strong>format-on-save</strong> as well as a manual
+<strong><code>&lt;leader&gt;f</code></strong> keybinding (normal and visual mode) to reformat
+the current buffer or selection.</p>
+</div>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>This page was built using the Antora default UI.</p>
+  <p>The source code for this UI is licensed under the terms of the MPL-2.0 license.</p>
+</footer>
+<script id="site-script" src="../../_/js/site.js" data-ui-root-path="../../_"></script>
+<script async src="../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

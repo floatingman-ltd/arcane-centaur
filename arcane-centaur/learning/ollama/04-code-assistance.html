@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Untitled :: Arcane Centaur Docs</title>
+    <link rel="canonical" href="https://floatingman-ltd.github.io/arcane-centaur/arcane-centaur/learning/ollama/04-code-assistance.html">
+    <meta name="generator" content="Antora 3.1.15">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://floatingman-ltd.github.io/arcane-centaur">Arcane Centaur Docs</a>
+      <button class="navbar-burger" aria-controls="topbar-nav" aria-expanded="false" aria-label="Toggle main menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="#">Home</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Products</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Product A</a>
+            <a class="navbar-item" href="#">Product B</a>
+            <a class="navbar-item" href="#">Product C</a>
+          </div>
+        </div>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Services</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Service A</a>
+            <a class="navbar-item" href="#">Service B</a>
+            <a class="navbar-item" href="#">Service C</a>
+          </div>
+        </div>
+        <div class="navbar-item">
+          <span class="control">
+            <a class="button is-primary" href="#">Download</a>
+          </span>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="arcane-centaur" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../../index.html">Arcane Centaur</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../index.html">Home</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../getting-started.html">Getting Started</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Languages</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">.NET</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/dotnet.html">Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/dotnet-cheatsheet.html">Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Lisp Family</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/lisp.html">Lisp / Clojure / Scheme / Fennel</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/lisp-cheatsheet.html">Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/janet.html">Janet Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/janet-cheatsheet.html">Janet Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Haskell</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/haskell.html">Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/haskell-cheatsheet.html">Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Lua</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/lua.html">Guide</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Editor Core</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../editor/editing.html">Editing Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../editor/navigation.html">Navigation Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../editor/code-intelligence.html">Code Intelligence Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../editor/git.html">Git Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../editor/git-cheatsheet.html">Git Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../editor/clipboard.html">Clipboard</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">AI &amp; Automation</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../ai/ai-tools.html">AI Tools Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../ai/ai-tools-cheatsheet.html">AI Tools Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Content Creation</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../content/markdown.html">Markdown Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../content/markdown-cheatsheet.html">Markdown Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../content/diagrams.html">Diagrams &amp; PlantUML</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../content/presentations.html">Presentations (MARP)</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../content/rest.html">REST / HTTP Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../content/rest-cheatsheet.html">REST Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Project Tooling</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../tooling/jira.html">Jira Integration</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../tooling/confluence.html">Confluence Publishing</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Learning</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Janet</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../janet/index.html">Series Index</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../janet/01-setup.html">01 — Setup</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../janet/02-first-steps.html">02 — First Steps</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../janet/03-functions.html">03 — Functions in Depth</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../janet/04-sequences.html">04 — Sequences</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../janet/05-modules.html">05 — Modules</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../janet/06-error-handling.html">06 — Error Handling</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../janet/07-macros.html">07 — Macros</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Ollama</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="index.html">Series Index</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="01-setup.html">01 — Setup &amp; Verification</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="02-first-conversations.html">02 — First Conversations</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="03-prompting-fundamentals.html">03 — Prompting Fundamentals</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="04-code-assistance.html">04 — Code Assistance</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="05-model-selection.html">05 — Model Selection</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="06-system-prompts.html">06 — System Prompts &amp; Context</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="07-the-api.html">07 — The Ollama API</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="08-rag-basics.html">08 — RAG Basics (Deep-Dive)</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Other</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../other/architecture.html">Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../other/contributing.html">Contributing to Docs</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../other/jira-project-map.html">Jira Project Map</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Arcane Centaur</span>
+    <span class="version"></span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <div class="title"><a href="../../index.html">Arcane Centaur</a></div>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">Arcane Centaur</a></li>
+    <li>Learning</li>
+    <li>Ollama</li>
+    <li><a href="04-code-assistance.html">04 — Code Assistance</a></li>
+  </ul>
+</nav>
+<div class="edit-this-page"><a href="file:///antora/docs/modules/ROOT/pages/learning/ollama/04-code-assistance.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<div class="paragraph">
+<p>← <a href="03-prompting-fundamentals.html" class="xref page">Previous</a> | <a href="index.html" class="xref page">Index</a> | <a href="05-model-selection.html" class="xref page">Next</a> →</p>
+</div>
+<hr>
+<div class="sect1">
+<h2 id="_04_code_assistance_workflow"><a class="anchor" href="#_04_code_assistance_workflow"></a>04 — Code Assistance Workflow</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This lesson covers the in-editor workflow: selecting code, sending it to Avante, and
+getting useful responses for explanation, review, and refactoring — all without leaving Neovim.</p>
+</div>
+<div class="paragraph">
+<p>Open a file from this config in one split and Avante in another with <code>&lt;leader&gt;ao</code>.
+A good file to start with: <code>~/.config/nvim/lua/plugins/avante.lua</code>.</p>
+</div>
+<hr>
+<div class="sect2">
+<h3 id="_1_the_selection_workflow"><a class="anchor" href="#_1_the_selection_workflow"></a>1. The Selection Workflow</h3>
+<div class="paragraph">
+<p>The core pattern is: <strong>select code → open Avante → ask about the selection</strong>.</p>
+</div>
+<div class="paragraph">
+<p>Avante picks up visually selected text automatically when you invoke it while in visual mode.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 28.5714%;">
+<col style="width: 71.4286%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Step</th>
+<th class="tableblock halign-left valign-top">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1. Select code</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enter visual mode (<code>v</code>, <code>V</code>, or <code>&lt;C-v&gt;</code>) and select the lines you want</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2. Open Avante</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Press <code>&lt;leader&gt;aa</code> (or <code>&lt;leader&gt;ao</code> to also switch to ollama)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3. Ask</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Type your question in the input area — the selection is included as context</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Try it:</strong></p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Open <code>lua/plugins/avante.lua</code></p>
+</li>
+<li>
+<p>Select the entire <code>keys = { &#8230;&#8203; }</code> block with <code>V</code> + motion</p>
+</li>
+<li>
+<p>Press <code>&lt;leader&gt;ao</code></p>
+</li>
+<li>
+<p>Ask: <code>Explain what each of these keymaps does.</code></p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p><strong>Confirm you see:</strong> an explanation of <code>&lt;leader&gt;aa</code>, <code>&lt;leader&gt;ao</code>, and <code>&lt;leader&gt;ac</code> and their
+Lua implementations.</p>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_2_explaining_code"><a class="anchor" href="#_2_explaining_code"></a>2. Explaining Code</h3>
+<div class="paragraph">
+<p>Use Avante to explain unfamiliar code. Good candidates in this config:</p>
+</div>
+<div class="paragraph">
+<p><strong><code>lua/plugins/ufo.lua</code></strong> — the fold provider selector:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Open <code>lua/plugins/ufo.lua</code></p>
+</li>
+<li>
+<p>Select the <code>provider_selector</code> function body</p>
+</li>
+<li>
+<p>Press <code>&lt;leader&gt;ao</code></p>
+</li>
+<li>
+<p>Ask: <code>Why does markdown get different fold providers than other filetypes?</code></p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p><strong>Confirm you see:</strong> an explanation of why <code>{ "treesitter", "indent" }</code> is used for markdown
+(marksman provides no fold ranges, no markdown fold queries in treesitter).</p>
+</div>
+<div class="paragraph">
+<p><strong><code>lua/config/lsp.lua</code></strong> — the native LSP API:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Open <code>lua/config/lsp.lua</code></p>
+</li>
+<li>
+<p>Select the <code>vim.lsp.config</code> block for any server</p>
+</li>
+<li>
+<p>Ask: <code>What is the difference between vim.lsp.config and lspconfig.setup?</code></p>
+</li>
+</ol>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_3_reviewing_code"><a class="anchor" href="#_3_reviewing_code"></a>3. Reviewing Code</h3>
+<div class="paragraph">
+<p>Avante can act as a code reviewer. The prompting techniques from lesson 03 apply directly.</p>
+</div>
+<div class="paragraph">
+<p><strong>Pattern: paste or select, then ask for a review with a specific focus</strong></p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Open <code>lua/options.lua</code></p>
+</li>
+<li>
+<p>Select the clipboard detection block (lines with <code>vim.g.clipboard</code> and OSC 52)</p>
+</li>
+<li>
+<p>Press <code>&lt;leader&gt;ao</code></p>
+</li>
+<li>
+<p>Ask: <code>Review this for correctness and edge cases. Are there any scenarios where this could silently fail?</code></p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p><strong>Confirm you see:</strong> a review focusing on potential failure modes rather than style.</p>
+</div>
+<div class="paragraph">
+<p>For a security-focused review, set a role first (new Avante session):</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>You are a security-focused Neovim plugin reviewer.</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then select and ask:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>Review this Docker Compose config for any security concerns.</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>(Open <code>docker/ollama/docker-compose.yml</code> and select the whole file.)</p>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_4_suggesting_refactors"><a class="anchor" href="#_4_suggesting_refactors"></a>4. Suggesting Refactors</h3>
+<div class="paragraph">
+<p>Ask Avante to suggest improvements to specific code.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Open <code>lua/config/lsp.lua</code></p>
+</li>
+<li>
+<p>Select the full file with <code>ggVG</code></p>
+</li>
+<li>
+<p>Press <code>&lt;leader&gt;ao</code></p>
+</li>
+<li>
+<p>Ask: <code>Are there any improvements you&#8217;d suggest to make this more idiomatic for Neovim 0.11+?</code></p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p><strong>Confirm you see:</strong> suggestions (or confirmation that the native API is already idiomatic).</p>
+</div>
+<div class="paragraph">
+<p><strong>Important:</strong> treat refactor suggestions as input, not instructions. Review what Avante
+proposes before applying anything. It may suggest changes that conflict with intentional
+design decisions in this config.</p>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_5_getting_completions_for_new_code"><a class="anchor" href="#_5_getting_completions_for_new_code"></a>5. Getting Completions for New Code</h3>
+<div class="paragraph">
+<p>You can ask Avante to write new code in the style of the existing config.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Open <code>lua/config/lsp.lua</code></p>
+</li>
+<li>
+<p>Select the <code>vim.lsp.config("lua_ls", &#8230;&#8203;)</code> block</p>
+</li>
+<li>
+<p>Press <code>&lt;leader&gt;ao</code></p>
+</li>
+<li>
+<p>Ask: <code>Using this exact pattern, write an equivalent block for the `zls</code> Zig language server. Use port 0 and no extra settings.`</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p><strong>Confirm you see:</strong> a <code>vim.lsp.config("zls", &#8230;&#8203;)</code> block following the same structure.</p>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_6_tips_for_effective_code_assistance"><a class="anchor" href="#_6_tips_for_effective_code_assistance"></a>6. Tips for Effective Code Assistance</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Be specific about what you want</strong> — "explain" vs "review" vs "refactor" produce very different responses</p>
+</li>
+<li>
+<p><strong>Select the minimum context</strong> — don&#8217;t select the whole file if one function is enough</p>
+</li>
+<li>
+<p><strong>Ask about one thing at a time</strong> — compound questions ("explain AND refactor AND add tests") produce scattered answers</p>
+</li>
+<li>
+<p><strong>Ollama 8B is strong for explanation; weaker for complex generation</strong> — switch to <code>&lt;leader&gt;ac</code> (copilot) for harder generation tasks</p>
+</li>
+<li>
+<p><strong>Always review generated code</strong> — the model does not know your full codebase</p>
+</li>
+</ul>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_7_what_to_explore_next"><a class="anchor" href="#_7_what_to_explore_next"></a>7. What to Explore Next</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="05-model-selection.html" class="xref page">05 — Model Selection</a> — choosing a better model for code tasks</p>
+</li>
+</ul>
+</div>
+<hr>
+<div class="paragraph">
+<p>← <a href="03-prompting-fundamentals.html" class="xref page">Previous</a> | <a href="index.html" class="xref page">Index</a> | <a href="05-model-selection.html" class="xref page">Next</a> →</p>
+</div>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>This page was built using the Antora default UI.</p>
+  <p>The source code for this UI is licensed under the terms of the MPL-2.0 license.</p>
+</footer>
+<script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

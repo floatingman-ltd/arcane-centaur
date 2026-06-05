@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Untitled :: Arcane Centaur Docs</title>
+    <link rel="canonical" href="https://floatingman-ltd.github.io/arcane-centaur/arcane-centaur/learning/janet/05-modules.html">
+    <meta name="generator" content="Antora 3.1.15">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://floatingman-ltd.github.io/arcane-centaur">Arcane Centaur Docs</a>
+      <button class="navbar-burger" aria-controls="topbar-nav" aria-expanded="false" aria-label="Toggle main menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="#">Home</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Products</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Product A</a>
+            <a class="navbar-item" href="#">Product B</a>
+            <a class="navbar-item" href="#">Product C</a>
+          </div>
+        </div>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Services</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Service A</a>
+            <a class="navbar-item" href="#">Service B</a>
+            <a class="navbar-item" href="#">Service C</a>
+          </div>
+        </div>
+        <div class="navbar-item">
+          <span class="control">
+            <a class="button is-primary" href="#">Download</a>
+          </span>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="arcane-centaur" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../../index.html">Arcane Centaur</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../index.html">Home</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../getting-started.html">Getting Started</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Languages</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">.NET</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/dotnet.html">Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/dotnet-cheatsheet.html">Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Lisp Family</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/lisp.html">Lisp / Clojure / Scheme / Fennel</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/lisp-cheatsheet.html">Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/janet.html">Janet Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/janet-cheatsheet.html">Janet Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Haskell</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/haskell.html">Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/haskell-cheatsheet.html">Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Lua</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/lua.html">Guide</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Editor Core</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../editor/editing.html">Editing Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../editor/navigation.html">Navigation Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../editor/code-intelligence.html">Code Intelligence Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../editor/git.html">Git Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../editor/git-cheatsheet.html">Git Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../editor/clipboard.html">Clipboard</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">AI &amp; Automation</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../ai/ai-tools.html">AI Tools Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../ai/ai-tools-cheatsheet.html">AI Tools Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Content Creation</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../content/markdown.html">Markdown Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../content/markdown-cheatsheet.html">Markdown Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../content/diagrams.html">Diagrams &amp; PlantUML</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../content/presentations.html">Presentations (MARP)</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../content/rest.html">REST / HTTP Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../content/rest-cheatsheet.html">REST Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Project Tooling</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../tooling/jira.html">Jira Integration</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../tooling/confluence.html">Confluence Publishing</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Learning</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Janet</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="index.html">Series Index</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="01-setup.html">01 — Setup</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="02-first-steps.html">02 — First Steps</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="03-functions.html">03 — Functions in Depth</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="04-sequences.html">04 — Sequences</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="05-modules.html">05 — Modules</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="06-error-handling.html">06 — Error Handling</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="07-macros.html">07 — Macros</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Ollama</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ollama/index.html">Series Index</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ollama/01-setup.html">01 — Setup &amp; Verification</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ollama/02-first-conversations.html">02 — First Conversations</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ollama/03-prompting-fundamentals.html">03 — Prompting Fundamentals</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ollama/04-code-assistance.html">04 — Code Assistance</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ollama/05-model-selection.html">05 — Model Selection</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ollama/06-system-prompts.html">06 — System Prompts &amp; Context</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ollama/07-the-api.html">07 — The Ollama API</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ollama/08-rag-basics.html">08 — RAG Basics (Deep-Dive)</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Other</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../other/architecture.html">Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../other/contributing.html">Contributing to Docs</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../other/jira-project-map.html">Jira Project Map</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Arcane Centaur</span>
+    <span class="version"></span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <div class="title"><a href="../../index.html">Arcane Centaur</a></div>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">Arcane Centaur</a></li>
+    <li>Learning</li>
+    <li>Janet</li>
+    <li><a href="05-modules.html">05 — Modules</a></li>
+  </ul>
+</nav>
+<div class="edit-this-page"><a href="file:///antora/docs/modules/ROOT/pages/learning/janet/05-modules.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<div class="paragraph">
+<p>← <a href="04-sequences.html" class="xref page">Previous</a> | <a href="index.html" class="xref page">Index</a> | <a href="06-error-handling.html" class="xref page">Next</a> →</p>
+</div>
+<hr>
+<div class="sect1">
+<h2 id="_05_modules_with_janet"><a class="anchor" href="#_05_modules_with_janet"></a>05 — Modules with Janet</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Janet&#8217;s module system lets you split code across files, share libraries via jpm, and control what gets exported.
+This lesson covers <code>import</code>, <code>use</code>, creating your own modules, and the standard jpm project layout.</p>
+</div>
+<div class="paragraph">
+<p>Open a scratch file and the Conjure log before starting:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">nvim scratch.janet</code></pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>,lv</pre>
+</div>
+</div>
+<hr>
+<div class="sect2">
+<h3 id="_1_what_is_a_module"><a class="anchor" href="#_1_what_is_a_module"></a>1. What Is a Module?</h3>
+<div class="paragraph">
+<p>In Janet, any <code>.janet</code> file is a module.
+When you <code>import</code> a file, Janet executes it and returns its environment as a table of bindings.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet"># mathlib.janet
+(defn square [x] (* x x))
+(defn cube   [x] (* x x x))</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet"># main.janet
+(import ./mathlib)
+(mathlib/square 5)   # =&gt; 25
+(mathlib/cube 3)     # =&gt; 27</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The module name becomes a prefix for all its exported symbols.</p>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_2_import"><a class="anchor" href="#_2_import"></a>2. import</h3>
+<div class="paragraph">
+<p><code>import</code> loads a module and binds its public symbols under a namespace prefix.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet"># Import with default prefix (module file name)
+(import spork/fmt)
+(spork/fmt/format-print "(def x 1)")
+
+# Import with a custom prefix using :as
+(import spork/fmt :as fmt)
+(fmt/format-print "(def x 1)")
+
+# Import only specific symbols
+(import spork/fmt :only [format-print])
+(format-print "(def x 1)")
+
+# Import and expose without a prefix (like use, but explicit)
+(import spork/path :prefix "")
+(join "/home/user" ".config")   # =&gt; "/home/user/.config"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Try it:</strong> install spork with <code>jpm install spork</code>, then evaluate <code>(import spork/path :as path)</code> followed by <code>(path/join "/a" "b")</code> with <code>,ee</code>.</p>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_3_use"><a class="anchor" href="#_3_use"></a>3. use</h3>
+<div class="paragraph">
+<p><code>use</code> imports all public symbols from a module directly into the current scope, with no prefix.
+Useful for DSLs and test helpers where prefixes add noise.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet">(use spork/path)
+(join "/home" "user" ".config")   # =&gt; "/home/user/.config"
+(basename "/home/user/file.janet")   # =&gt; "file.janet"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Use <code>use</code> sparingly in library code — it can cause name collisions.
+Prefer <code>import :as</code> for explicit namespacing.</p>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_4_controlling_exports"><a class="anchor" href="#_4_controlling_exports"></a>4. Controlling Exports</h3>
+<div class="paragraph">
+<p>By default, every <code>def</code> and <code>defn</code> at the top level of a file is exported.
+Prefix a binding with <code>_</code> to make it private (unexported):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet"># utils.janet
+
+(def- PI 3.14159)         # def- is private (not exported)
+(defn- to-radians [deg]   # defn- is private
+  (* deg (/ PI 180)))
+
+(defn circle-area [r]     # exported — no leading -
+  (* PI r r))</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet"># main.janet
+(import ./utils)
+(utils/circle-area 5)   # =&gt; 78.539...
+# (utils/to-radians 90) would error — private</code></pre>
+</div>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_5_jpm_project_layout"><a class="anchor" href="#_5_jpm_project_layout"></a>5. jpm Project Layout</h3>
+<div class="paragraph">
+<p><code>jpm</code> is Janet&#8217;s package manager.
+A typical project has this structure:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>my-project/
+  project.janet      # project metadata and dependencies
+  src/
+    init.janet       # main module (entry point)
+  test/
+    test-main.janet  # tests (use testament or judge)</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>A minimal <code>project.janet</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet">(declare-project
+  :name "my-project"
+  :version "0.1.0"
+  :dependencies ["https://github.com/janet-lang/spork"])
+
+(declare-source
+  :source ["src/init.janet"])</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Common jpm commands:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">jpm install          # install dependencies
+jpm test             # run tests in test/
+jpm build            # build native extensions
+jpm install spork    # install a specific package</code></pre>
+</div>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_6_the_spork_library"><a class="anchor" href="#_6_the_spork_library"></a>6. The spork Library</h3>
+<div class="paragraph">
+<p><code>spork</code> is the de-facto Janet standard library extension — a collection of utilities not in the core.
+Install it once:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">jpm install spork</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Useful modules:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 28.5714%;">
+<col style="width: 71.4286%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Module</th>
+<th class="tableblock halign-left valign-top">What it provides</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spork/fmt</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Code formatter — pretty-prints Janet source</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spork/path</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Cross-platform file path manipulation (<code>join</code>, <code>basename</code>, <code>dirname</code>, <code>ext</code>)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spork/test</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Minimal test helpers (<code>is</code>, <code>assert-error</code>)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spork/misc</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Miscellaneous utilities (<code>clamp</code>, <code>number-to-bytes</code>, <code>bytes-to-number</code>)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spork/regex</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">POSIX-compatible regular expressions</p></td>
+</tr>
+</tbody>
+</table>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet">(import spork/path :as path)
+
+(path/join "docs" "learning" "janet")
+# =&gt; "docs/learning/janet"
+
+(path/basename "/home/user/file.janet")
+# =&gt; "file.janet"
+
+(path/ext "/home/user/file.janet")
+# =&gt; ".janet"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Try it:</strong> evaluate each <code>path/</code> call with <code>,ee</code>.</p>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_7_mini_project_a_small_module"><a class="anchor" href="#_7_mini_project_a_small_module"></a>7. Mini-Project: A Small Module</h3>
+<div class="paragraph">
+<p>Create a two-file project in a temp directory and load it from a scratch file.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet"># /tmp/greetlib.janet
+
+(defn- make-greeting [template name]
+  (string/format template name))
+
+(defn hello [name]
+  (make-greeting "Hello, %s!" name))
+
+(defn farewell [name]
+  (make-greeting "Goodbye, %s." name))</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet"># scratch.janet
+(import /tmp/greetlib :as greet)
+
+(greet/hello "Alice")      # =&gt; "Hello, Alice!"
+(greet/farewell "Bob")     # =&gt; "Goodbye, Bob."</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Workflow:</strong></p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create <code>/tmp/greetlib.janet</code> with the first block.</p>
+</li>
+<li>
+<p>In <code>scratch.janet</code>, evaluate <code>(import /tmp/greetlib :as greet)</code> with <code>,er</code>.</p>
+</li>
+<li>
+<p>Evaluate <code>(greet/hello "Alice")</code> with <code>,ee</code>.</p>
+</li>
+<li>
+<p>Add a new function to <code>greetlib.janet</code>, re-import, and call it.</p>
+</li>
+</ol>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_8_what_to_explore_next"><a class="anchor" href="#_8_what_to_explore_next"></a>8. What to Explore Next</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Call <code>(doc import)</code>, <code>(doc use)</code> in the REPL for built-in documentation</p>
+</li>
+<li>
+<p><a href="https://github.com/janet-lang/spork">janet-lang/spork</a> — full spork API reference</p>
+</li>
+<li>
+<p><a href="https://janet-lang.org/docs/modules.html">janet-lang.org/docs/modules</a> — module system deep-dive</p>
+</li>
+<li>
+<p><a href="06-error-handling.html" class="xref page">Next: 06 — Error Handling</a></p>
+</li>
+</ul>
+</div>
+<hr>
+<div class="paragraph">
+<p>← <a href="04-sequences.html" class="xref page">Previous</a> | <a href="index.html" class="xref page">Index</a> | <a href="06-error-handling.html" class="xref page">Next</a> →</p>
+</div>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>This page was built using the Antora default UI.</p>
+  <p>The source code for this UI is licensed under the terms of the MPL-2.0 license.</p>
+</footer>
+<script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

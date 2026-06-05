@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Untitled :: Arcane Centaur Docs</title>
+    <link rel="canonical" href="https://floatingman-ltd.github.io/arcane-centaur/arcane-centaur/learning/janet/02-first-steps.html">
+    <meta name="generator" content="Antora 3.1.15">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://floatingman-ltd.github.io/arcane-centaur">Arcane Centaur Docs</a>
+      <button class="navbar-burger" aria-controls="topbar-nav" aria-expanded="false" aria-label="Toggle main menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="#">Home</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Products</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Product A</a>
+            <a class="navbar-item" href="#">Product B</a>
+            <a class="navbar-item" href="#">Product C</a>
+          </div>
+        </div>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Services</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Service A</a>
+            <a class="navbar-item" href="#">Service B</a>
+            <a class="navbar-item" href="#">Service C</a>
+          </div>
+        </div>
+        <div class="navbar-item">
+          <span class="control">
+            <a class="button is-primary" href="#">Download</a>
+          </span>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="arcane-centaur" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../../index.html">Arcane Centaur</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../index.html">Home</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../getting-started.html">Getting Started</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Languages</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">.NET</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/dotnet.html">Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/dotnet-cheatsheet.html">Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Lisp Family</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/lisp.html">Lisp / Clojure / Scheme / Fennel</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/lisp-cheatsheet.html">Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/janet.html">Janet Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/janet-cheatsheet.html">Janet Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Haskell</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/haskell.html">Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/haskell-cheatsheet.html">Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Lua</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/lua.html">Guide</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Editor Core</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../editor/editing.html">Editing Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../editor/navigation.html">Navigation Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../editor/code-intelligence.html">Code Intelligence Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../editor/git.html">Git Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../editor/git-cheatsheet.html">Git Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../editor/clipboard.html">Clipboard</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">AI &amp; Automation</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../ai/ai-tools.html">AI Tools Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../ai/ai-tools-cheatsheet.html">AI Tools Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Content Creation</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../content/markdown.html">Markdown Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../content/markdown-cheatsheet.html">Markdown Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../content/diagrams.html">Diagrams &amp; PlantUML</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../content/presentations.html">Presentations (MARP)</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../content/rest.html">REST / HTTP Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../content/rest-cheatsheet.html">REST Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Project Tooling</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../tooling/jira.html">Jira Integration</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../tooling/confluence.html">Confluence Publishing</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Learning</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Janet</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="index.html">Series Index</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="01-setup.html">01 — Setup</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="02-first-steps.html">02 — First Steps</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="03-functions.html">03 — Functions in Depth</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="04-sequences.html">04 — Sequences</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="05-modules.html">05 — Modules</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="06-error-handling.html">06 — Error Handling</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="07-macros.html">07 — Macros</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Ollama</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ollama/index.html">Series Index</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ollama/01-setup.html">01 — Setup &amp; Verification</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ollama/02-first-conversations.html">02 — First Conversations</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ollama/03-prompting-fundamentals.html">03 — Prompting Fundamentals</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ollama/04-code-assistance.html">04 — Code Assistance</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ollama/05-model-selection.html">05 — Model Selection</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ollama/06-system-prompts.html">06 — System Prompts &amp; Context</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ollama/07-the-api.html">07 — The Ollama API</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../ollama/08-rag-basics.html">08 — RAG Basics (Deep-Dive)</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Other</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../other/architecture.html">Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../other/contributing.html">Contributing to Docs</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../other/jira-project-map.html">Jira Project Map</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Arcane Centaur</span>
+    <span class="version"></span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <div class="title"><a href="../../index.html">Arcane Centaur</a></div>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">Arcane Centaur</a></li>
+    <li>Learning</li>
+    <li>Janet</li>
+    <li><a href="02-first-steps.html">02 — First Steps</a></li>
+  </ul>
+</nav>
+<div class="edit-this-page"><a href="file:///antora/docs/modules/ROOT/pages/learning/janet/02-first-steps.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<div class="sect1">
+<h2 id="_02_first_steps_with_janet"><a class="anchor" href="#_02_first_steps_with_janet"></a>02 — First Steps with Janet</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This guide covers Janet’s core syntax and data types, then shows you how
+to use each Neovim tool hands-on. Work through it interactively —
+evaluate every snippet as you read.</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p><strong>Series:</strong> <a href="01-setup.html" class="xref page">01 Setup</a> · 02 First Steps ← you are here</p>
+</div>
+</blockquote>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_1_open_a_scratch_file"><a class="anchor" href="#_1_open_a_scratch_file"></a>1. Open a Scratch File</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">nvim scratch.janet</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Open the Conjure log in a vertical split straight away — you will use it
+throughout:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>,lv</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Everything you evaluate will appear in the right-hand pane.</p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_2_core_syntax_at_a_glance"><a class="anchor" href="#_2_core_syntax_at_a_glance"></a>2. Core Syntax at a Glance</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Janet is a Lisp. Every expression is a function call wrapped in
+parentheses:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet">(function arg1 arg2 ...)</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Concept</th>
+<th class="tableblock halign-left valign-top">Example</th>
+<th class="tableblock halign-left valign-top">Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Arithmetic</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>(&#43; 1 2)</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>3</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Nested calls</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>(* 2 (&#43; 3 4))</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>14</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>"hello"</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>"hello"</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Keyword</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:name</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code> <code>false</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Nil</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>nil</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Evaluate each line with <code>,ee</code> (cursor on the form) or <code>,eb</code> (whole
+buffer).</p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_3_data_types"><a class="anchor" href="#_3_data_types"></a>3. Data Types</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_numbers"><a class="anchor" href="#_numbers"></a>Numbers</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet">42          # integer
+3.14        # float
+0xFF        # hex integer (255)</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_strings"><a class="anchor" href="#_strings"></a>Strings</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet">"Hello, world!"
+(string "Hello" ", " "world!")   # =&gt; "Hello, world!"
+(string/length "Janet")          # =&gt; 5
+(string/upcase "janet")          # =&gt; "JANET"</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_keywords"><a class="anchor" href="#_keywords"></a>Keywords</h3>
+<div class="paragraph">
+<p>Keywords are interned symbols prefixed with <code>:</code>. They evaluate to
+themselves and are commonly used as map keys:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet">:name
+:age</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_arrays_mutable"><a class="anchor" href="#_arrays_mutable"></a>Arrays (mutable)</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet">(def arr @[1 2 3])
+(array/push arr 4)
+arr   # =&gt; @[1 2 3 4]</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_tuples_immutable"><a class="anchor" href="#_tuples_immutable"></a>Tuples (immutable)</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet">(def t [1 2 3])
+(get t 0)   # =&gt; 1</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_tables_mutable_maps"><a class="anchor" href="#_tables_mutable_maps"></a>Tables (mutable maps)</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet">(def person @{:name "Alice" :age 30})
+(get person :name)          # =&gt; "Alice"
+(put person :age 31)
+person                      # =&gt; @{:name "Alice" :age 31}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_structs_immutable_maps"><a class="anchor" href="#_structs_immutable_maps"></a>Structs (immutable maps)</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet">(def config {:host "localhost" :port 4005})
+(config :host)   # =&gt; "localhost"</code></pre>
+</div>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_4_defining_things"><a class="anchor" href="#_4_defining_things"></a>4. Defining Things</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_variables"><a class="anchor" href="#_variables"></a>Variables</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet">(def x 42)          # immutable binding
+(var counter 0)     # mutable binding
+(set counter 1)     # mutate a var</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_functions"><a class="anchor" href="#_functions"></a>Functions</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet">(defn greet [name]
+  (string "Hello, " name "!"))
+
+(greet "Walt")   # =&gt; "Hello, Walt!"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Functions are first-class values:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet">(def double (fn [x] (* x 2)))
+(double 5)   # =&gt; 10</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_let_bindings_local_scope"><a class="anchor" href="#_let_bindings_local_scope"></a>Let bindings (local scope)</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet">(let [a 3
+      b 4]
+  (math/sqrt (+ (* a a) (* b b))))   # =&gt; 5.0</code></pre>
+</div>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_5_control_flow"><a class="anchor" href="#_5_control_flow"></a>5. Control Flow</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_if_if_not"><a class="anchor" href="#_if_if_not"></a>if / if-not</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet">(if (&gt; 3 2)
+  "yes"
+  "no")   # =&gt; "yes"</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_when_no_else_branch"><a class="anchor" href="#_when_no_else_branch"></a>when (no else branch)</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet">(when true
+  (print "this runs"))</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_cond_multi_branch"><a class="anchor" href="#_cond_multi_branch"></a>cond (multi-branch)</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet">(def x 5)
+(cond
+  (&lt; x 0) "negative"
+  (= x 0) "zero"
+  "positive")   # =&gt; "positive"</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_loop_and_each"><a class="anchor" href="#_loop_and_each"></a>loop and each</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet">(each item [1 2 3]
+  (print item))
+
+(loop [i :range [0 5]]
+  (print i))</code></pre>
+</div>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_6_using_the_neovim_tools"><a class="anchor" href="#_6_using_the_neovim_tools"></a>6. Using the Neovim Tools</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_conjure_evaluating_code"><a class="anchor" href="#_conjure_evaluating_code"></a>Conjure — Evaluating Code</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Keys</th>
+<th class="tableblock halign-left valign-top">What happens</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,ee</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Evaluates the form the cursor is inside</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,er</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Evaluates the outermost (root) form</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,eb</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Evaluates every top-level form in the file</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,e!</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Replaces the form in the buffer with its result</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,lv</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Opens the Conjure log in a vertical split</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,lq</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Closes the log window</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Try it:</strong> place the cursor anywhere inside <code>(greet "Walt")</code> and press
+<code>,ee</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_vim_sexp_structural_editing"><a class="anchor" href="#_vim_sexp_structural_editing"></a>vim-sexp — Structural Editing</h3>
+<div class="paragraph">
+<p>vim-sexp lets you reshape code without manually counting parentheses.
+All motions work in normal mode.</p>
+</div>
+<div class="paragraph">
+<p><strong>Slurp and barf</strong> (extend or shrink a form’s boundary):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet">; Start:
+(+ 1 2) 3
+
+; Slurp forward  &gt;)  — pull 3 into the form:
+(+ 1 2 3)
+
+; Barf forward   &lt;)  — push 3 back out:
+(+ 1 2) 3</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Keys</th>
+<th class="tableblock halign-left valign-top">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&gt;)</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Slurp forward — extend closing <code>)</code> rightward</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;)</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Barf forward — shrink closing <code>)</code> leftward</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;(</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Slurp backward — extend opening <code>(</code> leftward</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&gt;(</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Barf backward — shrink opening <code>(</code> rightward</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&gt;f</code> / <code>&lt;f</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Move the current form right / left</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&gt;e</code> / <code>&lt;e</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Move the current element right / left</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>cse(</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Wrap element in <code>()</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>cse[</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Wrap element in <code>[]</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>dsf</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Splice (delete surrounding form, keep contents)</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Try it:</strong> on the <code>greet</code> definition, position the cursor on <code>"Hello, "</code>
+and press <code>&gt;)</code> — watch the closing paren jump right.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_nvim_parinfer_indent_driven_parens"><a class="anchor" href="#_nvim_parinfer_indent_driven_parens"></a>nvim-parinfer — Indent-Driven Parens</h3>
+<div class="paragraph">
+<p>Parinfer infers where closing parentheses belong based on your
+indentation. There are no keymaps — just indent with <code>&gt;&gt;</code> or Tab and
+watch the parens follow.</p>
+</div>
+<div class="paragraph">
+<p><strong>Key rule:</strong> edit indentation to move code into or out of a form; do not
+manually drag parentheses.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_rainbow_delimiters_visual_nesting"><a class="anchor" href="#_rainbow_delimiters_visual_nesting"></a>rainbow-delimiters — Visual Nesting</h3>
+<div class="paragraph">
+<p>Each nesting level gets a distinct colour automatically. No keymaps
+needed. Use the colours to orient yourself when editing deeply nested
+expressions.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_lsp_language_intelligence"><a class="anchor" href="#_lsp_language_intelligence"></a>LSP — Language Intelligence</h3>
+<div class="paragraph">
+<p>The <code>janet_lsp</code> server activates automatically when you open a
+<code>.janet</code> file. Standard LSP keymaps (from <code>lua/config/lsp.lua</code>):</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Keys</th>
+<th class="tableblock halign-left valign-top">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>gd</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Go to definition</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>K</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Hover documentation</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>gr</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Find all references</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;leader&gt;rn</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rename symbol</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;leader&gt;ca</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Code actions</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;leader&gt;e</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Open diagnostic float</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[d</code> / <code>]d</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Jump to previous / next diagnostic</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Check the server is running: <code>:lua =vim.lsp.get_clients({bufnr=0})</code></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_conform_nvim_formatting"><a class="anchor" href="#_conform_nvim_formatting"></a>conform.nvim — Formatting</h3>
+<div class="paragraph">
+<p>Format-on-save is active for Janet. To trigger manually:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Keys</th>
+<th class="tableblock halign-left valign-top">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;leader&gt;f</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Format buffer (normal mode) or selection (visual
+mode)</p></td>
+</tr>
+</tbody>
+</table>
+<hr>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_7_a_complete_mini_project"><a class="anchor" href="#_7_a_complete_mini_project"></a>7. A Complete Mini-Project</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Put this in <code>scratch.janet</code>, then evaluate forms top-to-bottom with
+<code>,er</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-janet hljs" data-lang="janet"># A small phonebook
+
+(def phonebook
+  @{:alice "555-0100"
+    :bob   "555-0101"
+    :carol "555-0102"})
+
+(defn lookup [name]
+  (if-let [number (phonebook name)]
+    (string name " → " number)
+    (string name " not found")))
+
+(lookup :alice)   # evaluate this line with ,ee
+(lookup :dave)    # evaluate this line with ,ee</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Workflow:</strong> 1. Evaluate <code>(def phonebook &#8230;&#8203;)</code> with <code>,er</code> — the table is
+now in the REPL state. 2. Evaluate <code>(defn lookup &#8230;&#8203;)</code> with <code>,er</code> — the
+function is defined. 3. Position cursor on <code>(lookup :alice)</code> and press
+<code>,ee</code> — see the result in the Conjure log. 4. Try adding a new entry:
+<code>(put phonebook :dave "555-0199")</code> then look up <code>:dave</code>.</p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_8_what_to_explore_next"><a class="anchor" href="#_8_what_to_explore_next"></a>8. What to Explore Next</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Janet standard library:</strong> run <code>(doc string)</code>, <code>(doc array)</code>, etc. in
+the REPL to read built-in documentation.</p>
+</li>
+<li>
+<p><strong>Modules:</strong> <code>(import spork/fmt)</code> after installing a library with
+<code>jpm install spork</code>.</p>
+</li>
+<li>
+<p><strong>Macros:</strong>
+<code>(defmacro unless [cond body] ~(when (not ,cond) ,body))</code>.</p>
+</li>
+<li>
+<p><strong>Janet documentation:</strong>
+<a href="https://janet-lang.org/docs/">janet-lang.org/docs/</a></p>
+</li>
+<li>
+<p><strong>Cheatsheet:</strong> <code>docs/cheatsheets/janet.md</code> — quick-reference for all
+Neovim keymaps.</p>
+</li>
+<li>
+<p><strong>Full guide:</strong> <code>docs/guides/janet.md</code> — plugin details, workflow
+diagrams, troubleshooting.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>This page was built using the Antora default UI.</p>
+  <p>The source code for this UI is licensed under the terms of the MPL-2.0 license.</p>
+</footer>
+<script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>
