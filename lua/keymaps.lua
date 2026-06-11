@@ -65,6 +65,16 @@ vim.keymap.set("n", "<C-n>",    ":NvimTreeOpen<CR>",     { noremap = true, silen
 vim.keymap.set("n", "<C-t>",    ":NvimTreeToggle<CR>",   { noremap = true, silent = true, desc = "File tree: toggle" })
 vim.keymap.set("n", "<C-f>",    ":NvimTreeFindFile<CR>", { noremap = true, silent = true, desc = "File tree: find current file" })
 
+-- Terminals have no filetype (buftype == "terminal"), so spell can't be
+-- disabled via after/ftplugin. Turn it off whenever a terminal job starts.
+vim.api.nvim_create_autocmd("TermOpen", {
+  group = vim.api.nvim_create_augroup("terminal_settings", { clear = true }),
+  callback = function()
+    vim.opt_local.spell = false
+  end,
+  desc = "Disable spell-checking in terminal buffers",
+})
+
 -- Terminal toggle
 local term_buf = -1
 local function toggle_terminal()
@@ -79,7 +89,7 @@ local function toggle_terminal()
   vim.cmd("botright split")
   vim.cmd("resize 15")
   vim.wo.winfixheight = true
-  vim.wo.winfixheight = true
+  vim.wo.spell = false  -- terminal buffer is reused across windows; TermOpen won't re-fire
   if vim.api.nvim_buf_is_valid(term_buf) then
     vim.api.nvim_set_current_buf(term_buf)
   else
@@ -117,6 +127,7 @@ local function ide_layout()
     vim.cmd("botright split")
     vim.cmd("resize 15")
     vim.wo.winfixheight = true
+    vim.wo.spell = false  -- terminal buffer is reused across windows; TermOpen won't re-fire
     if vim.api.nvim_buf_is_valid(term_buf) then
       vim.api.nvim_set_current_buf(term_buf)
     else
