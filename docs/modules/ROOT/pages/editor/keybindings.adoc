@@ -192,6 +192,20 @@ window)
 
 '''''
 
+=== Research Popup
+
+[width="100%",cols="34%,33%,33%",options="header",]
+|===
+|Keys |Mode |Action
+|`++<++leader++>++?l` |Normal |`:ResearchLocal` — ask about this config (grounded in keymaps + cheatsheets)
+
+|`++<++leader++>++?a` |Normal |`:ResearchAsk` — ask a general-knowledge question
+|===
+
+→ xref:ai/ai-tools.adoc#research-popup[Full guide] · xref:ai/ai-tools-cheatsheet.adoc[AI Tools cheatsheet]
+
+'''''
+
 === OpenSpec
 
 [cols=",,",options="header",]
