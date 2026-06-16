@@ -90,6 +90,8 @@
 |-----|------|--------|
 | `<leader>gcs` | Normal/Visual | Claude CLI: suggest shell command |
 | `<leader>gce` | Normal/Visual | Claude CLI: explain code |
+| `<leader>?l` | Normal | Research: ask about this config (grounded) |
+| `<leader>?a` | Normal | Research: ask a general question |
 | `<leader>c` | Normal | Jump back from the Avante chat panel |
 
 ---

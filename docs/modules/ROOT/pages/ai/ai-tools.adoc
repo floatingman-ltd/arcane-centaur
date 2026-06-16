@@ -9,6 +9,9 @@ into Neovim:
 |*Claude CLI* |Ask Claude to suggest shell commands or explain
 code without leaving the editor
 
+|*Research popup* |Ask a free-form question and read the answer in a
+floating window — local (grounded in this config) or general knowledge
+
 |*OpenSpec* |Drive the in-repo OpenSpec change workflow from Neovim
 keymaps
 
@@ -22,6 +25,7 @@ assistants such as Claude Code
 [cols="1,3"]
 |===
 | xref:#claude-cli[Claude CLI] | Suggest commands, explain code
+| xref:#research-popup[Research popup] | Free-form question popup
 | xref:#openspec[OpenSpec] | Change workflow from Neovim keymaps
 | xref:#serena[Serena MCP Server] | Symbol-aware code intelligence
 | xref:#avante[Avante] | Q&A chat with ollama or Claude
@@ -67,6 +71,41 @@ The `claude` CLI (Claude Code) must be on your `$PATH`. Install it from
 https://claude.com/claude-code[claude.com/claude-code] and sign in once
 (`claude` then follow the login prompt). No `ANTHROPIC_API_KEY` is
 required for these commands — they use Claude Code's built-in auth.
+
+''''''
+
+[[research-popup]]
+== Research Popup
+
+=== Usage
+
+Press `++<++leader++>++?l` or `++<++leader++>++?a` in Normal mode. An input prompt appears — type your question and press Enter.
+
+[width="100%",cols="34%,33%,33%",options="header",]
+|===
+|Keys |Command |Action
+|`++<++leader++>++?l` |`:ResearchLocal` |Ask about *this* config — answer is grounded in your live keymaps and cheatsheets
+
+|`++<++leader++>++?a` |`:ResearchAsk` |Ask a general-knowledge question — no local context
+|===
+
+The response appears in a floating window (same window as `:ClaudeExplain`). Press `q` or `++<++Esc++>++` to close it.
+
+=== Local vs General
+
+`:ResearchLocal` (`++<++leader++>++?l`) prepends your *live keymap descriptions* and *assembled cheatsheet content* to the prompt, then instructs the model to answer only from that context — it will say so when the answer is not present rather than guessing. Use this for config-specific questions like "how do I toggle the terminal?" or "what's the keymap for closing the diff view?".
+
+`:ResearchAsk` (`++<++leader++>++?a`) sends your question verbatim with no local context. Use this for general programming and language questions.
+
+=== How it works
+
+`lua/config/research.lua` uses `vim.system()` to invoke `claude -p` asynchronously, relying on Claude Code's own authentication. The result is rendered in a scratch buffer inside a floating window via the shared `config.util.open_float` helper.
+
+'''''
+
+=== Prerequisites
+
+The `claude` CLI (Claude Code) must be on your `$PATH`. No `ANTHROPIC_API_KEY` is required — these commands use Claude Code's built-in auth. See the xref:#claude-cli[Claude CLI prerequisites] section.
 
 ''''''
 
