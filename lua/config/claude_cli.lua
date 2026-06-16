@@ -67,39 +67,6 @@ local function get_context_text(args)
   return table.concat(lines, "\n")
 end
 
---- Open a floating scratch window and populate it with `lines`.
---
----@param title string   Window title shown in the border.
----@param lines string[] Lines of content to display.
-local function open_float(title, lines)
-  local buf = vim.api.nvim_create_buf(false, true)
-  vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
-  vim.bo[buf].modifiable = false
-  vim.bo[buf].filetype   = "markdown"
-
-  local width  = math.floor(vim.o.columns * 0.75)
-  local height = math.floor(vim.o.lines * 0.6)
-  local row    = math.floor((vim.o.lines - height) / 2)
-  local col    = math.floor((vim.o.columns - width) / 2)
-
-  vim.api.nvim_open_win(buf, true, {
-    relative = "editor",
-    width    = width,
-    height   = height,
-    row      = row,
-    col      = col,
-    style    = "minimal",
-    border   = "rounded",
-    title    = " " .. title .. " ",
-    title_pos = "center",
-  })
-
-  -- Close with q or <Esc>.
-  local close_opts = { buffer = buf, noremap = true, silent = true }
-  vim.keymap.set("n", "q",     "<cmd>close<CR>", close_opts)
-  vim.keymap.set("n", "<Esc>", "<cmd>close<CR>", close_opts)
-end
-
 --- Call Claude CLI and display the response in a floating window.
 --- Uses Claude Code's built-in authentication (no API key needed).
 --- Displays the result on success; notifies on error.
@@ -147,7 +114,7 @@ local function run_claude(subcommand, input)
         end
 
         local title = "claude " .. subcommand
-        open_float(title, lines)
+        require("config.util").open_float(title, lines)
       end)
     end
   )

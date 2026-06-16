@@ -197,6 +197,11 @@ vim.keymap.set("n", "<leader>?g", function()
   require("config.cheatsheet").pick_guide()
 end, { noremap = true, silent = true, desc = "Open guide picker" })
 
+vim.keymap.set("n", "<leader>?l", "<cmd>ResearchLocal<CR>",
+  { noremap = true, silent = true, desc = "Research: ask about this config (grounded)" })
+vim.keymap.set("n", "<leader>?a", "<cmd>ResearchAsk<CR>",
+  { noremap = true, silent = true, desc = "Research: ask a general question" })
+
 -- OpenSpec
 vim.keymap.set("n", "<leader>osn", "<cmd>OpenspecNew<CR>",
   { noremap = true, silent = true, desc = "OpenSpec: new change" })

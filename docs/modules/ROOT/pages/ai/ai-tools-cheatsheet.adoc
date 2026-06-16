@@ -46,6 +46,32 @@ explanation
 
 '''''
 
+== Research Popup
+
+Ask a free-form question from any buffer and read the answer in a floating window.
+
+[width="100%",cols="34%,33%,33%",options="header",]
+|===
+|Keys |Mode |Action
+|`++<++leader++>++?l` |Normal |`:ResearchLocal` — question grounded in this config's keymaps and cheatsheets
+
+|`++<++leader++>++?a` |Normal |`:ResearchAsk` — general-knowledge question (no local context)
+|===
+
+=== Commands
+
+[width="100%",cols="50%,50%",options="header",]
+|===
+|Command |Description
+|`:ResearchLocal` |Ask about this Neovim config; answer uses only local context
+
+|`:ResearchAsk` |Ask any general question; no local context prepended
+|===
+
+Uses Claude Code's built-in auth (no `ANTHROPIC_API_KEY`). Press `q` or `++<++Esc++>++` to close the result float.
+
+'''''
+
 == OpenSpec
 
 Drive the OpenSpec change workflow from within Neovim. Output is shown
