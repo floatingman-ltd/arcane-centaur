@@ -2,7 +2,7 @@
 
 - [x] 1.1 Move `open_float(title, lines)` from `lua/config/claude_cli.lua` into `lua/config/util.lua` as `M.open_float` — faithful extraction: same dimensions (0.75 × 0.6), rounded border, centred, `style = "minimal"`, `filetype = markdown`, `nomodifiable`, `q`/`<Esc>` to close
 - [x] 1.2 Update `lua/config/claude_cli.lua` to call `require("config.util").open_float(...)` and remove its private local copy
-- [ ] 1.3 Syntax-check both files (`luac -p`) and manually verify `:ClaudeExplain` / `:ClaudeSuggest` still render in an identical window
+- [x] 1.3 Syntax-check both files (`luac -p`) and manually verify `:ClaudeExplain` / `:ClaudeSuggest` still render in an identical window
 
 ## 2. Research Module
 
@@ -21,11 +21,11 @@
 ## 4. Validation
 
 - [x] 4.1 Syntax-check `util.lua`, `claude_cli.lua`, `research.lua` with `luac -p`
-- [ ] 4.2 Manually verify `<leader>?a "Common Lisp format directives"` opens a float with a general answer
-- [ ] 4.3 Manually verify `<leader>?l "how do I toggle the terminal?"` returns an answer that reflects the config's actual binding (`<leader>t`) — proves grounding works
-- [ ] 4.4 Manually verify `<leader>?l` with a question not covered by the context makes the model say it cannot find it in the configuration (no generic fabrication)
-- [ ] 4.5 Manually verify empty/cancelled input aborts with no window, and the `claude`-not-on-`$PATH` path notifies and aborts
-- [ ] 4.6 Manually verify `q` / `<Esc>` dismiss the float and that the result window is visually identical to `:ClaudeExplain`'s
+- [x] 4.2 Manually verify `<leader>?a "Common Lisp format directives"` opens a float with a general answer
+- [x] 4.3 Manually verify `<leader>?l "how do I toggle the terminal?"` returns an answer that reflects the config's actual binding (`<leader>t`) — proves grounding works
+- [x] 4.4 Manually verify `<leader>?l` with a question not covered by the context makes the model say it cannot find it in the configuration (no generic fabrication)
+- [x] 4.5 Manually verify empty/cancelled input aborts with no window, and the `claude`-not-on-`$PATH` path notifies and aborts
+- [x] 4.6 Manually verify `q` / `<Esc>` dismiss the float and that the result window is visually identical to `:ClaudeExplain`'s
 
 ## 5. Documentation
 
