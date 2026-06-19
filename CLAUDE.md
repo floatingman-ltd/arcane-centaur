@@ -19,7 +19,7 @@ Lazy-loading is filetype-driven: plugins use lazy.nvim's `ft = { ... }` field so
 
 - **Leader keys**: `<leader>` is Space (global maps in `lua/keymaps.lua`); `<localleader>` is `,` (per-filetype REPL/eval maps in `after/ftplugin/`). All keymaps set a `desc` — which-key surfaces them.
 - **LSP**: every server shares one `on_attach` in `lua/config/lsp.lua`. Add servers there with `lspconfig.<server>.setup{ on_attach = on_attach }`.
-- **Formatting**: `lua/plugins/conform.lua` does format-on-save; add filetypes to its `formatters_by_ft`. Lisp/F# use `lsp_format = "prefer"`.
+- **Formatting**: `lua/plugins/conform.lua` does format-on-save; add filetypes to its `formatters_by_ft`. F# uses `lsp_format = "prefer"`.
 - **Terminal capabilities**: branch on `lua/config/terminal.lua`'s flags (`has_nerd_font`, `has_undercurl`, `name`) rather than hardcoding terminal-specific behavior.
 - **Colorscheme**: TokyoNight; change the `style` variable at the top of `lua/plugins/colorscheme.lua`.
 
@@ -27,7 +27,7 @@ Lazy-loading is filetype-driven: plugins use lazy.nvim's `ft = { ... }` field so
 
 | Language | LSP | REPL/eval |
 |---|---|---|
-| Common Lisp | `cl_lsp` | Conjure + Swank (port 4005) |
+| Common Lisp | — | Conjure + Swank (port 4005) |
 | Clojure / Scheme / Fennel / Janet | — | Conjure built-in |
 | F# | `fsautocomplete` | iron.nvim → `dotnet fsi` |
 | Haskell | haskell-language-server | haskell-tools → GHCi |

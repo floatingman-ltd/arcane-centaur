@@ -1,13 +1,35 @@
-// :auto-generated: true
-// :source: documentation/cheatsheets/lisp.md
-// Remove this header to take manual ownership of this file
-
 == Lisp Cheatsheet (Conjure {plus} vim-sexp)
 
 *LocalLeader* = `,` in Lisp / Clojure / Scheme / Fennel buffers
 
 → Back to xref:editor/keybindings.adoc[main cheatsheet] · Full guide: ../guides/lisp.md
 · Janet-specific: janet.md
+
+== Common Lisp REPL Containers
+
+Compose file: `docker/lisp-swank/docker-compose.yml`
+
+*The :4005 contract:* whoever owns `127.0.0.1:4005` is the active Lisp.
+Switch by bringing down the current profile and bringing up the next; reconnect with `,cc`.
+
+[cols="1,3",options="header"]
+|===
+|Implementation |Start command
+|SBCL (default)  |`LISP_DIR=$PWD docker compose -f ~/.config/nvim/docker/lisp-swank/docker-compose.yml up -d --wait`
+|CCL  |`LISP_DIR=$PWD docker compose -f ~/.config/nvim/docker/lisp-swank/docker-compose.yml --profile ccl  up -d --wait`
+|ECL  |`LISP_DIR=$PWD docker compose -f ~/.config/nvim/docker/lisp-swank/docker-compose.yml --profile ecl  up -d --wait`
+|ABCL |`LISP_DIR=$PWD docker compose -f ~/.config/nvim/docker/lisp-swank/docker-compose.yml --profile abcl up -d --wait`
+|===
+
+[source,sh]
+----
+# Switch: bring down current, bring up next, reconnect
+docker compose -f ~/.config/nvim/docker/lisp-swank/docker-compose.yml down
+# ...then the start command for the target impl above
+# Then in Neovim: ,cc
+----
+
+'''''
 
 == Conjure — Evaluation
 

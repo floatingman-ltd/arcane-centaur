@@ -107,7 +107,7 @@ Docker Engine and Docker Compose are required by several features:
 |Markdown PDF export |pandoc/extra |`docker/md2pdf/` (via `docker run`)
 |Project-wide Markdown preview |markserv |`docker/markserv/docker-compose.yml`
 |Presentations |MARP CLI |`docker/marp/docker-compose.yml`
-|Common Lisp REPL |SBCL + Swank |`docker/sbcl-swank/docker-compose.yml`
+|Common Lisp REPL |SBCL + Swank (default), CCL, ECL, ABCL |`docker/lisp-swank/docker-compose.yml`
 |===
 
 === Installing Docker Engine
@@ -141,25 +141,37 @@ All Docker Compose files in this config use `docker compose` (v2 syntax). The `d
 Each feature that uses Docker has a dedicated Compose file. Reference this section from the relevant guide rather than duplicating the commands.
 
 [[sbcl-swank]]
-==== SBCL + Swank (Common Lisp REPL)
+==== Common Lisp REPL (lisp-swank)
 
-Compose file: `docker/sbcl-swank/docker-compose.yml`
+Compose file: `docker/lisp-swank/docker-compose.yml`
 
-Runs SBCL with Quicklisp pre-loaded and starts a Swank server on port 4005. Conjure auto-connects when you open a Lisp file.
+Provides Swank containers for SBCL (default), CCL, ECL, and ABCL. Each starts a Swank server on `127.0.0.1:4005` — the *:4005 contract*: whatever container owns this port is the active Lisp; Conjure always dials 4005 and requires no reconfiguration to switch.
+
+Also exposes `127.0.0.1:8080:8080` for web-service lessons.
 
 [source,sh]
 ----
-# Build the image (required before first use and after pulling config updates):
-docker compose -f ~/.config/nvim/docker/sbcl-swank/docker-compose.yml build
+# Build all images (required before first use and after pulling config updates):
+docker compose -f ~/.config/nvim/docker/lisp-swank/docker-compose.yml build
 
-# Start — --wait blocks until the healthcheck passes so Conjure can connect immediately:
-LISP_DIR=$PWD docker compose -f ~/.config/nvim/docker/sbcl-swank/docker-compose.yml up -d --build --wait
+# Start SBCL (default — no profile needed):
+LISP_DIR=$PWD docker compose -f ~/.config/nvim/docker/lisp-swank/docker-compose.yml up -d --wait
+
+# Start a specific implementation (only one at a time):
+LISP_DIR=$PWD docker compose -f ~/.config/nvim/docker/lisp-swank/docker-compose.yml --profile ccl  up -d --wait
+LISP_DIR=$PWD docker compose -f ~/.config/nvim/docker/lisp-swank/docker-compose.yml --profile ecl  up -d --wait
+LISP_DIR=$PWD docker compose -f ~/.config/nvim/docker/lisp-swank/docker-compose.yml --profile abcl up -d --wait
+
+# Switch implementations — bring down the running one, then start the next:
+LISP_DIR=$PWD docker compose -f ~/.config/nvim/docker/lisp-swank/docker-compose.yml down
+LISP_DIR=$PWD docker compose -f ~/.config/nvim/docker/lisp-swank/docker-compose.yml --profile ccl up -d --wait
+# Then reconnect Conjure: ,cc
 
 # Stop:
-LISP_DIR=$PWD docker compose -f ~/.config/nvim/docker/sbcl-swank/docker-compose.yml down
+LISP_DIR=$PWD docker compose -f ~/.config/nvim/docker/lisp-swank/docker-compose.yml down
 ----
 
-NOTE: `LISP_DIR=$PWD` mounts your current working directory into the container so SBCL can load project files.
+NOTE: `LISP_DIR=$PWD` mounts your current working directory into the container so the Lisp implementation can load project files.
 
 [[plantuml-server]]
 ==== PlantUML Server (Diagrams)
