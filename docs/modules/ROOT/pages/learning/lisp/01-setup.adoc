@@ -1,0 +1,224 @@
+= 01 — Setup & Connect
+
+____
+*Series:* xref:learning/lisp/index.adoc[Index] · *01 Setup & Connect* ← you are here · xref:learning/lisp/02-repl-as-ide.adoc[02 The REPL as Your IDE]
+____
+
+This lesson gets the SBCL container running, connects Conjure to the Swank
+server, and walks you through evaluating your first Common Lisp forms. By the
+end you will have a working REPL loop inside Neovim.
+
+The container setup and switching between implementations are covered in depth
+in the xref:languages/lisp.adoc[Common Lisp guide]. This lesson focuses on the
+workflow, not the infrastructure.
+
+'''
+
+== Step 1 — Start the SBCL container
+
+From any directory (the `LISP_DIR` variable sets the working directory that
+SBCL and Quicklisp will see):
+
+[source,sh]
+----
+LISP_DIR=$PWD docker compose \
+  -f ~/.config/nvim/docker/lisp-swank/docker-compose.yml \
+  up -d --wait
+----
+
+`--wait` blocks until the container's healthcheck passes, which means Swank is
+listening on port 4005 before the shell prompt returns. Typically this takes
+five to fifteen seconds on first run (longer if Docker needs to pull the image).
+
+Verify the container is healthy:
+
+[source,sh]
+----
+docker ps --format 'table {{.Names}}\t{{.Status}}'
+----
+
+You should see `lisp-swank` (or similar) with status `healthy`.
+
+'''
+
+== Step 2 — Open a scratch file and the Conjure log
+
+Open Neovim with a scratch Lisp file:
+
+[source,sh]
+----
+nvim scratch.lisp
+----
+
+Immediately open the Conjure log in a vertical split:
+
+....
+,lv
+....
+
+The log pane will show on the right. Leave it visible throughout the lesson —
+every evaluation result and any Swank output will appear there. You can resize
+the split with `<C-w><` and `<C-w>>` as usual.
+
+'''
+
+== Step 3 — Connect Conjure to Swank
+
+With `scratch.lisp` open, initiate the connection:
+
+....
+,cc
+....
+
+Conjure prompts for a host and port. Accept the defaults (`127.0.0.1`, `4005`)
+by pressing `<Enter>` twice, or type them explicitly if prompted.
+
+Look at the HUD (the small notification in the top-right of the Neovim window)
+— it should briefly read:
+
+....
+conjure: connected to localhost:4005
+....
+
+The Conjure log pane will also show a banner line from SBCL:
+
+....
+; connected to #<SWANK-BACKEND:LISP-IMPLEMENTATION ...>
+....
+
+If the HUD stays silent or shows an error, see the troubleshooting table below.
+
+'''
+
+== Step 4 — Evaluate your first forms
+
+Type (or paste) these expressions into `scratch.lisp`. Evaluate each one by
+placing the cursor anywhere inside the form and pressing `,ee`.
+
+[source,lisp]
+----
+(+ 1 2)
+; => 3
+----
+
+[source,lisp]
+----
+"hello"
+; => "hello"
+----
+
+[source,lisp]
+----
+(format t "~&Hello, Lisp!~%")
+; prints: Hello, Lisp!
+; => NIL
+----
+
+[source,lisp]
+----
+(* 6 7)
+; => 42
+----
+
+[source,lisp]
+----
+(expt 2 10)
+; => 1024
+----
+
+Each result appears immediately in the Conjure log pane. The `; =>` comments
+show the expected return value — they are not part of the expression.
+
+To evaluate every top-level form in the buffer at once, use `,eb`. This is
+useful for loading a full file of definitions in one step.
+
+'''
+
+== Step 5 — Verify the implementation
+
+These two forms return the name and version string of the running Common Lisp
+implementation:
+
+[source,lisp]
+----
+(lisp-implementation-type)
+; => "SBCL"
+----
+
+[source,lisp]
+----
+(lisp-implementation-version)
+; => "2.4.x"   (exact version depends on the container image)
+----
+
+You can also inspect the Swank connection itself:
+
+[source,lisp]
+----
+(swank:connection-info)
+; Returns a plist describing the Swank connection, REPL type, and pid
+----
+
+And confirm that `*package*` starts in the `COMMON-LISP-USER` package:
+
+[source,lisp]
+----
+*package*
+; => #<PACKAGE "COMMON-LISP-USER">
+----
+
+'''
+
+== Step 6 — Troubleshooting
+
+[cols="2,2,3",options="header"]
+|===
+| Symptom | Likely cause | Fix
+
+| `docker compose up` never returns
+| Healthcheck failing; Swank did not bind
+| `docker compose -f ~/.config/nvim/docker/lisp-swank/docker-compose.yml logs`
+  to inspect; try `docker compose ... down` then `up` again
+
+| HUD shows nothing after `,cc`
+| Swank not listening on 4005, or wrong port
+| Confirm the container is `healthy` with `docker ps`; check that no other
+  process is using port 4005 (`ss -tlnp | grep 4005`)
+
+| HUD says `connection refused`
+| Container not started
+| Run the `docker compose up -d --wait` command from Step 1
+
+| Conjure log shows `connection lost` mid-session
+| SBCL crashed (e.g., unhandled condition)
+| `,cs` to close the dead connection, then `,cc` to reconnect; the image
+  state is reset
+
+| Evaluation hangs (no response in log)
+| Infinite loop or blocking I/O in evaluated code
+| Switch to a terminal and `docker compose ... restart`, then `,cs` + `,cc`
+|===
+
+Full troubleshooting reference (including alternative implementations):
+xref:languages/lisp.adoc#troubleshooting[Common Lisp guide → Troubleshooting].
+
+'''
+
+== Stopping the container
+
+When you are done for the session:
+
+[source,sh]
+----
+docker compose -f ~/.config/nvim/docker/lisp-swank/docker-compose.yml down
+----
+
+This stops and removes the container. Any Lisp state that was not saved to a
+file or core image is lost. The next `up -d --wait` starts a fresh SBCL image.
+
+To preserve state across restarts, see the core image workflow in
+xref:learning/lisp/appendix-a-sbcl.adoc[Appendix A — SBCL].
+
+'''
+
+*Next:* xref:learning/lisp/02-repl-as-ide.adoc[02 — The REPL as Your IDE]

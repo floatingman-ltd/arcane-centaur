@@ -1,0 +1,346 @@
+= 04 — LOOP & Iteration
+
+____
+*Series:* xref:learning/lisp/index.adoc[Index] · xref:learning/lisp/03-forms-functions-data.adoc[03 Forms, Functions & Data] · *04 LOOP & Iteration* ← you are here · xref:learning/lisp/05-condition-system.adoc[05 The Condition System]
+____
+
+Common Lisp offers several iteration styles: simple imperative loops with
+`dotimes` and `dolist`, the powerful `loop` macro that reads almost like
+English, and a suite of higher-order sequence functions (`mapcar`, `reduce`,
+`remove-if`, and friends). This lesson covers all of them with evaluable
+examples.
+
+'''
+
+== dotimes and dolist
+
+These are the simplest forms when you need a counted loop or a list traversal.
+
+=== dotimes
+
+`(dotimes (var count result-form) body...)` — binds `var` to `0` through
+`count - 1`, then returns the value of `result-form` (default `nil`).
+
+[source,lisp]
+----
+(dotimes (i 5)
+  (format t "~a " i))
+; prints: 0 1 2 3 4
+
+;; Accumulate a result
+(let ((sum 0))
+  (dotimes (i 10 sum)         ; sum is the result form
+    (incf sum i)))            ; => 45  (0+1+2+...+9)
+----
+
+=== dolist
+
+`(dolist (var list result-form) body...)` — binds `var` to each element of
+`list` in turn.
+
+[source,lisp]
+----
+(dolist (x '(a b c d))
+  (format t "~a " x))
+; prints: A B C D
+
+;; Collect results into a local list
+(let ((result '()))
+  (dolist (x '(1 2 3 4 5) (nreverse result))
+    (when (evenp x)
+      (push (* x x) result))))
+; => (4 16)
+----
+
+'''
+
+== The loop macro
+
+`loop` is a declarative mini-language built into Common Lisp. It handles
+collection, counting, accumulation, conditional execution, and early exit —
+often replacing an entire `let`/`dotimes`/`push`/`nreverse` stack.
+
+=== Counting loops
+
+[source,lisp]
+----
+(loop for i from 1 to 5
+      collect i)
+; => (1 2 3 4 5)
+
+(loop for i from 0 below 10 by 2
+      collect i)
+; => (0 2 4 6 8)
+
+(loop for i from 10 downto 1
+      collect i)
+; => (10 9 8 7 6 5 4 3 2 1)
+----
+
+=== Iterating over lists
+
+[source,lisp]
+----
+(loop for x in '(1 2 3 4 5)
+      collect (* x x))
+; => (1 4 9 16 25)
+
+;; With a step — cdr down the list two at a time
+(loop for x on '(a b c d e) by #'cddr
+      collect (car x))
+; => (A C E)
+----
+
+=== Iterating over vectors
+
+[source,lisp]
+----
+(loop for x across #(10 20 30 40)
+      sum x)
+; => 100
+----
+
+=== Accumulation clauses
+
+[source,lisp]
+----
+;; collect — builds a list
+(loop for i from 1 to 5 collect i)
+; => (1 2 3 4 5)
+
+;; sum — numeric total
+(loop for i from 1 to 100 sum i)
+; => 5050
+
+;; count — count items matching a test
+(loop for x in '(1 2 3 4 5 6)
+      count (evenp x))
+; => 3
+
+;; maximize and minimize
+(loop for x in '(3 1 4 1 5 9 2 6)
+      maximize x)
+; => 9
+
+(loop for x in '(3 1 4 1 5 9 2 6)
+      minimize x)
+; => 1
+
+;; append — like collect but concatenates lists
+(loop for x in '(1 2 3)
+      append (list x (* x 10)))
+; => (1 10 2 20 3 30)
+----
+
+=== Conditional clauses
+
+[source,lisp]
+----
+(loop for x from 1 to 20
+      when (zerop (mod x 3))
+        collect x)
+; => (3 6 9 12 15 18)
+
+(loop for x in '(1 2 3 4 5 6 7 8)
+      unless (evenp x)
+        collect x)
+; => (1 3 5 7)
+
+;; when with multiple actions
+(loop for x from 1 to 10
+      when (> x 5)
+        collect x into big
+        and count x into count-big
+      finally (return (list big count-big)))
+; => ((6 7 8 9 10) 5)
+----
+
+=== while and until
+
+[source,lisp]
+----
+;; while: keep looping as long as condition is true
+(let ((n 1))
+  (loop while (< n 100)
+        do (setf n (* n 2))
+        finally (return n)))
+; => 128
+
+;; until: keep looping until condition becomes true
+(let ((x 0))
+  (loop until (> x 50)
+        do (incf x 7))
+  x)
+; => 56
+----
+
+=== The finally clause
+
+`finally` runs once after the loop ends (including after `return` in the body
+— but not after `return-from`). Use it to compute and return a final value.
+
+[source,lisp]
+----
+(loop for x in '(1 2 3 4 5)
+      sum x into total
+      count x into n
+      finally (return (/ total n)))
+; => 3   (average: 15/5)
+----
+
+=== Multiple for-clauses
+
+Multiple `for` clauses advance in parallel (like `zip`):
+
+[source,lisp]
+----
+(loop for x in '(a b c)
+      for y in '(1 2 3)
+      collect (list x y))
+; => ((A 1) (B 2) (C 3))
+
+;; Stop when the shorter list runs out
+(loop for x in '(a b c d e)
+      for y in '(1 2 3)
+      collect (cons x y))
+; => ((A . 1) (B . 2) (C . 3))
+----
+
+=== Destructuring in loop
+
+[source,lisp]
+----
+(loop for (a b) in '((1 2) (3 4) (5 6))
+      collect (+ a b))
+; => (3 7 11)
+----
+
+'''
+
+== Sequence functions
+
+These are higher-order functions over lists (and most also work on vectors and
+strings). They are the functional alternative to `loop`.
+
+=== mapcar and friends
+
+[source,lisp]
+----
+;; mapcar: apply function to each element, collect results
+(mapcar #'1+ '(1 2 3 4 5))
+; => (2 3 4 5 6)
+
+(mapcar #'* '(1 2 3) '(10 20 30))
+; => (10 40 90)   — stops at shortest list
+
+;; mapc: like mapcar but returns the original list — used for side effects
+(mapc (lambda (x) (format t "~a " x)) '(a b c))
+; prints: A B C
+; => (A B C)
+
+;; mapcan: like mapcar but splices the results together (expects lists)
+(mapcan (lambda (x) (if (evenp x) (list x) nil)) '(1 2 3 4 5 6))
+; => (2 4 6)
+----
+
+=== Filtering
+
+[source,lisp]
+----
+(remove-if #'oddp '(1 2 3 4 5 6))
+; => (2 4 6)
+
+(remove-if-not #'oddp '(1 2 3 4 5 6))
+; => (1 3 5)
+
+;; remove by value (using eql by default)
+(remove 3 '(1 2 3 4 3 5))
+; => (1 2 4 5)
+
+;; remove with a custom test
+(remove "foo" '("foo" "bar" "foo" "baz") :test #'string=)
+; => ("bar" "baz")
+----
+
+=== Searching
+
+[source,lisp]
+----
+(find-if #'evenp '(1 3 5 4 7))
+; => 4   (first even element, or NIL)
+
+(find 3 '(1 2 3 4 5))
+; => 3
+
+(position-if #'evenp '(1 3 5 4 7))
+; => 3   (index of first match)
+
+(count-if #'evenp '(1 2 3 4 5 6))
+; => 3
+----
+
+=== reduce
+
+`reduce` folds a function over a sequence, accumulating a single result.
+
+[source,lisp]
+----
+;; Sum a list
+(reduce #'+ '(1 2 3 4 5))
+; => 15
+
+;; Product
+(reduce #'* '(1 2 3 4 5))
+; => 120
+
+;; With an initial value
+(reduce #'+ '(1 2 3) :initial-value 100)
+; => 106
+
+;; Right-fold (reverse accumulation order)
+(reduce #'cons '(1 2 3 4) :from-end t :initial-value nil)
+; => (1 2 3 4)
+
+;; String join (inefficient but illustrative)
+(reduce (lambda (a b) (concatenate 'string a ", " b))
+        '("apple" "banana" "cherry"))
+; => "apple, banana, cherry"
+----
+
+=== Quantifiers
+
+[source,lisp]
+----
+(every #'evenp '(2 4 6 8))      ; => T
+(every #'evenp '(2 4 5 8))      ; => NIL
+
+(some #'oddp '(2 4 6 7))        ; => 7   (returns the first truthy value)
+(some #'oddp '(2 4 6 8))        ; => NIL
+
+(notany #'oddp '(2 4 6 8))      ; => T   (none are odd)
+(notevery #'evenp '(2 4 5 8))   ; => T   (not all are even)
+----
+
+=== sort and stable-sort
+
+[source,lisp]
+----
+(sort (list 3 1 4 1 5 9 2 6) #'<)
+; => (1 1 2 3 4 5 6 9)
+; WARNING: sort is destructive — it may modify the original list
+
+;; Safe idiom: copy-seq first
+(let ((data '(5 2 8 1 9 3)))
+  (sort (copy-seq data) #'<))
+; => (1 2 3 5 8 9)
+
+;; Sort by key
+(sort (list '(b 2) '(a 1) '(c 3)) #'string< :key #'car)
+; => ((A 1) (B 2) (C 3))
+----
+
+'''
+
+*Next:* xref:learning/lisp/05-condition-system.adoc[05 — The Condition System]
+
+*Prev:* xref:learning/lisp/03-forms-functions-data.adoc[03 — Forms, Functions & Data]

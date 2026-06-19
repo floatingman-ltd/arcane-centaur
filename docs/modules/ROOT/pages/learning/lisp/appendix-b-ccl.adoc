@@ -1,0 +1,187 @@
+= Appendix B — CCL (Clozure CL)
+
+____
+*Series:* xref:learning/lisp/index.adoc[Index] · *Appendix B: CCL (Clozure CL)* ← you are here
+____
+
+Clozure Common Lisp (CCL) is a mature, actively maintained implementation with roots in Macintosh Common Lisp.
+It is particularly valued for fast incremental compilation, low memory use, and reliable macOS behaviour.
+In this series it runs in a Docker container using the `ccl` Compose profile.
+
+'''
+
+== Appendix B — CCL (Clozure CL)
+
+=== The CCL Container
+
+The Dockerfile lives at `docker/lisp-swank/ccl/Dockerfile`.
+Start the container using the `ccl` profile:
+
+[source,sh]
+----
+LISP_DIR=$PWD docker compose \
+  -f ~/.config/nvim/docker/lisp-swank/docker-compose.yml \
+  --profile ccl up -d --wait
+----
+
+Bring down any other running implementation first — only one container can bind port 4005 at a time.
+
+Verify:
+
+[source,lisp]
+----
+(lisp-implementation-type)
+; => "Clozure Common Lisp"
+
+(lisp-implementation-version)
+; => "Version 1.12.2 ..."
+
+;; CCL's own version variable
+ccl:*openmcl-version*
+; => "1.12.2"
+----
+
+The container uses the official CCL 1.12.2 release tarball from GitHub (`Clozure/ccl`), built for Linux x86-64.
+The `ccl64` binary is on `PATH` inside the container.
+
+'''
+
+=== CCL Strengths
+
+* *Fast incremental compilation*: CCL compiles forms quickly, making the REPL round-trip faster than SBCL for exploratory work.
+* *Lower peak memory use*: CCL's heap is typically smaller than SBCL's for the same application. Good for resource-constrained environments.
+* *Excellent macOS support*: CCL was the go-to implementation for macOS Lisp development for many years. Its runtime integrates with Cocoa threads on macOS (not relevant inside the Linux container, but relevant if you run it natively).
+* *Stable, readable GC*: CCL uses a conservative GC for foreign objects and an accurate GC for Lisp heap. Memory issues are easier to diagnose than in some other implementations.
+* *Good FFI*: CCL's Foreign Function Interface (`ccl:with-cstrs`, `ccl:define-foreign-parameter`) is clean and well-documented.
+
+'''
+
+=== save-application — Complete Reference
+
+`ccl:save-application` saves a CCL image to a file. With `:prepend-kernel t` the output is directly executable.
+
+[source,lisp]
+----
+;; Minimal — produces an image file, not directly executable
+(ccl:save-application "/app/greeter.image"
+  :toplevel-function #'greeter:main)
+----
+
+[source,lisp]
+----
+;; Self-running application (most common for deployment)
+(ccl:save-application "/app/greeter-ccl"
+  :toplevel-function #'greeter:main
+  :prepend-kernel    t      ; embed the CCL kernel → directly executable
+  :init-file         nil    ; do not load ~/.cclinit — ensures reproducibility
+  :error-handler     :quit) ; exit 1 on unhandled error (vs entering the debugger)
+----
+
+[cols="2,5",options="header"]
+|===
+| Keyword | Effect
+
+| `:toplevel-function fn`
+| Call `fn` at image startup; must call `(ccl:quit)` to exit
+
+| `:prepend-kernel t`
+| Embed the CCL kernel runtime; makes the output directly executable without `ccl64`
+
+| `:init-file nil`
+| Skip the user init file (`~/.cclinit`); use `t` or a path to run one
+
+| `:error-handler :quit`
+| On unhandled conditions, exit with code 1 (suitable for scripts and services)
+
+| `:error-handler :quit-quietly`
+| Exit on unhandled conditions without printing a backtrace
+
+| `:application-class`
+| Subclass of `ccl:application` to use (advanced; enables custom condition handling)
+|===
+
+'''
+
+=== Running the CCL Application
+
+[source,sh]
+----
+./greeter/greeter-ccl Alice
+# Hello, Alice!
+
+./greeter/greeter-ccl
+# Hello, World!
+
+file greeter/greeter-ccl
+# greeter-ccl: ELF 64-bit LSB executable, x86-64, ...
+----
+
+Without `:prepend-kernel t`, launch via `ccl64`:
+
+[source,sh]
+----
+ccl64 --image greeter/greeter.image
+----
+
+'''
+
+=== CCL Image Files vs macOS Application Bundles
+
+On macOS (running CCL natively, not in Docker), `save-application` can produce an `.app` bundle when given `:application-class 'ccl:darwin-application`.
+The container produces Linux ELF only.
+
+If you run CCL natively on macOS:
+
+[source,lisp]
+----
+;; macOS only — produces Greeter.app
+(ccl:save-application "Greeter"
+  :toplevel-function  #'greeter:main
+  :application-class  'ccl:darwin-application
+  :prepend-kernel     t)
+----
+
+The bundle can be double-clicked from Finder or launched from Terminal.
+This is one of the historical reasons CCL is popular on macOS — it integrates with macOS conventions more naturally than SBCL.
+
+'''
+
+=== Useful CCL-Specific Features
+
+[source,lisp]
+----
+;; Inspect CCL features
+*features*      ; includes :ccl, :clozure, :openmcl, :x86-64
+
+;; Thread inspection
+(ccl:all-processes)              ; list all running threads
+
+;; Memory
+(ccl:gc)                         ; request a GC
+(room)                           ; heap usage
+
+;; Disassemble
+(ccl:disassemble #'greeter:greet)
+
+;; Type checking at runtime
+(ccl:check-type-error "hello" 'integer)  ; => signals a type-error
+
+;; Error handling — quit on any condition
+(handler-case (greeter:main)
+  (error (c)
+    (format *error-output* "Fatal: ~A~%" c)
+    (ccl:quit 1)))
+----
+
+'''
+
+=== Further Reading
+
+* https://ccl.clozure.com/manual/[CCL Manual] — runtime, GC, FFI, threads
+* https://github.com/Clozure/ccl/releases[CCL GitHub releases] — source tarballs and change log
+* xref:learning/lisp/09-building-an-application.adoc[Lesson 09 — Building an Application] — build walkthrough for all four implementations
+* xref:learning/lisp/index.adoc[Back to series index]
+
+'''
+
+xref:learning/lisp/index.adoc[Back to Index]

@@ -1,0 +1,225 @@
+= Appendix D — ABCL (Armed Bear CL)
+
+____
+*Series:* xref:learning/lisp/index.adoc[Index] · *Appendix D: ABCL (Armed Bear CL)* ← you are here
+____
+
+ABCL (Armed Bear Common Lisp) runs the Lisp runtime on the Java Virtual Machine.
+Its primary strength is bidirectional interoperability with the entire Java and JVM ecosystem:
+you can call any Java class, instantiate any Java object, and implement Java interfaces from Lisp.
+The trade-off is image size — the container includes a full JDK — and a JVM startup overhead.
+
+'''
+
+== Appendix D — ABCL (Armed Bear CL)
+
+=== The ABCL Container
+
+The Dockerfile lives at `docker/lisp-swank/abcl/Dockerfile`.
+ABCL is installed from Debian packages. The JDK is also present, making the image noticeably larger than the SBCL or CCL images.
+
+Start the container:
+
+[source,sh]
+----
+LISP_DIR=$PWD docker compose \
+  -f ~/.config/nvim/docker/lisp-swank/docker-compose.yml \
+  --profile abcl up -d --wait
+----
+
+Verify:
+
+[source,lisp]
+----
+(lisp-implementation-type)
+; => "Armed Bear Common Lisp"
+
+(lisp-implementation-version)
+; => "1.9.x"
+
+;; The JVM version ABCL is running on
+(java:jstatic "getProperty" "java.lang.System" "java.version")
+; => "17.x.x" (or whatever JDK is in the image)
+----
+
+'''
+
+=== ABCL Strengths
+
+* *Full Java interop*: call any method, access any field, construct any object, implement any interface — all from Lisp.
+* *JVM portability*: runs on any JVM (Linux, macOS, Windows, ARM). If a JVM is installed, ABCL runs.
+* *Access to the Java ecosystem*: Maven, Spring, Apache Commons, JDBC drivers, ML libraries — all available.
+* *ANSI compliance*: ABCL passes most ANSI conformance tests. Standard CL code runs unchanged.
+* *No native compiler needed*: no C toolchain, no SBCL-style platform requirements.
+
+'''
+
+=== Calling Java from Lisp
+
+ABCL provides a rich Java FFI under the `java` package:
+
+[source,lisp]
+----
+;; Create a Java object
+(java:jnew "java.util.ArrayList")
+; => #<java.util.ArrayList []>
+
+(defvar *list* (java:jnew "java.util.ArrayList"))
+
+;; Call an instance method
+(java:jcall "add" *list* "hello")
+; => T   (ArrayList.add returns boolean)
+
+(java:jcall "add" *list* "world")
+
+(java:jcall "size" *list*)
+; => 2
+
+(java:jcall "get" *list* 0)
+; => "hello"
+
+;; Convert to a Lisp sequence
+(java:jcall "toArray" *list*)
+; => #("hello" "world")
+----
+
+[source,lisp]
+----
+;; Access a static field
+(java:jfield "java.lang.Math" "PI")
+; => 3.141592653589793
+
+;; Call a static method
+(java:jstatic "sqrt" "java.lang.Math" 2.0d0)
+; => 1.4142135623730951
+
+;; Construct with arguments
+(defvar *sb* (java:jnew "java.lang.StringBuilder" "Hello"))
+(java:jcall "append" *sb* ", World!")
+(java:jcall "toString" *sb*)
+; => "Hello, World!"
+----
+
+[source,lisp]
+----
+;; Implement a Java interface from Lisp
+(java:jnew-runtime-class
+ "MyRunnable"
+ :interfaces (list "java.lang.Runnable")
+ :methods (list (list "run" :void ()
+                      (lambda (this)
+                        (format t "~&Running from Lisp!~%")))))
+----
+
+'''
+
+=== Java Interop: Practical Example
+
+Use Java's `HashMap` as a dictionary:
+
+[source,lisp]
+----
+(defvar *map* (java:jnew "java.util.HashMap"))
+
+(java:jcall "put" *map* "name" "Alice")
+(java:jcall "put" *map* "age"  "30")
+
+(java:jcall "get" *map* "name")
+; => "Alice"
+
+(java:jcall "containsKey" *map* "email")
+; => NIL
+
+;; Iterate the key set via Lisp
+(let ((keys (java:jcall "keySet" *map*)))
+  (java:jcall "forEach" keys
+    (java:jinterface-implementation
+      "java.util.function.Consumer"
+      "accept"
+      (lambda (k) (format t "key: ~A~%" k)))))
+----
+
+'''
+
+=== Building an Uberjar
+
+ABCL's deployment artifact is a JAR file. The simplest approach: save a Lisp image, then bundle it into the ABCL jar.
+
+*Step 1 — Load your system and save the image:*
+
+[source,lisp]
+----
+(pushnew #p"/app/" asdf:*central-registry* :test #'equal)
+(asdf:load-system :greeter)
+
+;; Save the Lisp heap image
+(extensions:save-lisp "/app/greeter.abcl")
+;; Process continues (unlike SBCL's save-lisp-and-die — ABCL does not exit)
+----
+
+*Step 2 — Bundle into a JAR (in a terminal or via docker exec):*
+
+[source,sh]
+----
+# Locate the ABCL jar in the container
+ABCL_JAR=$(find /usr -name "abcl.jar" 2>/dev/null | head -1)
+
+# Copy it as the base for our uberjar
+cp "$ABCL_JAR" /app/greeter.jar
+
+# Add the saved image into the jar
+cd /app
+jar uf greeter.jar greeter.abcl
+----
+
+*Step 3 — Run with Java:*
+
+[source,sh]
+----
+# From the host (Java must be installed):
+java -jar greeter/greeter.jar \
+     --eval "(asdf:load-system :greeter)" \
+     --eval "(greeter:main)" \
+     -- Alice
+# Hello, Alice!
+----
+
+For a fully self-starting jar (no `--eval` needed), the ABCL runtime supports a main class that loads an image at startup.
+The `abcl-contrib` contrib library (if available in your Quicklisp distribution) provides `abcl-build` utilities:
+
+[source,lisp]
+----
+;; Optional: if abcl-build is available
+(ql:quickload :abcl-build :silent t)
+;; Build a self-starting uberjar
+;; (abcl-build:build-jar :greeter :output #p"/app/greeter-standalone.jar"
+;;                        :main 'greeter:main)
+----
+
+'''
+
+=== Image Size — An Expected Trade-off
+
+The ABCL container image is larger than SBCL or CCL because it includes a JDK.
+This is an opt-in cost: use the ABCL profile only when you need Java interop or JVM portability.
+
+[source,sh]
+----
+docker images | grep lisp-swank
+# lisp-swank-sbcl    ...   ~300MB
+# lisp-swank-abcl    ...   ~700MB+  (JDK adds size)
+----
+
+'''
+
+=== Further Reading
+
+* https://common-lisp.net/project/armedbear/[ABCL home] — documentation and issue tracker
+* https://github.com/armedbear/abcl[ABCL GitHub] — source, releases
+* https://abcl.org/trac/wiki/AbclContrib[abcl-contrib] — additional libraries including build utilities
+* xref:learning/lisp/09-building-an-application.adoc[Lesson 09 — Building an Application] — full build walkthrough
+* xref:learning/lisp/index.adoc[Back to series index]
+
+'''
+
+xref:learning/lisp/index.adoc[Back to Index]

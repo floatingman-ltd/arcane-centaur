@@ -46,6 +46,12 @@ the current buffer or selection.
 | xref:#prerequisites[Prerequisites] | SBCL, Clojure, Scheme options
 |===
 
+[NOTE]
+====
+*New to Common Lisp in this config?*
+Work through the xref:learning/lisp/index.adoc[Common Lisp Learning Series] — 11 REPL-driven lessons from setup through building a web service, plus implementation appendices for SBCL, CCL, ECL, and ABCL.
+====
+
 '''''
 
 [[quick-start]]

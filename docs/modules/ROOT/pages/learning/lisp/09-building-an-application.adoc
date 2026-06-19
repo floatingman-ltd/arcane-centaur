@@ -1,0 +1,401 @@
+= 09 — Building an Application
+
+____
+*Series:* xref:learning/lisp/index.adoc[Index] · xref:learning/lisp/08-packages-systems-quicklisp.adoc[08 Packages, Systems & Quicklisp] · *09 Building an Application* ← you are here · xref:learning/lisp/10-testing.adoc[10 Testing]
+____
+
+Lesson 08 introduced the `greeter` ASDF system.
+This lesson takes that same system and builds it into a runnable binary using each of the four containerized implementations.
+The mechanism differs per implementation, but the *workflow* is the same: start the right container, connect Conjure, load the system, invoke the build function, and run the result.
+
+By the end you will have produced:
+
+* An SBCL standalone executable (native, single file)
+* A CCL application image (`.image` file + wrapper script)
+* An ECL native binary (ELF, no Lisp runtime at runtime)
+* An ABCL uberjar (`greeter.jar`)
+
+'''
+
+== 09 — Building an Application
+
+=== 0. The greeter System (recap)
+
+If you did not create the project in lesson 08, do so now.
+All four implementations mount your working directory at `/app` inside the container.
+
+.Directory layout
+----
+greeter/
+  greeter.asd
+  src/
+    packages.lisp
+    greeter.lisp
+    main.lisp
+----
+
+.greeter/greeter.asd
+[source,lisp]
+----
+(asdf:defsystem :greeter
+  :description "A simple CLI greeter"
+  :version "0.1.0"
+  :serial t
+  :components ((:file "src/packages")
+               (:file "src/greeter")
+               (:file "src/main")))
+----
+
+.greeter/src/packages.lisp
+[source,lisp]
+----
+(defpackage :greeter
+  (:use :cl)
+  (:export #:greet #:main))
+----
+
+.greeter/src/greeter.lisp
+[source,lisp]
+----
+(in-package :greeter)
+
+(defun greet (name)
+  "Return a greeting string for NAME."
+  (format nil "Hello, ~A!" name))
+----
+
+.greeter/src/main.lisp
+[source,lisp]
+----
+(in-package :greeter)
+
+(defun main ()
+  "CLI entry point. Reads the first command-line argument as the name."
+  (let* ((argv (uiop:command-line-arguments))
+         (name (if argv (first argv) "World")))
+    (format t "~A~%" (greet name))
+    (uiop:quit 0)))
+----
+
+`uiop:command-line-arguments` returns the post-binary arguments as a list of strings.
+`uiop:quit` exits cleanly with a status code.
+Both are part of UIOP (the portability layer included with ASDF) and work across all four implementations.
+
+'''
+
+=== 1. Build with SBCL
+
+SBCL's `save-lisp-and-die` saves the entire heap image to a file.
+With `:executable t` it prepends the SBCL runtime, producing a single self-contained binary.
+
+*Start the default SBCL container* (no `--profile` needed):
+
+[source,sh]
+----
+LISP_DIR=$PWD/greeter docker compose \
+  -f ~/.config/nvim/docker/lisp-swank/docker-compose.yml \
+  up -d --wait
+----
+
+Connect Conjure in your scratch file (`,cc`), then evaluate:
+
+[source,lisp]
+----
+;; Register and load the system
+(pushnew #p"/app/" asdf:*central-registry* :test #'equal)
+(asdf:load-system :greeter)
+
+;; Produce the binary
+(sb-ext:save-lisp-and-die
+ "/app/greeter"                  ; output path (inside the container = $LISP_DIR/greeter)
+ :toplevel      #'greeter:main   ; function to call at startup
+ :executable    t                ; prepend SBCL runtime → single file
+ :compression   t                ; zlib compress the core (requires SBCL built with zlib)
+ :save-runtime-options t)        ; pass SBCL runtime flags through at startup
+----
+
+`save-lisp-and-die` does exactly what it says — the Lisp process dies after saving.
+The Swank connection drops; press `,cc` to reconnect to the fresh container, or restart manually.
+
+*Run the binary from the host:*
+
+[source,sh]
+----
+./greeter/greeter Alice
+# Hello, Alice!
+
+./greeter/greeter
+# Hello, World!
+----
+
+*Stripping foreign symbols:* SBCL embedds foreign (C) symbol tables by default. Stripping them reduces binary size:
+
+[source,sh]
+----
+strip greeter/greeter
+----
+
+*Core image (no `:executable t`):* If you omit `:executable t`, SBCL writes a *core* file that must be launched with `sbcl --core greeter.core --eval "(greeter:main)"`. Core files are smaller and start faster if you have many SBCL-based tools sharing the runtime.
+
+[source,lisp]
+----
+;; Core only — not a standalone executable
+(sb-ext:save-lisp-and-die
+ "/app/greeter.core"
+ :toplevel #'greeter:main)
+----
+
+For deeper detail: xref:learning/lisp/appendix-a-sbcl.adoc[Appendix A — SBCL].
+
+'''
+
+=== 2. Build with CCL
+
+Switch to the CCL container. *Bring down the current container first:*
+
+[source,sh]
+----
+docker compose -f ~/.config/nvim/docker/lisp-swank/docker-compose.yml down
+----
+
+Start the CCL container using the `ccl` profile:
+
+[source,sh]
+----
+LISP_DIR=$PWD/greeter docker compose \
+  -f ~/.config/nvim/docker/lisp-swank/docker-compose.yml \
+  --profile ccl up -d --wait
+----
+
+Reconnect Conjure (`,cc`) — the REPL banner will now report `Clozure Common Lisp`. Verify:
+
+[source,lisp]
+----
+(lisp-implementation-type)
+; => "Clozure Common Lisp"
+----
+
+Load and build:
+
+[source,lisp]
+----
+(pushnew #p"/app/" asdf:*central-registry* :test #'equal)
+(asdf:load-system :greeter)
+
+(ccl:save-application
+ "/app/greeter-ccl"              ; output image path
+ :toplevel-function #'greeter:main
+ :init-file         nil          ; skip ~/.cclinit on launch
+ :error-handler     :quit        ; exit 1 on unhandled error instead of dropping to debugger
+ :prepend-kernel    t)           ; prepend the CCL kernel — produces a self-running image
+----
+
+With `:prepend-kernel t` the output file is executable directly.
+Without it you get a `.image` file that requires `ccl64 --image greeter-ccl.image`.
+
+[source,sh]
+----
+./greeter/greeter-ccl Bob
+# Hello, Bob!
+----
+
+For deeper detail: xref:learning/lisp/appendix-b-ccl.adoc[Appendix B — CCL].
+
+'''
+
+=== 3. Build with ECL
+
+ECL compiles Lisp to C, then invokes GCC to produce a true native ELF binary.
+The container includes the C toolchain.
+
+Bring down CCL, start ECL:
+
+[source,sh]
+----
+docker compose -f ~/.config/nvim/docker/lisp-swank/docker-compose.yml down
+
+LISP_DIR=$PWD/greeter docker compose \
+  -f ~/.config/nvim/docker/lisp-swank/docker-compose.yml \
+  --profile ecl up -d --wait
+----
+
+Reconnect (`,cc`) and verify:
+
+[source,lisp]
+----
+(lisp-implementation-type)
+; => "ECL"
+----
+
+The recommended build approach with ASDF:
+
+[source,lisp]
+----
+(pushnew #p"/app/" asdf:*central-registry* :test #'equal)
+(asdf:load-system :greeter)
+
+;; Build a native executable via ASDF's program-op
+(asdf:make :greeter
+           :program-name "/app/greeter-ecl")
+----
+
+If your `.asd` does not define a `program-op`, use the lower-level C build interface directly:
+
+[source,lisp]
+----
+;; Direct ECL build — compiles through C then links
+(require :asdf)
+(pushnew #p"/app/" asdf:*central-registry* :test #'equal)
+
+;; Compile each source file to a C object
+(dolist (src '("/app/src/packages.lisp"
+               "/app/src/greeter.lisp"
+               "/app/src/main.lisp"))
+  (compile-file src :system-p t))
+
+;; Link into a single binary
+(c:build-program "/app/greeter-ecl"
+  :lisp-files (list "/app/src/packages.o"
+                    "/app/src/greeter.o"
+                    "/app/src/main.o")
+  :ld-flags '()
+  :epilogue-code '(greeter:main))
+----
+
+The resulting binary has *no runtime dependency* on ECL — it links the ECL library statically. Run it anywhere:
+
+[source,sh]
+----
+./greeter/greeter-ecl Carol
+# Hello, Carol!
+----
+
+*Note on compilation speed:* ECL is slower than SBCL to compile because every Lisp form round-trips through C source generation and GCC. This is a one-time build cost; the resulting binary is competitive.
+
+For deeper detail: xref:learning/lisp/appendix-c-ecl.adoc[Appendix C — ECL].
+
+'''
+
+=== 4. Build with ABCL
+
+ABCL runs on the JVM. Its build output is a JAR file. The container includes a JDK.
+
+Bring down ECL, start ABCL:
+
+[source,sh]
+----
+docker compose -f ~/.config/nvim/docker/lisp-swank/docker-compose.yml down
+
+LISP_DIR=$PWD/greeter docker compose \
+  -f ~/.config/nvim/docker/lisp-swank/docker-compose.yml \
+  --profile abcl up -d --wait
+----
+
+Reconnect (`,cc`) and verify:
+
+[source,lisp]
+----
+(lisp-implementation-type)
+; => "Armed Bear Common Lisp"
+----
+
+Load the system:
+
+[source,lisp]
+----
+(pushnew #p"/app/" asdf:*central-registry* :test #'equal)
+(asdf:load-system :greeter)
+----
+
+ABCL can save a Lisp world to an image (a `.abcl` file) that can then be wrapped in a JAR.
+The simplest approach uses `extensions:save-lisp`:
+
+[source,lisp]
+----
+;; Save a Lisp image (similar to SBCL's core)
+(extensions:save-lisp "/app/greeter.abcl")
+----
+
+To produce a runnable JAR, wrap the ABCL jar with your image embedded.
+This is most cleanly done with a Maven or shell script outside the REPL:
+
+[source,sh]
+----
+# Inside the container (run via docker exec):
+docker exec lisp-swank bash -c '
+  cp /usr/share/abcl/abcl.jar /app/greeter.jar
+
+  # Append the saved image into the jar alongside the ABCL classes
+  cd /app
+  jar uf greeter.jar greeter.abcl
+'
+----
+
+[source,sh]
+----
+# Run from the host (requires Java on PATH):
+java -jar greeter/greeter.jar --eval "(greeter:main)" -- Dave
+# Hello, Dave!
+----
+
+A more integrated approach uses the `abcl-contrib` system (if available in the Quicklisp distribution) which provides `abcl-build`:
+
+[source,lisp]
+----
+;; Alternative: abcl-contrib build (Quicklisp must have abcl-build)
+(ql:quickload :abcl-build)
+(abcl-build:build-executable :greeter
+                              :output "/app/greeter.jar"
+                              :main 'greeter:main)
+----
+
+For deeper detail: xref:learning/lisp/appendix-d-abcl.adoc[Appendix D — ABCL].
+
+'''
+
+=== 5. Switching Between Implementations — Summary
+
+[cols="2,4,5",options="header"]
+|===
+| Implementation | Start command | Build function
+
+| SBCL (default)
+| `docker compose up -d --wait`
+| `sb-ext:save-lisp-and-die`
+
+| CCL
+| `docker compose --profile ccl up -d --wait`
+| `ccl:save-application`
+
+| ECL
+| `docker compose --profile ecl up -d --wait`
+| `asdf:make` or `c:build-program`
+
+| ABCL
+| `docker compose --profile abcl up -d --wait`
+| `extensions:save-lisp` + jar wrapping
+|===
+
+Always `docker compose down` before switching profiles. The Swank port 4005 is shared; only one container can bind it at a time.
+
+After switching:
+
+. Wait for the container health check to pass (`docker ps --format ...`).
+. Press `,cc` in Conjure to reconnect to the new implementation.
+. Verify with `(lisp-implementation-type)`.
+
+'''
+
+=== 6. What to Explore Next
+
+* xref:learning/lisp/10-testing.adoc[Lesson 10 — Testing] — write FiveAM tests for the greeter
+* xref:learning/lisp/appendix-a-sbcl.adoc[Appendix A — SBCL] — `save-lisp-and-die` options in full
+* xref:learning/lisp/appendix-b-ccl.adoc[Appendix B — CCL] — `save-application` and macOS bundles
+* xref:learning/lisp/appendix-c-ecl.adoc[Appendix C — ECL] — compile-through-C mechanics
+* xref:learning/lisp/appendix-d-abcl.adoc[Appendix D — ABCL] — Java interop and uberjar details
+* xref:learning/lisp/index.adoc[Back to series index]
+
+'''
+
+*Prev:* xref:learning/lisp/08-packages-systems-quicklisp.adoc[08 — Packages, Systems & Quicklisp]
+*Next:* xref:learning/lisp/10-testing.adoc[10 — Testing]

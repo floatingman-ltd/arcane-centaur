@@ -1,0 +1,193 @@
+= Appendix A — SBCL
+
+____
+*Series:* xref:learning/lisp/index.adoc[Index] · *Appendix A: SBCL* ← you are here
+____
+
+SBCL (Steel Bank Common Lisp) is the default implementation for this series.
+It is widely regarded as the fastest free Common Lisp implementation, produces high-quality native code, and has the largest active community.
+The container starts SBCL automatically without any `--profile` flag.
+
+'''
+
+== Appendix A — SBCL
+
+=== The Default Container
+
+No profile is required. The Dockerfile lives at `docker/lisp-swank/sbcl/Dockerfile` in the Neovim configuration repository.
+
+Start the container with your working directory mounted at `/app`:
+
+[source,sh]
+----
+LISP_DIR=$PWD docker compose \
+  -f ~/.config/nvim/docker/lisp-swank/docker-compose.yml \
+  up -d --wait
+----
+
+Verify the implementation:
+
+[source,lisp]
+----
+(lisp-implementation-type)
+; => "SBCL"
+
+(lisp-implementation-version)
+; => "2.4.x"
+----
+
+'''
+
+=== SBCL Strengths
+
+* *Highest performance*: SBCL's native-code compiler produces machine code competitive with compiled C for many patterns. It applies type inference, inlining, and loop optimisation aggressively.
+* *Best ecosystem support*: the majority of Quicklisp libraries are tested against SBCL first. Obscure packages that support only one free implementation support SBCL.
+* *Excellent condition system integration*: SBCL's Swank back-end exposes the condition system fully; you get restarts, backtrace inspection, and frame evaluation in the Conjure HUD.
+* *Precise GC*: SBCL's generational garbage collector handles large heaps well and supports finalisers.
+* *Inline declarations*: `(declare (type fixnum n))` and `(declare (optimize (speed 3) (safety 0)))` produce measurable performance gains in hot code.
+
+'''
+
+=== save-lisp-and-die — Complete Reference
+
+`sb-ext:save-lisp-and-die` saves the entire Lisp heap and (optionally) the SBCL runtime into a single file.
+It terminates the process after saving — the name is literal.
+
+[source,lisp]
+----
+;; Minimal — produces a core file (not executable without sbcl binary)
+(sb-ext:save-lisp-and-die "/app/greeter.core"
+  :toplevel #'greeter:main)
+----
+
+[source,lisp]
+----
+;; Full standalone binary — most common production use
+(sb-ext:save-lisp-and-die "/app/greeter"
+  :toplevel             #'greeter:main   ; function called at startup
+  :executable           t                ; prepend SBCL runtime → single ELF
+  :compression          t                ; zlib-compress the Lisp core (smaller file)
+  :save-runtime-options t)               ; allow --eval, --script etc. at runtime
+----
+
+[cols="2,5",options="header"]
+|===
+| Keyword | Effect
+
+| `:toplevel fn`
+| Call `fn` when the image starts; `fn` should call `uiop:quit` when done
+
+| `:executable t`
+| Prepend the SBCL C runtime; makes the output directly runnable
+
+| `:compression t`
+| Compress the Lisp core with zlib (requires SBCL built with zlib support — true in the container)
+
+| `:compression N`
+| Compression level 1–9; higher = smaller file, slower startup
+
+| `:save-runtime-options t`
+| Embed `--no-userinit --no-sysinit` etc. so the binary behaves identically regardless of host SBCL init files
+
+| `:purify t`
+| Move all code to static space before saving; reduces GC pressure at startup
+
+| `:root-structures list`
+| Additional objects to keep as GC roots; rarely needed
+|===
+
+After saving, Swank disconnects. Reconnect with `,cc` once the container restores the Swank server, or bring the container down and up again.
+
+'''
+
+=== Running the Standalone Binary
+
+[source,sh]
+----
+# On the host (the binary was written to LISP_DIR which is $PWD)
+./greeter Alice
+# Hello, Alice!
+
+./greeter
+# Hello, World!
+
+# Check the file type
+file greeter
+# greeter: ELF 64-bit LSB executable, x86-64, ...
+----
+
+'''
+
+=== Stripping Foreign Symbols
+
+SBCL embeds a foreign symbol table used by the debugger. Stripping it reduces binary size by roughly 20–40% without affecting runtime behaviour for production use:
+
+[source,sh]
+----
+ls -lh greeter          # before
+strip greeter
+ls -lh greeter          # after (smaller)
+----
+
+Do *not* strip if you intend to post-mortem debug the binary or use `sb-debug` with the stripped image.
+
+'''
+
+=== Core Files — Fast Startup Without a Standalone Binary
+
+A *core* file (produced without `:executable t`) stores the Lisp heap but not the SBCL runtime.
+You launch it with the `sbcl` binary on the target machine:
+
+[source,lisp]
+----
+;; Save a core (no runtime embedded)
+(sb-ext:save-lisp-and-die "/app/greeter.core"
+  :toplevel #'greeter:main)
+----
+
+[source,sh]
+----
+# Launch with the host's sbcl binary
+sbcl --core greeter.core
+----
+
+Cores start faster than full images because SBCL can memory-map the core directly.
+They are useful when SBCL is already installed on the deployment machine and you want rapid startup for scripting.
+
+'''
+
+=== Useful SBCL-Specific Runtime Features
+
+[source,lisp]
+----
+;; Inspect SBCL version and features
+(lisp-implementation-version)
+*features*    ; long list including :sbcl, :x86-64, :little-endian, etc.
+
+;; GC controls
+(sb-ext:gc :full t)               ; force a full GC
+(room)                            ; print heap usage summary
+
+;; Compiler notes
+(sb-ext:restrict-compiler-policy 'safety 1)  ; ensure safety ≥ 1 everywhere
+
+;; Disassemble a function to inspect native code
+(disassemble #'greeter:greet)
+
+;; Profile a function
+(require :sb-sprof)
+(sb-sprof:with-profiling (:report :flat)
+  (dotimes (i 100000) (greeter:greet "World")))
+----
+
+'''
+
+=== Further Reading
+
+* https://sbcl.org/manual/[SBCL Manual] — comprehensive; covers the compiler, GC, FFI, and runtime options
+* xref:learning/lisp/09-building-an-application.adoc[Lesson 09 — Building an Application] — full build walkthrough
+* xref:learning/lisp/index.adoc[Back to series index]
+
+'''
+
+xref:learning/lisp/index.adoc[Back to Index]

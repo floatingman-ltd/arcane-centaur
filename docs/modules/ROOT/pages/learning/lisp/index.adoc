@@ -1,0 +1,118 @@
+= Common Lisp Learning Series
+
+Interactive, REPL-driven lessons for Common Lisp in this Neovim configuration.
+Work through each lesson with Neovim open and a Conjure REPL running alongside.
+All code blocks are evaluable with `,ee` (form under cursor) or `,eb` (whole buffer).
+
+No LSP is configured for Common Lisp by design — the running image *is* the
+language server. Lesson 02 teaches you to get arglists, documentation, and
+source location from the live Swank connection.
+
+== Core Lessons
+
+[cols="^1,3,8",options="header"]
+|===
+| # | Lesson | Topic
+
+| 01
+| xref:learning/lisp/01-setup.adoc[Setup & Connect]
+| Start the SBCL container, connect Conjure on 4005, evaluate your first form
+
+| 02
+| xref:learning/lisp/02-repl-as-ide.adoc[The REPL as Your IDE]
+| Conjure eval, sexp editing, parinfer, rainbow; introspection in place of an LSP
+
+| 03
+| xref:learning/lisp/03-forms-functions-data.adoc[Forms, Functions & Data]
+| Atoms, lists, vectors, hash tables, `defun`, lambda, optional & keyword args
+
+| 04
+| xref:learning/lisp/04-loop-iteration.adoc[LOOP & Iteration]
+| `dotimes`, `dolist`, the `loop` macro, `mapcar`/`reduce`, sequence functions
+
+| 05
+| xref:learning/lisp/05-condition-system.adoc[The Condition System]
+| Conditions, restarts, `handler-case`/`handler-bind`, the Swank debugger
+
+| 06
+| xref:learning/lisp/06-clos.adoc[CLOS]
+| `defclass`, `defgeneric`/`defmethod`, multiple dispatch, method combination
+
+| 07
+| xref:learning/lisp/07-macros.adoc[Macros]
+| `defmacro`, quasiquote, hygiene pitfalls, `macroexpand-1`, macro vs function
+
+| 08
+| xref:learning/lisp/08-packages-systems-quicklisp.adoc[Packages, Systems & Quicklisp]
+| `defpackage`/`in-package`, ASDF `.asd` files, `ql:quickload`, project layout
+
+| 09
+| xref:learning/lisp/09-building-an-application.adoc[Building an Application]
+| One ASDF system → four build artifacts: SBCL core, CCL app, ECL binary, ABCL uberjar
+
+| 10
+| xref:learning/lisp/10-testing.adoc[Testing]
+| FiveAM suites, `is` assertions, `run!`, wiring `test-op` into the `.asd`
+
+| 11
+| xref:learning/lisp/11-web-restful-service.adoc[Web RESTful Service]
+| Hunchentoot routes, JSON responses, run in-container, reach `:8080` from the host
+|===
+
+== Implementation Appendices
+
+Each containerized implementation has its own Dockerfile under
+`docker/lisp-swank/<impl>/` and its own executable-build method.
+The appendices walk through both.
+
+[cols="^1,3,8",options="header"]
+|===
+| | Appendix | Topic
+
+| A
+| xref:learning/lisp/appendix-a-sbcl.adoc[SBCL]
+| Default container, `save-lisp-and-die`, core image build
+
+| B
+| xref:learning/lisp/appendix-b-ccl.adoc[CCL (Clozure CL)]
+| CCL container, `save-application`, macOS-friendly runtime
+
+| C
+| xref:learning/lisp/appendix-c-ecl.adoc[ECL (Embeddable CL)]
+| ECL container, compile-through-C model, native binary build
+
+| D
+| xref:learning/lisp/appendix-d-abcl.adoc[ABCL (Armed Bear CL)]
+| ABCL container, JVM runtime, uberjar build, Java interop
+
+| E
+| xref:learning/lisp/appendix-e-clisp.adoc[CLISP]
+| Non-containerized; bytecode interpreter, `:style :spawn` limitation
+
+| F
+| xref:learning/lisp/appendix-f-commercial.adoc[Commercial Implementations]
+| Allegro Express and LispWorks — non-containerized; evaluation license notes
+|===
+
+== How to Use This Series
+
+Start by launching the SBCL container and opening a scratch file:
+
+[source,sh]
+----
+LISP_DIR=$PWD docker compose -f ~/.config/nvim/docker/lisp-swank/docker-compose.yml up -d --wait
+nvim scratch.lisp
+----
+
+Open the Conjure log immediately:
+
+....
+,lv
+....
+
+Evaluate every code block as you read — use `,ee` on the form under the cursor
+or `,eb` for the whole buffer.
+Results appear in the Conjure log pane in real time.
+
+To switch to a different implementation at any point, see
+xref:getting-started.adoc#sbcl-swank[Getting Started: Common Lisp REPL].
