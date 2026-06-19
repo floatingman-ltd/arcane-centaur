@@ -1,0 +1,217 @@
+= Appendix C — ECL (Embeddable CL)
+
+____
+*Series:* xref:learning/lisp/index.adoc[Index] · *Appendix C: ECL (Embeddable CL)* ← you are here
+____
+
+ECL (Embeddable Common Lisp) occupies a unique niche: it compiles Lisp to C, then invokes GCC to
+produce true native binaries that carry no Lisp runtime dependency at execution time.
+This makes ECL the right choice when you need a small footprint, need to embed Lisp in a C program,
+or need a binary that runs on a system where no Lisp runtime is installed.
+
+'''
+
+== Appendix C — ECL (Embeddable CL)
+
+=== The ECL Container
+
+The Dockerfile lives at `docker/lisp-swank/ecl/Dockerfile`.
+ECL is installed from Debian packages, which includes the C compiler toolchain it needs (GCC, `libc6-dev`, `make`).
+
+Start the container:
+
+[source,sh]
+----
+LISP_DIR=$PWD docker compose \
+  -f ~/.config/nvim/docker/lisp-swank/docker-compose.yml \
+  --profile ecl up -d --wait
+----
+
+Verify:
+
+[source,lisp]
+----
+(lisp-implementation-type)
+; => "ECL"
+
+(lisp-implementation-version)
+; => "24.x.x"   (Debian package version)
+----
+
+'''
+
+=== The Compile-Through-C Model
+
+ECL does not compile Lisp directly to machine code. Instead:
+
+. ECL compiles each `.lisp` source file to a `.c` file.
+. GCC compiles the `.c` file to a `.o` (object file) or `.fas` (ECL's own loadable format).
+. When building an executable, ECL links the object files with `libecl.a` or `libecl.so` to produce an ELF binary.
+
+This round-trip is slower than SBCL's native compiler but produces outputs that have no REPL or GC startup overhead visible at the binary level. The ECL runtime is *statically linked* when you use `c:build-program`, so the resulting ELF does not require ECL to be installed on the target machine.
+
+'''
+
+=== ECL Strengths
+
+* *True native binaries*: the output of `c:build-program` is an ELF executable with ECL linked in statically. Deploy it to any Linux system.
+* *Embeddable*: ECL can be compiled as a shared library and called from C programs via a stable C API. This is how "embedding a Lisp scripting engine in a C application" works.
+* *Small footprint*: ECL's runtime is smaller than SBCL's. Images and binaries are more compact.
+* *ANSI compliance*: ECL has excellent coverage of the ANSI Common Lisp standard. Portable ANSI code rarely needs modification.
+* *Available from Debian packages*: no build from source required; the container installs `ecl` and `libecl-dev` via `apt`.
+
+'''
+
+=== The C Toolchain Requirement
+
+Building executables requires the C compiler. The container already has it:
+
+[source,sh]
+----
+docker exec lisp-swank gcc --version
+# gcc (Debian ...) 12.x.x
+----
+
+If you try to use `c:build-program` or `compile-file` with `:system-p t` outside the container (on a system without GCC), ECL will error at the C compilation step.
+
+'''
+
+=== Building with ASDF
+
+The recommended approach for ASDF-based projects. Add a `build-op` to your `.asd`:
+
+.greeter/greeter.asd (ECL variant)
+[source,lisp]
+----
+(asdf:defsystem :greeter
+  :description "A simple CLI greeter"
+  :version "0.1.0"
+  :serial t
+  :components ((:file "src/packages")
+               (:file "src/greeter")
+               (:file "src/main"))
+  :build-operation "program-op"
+  :build-pathname  "/app/greeter-ecl"
+  :entry-point     "greeter:main")
+----
+
+Then build:
+
+[source,lisp]
+----
+(pushnew #p"/app/" asdf:*central-registry* :test #'equal)
+
+;; asdf:make triggers the build-operation defined in the .asd
+(asdf:make :greeter)
+----
+
+ASDF compiles each component to a `.c` file, runs GCC, and links.
+The binary appears at the path given in `:build-pathname`.
+
+'''
+
+=== Building Directly with c:build-program
+
+For full control, bypass ASDF and use ECL's build interface directly:
+
+[source,lisp]
+----
+(pushnew #p"/app/" asdf:*central-registry* :test #'equal)
+
+;; Step 1 — compile each Lisp source to a system object file
+(dolist (src (list "/app/src/packages.lisp"
+                   "/app/src/greeter.lisp"
+                   "/app/src/main.lisp"))
+  (compile-file src :system-p t))
+;; Produces packages.o, greeter.o, main.o in the same directory
+
+;; Step 2 — link into a native executable
+(c:build-program "/app/greeter-ecl"
+  :lisp-files (list "/app/src/packages.o"
+                    "/app/src/greeter.o"
+                    "/app/src/main.o")
+  ;; Specify the entry point: called after ECL startup
+  :epilogue-code '(progn (greeter:main) (ext:quit))
+  :ld-flags      '())
+----
+
+`c:build-program` links the `.o` files with the ECL runtime library and writes the ELF binary.
+
+'''
+
+=== Running the Native Binary
+
+[source,sh]
+----
+./greeter/greeter-ecl Alice
+# Hello, Alice!
+
+./greeter/greeter-ecl
+# Hello, World!
+
+file greeter/greeter-ecl
+# greeter-ecl: ELF 64-bit LSB executable, x86-64, statically linked, ...
+----
+
+The `statically linked` note confirms there is no runtime dependency on ECL.
+
+'''
+
+=== Compilation Speed vs SBCL
+
+ECL is significantly slower to compile than SBCL because every form passes through C source generation and GCC.
+For a project of a few hundred lines, expect compilation to take several seconds rather than milliseconds.
+
+This is a build-time cost only. The resulting binary's startup and execution speed are competitive with other C-linked runtimes.
+
+To mitigate in development, use ECL's fast loader (`.fas` files) during iteration and only invoke `c:build-program` for the final artifact:
+
+[source,lisp]
+----
+;; Fast load for development — compiles to .fas (ECL bytecode), not .o
+(compile-file "/app/src/greeter.lisp")   ; no :system-p t
+(load "/app/src/greeter.fas")
+----
+
+'''
+
+=== Embedding ECL in a C Program
+
+ECL's distinguishing feature is the C API for embedding:
+
+[source,c]
+----
+/* minimal-embed.c — call a Lisp function from C */
+#include <ecl/ecl.h>
+
+int main(int argc, char **argv) {
+    cl_boot(argc, argv);          /* initialise ECL */
+    cl_object result = cl_eval(c_string_to_object("(+ 1 2)"));
+    /* result is a cl_object (fixnum 3) */
+    printf("result: %ld\n", ecl_fixnum(result));
+    cl_shutdown();
+    return 0;
+}
+----
+
+Compile with:
+
+[source,sh]
+----
+gcc -o minimal-embed minimal-embed.c $(ecl-config --cflags --libs)
+----
+
+This is ECL's primary use-case advantage over SBCL and CCL.
+
+'''
+
+=== Further Reading
+
+* https://ecl.common-lisp.dev/[ECL home] — manual, C API reference, build instructions
+* `(ext:help)` in the ECL REPL for a list of ECL-specific extensions
+* xref:learning/lisp/09-building-an-application.adoc[Lesson 09 — Building an Application] — full build walkthrough
+* xref:learning/lisp/index.adoc[Back to series index]
+
+'''
+
+xref:learning/lisp/index.adoc[Back to Index]

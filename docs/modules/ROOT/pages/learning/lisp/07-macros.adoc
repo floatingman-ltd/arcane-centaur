@@ -1,0 +1,455 @@
+= 07 — Macros
+
+____
+*Series:* xref:learning/lisp/index.adoc[Index] · xref:learning/lisp/06-clos.adoc[06 CLOS] · *07 Macros* ← you are here · xref:learning/lisp/08-packages-systems-quicklisp.adoc[08 Packages, Systems & Quicklisp]
+____
+
+Macros are the feature that makes Common Lisp uniquely powerful.
+Unlike functions, which transform *values* at runtime, macros transform *code* at read/compile time.
+They receive unevaluated forms, perform arbitrary computation on those forms, and return a new form
+that replaces the macro call before evaluation begins.
+
+Used well, macros eliminate whole categories of repetition, implement domain-specific languages, and
+let you add syntax that feels native. Used carelessly, they produce subtle bugs around variable capture
+and multiple evaluation.
+
+Open a scratch file and the Conjure log:
+
+[source,sh]
+----
+nvim scratch.lisp
+----
+
+....
+,lv
+....
+
+Connect to the container if you have not already:
+
+....
+,cc
+....
+
+'''
+
+== 07 — Macros
+
+=== 1. Code Is Data
+
+Common Lisp is a Lisp-2: code and data share the same representation — lists, symbols, numbers, and strings.
+The `quote` special form suppresses evaluation, letting you manipulate code as data:
+
+[source,lisp]
+----
+;; A quoted list — not evaluated, just a list of symbols and numbers
+'(+ 1 2)
+; => (+ 1 2)
+
+;; eval turns data back into code
+(eval '(+ 1 2))
+; => 3
+
+;; A more complex form as data
+'(defun greet (name) (format nil "Hello, ~A!" name))
+; => (DEFUN GREET (NAME) (FORMAT NIL "Hello, ~A!" NAME))
+----
+
+*Try it:* evaluate each form with `,ee` and look at the return type in the Conjure log.
+The first returns a *list*, not a number. That is the key insight.
+
+A macro is a function that receives its arguments as *unevaluated forms* (data) and
+returns a new form (also data) that will be evaluated in its place.
+
+'''
+
+=== 2. Quasiquote: Building Code Templates
+
+Manually constructing forms with `list`, `cons`, and `append` is tedious:
+
+[source,lisp]
+----
+;; Without quasiquote — constructing (if condition body nil) by hand
+(list 'if 'condition 'body nil)
+; => (IF CONDITION BODY NIL)
+----
+
+The *quasiquote* syntax makes this readable.
+Use a backtick `` ` `` to start a quasiquoted template, `,` to insert an evaluated value, and `,@` to *splice* a list into the surrounding form:
+
+[source,lisp]
+----
+(let ((condition 'x)
+      (body      '(print "yes")))
+  ;; Backtick template — condition and body are substituted
+  `(if ,condition ,body nil))
+; => (IF X (PRINT "yes") NIL)
+----
+
+[source,lisp]
+----
+;; ,@ splices a list, not wraps it
+(let ((args '(1 2 3)))
+  `(+ ,@args))
+; => (+ 1 2 3)
+
+;; Compare with , — inserts the list as a single element
+(let ((args '(1 2 3)))
+  `(+ ,args))
+; => (+ (1 2 3))   ; wrong — (1 2 3) is not a valid argument
+----
+
+*Try it:* evaluate the `args` examples with `,ee` and compare the outputs.
+The `,@` (splice) is essential whenever you want to spread a list of subforms into a larger template.
+
+'''
+
+=== 3. defmacro — Your First Macros
+
+`defmacro` defines a macro. Its parameter list matches the *syntactic structure* of the macro call, not evaluated arguments:
+
+[source,lisp]
+----
+;; my-when — like CL's built-in WHEN, for illustration
+(defmacro my-when (condition &body body)
+  `(if ,condition
+       (progn ,@body)
+       nil))
+
+;; Usage
+(my-when t
+  (print "condition was true")
+  (+ 1 1))
+; prints: condition was true
+; => 2
+
+(my-when nil
+  (print "this never runs"))
+; => NIL
+----
+
+The `&body` lambda-list keyword is identical to `&rest` but signals to editors and readers that the remaining forms are a body to be executed.
+
+[source,lisp]
+----
+;; my-unless — the logical inverse
+(defmacro my-unless (condition &body body)
+  `(if (not ,condition)
+       (progn ,@body)
+       nil))
+
+(my-unless nil
+  (print "nil is falsy")
+  42)
+; prints: nil is falsy
+; => 42
+
+(my-unless t
+  (print "this never runs"))
+; => NIL
+----
+
+*Try it:* evaluate the `defmacro` forms with `,er` (region), then call each macro with `,ee`.
+
+Another classic — `while`, which CL lacks as a built-in:
+
+[source,lisp]
+----
+(defmacro while (condition &body body)
+  `(loop while ,condition do ,@body))
+
+(let ((n 0))
+  (while (< n 5)
+    (incf n))
+  n)
+; => 5
+----
+
+'''
+
+=== 4. macroexpand-1 and macroexpand — Inspecting What Macros Generate
+
+`macroexpand-1` expands a macro call *one level* and returns the resulting form plus a boolean indicating whether any expansion happened.
+`macroexpand` keeps expanding until no more macro calls remain at the top level.
+
+These are your primary debugging tools for macros.
+
+[source,lisp]
+----
+;; Expand my-when one level
+(macroexpand-1 '(my-when t (print "yes") (+ 1 1)))
+; => (IF T (PROGN (PRINT "yes") (+ 1 1)) NIL)
+; => T   (second value: expansion happened)
+----
+
+[source,lisp]
+----
+;; Expand my-unless one level
+(macroexpand-1 '(my-unless nil (print "no is false")))
+; => (IF (NOT NIL) (PROGN (PRINT "no is false")) NIL)
+----
+
+[source,lisp]
+----
+;; macroexpand vs macroexpand-1
+;; If your macro expands into another macro, macroexpand-1 stops there;
+;; macroexpand keeps going.
+
+(macroexpand-1 '(while (< n 5) (incf n)))
+; => (LOOP WHILE (< N 5) DO (INCF N))
+
+;; LOOP is itself a macro — macroexpand would expand it further
+;; (output is long and implementation-dependent; try it!)
+(macroexpand '(while (< n 5) (incf n)))
+----
+
+*Workflow tip:* whenever a macro does not behave as expected, wrap the call in `macroexpand-1`
+and evaluate with `,ee`. The expansion tells you exactly what code the compiler sees.
+
+'''
+
+=== 5. Hygiene Pitfalls — Variable Capture
+
+Macros operate by textual substitution of forms. This means a name chosen inside the macro template can accidentally capture a variable from the caller's environment.
+
+Here is the classic example — a broken `my-or`:
+
+[source,lisp]
+----
+;; Naive my-or — BUGGY
+(defmacro my-or-broken (a b)
+  `(let ((result ,a))
+     (if result result ,b)))
+
+;; Looks fine in simple cases:
+(my-or-broken nil 42)
+; => 42
+
+;; But what if the caller has a variable named RESULT?
+(let ((result 99))
+  (my-or-broken nil result))
+; Expand this to see the bug:
+; => (LET ((RESULT NIL)) (IF RESULT RESULT RESULT))
+;    The outer RESULT is shadowed — the answer is NIL, not 99!
+----
+
+[source,lisp]
+----
+;; Verify the bug with macroexpand-1
+(macroexpand-1 '(let ((result 99))
+                  (my-or-broken nil result)))
+----
+
+The fix is `gensym`, which generates a symbol guaranteed to be unique and thus impossible to accidentally capture:
+
+[source,lisp]
+----
+;; Fixed my-or using gensym
+(defmacro my-or (a b)
+  (let ((result-var (gensym "RESULT")))
+    `(let ((,result-var ,a))
+       (if ,result-var ,result-var ,b))))
+
+;; Now safe:
+(let ((result 99))
+  (my-or nil result))
+; => 99
+
+;; Inspect: the generated symbol name is unique
+(macroexpand-1 '(my-or nil 42))
+; => (LET ((#:RESULT1234 NIL)) (IF #:RESULT1234 #:RESULT1234 42))
+----
+
+The `#:RESULT1234` is an *uninterned symbol* — it cannot clash with any user-written name because the user cannot type it.
+
+'''
+
+=== 6. The once-only Pattern — Avoiding Multiple Evaluation
+
+A second pitfall: if you use a macro argument multiple times in the expansion, the form is evaluated multiple times.
+For pure expressions this is a subtle inefficiency; for expressions with side effects it is a bug.
+
+[source,lisp]
+----
+;; Naive square — evaluates x twice
+(defmacro square-bad (x)
+  `(* ,x ,x))
+
+;; With a side-effectful argument:
+(let ((n 0))
+  (square-bad (incf n)))
+; n is incremented TWICE — result is (* 1 2) = 2, not (* 1 1) = 1!
+----
+
+The fix is to bind the argument to a fresh gensym once, then use that binding:
+
+[source,lisp]
+----
+;; Correct square — evaluates x exactly once
+(defmacro square (x)
+  (let ((x-var (gensym "X")))
+    `(let ((,x-var ,x))
+       (* ,x-var ,x-var))))
+
+(let ((n 0))
+  (square (incf n)))
+; => 1   (n incremented once; 1 * 1 = 1)
+----
+
+When a macro has several arguments that each need once-only evaluation, the boilerplate grows quickly.
+The `once-only` utility (a macro that writes the gensym scaffolding for you) is a standard Lisp idiom.
+
+[source,lisp]
+----
+;; A clean once-only implementation
+(defmacro once-only (vars &body body)
+  (let ((gensyms (mapcar (lambda (v) (declare (ignore v)) (gensym)) vars)))
+    `(let (,@(mapcar (lambda (g v) `(,g (gensym ,(symbol-name v))))
+                     gensyms vars))
+       `(let (,,@(mapcar (lambda (g v) ``(,,g ,,v)) gensyms vars))
+          ,(let (,@(mapcar #'list vars gensyms))
+             ,@body)))))
+
+;; Now rewrite square elegantly
+(defmacro square-v2 (x)
+  (once-only (x)
+    `(* ,x ,x)))
+
+(let ((n 0))
+  (square-v2 (incf n)))
+; => 1
+----
+
+*Try it:* evaluate `once-only`, then `square-v2`, then the let form with `,ee`.
+
+'''
+
+=== 7. with-gensyms — A Common Utility
+
+When you need several gensyms at once, the `with-gensyms` helper (widely available in utility libraries and easy to write yourself) is cleaner than repeating `(let ((g (gensym "NAME"))) ...)`:
+
+[source,lisp]
+----
+(defmacro with-gensyms (names &body body)
+  `(let (,@(mapcar (lambda (name)
+                     `(,name (gensym ,(symbol-name name))))
+                   names))
+     ,@body))
+
+;; Use with-gensyms to write a clean SWAP!
+(defmacro swap! (a b)
+  (with-gensyms (tmp)
+    `(let ((,tmp ,a))
+       (setf ,a ,b)
+       (setf ,b ,tmp))))
+
+(let ((x 10) (y 20))
+  (swap! x y)
+  (list x y))
+; => (20 10)
+----
+
+[source,lisp]
+----
+;; dorange: iterate over an integer range [start, end)
+(defmacro dorange ((var start end &optional result) &body body)
+  (with-gensyms (i limit)
+    `(let ((,limit ,end))
+       (do ((,i ,start (1+ ,i)))
+           ((>= ,i ,limit) ,result)
+         (let ((,var ,i))
+           ,@body)))))
+
+(dorange (i 0 5)
+  (format t "i = ~A~%" i))
+; prints: i = 0 ... i = 4
+; => NIL
+
+;; Collect results
+(let ((acc '()))
+  (dorange (i 1 6 (nreverse acc))
+    (push (* i i) acc)))
+; => (1 4 9 16 25)
+----
+
+*Try it:* evaluate `with-gensyms`, then `dorange`, then the two usage examples with `,ee`.
+
+'''
+
+=== 8. Macro vs Function — When to Use Which
+
+Most problems should be solved with functions. Reach for a macro only when a function genuinely cannot do the job.
+
+[cols="2,4,4",options="header"]
+|===
+| Situation | Prefer | Reason
+
+| Conditional evaluation of arguments
+| Macro
+| Functions evaluate all arguments before the call; macros control which subforms are evaluated
+
+| Introducing new binding forms
+| Macro
+| Only macros can bind names in the caller's lexical scope
+
+| Capturing source-level form text or structure
+| Macro
+| The macro receives the unevaluated form, which carries source information
+
+| Generating compile-time constants or declarations
+| Macro
+| `declaim`, `proclaim`, `defconstant` patterns need macros for syntactic sugar
+
+| Repeated code pattern with no new syntax
+| Function
+| Simpler to test, compose, and reason about
+
+| Transforming a runtime value
+| Function
+| Macros run at compile time — they cannot see runtime data
+|===
+
+A real-world test: could you pass this to `funcall`? If yes, use a function.
+
+[source,lisp]
+----
+;; This MUST be a macro — it skips evaluation of the body when condition is false
+(defmacro my-and (&rest forms)
+  (cond ((null forms) t)
+        ((null (rest forms)) (first forms))
+        (t `(if ,(first forms)
+                (my-and ,@(rest forms))
+                nil))))
+
+(my-and t t (progn (print "evaluated") t))
+; prints: evaluated
+; => T
+
+(my-and t nil (progn (print "never") t))
+; prints nothing  — short-circuits!
+; => NIL
+----
+
+[source,lisp]
+----
+;; This does NOT need to be a macro — apply + funcall work fine
+(defun sum-of-squares (&rest nums)
+  (reduce #'+ (mapcar (lambda (n) (* n n)) nums)))
+
+(sum-of-squares 3 4 5)
+; => 50
+----
+
+'''
+
+=== 9. What to Explore Next
+
+* `(describe 'defmacro)` and `(documentation 'defmacro 'function)` in the REPL
+* `macroexpand-1` any standard macro: `(macroexpand-1 '(loop for i from 1 to 5 collect i))`
+* Paul Graham's _On Lisp_ — Chapters 7–10 cover macros in depth; free PDF online
+* Peter Seibel's _Practical Common Lisp_ — Chapter 8 (Macros: Defining Your Own) at https://gigamonkeys.com/book/[gigamonkeys.com]
+* xref:learning/lisp/index.adoc[Back to series index]
+
+'''
+
+*Prev:* xref:learning/lisp/06-clos.adoc[06 — CLOS]
+*Next:* xref:learning/lisp/08-packages-systems-quicklisp.adoc[08 — Packages, Systems & Quicklisp]

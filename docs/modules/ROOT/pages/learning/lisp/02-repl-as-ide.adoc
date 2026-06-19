@@ -1,0 +1,333 @@
+= 02 — The REPL as Your IDE
+
+____
+*Series:* xref:learning/lisp/index.adoc[Index] · xref:learning/lisp/01-setup.adoc[01 Setup & Connect] · *02 The REPL as Your IDE* ← you are here · xref:learning/lisp/03-forms-functions-data.adoc[03 Forms, Functions & Data]
+____
+
+No LSP is configured for Common Lisp in this setup. That is intentional. The
+running SBCL image knows everything about itself — types, arglists, docstrings,
+source locations — and Swank exposes all of it. This lesson shows you how to
+query the live image and how the structural editing tools (vim-sexp, parinfer,
+rainbow-delimiters) make working with nested forms comfortable.
+
+'''
+
+== Conjure eval keys reference
+
+[cols="1,3",options="header"]
+|===
+| Key | Action
+
+| `,ee`
+| Evaluate the innermost form touching the cursor
+
+| `,er`
+| Evaluate the outermost (root) form containing the cursor
+
+| `,eb`
+| Evaluate every top-level form in the current buffer
+
+| `,e!`
+| Evaluate the form under the cursor and replace it in the buffer with its result
+
+| `,lv`
+| Open the Conjure log in a vertical split
+
+| `,ls`
+| Open the Conjure log in a horizontal split
+
+| `,lq`
+| Close the Conjure log window
+
+| `,cc`
+| Connect to a Swank server (prompts for host + port)
+
+| `,cs`
+| Disconnect (close the current connection)
+|===
+
+Keep the log open with `,lv` while you work through this lesson. Results from
+every evaluation appear there, including multi-value returns, printed output,
+and condition messages.
+
+'''
+
+== Introspection: the live image as your language server
+
+Because the running image holds the full SBCL compiler and runtime, you can ask
+it anything about any symbol, function, or class. These forms replace hover
+docs, go-to-definition, and signature help.
+
+=== Full symbol description
+
+`describe` prints everything: type, value, arglists, the docstring, and for
+compiled functions the disassembly location.
+
+[source,lisp]
+----
+(describe 'mapcar)
+; Prints to the Conjure log:
+;   MAPCAR names a compiled function:
+;     (MAPCAR FUNCTION LIST &REST MORE-LISTS)
+;   Documentation:
+;     Apply FUNCTION to successive elements ...
+----
+
+=== Just the docstring
+
+[source,lisp]
+----
+(documentation 'mapcar 'function)
+; => "Apply FUNCTION to successive elements of LIST. Return a list of the
+;    results. If additional LISTs are given, apply FUNCTION to elements of
+;    the lists in parallel; stop when the shortest list runs out."
+----
+
+The second argument to `documentation` is the documentation type: `'function`,
+`'variable`, `'type`, `'compiler-macro`, or `'setf`.
+
+=== Describe a function object
+
+[source,lisp]
+----
+(describe #'mapcar)
+; Describes the function object itself, including its closure environment
+; if it is a closure
+----
+
+=== Arglists via Swank
+
+Swank exposes the arglist of any operator without evaluating it:
+
+[source,lisp]
+----
+(swank:operator-arglist "mapcar" *package*)
+; => "(mapcar function list &rest more-lists)"
+----
+
+This works for macros too:
+
+[source,lisp]
+----
+(swank:operator-arglist "loop" *package*)
+; => "(loop &rest keywords-and-forms)"
+----
+
+=== Source location
+
+[source,lisp]
+----
+(swank:find-definition-for-thing #'mapcar)
+; Returns a location plist pointing at the SBCL source file and line number.
+; Inside the Swank SLDB buffer you can jump to it directly.
+----
+
+=== REPL history variables
+
+Common Lisp maintains a rolling buffer of the last three results:
+
+[source,lisp]
+----
+(+ 10 20)     ; evaluate — result is 30
+
+*             ; => 30   (last result)
+**            ; => whatever was before that
+***           ; => the one before that
+----
+
+This is useful for threading results between exploratory evaluations without
+saving them to variables.
+
+=== apropos: discovery by substring
+
+[source,lisp]
+----
+(apropos "string-upcase")
+; Lists every interned symbol whose name contains "string-upcase"
+
+(apropos-list "hash" :common-lisp)
+; Returns a list of symbols in the CL package matching "hash"
+----
+
+'''
+
+== vim-sexp: structural editing
+
+vim-sexp treats Lisp source as a tree of S-expressions, not a sequence of
+characters. You reshape that tree in normal mode without touching parentheses
+directly.
+
+=== Slurp and barf
+
+Slurping *extends* a form's boundary to absorb a neighbouring element.
+Barfing *shrinks* it by ejecting an element.
+
+Start with this in your scratch buffer:
+
+[source,lisp]
+----
+(defun square (x))
+----
+
+Move the cursor inside the outer form and slurp forward (`>)`):
+
+[source,lisp]
+----
+(defun square (x) (* x x))
+; The (* x x) that was outside is now inside — it became the body
+----
+
+Barf it back out (`<)`):
+
+[source,lisp]
+----
+(defun square (x)) (* x x)
+----
+
+[cols="1,3",options="header"]
+|===
+| Key | Action
+
+| `>)`
+| Slurp forward — extend closing `)` rightward to absorb next sibling
+
+| `<)`
+| Barf forward — shrink closing `)` leftward to eject last child
+
+| `<(`
+| Slurp backward — extend opening `(` leftward to absorb prev sibling
+
+| `>(`
+| Barf backward — shrink opening `(` rightward to eject first child
+
+| `>f` / `<f`
+| Move the current form right / left among its siblings
+
+| `>e` / `<e`
+| Move the current element right / left
+
+| `cse(`
+| Wrap the element under the cursor in `()`
+
+| `cse[`
+| Wrap the element under the cursor in `[]`
+
+| `dsf`
+| Splice — delete the surrounding form, promote its children
+|===
+
+=== Text objects for Lisp forms
+
+vim-sexp also registers text objects you can use with operators:
+
+[cols="1,3",options="header"]
+|===
+| Keys | Selects
+
+| `vaf` | Around-form (outer parens included)
+| `vif` | Inner-form (contents only)
+| `vae` | Around-element (atom or form)
+| `vie` | Inner-element
+|===
+
+`daf` deletes the whole form; `yif` yanks its contents.
+
+=== A workflow example
+
+Define a function, evaluate it, then reshape it without touching parens:
+
+[source,lisp]
+----
+;; 1. Type this (deliberately incomplete):
+(defun double (x))
+
+;; 2. With cursor inside the form, slurp the body in:
+;;    position cursor on (defun ...) and press >)
+;;    after typing  (* 2 x)  on the next line
+(defun double (x) (* 2 x))
+
+;; 3. Evaluate with ,er — the function is now defined in the image
+(double 7)
+;; => 14
+
+;; 4. (describe 'double) to confirm the arglist is registered
+(describe 'double)
+----
+
+'''
+
+== nvim-parinfer: indent-driven parentheses
+
+Parinfer infers where closing parentheses belong from your indentation.
+You almost never move a `)` manually.
+
+*The key rule:* indent code to move it into or out of a form; parinfer adjusts
+the parens.
+
+[source,lisp]
+----
+;; Start:
+(let ((x 1)
+      (y 2))
+  (+ x y))
+
+;; Outdent the body one level — parinfer closes the let earlier:
+(let ((x 1)
+      (y 2)))
+(+ x y)        ; now outside the let
+----
+
+Work with parinfer by pressing `>>` or `<<` (indent/outdent) in normal mode,
+or Tab/Shift-Tab in insert mode when configured, and let the parentheses
+follow.
+
+'''
+
+== rainbow-delimiters: visual nesting depth
+
+Each depth level of nesting has a distinct colour from the TokyoNight palette.
+No keymap is needed — it activates automatically for `.lisp` files.
+
+Use the colours to orient yourself when editing deeply nested `loop` forms,
+`cond` expressions, or CLOS method definitions. When two parens share a colour
+they close at the same depth.
+
+'''
+
+== Putting it together: a mini workflow
+
+Work through this sequence to practise every tool in one pass:
+
+[source,lisp]
+----
+;;; 1. Define a helper — type it and evaluate with ,er
+(defun clamp (value min max)
+  "Return VALUE clamped to [MIN, MAX]."
+  (cond
+    ((< value min) min)
+    ((> value max) max)
+    (t value)))
+
+;;; 2. Check the arglist without leaving the editor
+(swank:operator-arglist "clamp" *package*)
+; => "(value min max)"
+
+;;; 3. Read the docstring
+(documentation 'clamp 'function)
+; => "Return VALUE clamped to [MIN, MAX]."
+
+;;; 4. Exercise it — evaluate each line with ,ee
+(clamp -5 0 100)    ; => 0
+(clamp 50 0 100)    ; => 50
+(clamp 200 0 100)   ; => 100
+
+;;; 5. Use * to refer to the last result
+(* * 2)             ; => 200  (100 * 2)
+
+;;; 6. Slurp the cond body into a progn using >)
+;;; (exercise for the reader — reshape then evaluate to confirm)
+----
+
+*Next:* xref:learning/lisp/03-forms-functions-data.adoc[03 — Forms, Functions & Data]
+
+*Prev:* xref:learning/lisp/01-setup.adoc[01 — Setup & Connect]
