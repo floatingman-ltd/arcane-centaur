@@ -1,0 +1,77 @@
+services:
+  # SBCL — default service (no profile). A bare `docker compose up -d --wait`
+  # starts SBCL. The :4005 contract: whatever container owns this port is the
+  # active Lisp; Conjure always dials 4005 and requires no reconfiguration.
+  sbcl:
+    build:
+      context: .
+      dockerfile: sbcl/Dockerfile
+    ports:
+      - "127.0.0.1:4005:4005"
+      - "127.0.0.1:8080:8080"
+    volumes:
+      - "${LISP_DIR:-$PWD}:/lisp"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "bash", "-c", "grep -q :0FA5 /proc/net/tcp 2>/dev/null"]
+      start_period: 15s
+      interval: 5s
+      timeout: 3s
+      retries: 12
+
+  ccl:
+    build:
+      context: .
+      dockerfile: ccl/Dockerfile
+    ports:
+      - "127.0.0.1:4005:4005"
+      - "127.0.0.1:8080:8080"
+    volumes:
+      - "${LISP_DIR:-$PWD}:/lisp"
+    restart: unless-stopped
+    profiles:
+      - ccl
+    healthcheck:
+      test: ["CMD", "bash", "-c", "grep -q :0FA5 /proc/net/tcp 2>/dev/null"]
+      start_period: 30s
+      interval: 5s
+      timeout: 3s
+      retries: 12
+
+  ecl:
+    build:
+      context: .
+      dockerfile: ecl/Dockerfile
+    ports:
+      - "127.0.0.1:4005:4005"
+      - "127.0.0.1:8080:8080"
+    volumes:
+      - "${LISP_DIR:-$PWD}:/lisp"
+    restart: unless-stopped
+    profiles:
+      - ecl
+    healthcheck:
+      test: ["CMD", "bash", "-c", "grep -q :0FA5 /proc/net/tcp 2>/dev/null"]
+      start_period: 20s
+      interval: 5s
+      timeout: 3s
+      retries: 12
+
+  abcl:
+    build:
+      context: .
+      dockerfile: abcl/Dockerfile
+    ports:
+      - "127.0.0.1:4005:4005"
+      - "127.0.0.1:8080:8080"
+    volumes:
+      - "${LISP_DIR:-$PWD}:/lisp"
+    restart: unless-stopped
+    profiles:
+      - abcl
+    healthcheck:
+      test: ["CMD", "bash", "-c", "grep -q :0FA5 /proc/net/tcp 2>/dev/null"]
+      start_period: 60s
+      interval: 5s
+      timeout: 3s
+      retries: 24

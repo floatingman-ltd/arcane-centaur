@@ -55,10 +55,28 @@ the current buffer or selection.
 . *Start your REPL* in a terminal (Conjure connects to it):
 +
 *Option A — Docker (recommended for Common Lisp):* A pre-configured
-Docker setup lives in `docker/sbcl-swank/`. It runs SBCL with Quicklisp
-and starts the Swank server on port 4005 automatically.
-See xref:getting-started.adoc#sbcl-swank[Getting Started: SBCL + Swank container]
-for build, start, and stop commands.
+Docker setup lives in `docker/lisp-swank/`. It provides SBCL (default),
+CCL, ECL, and ABCL — each running a Swank server on `127.0.0.1:4005`.
+See xref:getting-started.adoc#sbcl-swank[Getting Started: Common Lisp REPL]
+for build, start, and switch commands.
++
+*The :4005 contract:* Whatever container owns `127.0.0.1:4005` is the
+active Lisp. Conjure always dials 4005 — no reconfiguration needed to
+switch implementations, only `,cc` to reconnect.
++
+[source,sh]
+----
+# Start SBCL (default):
+LISP_DIR=$PWD docker compose -f ~/.config/nvim/docker/lisp-swank/docker-compose.yml up -d --wait
+
+# Switch to another implementation — down the current one, up the next:
+LISP_DIR=$PWD docker compose -f ~/.config/nvim/docker/lisp-swank/docker-compose.yml down
+LISP_DIR=$PWD docker compose -f ~/.config/nvim/docker/lisp-swank/docker-compose.yml --profile ccl up -d --wait
+# Profiles: ccl | ecl | abcl
+----
++
+Then reconnect Conjure with `,cc` — it dials the same 4005 socket regardless
+of which implementation is behind it.
 +
 Conjure will auto-connect on the next file open, or use `,cc` to connect
 manually.
@@ -148,7 +166,7 @@ If using *Docker*, stop the container:
 +
 [source,sh]
 ----
-LISP_DIR=$PWD docker compose -f ~/.config/nvim/docker/sbcl-swank/docker-compose.yml down
+LISP_DIR=$PWD docker compose -f ~/.config/nvim/docker/lisp-swank/docker-compose.yml down
 ----
 +
 If running *SBCL locally*, evaluate the following with `,ee` (cursor on
@@ -283,10 +301,11 @@ cutting and pasting:
 
 ....
  +----------------------------------------------+
- |  Docker: sbcl-swank (or local REPL server)   |
+ |  Docker: lisp-swank (SBCL/CCL/ECL/ABCL)     |
+ |  → one implementation owns 127.0.0.1:4005    |
  +----------------------------------------------+
          ^  Conjure connects on 127.0.0.1:4005
-         |
+         |  (same socket regardless of impl)
  +----------------------------------------------+
  |  Neovim                                      |
  |  +-------------------+------------------+    |
@@ -388,11 +407,11 @@ effect after a full image rebuild:
 cd ~/.config/nvim && git pull
 
 # 2. Stop any running container and rebuild from scratch
-docker compose -f ~/.config/nvim/docker/sbcl-swank/docker-compose.yml down
-docker compose -f ~/.config/nvim/docker/sbcl-swank/docker-compose.yml build --no-cache
+docker compose -f ~/.config/nvim/docker/lisp-swank/docker-compose.yml down
+docker compose -f ~/.config/nvim/docker/lisp-swank/docker-compose.yml build --no-cache
 
 # 3. Start and wait until healthy before opening a Lisp file
-LISP_DIR=$PWD docker compose -f ~/.config/nvim/docker/sbcl-swank/docker-compose.yml up -d --wait
+LISP_DIR=$PWD docker compose -f ~/.config/nvim/docker/lisp-swank/docker-compose.yml up -d --wait
 ----
 
 *Verifying it worked:*
@@ -400,11 +419,11 @@ LISP_DIR=$PWD docker compose -f ~/.config/nvim/docker/sbcl-swank/docker-compose.
 [source,sh]
 ----
 # Status should be 'healthy'
-docker compose -f ~/.config/nvim/docker/sbcl-swank/docker-compose.yml ps
+docker compose -f ~/.config/nvim/docker/lisp-swank/docker-compose.yml ps
 
 # Logs should show 'Swank started at port: 4005.' with no errors
 # (no repeated 'close-connection' lines — those came from the old healthcheck)
-docker compose -f ~/.config/nvim/docker/sbcl-swank/docker-compose.yml logs
+docker compose -f ~/.config/nvim/docker/lisp-swank/docker-compose.yml logs
 ----
 
 *Reconnecting after a rebuild:*
@@ -442,8 +461,10 @@ popup. To see the complete history:
 [width="100%",cols="34%,33%,33%",options="header",]
 |===
 |Language |REPL |Notes
-|Common Lisp |SBCL |Recommended — Docker setup included (see Quick
-Start)
+|Common Lisp (SBCL) |SBCL via Swank |Default — bare `docker compose up -d --wait` (see Quick Start)
+|Common Lisp (CCL) |Clozure CL via Swank |`--profile ccl`
+|Common Lisp (ECL) |ECL via Swank |`--profile ecl`
+|Common Lisp (ABCL) |ABCL via Swank |`--profile abcl` (JVM-based; larger image)
 
 |Clojure |Clojure nREPL |Start with `clojure -M:nrepl`
 
@@ -451,6 +472,23 @@ Start)
 
 |Fennel |Fennel REPL |`fennel --repl`
 |===
+
+=== Non-containerized Common Lisp implementations
+
+**CLISP** is a bytecode interpreter with no native threads. The shared
+`swank-start.lisp` uses `:style :spawn` which requires native thread
+support — CLISP would need `:style nil` or `:style :sigio` instead.
+The project is also largely dormant. CLISP is documented in the learning
+arc appendix (Appendix E) but no container is provided.
+
+**Allegro CL** (Franz) and **LispWorks** are commercial implementations.
+Allegro's free Express edition is restricted; LispWorks is GUI-oriented
+with no free Docker distribution. Both are covered in the learning arc
+appendix (Appendix F) with pointers to their evaluation licenses.
+
+Conjure connects to any Swank server on `127.0.0.1:4005`, so any
+implementation you start locally — with the settings from
+`docker/lisp-swank/swank-start.lisp` — is compatible.
 
 === Neovim
 
