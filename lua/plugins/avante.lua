@@ -52,7 +52,7 @@ return {
       {
         "<leader>ao",
         function()
-          require("avante").switch_provider("ollama")
+          require("avante.api").switch_provider("ollama")
           require("avante.api").ask()
         end,
         desc = "Avante: switch to ollama and open",
@@ -60,7 +60,7 @@ return {
       {
         "<leader>ac",
         function()
-          require("avante").switch_provider("claude")
+          require("avante.api").switch_provider("claude")
           require("avante.api").ask()
         end,
         desc = "Avante: switch to Claude API and open",
