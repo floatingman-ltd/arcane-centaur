@@ -34,7 +34,8 @@ return {
       providers = {
         ollama = {
           endpoint = "http://127.0.0.1:11434",
-          model = "llama3.1:8b",
+          -- model = "llama3.1:8b",
+          model = "llama3.2:3b",
         },
         claude = {
           endpoint = "https://api.anthropic.com",
@@ -52,7 +53,7 @@ return {
       {
         "<leader>ao",
         function()
-          require("avante").switch_provider("ollama")
+          require("avante.api").switch_provider("ollama")
           require("avante.api").ask()
         end,
         desc = "Avante: switch to ollama and open",
@@ -60,7 +61,7 @@ return {
       {
         "<leader>ac",
         function()
-          require("avante").switch_provider("claude")
+          require("avante.api").switch_provider("claude")
           require("avante.api").ask()
         end,
         desc = "Avante: switch to Claude API and open",
