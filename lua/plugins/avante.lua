@@ -34,7 +34,8 @@ return {
       providers = {
         ollama = {
           endpoint = "http://127.0.0.1:11434",
-          model = "llama3.1:8b",
+          -- model = "llama3.1:8b",
+          model = "llama3.2:3b",
         },
         claude = {
           endpoint = "https://api.anthropic.com",
