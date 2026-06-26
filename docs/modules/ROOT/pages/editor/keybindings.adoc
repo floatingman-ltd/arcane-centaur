@@ -426,8 +426,10 @@ LocalLeader is `,` in `.http` buffers.
 |Keys |Action
 |`,r` |Run request under cursor
 |`,l` |Re-run last request
+|`,a` |Run all requests in the file
 |`,o` |Open result pane
 |`,e` |Select environment
+|`,s` |Open HTTP scratchpad
 |===
 
 → xref:content/rest-cheatsheet.adoc[Full reference] · xref:content/rest.adoc[Guide]

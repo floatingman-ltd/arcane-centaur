@@ -154,8 +154,10 @@ keybinding reference.
 |Keys |Action
 |`,r` |Run request under cursor
 |`,l` |Re-run last request
+|`,a` |Run all requests in the file
 |`,o` |Open result pane
 |`,e` |Select environment
+|`,s` |Open HTTP scratchpad
 |===
 
 '''''
