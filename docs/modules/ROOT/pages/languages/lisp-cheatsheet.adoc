@@ -31,58 +31,110 @@ docker compose -f ~/.config/nvim/docker/lisp-swank/docker-compose.yml down
 
 '''''
 
-== Conjure — Evaluation
+== Conjure — Evaluation (all clients)
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`,ee` |Normal |Evaluate form under cursor
+|`,er` |Normal |Evaluate root (outermost) form
+|`,em` |Normal |Evaluate marked form
+|`,ew` |Normal |Evaluate word under cursor
+|`,ep` |Normal |Evaluate and display result inline
+|`,e!` |Normal |Evaluate and replace with result
+|`,eb` |Normal |Evaluate buffer (from memory)
+|`,ef` |Normal |Evaluate file (load from disk)
+|`,ece` |Normal |Evaluate form, insert result as comment
+|`,ecr` |Normal |Evaluate root form, insert result as comment
+|`,E` |Visual |Evaluate visual selection
+|`,E` |Normal (operator) |Evaluate over motion
+|`,gd` |Normal |Go to definition
+|`K` |Normal |Look up documentation (bare key — no leader prefix)
+|===
+
+== Conjure — Log Window
 
 [cols=",",options="header",]
 |===
 |Keys |Action
-|`,ee` |Evaluate form under cursor
-|`,er` |Evaluate root (outermost) form
-|`,eb` |Evaluate entire buffer
-|`,e!` |Replace form with its evaluated result
-|`,cc` |Connect to REPL manually
+|`,ls` |Open log in horizontal split
+|`,lv` |Open log in vertical split
+|`,lt` |Open log in new tab
+|`,le` |Open log in current window
+|`,lg` |Toggle log window open / closed
+|`,lr` |Reset log — soft (wipe contents)
+|`,lR` |Reset log — hard (delete buffer)
+|`,ll` |Jump to latest result in log
+|`,lq` |Close all visible log windows
 |===
 
-== Conjure — REPL Log
+== Conjure — Connection (Common Lisp / Swank)
 
 [cols=",",options="header",]
 |===
 |Keys |Action
-|`,lv` |Open REPL log in vertical split
-|`,ls` |Open REPL log in horizontal split
-|`,lq` |Close REPL log window
+|`,cc` |Connect to Swank REPL (port 4005)
+|`,cd` |Disconnect from REPL
 |===
 
-== Structural Editing — vim-sexp
+== Conjure — Clojure Extras (nREPL)
 
-[width="100%",cols="50%,50%",options="header",]
+[cols=",",options="header",]
 |===
 |Keys |Action
-|`++>++)` |*Slurp forward* — extend the closing `)` rightward, pulling
-the next sibling _into_ the form
+|`,cf` |Connect via `.nrepl-port` file
+|`,ei` |Interrupt current evaluation
+|`,ve` |Display last exception
+|`,v1` / `,v2` / `,v3` |Display recent results (1st / 2nd / 3rd)
+|`,vs` |View source of symbol under cursor
+|`,ta` |Run all tests
+|`,tn` |Run tests in current namespace
+|`,tc` |Run test under cursor
+|`,rr` |Refresh changed namespaces
+|`,ra` |Refresh all namespaces
+|===
 
-|`++<++)` |*Barf forward* — shrink the closing `)` leftward, pushing the
-last element _out of_ the form
+== Structural Editing — vim-sexp-mappings-for-regular-people
 
-|`++<++(` |*Slurp backward* — extend the opening `(` leftward, pulling
-the previous sibling _into_ the form
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`++>++)` |Normal |*Slurp forward* — extend `)` rightward, pulling next sibling _into_ the form
+|`++<++)` |Normal |*Barf forward* — shrink `)` leftward, pushing last element _out_
+|`++<++(` |Normal |*Slurp backward* — extend `(` leftward, pulling previous sibling _in_
+|`++>++(` |Normal |*Barf backward* — shrink `(` rightward, pushing first element _out_
+|`++>++e` |Normal |Swap element forward
+|`++<++e` |Normal |Swap element backward
+|`++>++f` |Normal |Swap form forward
+|`++<++f` |Normal |Swap form backward
+|`++<++I` |Normal |Insert at head of current form
+|`++>++I` |Normal |Insert at tail of current form
+|`dsf` |Normal |Splice — delete surrounding brackets
+|`cse(` or `cse)` |Normal / Visual |Wrap element in `()`
+|`cse++[++` or `cse++]++` |Normal / Visual |Wrap element in `++[]++`
+|`cse{` or `cse}` |Normal / Visual |Wrap element in `{}`
+|`W` / `B` / `E` |Normal / Visual / Operator |Next/prev element head; next element tail
+|===
 
-|`++>++(` |*Barf backward* — shrink the opening `(` rightward, pushing
-the first element _out of_ the form
+== vim-sexp — Text Objects
 
-|`++>++f` |Move current form right among siblings
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`af` / `if` |Visual / Operator |Outer / inner list (compound form), incl./excl. brackets
+|`aF` / `iF` |Visual / Operator |Outer / inner top-level list
+|`as` / `is` |Visual / Operator |Outer / inner string (incl./excl. quotes)
+|`ae` / `ie` |Visual / Operator |Outer / inner element (atom/string/comment/form)
+|===
 
-|`++<++f` |Move current form left among siblings
+== vim-sexp — Motions
 
-|`++>++e` |Move current element right
-
-|`++<++e` |Move current element left
-
-|`cse(` or `cse)` |Surround element with `()`
-
-|`cse++[++` or `cse++]++` |Surround element with `++[]++`
-
-|`dsf` |Delete surrounding function call (splice)
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`(` / `)` |Normal / Visual / Operator |Move to paired brackets backward / forward
+|`++[++[` / `++]++]` |Normal / Visual / Operator |Previous / next top-level element
+|`++[++e` / `++]++e` |Normal / Visual / Operator |Select previous / next element
 |===
 
 ____

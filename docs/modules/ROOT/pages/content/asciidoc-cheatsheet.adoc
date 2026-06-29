@@ -1,0 +1,74 @@
+== AsciiDoc Cheatsheet
+
+*LocalLeader* = `,` in `.adoc` buffers
+
+→ Back to xref:editor/keybindings.adoc[main cheatsheet]
+
+NOTE: AsciiDoc / Antora is the *source of truth* for documentation in this config. All docs pages live under `docs/modules/ROOT/pages/`. The nav entry point is `docs/modules/ROOT/nav.adoc`.
+
+'''''
+
+== Preview — Single Page
+
+Converts the current `.adoc` buffer to HTML using the `asciidoctor/docker-asciidoctor`
+Docker image and opens it in the system browser. Requires Docker and a graphical environment.
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`,p` or `,pp` |Normal |Convert `.adoc` to HTML (Docker asciidoctor) and open in browser
+|===
+
+Console mode (SSH / headless): both maps show a notification that browser preview requires a GUI.
+
+The `asciidoctor/docker-asciidoctor` image is pulled automatically on first use (~200 MB).
+
+'''''
+
+== Preview — Full Antora Site
+
+Builds the complete Antora site from `antora-playbook-local.yml` using
+the `antora/antora` Docker image and opens `build/site/index.html`.
+This resolves cross-page `xref:` links, includes, and the Antora nav — the
+closest thing to a production preview.
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`,pa` |Normal |Build full Antora site (Docker) and open in browser
+|===
+
+Requires Docker, a graphical environment, and `antora-playbook-local.yml`
+in the repo root (separate from `antora-playbook.yml` which targets the
+remote Git source; the local playbook reads from the working tree).
+
+Build output goes to `build/site/` (gitignored).
+
+'''''
+
+== User Commands
+
+No dedicated user commands for AsciiDoc — the keymaps above call inline
+Lua functions defined in `after/ftplugin/asciidoc.lua`.
+
+To build the Antora site from the shell (requires Docker):
+
+[source,sh]
+----
+docker compose -f antora-playbook.yml run --rm antora antora-playbook.yml
+----
+
+'''''
+
+== LSP / Treesitter
+
+No AsciiDoc LSP is configured in this setup. Treesitter does not include
+an AsciiDoc grammar. Syntax highlighting and folding rely on Neovim's
+built-in AsciiDoc filetype detection.
+
+See `xref:other/architecture.adoc[Architecture]` for notes on potential
+AsciiDoc tooling additions.
+
+'''''
+
+_Keymaps defined in `after/ftplugin/asciidoc.lua`._

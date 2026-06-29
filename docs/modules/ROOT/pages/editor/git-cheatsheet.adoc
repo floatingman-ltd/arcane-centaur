@@ -1,7 +1,3 @@
-// :auto-generated: true
-// :source: documentation/cheatsheets/git.md
-// Remove this header to take manual ownership of this file
-
 == Git Cheatsheet
 
 *Leader* = `Space`
@@ -13,7 +9,7 @@
 == vim-fugitive — Git Operations
 
 Run any git command with `:Git ++<++args++>++` or its short alias
-`:G ++<++args++>++` (e.g. `:Git commit`, `:G rebase -i HEAD~3`).
+`:G ++<++args++>++` (e.g. `:Git commit`, `:G rebase -i HEAD~3`).
 
 [cols=",,",options="header",]
 |===
@@ -25,17 +21,64 @@ Run any git command with `:Git ++<++args++>++` or its short alias
 |`++<++leader++>++gp` |Normal |Git push
 |===
 
-=== Inside the `:Git` status window
+=== Inside the `:Git` status window — Staging
 
 [cols=",",options="header",]
 |===
 |Keys |Action
 |`s` |Stage file / hunk under cursor
 |`u` |Unstage file / hunk under cursor
-|`=` |Toggle inline diff for file under cursor
-|`cc` |Commit staged changes
-|`dd` |Diff file under cursor
-|`q` |Close the status window
+|`-` |Toggle stage / unstage
+|`U` |Unstage everything
+|`X` |Discard change under cursor
+|`=` |Toggle inline diff
+|`++>++` / `++<++` |Show / hide inline diff
+|`I` |Interactive patch (`:Git add --patch` / `reset --patch`)
+|===
+
+=== Inside the `:Git` status window — Commit
+
+[cols=",",options="header",]
+|===
+|Keys |Action
+|`cc` |Create a commit
+|`ca` |Amend last commit (edit message)
+|`ce` |Amend last commit (keep message)
+|`cw` |Reword last commit
+|`cf` |Create `fixup!` commit for commit under cursor
+|`crc` |Revert commit under cursor
+|===
+
+=== Inside the `:Git` status window — Navigation & Diff
+
+[cols=",",options="header",]
+|===
+|Keys |Action
+|`(` / `)` |Previous / next file or hunk
+|`++[++c` / `++]++c` |Previous / next hunk (auto-expands inline diffs)
+|`++[++[` / `++]++]` |Jump section backward / forward
+|`gu` |Jump to Untracked section
+|`gs` |Jump to Staged section
+|`dd` |`:Gdiffsplit` on file under cursor
+|`dv` |`:Gvdiffsplit` (vertical)
+|`ds` |`:Ghdiffsplit` (horizontal)
+|`++<++CR++>++` |Open file under cursor
+|`o` |Open in horizontal split
+|`gO` |Open in vertical split
+|`O` |Open in new tab
+|`gq` |Close status buffer
+|`g?` |Help — all fugitive maps
+|===
+
+=== Inside the `:Git` status window — Stash
+
+[cols=",",options="header",]
+|===
+|Keys |Action
+|`czz` |Push stash
+|`czw` |Push stash of working tree (`--keep-index`)
+|`czs` |Push stash of stage only
+|`czp` / `czP` |Pop / apply topmost stash
 |===
 
 '''''
@@ -67,7 +110,7 @@ Changed lines are marked in the sign column: `▎` added · `▎` changed ·
 |`++<++leader++>++hp` |Normal |Preview hunk inline
 |`++<++leader++>++hb` |Normal |Full blame for current line
 |`++<++leader++>++hd` |Normal |Diff this file (unstaged)
-|`++<++leader++>++hD` |Normal |Diff this file (staged, vs. HEAD)
+|`++<++leader++>++hD` |Normal |Diff this file (staged, vs. HEAD)
 |===
 
 === Text Object
@@ -103,9 +146,10 @@ three-way merge conflict view.
 |`++<++leader++>++gX` |Normal |Close diff view
 |===
 
-You can also open diffview against any ref directly: -
-`:DiffviewOpen HEAD~3` — diff working tree vs 3 commits ago -
-`:DiffviewFileHistory` — history for all files (omit `%` for repo-wide)
+You can also open diffview against any ref directly:
+
+* `:DiffviewOpen HEAD~3` — diff working tree vs 3 commits ago
+* `:DiffviewFileHistory` — history for all files (omit `%` for repo-wide)
 
 '''''
 

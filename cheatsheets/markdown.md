@@ -6,12 +6,37 @@
 
 ## Navigation (mkdnflow)
 
-| Key | Action |
-|-----|--------|
-| `Enter` | Follow link under cursor |
-| `Backspace` | Go back to previous file |
-| `Tab` | Jump to next link in buffer |
-| `S-Tab` | Jump to previous link in buffer |
+| Key | Mode | Action |
+|-----|------|--------|
+| `Enter` | n | Follow / create link under cursor |
+| `Backspace` | n | Go back in link history |
+| `Delete` | n | Go forward in link history |
+| `Tab` | n | Jump to next link in buffer |
+| `S-Tab` | n | Jump to previous link in buffer |
+| `]]` | n | Jump to next heading |
+| `[[` | n | Jump to previous heading |
+| `][` | n | Next heading of the same level |
+| `[]` | n | Previous heading of the same level |
+| `+` | n, v | Increase heading importance (remove `#`) |
+| `-` | n, v | Decrease heading importance (add `#`) |
+| `Ctrl-Space` | n, v | Toggle to-do item status |
+| `o` | n | New list item below (enter insert mode) |
+| `O` | n | New list item above (enter insert mode) |
+| `yaa` | n | Yank anchor link to heading under cursor |
+| `yfa` | n | Yank file-relative anchor link |
+
+### Table editing (mkdnflow — insert mode)
+
+| Key | Mode | Action |
+|-----|------|--------|
+| `Tab` | i | Next table cell |
+| `S-Tab` | i | Previous table cell |
+| `<leader>ir` | n | Insert table row below |
+| `<leader>iR` | n | Insert table row above |
+| `<leader>ic` | n | Insert table column after |
+| `<leader>iC` | n | Insert table column before |
+| `<leader>dr` | n | Delete current table row |
+| `<leader>dc` | n | Delete current table column |
 
 ## Preview
 
