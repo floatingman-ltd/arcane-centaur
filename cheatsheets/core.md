@@ -63,16 +63,47 @@
 | `<leader>gd` | Git diff (unstaged) |
 | `<leader>gp` | Git push |
 
-### Gitsigns
+### Fugitive — inside `:Git` status window
 
 | Key | Action |
 |-----|--------|
-| `]h` | Next hunk |
-| `[h` | Previous hunk |
-| `<leader>hs` | Stage hunk |
-| `<leader>hr` | Reset hunk |
-| `<leader>hu` | Undo stage hunk |
-| `<leader>hb` | Blame line |
+| `s` | Stage file/hunk under cursor |
+| `u` | Unstage file/hunk under cursor |
+| `-` | Toggle stage/unstage |
+| `U` | Unstage everything |
+| `X` | Discard change under cursor |
+| `=` | Toggle inline diff |
+| `I` | Interactive patch (add/reset --patch) |
+| `cc` | Create commit |
+| `ca` | Amend last commit |
+| `ce` | Amend without editing message |
+| `crc` | Revert commit under cursor |
+| `dd` | Diff split |
+| `dv` | Vertical diff split |
+| `(` / `)` | Previous / next file or hunk |
+| `[c` / `]c` | Previous / next hunk |
+| `o` | Open in horizontal split |
+| `gO` | Open in vertical split |
+| `O` | Open in new tab |
+| `gq` | Close status buffer |
+| `g?` | Show all fugitive maps |
+
+### Gitsigns
+
+| Key | Mode | Action |
+|-----|------|--------|
+| `]h` | Normal | Next hunk |
+| `[h` | Normal | Previous hunk |
+| `<leader>hs` | Normal/Visual | Stage hunk (or selected lines) |
+| `<leader>hr` | Normal/Visual | Reset hunk (or selected lines) |
+| `<leader>hS` | Normal | Stage entire buffer |
+| `<leader>hR` | Normal | Reset entire buffer |
+| `<leader>hu` | Normal | Undo last stage |
+| `<leader>hp` | Normal | Preview hunk inline |
+| `<leader>hb` | Normal | Blame line (full) |
+| `<leader>hd` | Normal | Diff this file (unstaged) |
+| `<leader>hD` | Normal | Diff this file (staged, vs HEAD) |
+| `<leader>ih` | Visual/Operator | Select hunk (text object) |
 
 ### Diffview
 
@@ -93,6 +124,14 @@
 | `<leader>?l` | Normal | Research: ask about this config (grounded) |
 | `<leader>?a` | Normal | Research: ask a general question |
 | `<leader>c` | Normal | Jump back from the Avante chat panel |
+
+## AI Chat (Avante)
+
+| Key | Action |
+|-----|--------|
+| `<leader>aa` | Open Avante with the current provider |
+| `<leader>ao` | Switch to Ollama (offline, default) and open |
+| `<leader>ac` | Switch to Claude API and open |
 
 ---
 

@@ -30,6 +30,8 @@ xref:editor/clipboard.adoc[full guide]
 
 |Lisp / Clojure / Scheme / Fennel (Conjure {plus} vim-sexp) |xref:languages/lisp-cheatsheet.adoc[lisp]
 
+|AsciiDoc Preview (single-page {plus} full Antora site) |xref:content/asciidoc-cheatsheet.adoc[asciidoc]
+
 |Markdown Preview {plus} PlantUML {plus} HTML {plus} MARP {plus} Confluence {plus} Jira |xref:content/markdown-cheatsheet.adoc[markdown]
 
 |Navigation (Splits {plus} Fuzzy Finder {plus} File Tree {plus} Unimpaired) |xref:editor/navigation.adoc[navigation]
@@ -192,6 +194,21 @@ window)
 
 '''''
 
+=== AI Chat (Avante)
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`++<++leader++>++aa` |Normal |Open Avante with the current provider
+|`++<++leader++>++ao` |Normal |Switch to Ollama (offline, default) and open
+|`++<++leader++>++ac` |Normal |Switch to Claude API and open
+|`++<++leader++>++c` |Normal |Jump back to editor from the Avante chat panel
+|===
+
+→ xref:ai/ai-tools-cheatsheet.adoc[Full reference] · xref:ai/ai-tools.adoc#avante[Avante guide]
+
+'''''
+
 === Research Popup
 
 [width="100%",cols="34%,33%,33%",options="header",]
@@ -271,8 +288,14 @@ window)
 |`++[++h` |Normal |Previous hunk
 |`++<++leader++>++hs` |Normal / Visual |Stage hunk
 |`++<++leader++>++hr` |Normal / Visual |Reset hunk
+|`++<++leader++>++hS` |Normal |Stage entire buffer
+|`++<++leader++>++hR` |Normal |Reset entire buffer
 |`++<++leader++>++hu` |Normal |Undo stage
+|`++<++leader++>++hp` |Normal |Preview hunk inline
 |`++<++leader++>++hb` |Normal |Blame line
+|`++<++leader++>++hd` |Normal |Diff this file (unstaged)
+|`++<++leader++>++hD` |Normal |Diff this file (staged, vs HEAD)
+|`++<++leader++>++ih` |Visual / Operator |Select hunk (text object)
 |`++<++leader++>++gD` |Normal |Open diff view (working tree)
 |`++<++leader++>++gH` |Normal |File history for current file
 |`++<++leader++>++gX` |Normal |Close diff view
@@ -298,6 +321,27 @@ Leader is `Space`; no LocalLeader bindings are used in Haskell buffers.
 |===
 
 → xref:languages/haskell-cheatsheet.adoc[Full reference] · xref:languages/haskell.adoc[Guide]
+
+'''''
+
+=== .NET REPL — iron.nvim (F++#++ and C++#++)
+
+LocalLeader is `,` in `.fs`/`.fsx`/`.fsi` and `.cs` buffers. REPL backend: `dotnet fsi` for F++#++, `csharprepl` for C++#++.
+
+[cols=",",options="header",]
+|===
+|Keys |Action
+|`,sl` |Send current line to REPL
+|`,sc` |Send motion or visual selection to REPL
+|`,sp` |Send current paragraph to REPL
+|`,sf` |Send entire file to REPL
+|`,s++<++CR++>++` |Send a carriage return to the REPL
+|`,si` |Interrupt the REPL
+|`,sq` |Quit / exit the REPL
+|`,cl` |Clear REPL output
+|===
+
+→ xref:languages/dotnet-cheatsheet.adoc[Full reference] · xref:languages/dotnet.adoc[Guide]
 
 '''''
 

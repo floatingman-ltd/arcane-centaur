@@ -1,70 +1,78 @@
-// :auto-generated: true
-// :source: documentation/cheatsheets/janet.md
-// Remove this header to take manual ownership of this file
-
 == Janet Cheatsheet (Conjure {plus} vim-sexp)
 
 *LocalLeader* = `,` in Janet buffers
 
-→ Back to xref:editor/keybindings.adoc[main cheatsheet] · Full guide:
-../guides/janet.md
+→ Back to xref:editor/keybindings.adoc[main cheatsheet] · xref:languages/janet.adoc[Full guide]
+
+NOTE: This config uses the Janet *stdio client* (`janet -n -s`). Conjure spawns it automatically on first evaluation; use `,cs`/`,cS` to restart it manually.
 
 == Conjure — Evaluation
 
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`,ee` |Normal |Evaluate form under cursor
+|`,er` |Normal |Evaluate root (outermost) form
+|`,em` |Normal |Evaluate marked form
+|`,ew` |Normal |Evaluate word under cursor
+|`,ep` |Normal |Evaluate and display result inline
+|`,e!` |Normal |Evaluate and replace with result
+|`,eb` |Normal |Evaluate buffer (from memory)
+|`,ef` |Normal |Evaluate file (load from disk)
+|`,E` |Visual |Evaluate visual selection
+|`,gd` |Normal |Go to definition
+|`K` |Normal |Look up documentation (bare key — no leader prefix)
+|===
+
+== Conjure — Log Window
+
 [cols=",",options="header",]
 |===
 |Keys |Action
-|`,ee` |Evaluate form under cursor
-|`,er` |Evaluate root (outermost) form
-|`,eb` |Evaluate entire buffer
-|`,e!` |Replace form with its evaluated result
+|`,ls` |Open log in horizontal split
+|`,lv` |Open log in vertical split
+|`,lt` |Open log in new tab
+|`,lg` |Toggle log window open / closed
+|`,ll` |Jump to latest result in log
+|`,lq` |Close all visible log windows
 |===
 
-== Conjure — REPL Log
+== Conjure — Connection (Janet stdio)
 
 [cols=",",options="header",]
 |===
 |Keys |Action
-|`,lv` |Open REPL log in vertical split
-|`,ls` |Open REPL log in horizontal split
-|`,lq` |Close REPL log window
+|`,cs` |Start the Janet REPL subprocess
+|`,cS` |Stop the Janet REPL subprocess
 |===
 
-== Structural Editing — vim-sexp
+== Structural Editing — vim-sexp-mappings-for-regular-people
 
-[width="100%",cols="50%,50%",options="header",]
+[cols=",,",options="header",]
 |===
-|Keys |Action
-|`++>++)` |*Slurp forward* — extend the closing `)` rightward, pulling
-the next sibling _into_ the form
-
-|`++<++)` |*Barf forward* — shrink the closing `)` leftward, pushing the
-last element _out of_ the form
-
-|`++<++(` |*Slurp backward* — extend the opening `(` leftward, pulling
-the previous sibling _into_ the form
-
-|`++>++(` |*Barf backward* — shrink the opening `(` rightward, pushing
-the first element _out of_ the form
-
-|`++>++f` |Move current form right among siblings
-
-|`++<++f` |Move current form left among siblings
-
-|`++>++e` |Move current element right
-
-|`++<++e` |Move current element left
-
-|`cse(` or `cse)` |Surround element with `()`
-
-|`cse++[++` or `cse++]++` |Surround element with `++[]++`
-
-|`dsf` |Delete surrounding function call (splice)
+|Keys |Mode |Action
+|`++>++)` |Normal |*Slurp forward* — extend `)` rightward, pulling next sibling _into_ the form
+|`++<++)` |Normal |*Barf forward* — shrink `)` leftward, pushing last element _out_
+|`++<++(` |Normal |*Slurp backward* — extend `(` leftward
+|`++>++(` |Normal |*Barf backward* — shrink `(` rightward
+|`++>++e` / `++<++e` |Normal |Swap element forward / backward
+|`++>++f` / `++<++f` |Normal |Swap form forward / backward
+|`++<++I` / `++>++I` |Normal |Insert at head / tail of current form
+|`dsf` |Normal |Splice — delete surrounding brackets
+|`cse(` or `cse)` |Normal / Visual |Wrap element in `()`
+|`cse++[++` or `cse++]++` |Normal / Visual |Wrap element in `++[]++`
+|`cse{` or `cse}` |Normal / Visual |Wrap element in `{}`
 |===
 
-____
-See ../guides/janet.md for step-by-step examples and setup instructions.
-____
+== vim-sexp — Text Objects
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`af` / `if` |Visual / Operator |Outer / inner list (compound form)
+|`as` / `is` |Visual / Operator |Outer / inner string
+|`ae` / `ie` |Visual / Operator |Outer / inner element
+|===
 
 == Other Active Plugins
 

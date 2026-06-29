@@ -9,17 +9,40 @@ Presentations guide: ../guides/presentations.md · Confluence guide:
 
 == Cross-page Link Navigation (mkdnflow.nvim)
 
-[width="100%",cols="34%,33%,33%",options="header",]
+[cols=",,",options="header",]
 |===
 |Keys |Mode |Action
-|`++<++CR++>++` |Normal |Follow link under cursor (opens target file in
-current window)
+|`++<++CR++>++` |Normal |Follow / create link under cursor
+|`++<++BS++>++` |Normal |Go back in link history
+|`++<++Del++>++` |Normal |Go forward in link history
+|`++<++Tab++>++` |Normal |Jump to next link in buffer
+|`++<++S-Tab++>++` |Normal |Jump to previous link in buffer
+|`++]++]` |Normal |Next heading
+|`++[++[` |Normal |Previous heading
+|`++]++[` |Normal |Next heading at the same level
+|`++[++]` |Normal |Previous heading at the same level
+|`+` |Normal / Visual |Increase heading importance (remove `#`)
+|`-` |Normal / Visual |Decrease heading importance (add `#`)
+|`++<++C-Space++>++` |Normal / Visual |Toggle to-do item status
+|`o` |Normal |New list item below (enter insert mode)
+|`O` |Normal |New list item above (enter insert mode)
+|`yaa` |Normal |Yank anchor link to heading under cursor
+|`yfa` |Normal |Yank file-relative anchor link
+|===
 
-|`++<++BS++>++` |Normal |Go back to the previous file
+=== mkdnflow — Table Editing
 
-|`++<++Tab++>++` |Normal |Jump to the next link in the buffer
-
-|`++<++S-Tab++>++` |Normal |Jump to the previous link in the buffer
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`++<++Tab++>++` |Insert |Move to next table cell
+|`++<++S-Tab++>++` |Insert |Move to previous table cell
+|`++<++leader++>++ir` |Normal |Insert table row below
+|`++<++leader++>++iR` |Normal |Insert table row above
+|`++<++leader++>++ic` |Normal |Insert table column after
+|`++<++leader++>++iC` |Normal |Insert table column before
+|`++<++leader++>++dr` |Normal |Delete current table row
+|`++<++leader++>++dc` |Normal |Delete current table column
 |===
 
 Use `++<++CR++>++` to follow a `++[++text++]++(other-file.md)` link
