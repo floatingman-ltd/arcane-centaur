@@ -9,6 +9,7 @@ return {
       wk.add({
         { "<leader>gc", group = "Claude" },
         { "<leader>os", group = "OpenSpec" },
+        { "<leader>x",  group = "Trouble" },
       })
     end,
   },

@@ -39,6 +39,31 @@ _Keymaps defined in `lua/config/lsp.lua`._
 
 '''''
 
+== Diagnostics Panel (trouble.nvim)
+
+https://github.com/folke/trouble.nvim[trouble.nvim] v3 provides a structured
+panel for diagnostics, references, quickfix, and todos.
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`++<++leader++>++xx` |Normal |Project diagnostics panel
+|`++<++leader++>++xX` |Normal |Buffer diagnostics panel
+|`++<++leader++>++xs` |Normal |Symbols panel
+|`++<++leader++>++xr` |Normal |LSP references / definitions panel
+|`++<++leader++>++xl` |Normal |Location list panel
+|`++<++leader++>++xq` |Normal |Quickfix list panel
+|`++<++leader++>++xt` |Normal |Todo list (via Trouble)
+|`++<++leader++>++xT` |Normal |Todo list (via fzf-lua)
+|===
+
+NOTE: `[d`/`]d` and `<leader>e` (LSP diagnostics float) are unchanged.
+`]t`/`[t` remain vim-unimpaired tag navigation.
+
+_Configured in `lua/plugins/trouble.lua` and `lua/plugins/todo-comments.lua`._
+
+'''''
+
 == Auto-Completion (blink.cmp)
 
 Powered by https://github.com/saghen/blink.cmp[blink.cmp] v1 — a Rust-based
