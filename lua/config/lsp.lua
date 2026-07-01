@@ -3,12 +3,21 @@
 -- for matching filetypes using default cmd/root/filetypes from nvim-lspconfig's
 -- bundled lsp/<server>.lua files (no require('lspconfig') needed).
 
--- Shared capabilities: standard defaults + fold range support for nvim-ufo.
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities.textDocument.foldingRange = {
-  dynamicRegistration = false,
-  lineFoldingOnly = true,
-}
+-- Shared capabilities: blink.cmp completion capabilities + fold range support for nvim-ufo.
+-- pcall guard covers the case where blink hasn't loaded yet at config time.
+local capabilities
+local ok, blink = pcall(require, "blink.cmp")
+if ok then
+  capabilities = blink.get_lsp_capabilities({
+    textDocument = { foldingRange = { dynamicRegistration = false, lineFoldingOnly = true } },
+  })
+else
+  capabilities = vim.lsp.protocol.make_client_capabilities()
+  capabilities.textDocument.foldingRange = {
+    dynamicRegistration = false,
+    lineFoldingOnly = true,
+  }
+end
 
 local on_attach = function(_, bufnr)
   local opts = { noremap = true, silent = true, buffer = bufnr }
