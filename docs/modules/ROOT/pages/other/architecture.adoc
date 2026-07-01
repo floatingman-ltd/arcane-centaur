@@ -150,13 +150,9 @@ All plugins are managed by https://github.com/folke/lazy.nvim[lazy.nvim]. Specs 
 [cols="1,3"]
 |===
 |https://github.com/neovim/nvim-lspconfig[nvim-lspconfig] |LSP server configuration helpers
-|https://github.com/hrsh7th/nvim-cmp[nvim-cmp] |Completion engine
-|https://github.com/hrsh7th/cmp-nvim-lsp[cmp-nvim-lsp] |LSP completion source
-|https://github.com/hrsh7th/cmp-buffer[cmp-buffer] |Buffer words completion source
-|https://github.com/hrsh7th/cmp-path[cmp-path] |File path completion source
-|https://github.com/hrsh7th/cmp-cmdline[cmp-cmdline] |Command-line completion source
-|https://github.com/saadparwaiz1/cmp_luasnip[cmp_luasnip] |Snippet completion source
-|https://github.com/f3fora/cmp-spell[cmp-spell] |Spell dictionary completion source
+|https://github.com/saghen/blink.cmp[blink.cmp] v1 |Completion engine (Rust fuzzy matcher, built-in LSP/buffer/path/snippet sources). Replaces nvim-cmp.
+|https://github.com/saghen/blink.compat[blink.compat] |Bridges legacy nvim-cmp sources (cmp-spell, cmp-conjure) into blink.cmp.
+|https://github.com/f3fora/cmp-spell[cmp-spell] |Spell dictionary source (bridged via blink.compat; active only when `:set spell`)
 |https://github.com/stevearc/conform.nvim[conform.nvim] |Format-on-save and manual formatting
 |===
 
@@ -198,7 +194,7 @@ All plugins are managed by https://github.com/folke/lazy.nvim[lazy.nvim]. Specs 
 [cols="1,3"]
 |===
 |https://github.com/Olical/conjure[conjure] |Evaluate code in a running REPL from the editor
-|https://github.com/PaterJason/cmp-conjure[cmp-conjure] |Conjure completion source for nvim-cmp
+|https://github.com/PaterJason/cmp-conjure[cmp-conjure] |Conjure completion source (bridged into blink.cmp via blink.compat)
 |https://github.com/guns/vim-sexp[vim-sexp] |Structural S-expression editing
 |https://github.com/tpope/vim-sexp-mappings-for-regular-people[vim-sexp-mappings-for-regular-people] |Friendlier default keymaps for vim-sexp
 |https://github.com/gpanders/nvim-parinfer[nvim-parinfer] |Automatic parenthesis balancing via indentation
@@ -350,7 +346,7 @@ dialects)
 |`markdown.lua` |markdown-preview.nvim (GUI) {plus} glow.nvim (console
 terminal)
 
-|`nvim-cmp.lua` |Completion engine
+|`blink.lua` |blink.cmp completion engine (v1); blink.compat bridges for cmp-spell and cmp-conjure
 
 |`nvim-tree.lua` |File explorer sidebar
 

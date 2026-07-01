@@ -274,7 +274,7 @@ window)
 
 '''''
 
-=== Auto-Completion (nvim-cmp)
+=== Auto-Completion (blink.cmp)
 
 [cols=",,",options="header",]
 |===
