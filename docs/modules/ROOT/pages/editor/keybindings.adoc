@@ -165,7 +165,7 @@ SSH/TTY sessions (OSC 52 — no external tool required).
 
 '''''
 
-=== Comments (vim-commentary)
+=== Comments (native `gc`)
 
 [cols=",,",options="header",]
 |===
