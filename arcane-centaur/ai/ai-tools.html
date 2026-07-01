@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Untitled :: Arcane Centaur Docs</title>
+    <link rel="canonical" href="https://floatingman-ltd.github.io/arcane-centaur/arcane-centaur/ai/ai-tools.html">
+    <meta name="generator" content="Antora 3.1.15">
+    <link rel="stylesheet" href="../../_/css/site.css">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://floatingman-ltd.github.io/arcane-centaur">Arcane Centaur Docs</a>
+      <button class="navbar-burger" aria-controls="topbar-nav" aria-expanded="false" aria-label="Toggle main menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="#">Home</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Products</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Product A</a>
+            <a class="navbar-item" href="#">Product B</a>
+            <a class="navbar-item" href="#">Product C</a>
+          </div>
+        </div>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Services</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Service A</a>
+            <a class="navbar-item" href="#">Service B</a>
+            <a class="navbar-item" href="#">Service C</a>
+          </div>
+        </div>
+        <div class="navbar-item">
+          <span class="control">
+            <a class="button is-primary" href="#">Download</a>
+          </span>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="arcane-centaur" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../index.html">Arcane Centaur</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Home</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../getting-started.html">Getting Started</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Languages</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">.NET</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../languages/dotnet.html">Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../languages/dotnet-cheatsheet.html">Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Lisp Family</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../languages/lisp.html">Lisp / Clojure / Scheme / Fennel</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../languages/lisp-cheatsheet.html">Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../languages/janet.html">Janet Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../languages/janet-cheatsheet.html">Janet Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Haskell</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../languages/haskell.html">Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../languages/haskell-cheatsheet.html">Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Lua</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../languages/lua.html">Guide</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Editor Core</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../editor/editing.html">Editing Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../editor/navigation.html">Navigation Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../editor/code-intelligence.html">Code Intelligence Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../editor/git.html">Git Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../editor/git-cheatsheet.html">Git Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../editor/clipboard.html">Clipboard</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">AI &amp; Automation</span>
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="1">
+    <a class="nav-link" href="ai-tools.html">AI Tools Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="ai-tools-cheatsheet.html">AI Tools Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Content Creation</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/markdown.html">Markdown Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/markdown-cheatsheet.html">Markdown Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/asciidoc.html">AsciiDoc Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/asciidoc-cheatsheet.html">AsciiDoc Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/diagrams.html">Diagrams &amp; PlantUML</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/presentations.html">Presentations (MARP)</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/rest.html">REST / HTTP Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/rest-cheatsheet.html">REST Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Project Tooling</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../tooling/jira.html">Jira Integration</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../tooling/confluence.html">Confluence Publishing</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Other</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../other/architecture.html">Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../other/contributing.html">Contributing to Docs</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../other/jira-project-map.html">Jira Project Map</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Arcane Centaur</span>
+    <span class="version"></span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <div class="title"><a href="../index.html">Arcane Centaur</a></div>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Arcane Centaur</a></li>
+    <li>AI &amp; Automation</li>
+    <li><a href="ai-tools.html">AI Tools Guide</a></li>
+  </ul>
+</nav>
+<div class="edit-this-page"><a href="file:///antora/docs/modules/ROOT/pages/ai/ai-tools.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<div class="sect1">
+<h2 id="_ai_tools_guide"><a class="anchor" href="#_ai_tools_guide"></a>AI Tools Guide</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This guide covers the AI / workflow tools that are integrated directly
+into Neovim:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Tool</th>
+<th class="tableblock halign-left valign-top">What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Claude CLI</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ask Claude to suggest shell commands or explain
+code without leaving the editor</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Research popup</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ask a free-form question and read the answer in a
+floating window — local (grounded in this config) or general knowledge</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>OpenSpec</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Drive the in-repo OpenSpec change workflow from Neovim
+keymaps</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Serena MCP server</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Provides symbol-aware code intelligence to AI
+assistants such as Claude Code</p></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<div class="paragraph">
+<p><strong>Quick navigation</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#claude-cli">Claude CLI</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Suggest commands, explain code</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#research-popup">Research popup</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Free-form question popup</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#openspec">OpenSpec</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Change workflow from Neovim keymaps</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#serena">Serena MCP Server</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Symbol-aware code intelligence</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#avante">Avante</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Q&amp;A chat with ollama or Claude</p></td>
+</tr>
+</tbody>
+</table>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="claude-cli"><a class="anchor" href="#claude-cli"></a>Claude CLI</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_usage"><a class="anchor" href="#_usage"></a>Usage</h3>
+<div class="paragraph">
+<p>Select code in visual mode (or stay in normal mode to use the whole
+buffer), then:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Keys</th>
+<th class="tableblock halign-left valign-top">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;leader&gt;gcs</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ask Claude to <strong>suggest</strong> a shell command based
+on context</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;leader&gt;gce</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ask Claude to <strong>explain</strong> the selected code</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The response appears in a floating window. Press <code>q</code> or <code>&lt;Esc&gt;</code>
+to close it.</p>
+</div>
+<div class="paragraph">
+<p>You can also run the commands directly: - <code>:ClaudeSuggest</code> — suggest -
+<code>:ClaudeExplain</code> — explain</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_how_it_works"><a class="anchor" href="#_how_it_works"></a>How it works</h3>
+<div class="paragraph">
+<p><code>lua/config/claude_cli.lua</code> uses <code>vim.system()</code> to invoke
+<code>claude -p "&lt;prompt&gt;"</code> non-interactively, relying on Claude
+Code&#8217;s own authentication. The result is rendered in a scratch buffer
+inside a <code>nvim_open_win</code> floating window.</p>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_prerequisites"><a class="anchor" href="#_prerequisites"></a>Prerequisites</h3>
+<div class="paragraph">
+<p>The <code>claude</code> CLI (Claude Code) must be on your <code>$PATH</code>. Install it from
+<a href="https://claude.com/claude-code">claude.com/claude-code</a> and sign in once
+(<code>claude</code> then follow the login prompt). No <code>ANTHROPIC_API_KEY</code> is
+required for these commands — they use Claude Code&#8217;s built-in auth.</p>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="research-popup"><a class="anchor" href="#research-popup"></a>Research Popup</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_usage_2"><a class="anchor" href="#_usage_2"></a>Usage</h3>
+<div class="paragraph">
+<p>Press <code>&lt;leader&gt;?l</code> or <code>&lt;leader&gt;?a</code> in Normal mode. An input prompt appears — type your question and press Enter.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 34%;">
+<col style="width: 33%;">
+<col style="width: 33%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Keys</th>
+<th class="tableblock halign-left valign-top">Command</th>
+<th class="tableblock halign-left valign-top">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;leader&gt;?l</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:ResearchLocal</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ask about <strong>this</strong> config — answer is grounded in your live keymaps and cheatsheets</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;leader&gt;?a</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:ResearchAsk</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ask a general-knowledge question — no local context</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The response appears in a floating window (same window as <code>:ClaudeExplain</code>). Press <code>q</code> or <code>&lt;Esc&gt;</code> to close it.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_local_vs_general"><a class="anchor" href="#_local_vs_general"></a>Local vs General</h3>
+<div class="paragraph">
+<p><code>:ResearchLocal</code> (<code>&lt;leader&gt;?l</code>) prepends your <strong>live keymap descriptions</strong> and <strong>assembled cheatsheet content</strong> to the prompt, then instructs the model to answer only from that context — it will say so when the answer is not present rather than guessing. Use this for config-specific questions like "how do I toggle the terminal?" or "what&#8217;s the keymap for closing the diff view?".</p>
+</div>
+<div class="paragraph">
+<p><code>:ResearchAsk</code> (<code>&lt;leader&gt;?a</code>) sends your question verbatim with no local context. Use this for general programming and language questions.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_how_it_works_2"><a class="anchor" href="#_how_it_works_2"></a>How it works</h3>
+<div class="paragraph">
+<p><code>lua/config/research.lua</code> uses <code>vim.system()</code> to invoke <code>claude -p</code> asynchronously, relying on Claude Code&#8217;s own authentication. The result is rendered in a scratch buffer inside a floating window via the shared <code>config.util.open_float</code> helper.</p>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_prerequisites_2"><a class="anchor" href="#_prerequisites_2"></a>Prerequisites</h3>
+<div class="paragraph">
+<p>The <code>claude</code> CLI (Claude Code) must be on your <code>$PATH</code>. No <code>ANTHROPIC_API_KEY</code> is required — these commands use Claude Code&#8217;s built-in auth. See the <a href="#claude-cli">Claude CLI prerequisites</a> section.</p>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="openspec"><a class="anchor" href="#openspec"></a>OpenSpec</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>OpenSpec is the change-management workflow tool used in this repo (see
+<code>openspec/</code> directory).</p>
+</div>
+<div class="sect2">
+<h3 id="_usage_3"><a class="anchor" href="#_usage_3"></a>Usage</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 34%;">
+<col style="width: 33%;">
+<col style="width: 33%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Keys</th>
+<th class="tableblock halign-left valign-top">Command</th>
+<th class="tableblock halign-left valign-top">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;leader&gt;osn</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:OpenspecNew</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Prompt for a change name and
+create it</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;leader&gt;oss</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:OpenspecStatus</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Show overall change status</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;leader&gt;osl</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:OpenspecList</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">List all changes</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Scoped status:</strong> pass a change name to <code>:OpenspecStatus</code> to see only
+that change:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>:OpenspecStatus add-ollama-learning-path</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Output is shown in a read-only bottom split (15 lines tall). Press <code>q</code>
+or <code>&lt;Esc&gt;</code> to close it.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_how_it_works_3"><a class="anchor" href="#_how_it_works_3"></a>How it works</h3>
+<div class="paragraph">
+<p><code>lua/config/openspec.lua</code> uses synchronous <code>vim.fn.system()</code>
+(appropriate because <code>openspec</code> commands complete in well under a
+second) and opens a scratch buffer in a <code>botright split</code>.</p>
+</div>
+<div class="paragraph">
+<p>The same OpenSpec workflows are also available as Claude Code skills in
+<code>.claude/skills/</code> — invoke them as slash commands (<code>/openspec-propose</code>,
+<code>/openspec-apply-change</code>, <code>/openspec-continue-change</code>,
+<code>/openspec-verify-change</code>, <code>/openspec-archive-change</code>).</p>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_prerequisites_3"><a class="anchor" href="#_prerequisites_3"></a>Prerequisites</h3>
+<div class="paragraph">
+<p><code>openspec</code> must be on your <code>$PATH</code>. Install it following the project’s
+own README, or check <code>openspec --help</code> to confirm it’s available.</p>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="serena"><a class="anchor" href="#serena"></a>Serena MCP Server</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="https://github.com/oramasearch/serena">Serena</a> is a symbol-aware
+code-intelligence MCP (Model Context Protocol) server. When running, it
+allows AI assistants such as Claude Code to perform semantic operations —
+go-to-definition, find-references, workspace symbol search — that they
+cannot do from text alone.</p>
+</div>
+<div class="sect2">
+<h3 id="_configuration"><a class="anchor" href="#_configuration"></a>Configuration</h3>
+<div class="paragraph">
+<p>Serena is configured for Claude Code at the user level in
+<code>~/.claude.json</code> as a local MCP server, using the <code>serena</code> binary with
+<code>serena start-mcp-server --context=claude-code --project-from-cwd</code>. With
+<code>--project-from-cwd</code>, Serena picks up the <code>.serena/project.yml</code> in the
+repo root automatically when Claude Code is launched from this directory.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_verifying"><a class="anchor" href="#_verifying"></a>Verifying</h3>
+<div class="paragraph">
+<p>To confirm the MCP server is registered, run from a shell in the repo
+root:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">claude mcp list</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You should see a <code>serena</code> entry. Inside a Claude Code session you can
+also confirm the <code>serena</code> tools are available.</p>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_prerequisites_4"><a class="anchor" href="#_prerequisites_4"></a>Prerequisites</h3>
+<div class="paragraph">
+<p>Install Serena so the <code>serena</code> binary is on <code>$PATH</code> (recommended via
+<code>uv</code>):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">uv tool install serena-agent</code></pre>
+</div>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="avante"><a class="anchor" href="#avante"></a>AI Research — Avante</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="https://github.com/yetone/avante.nvim">avante.nvim</a> provides a Q&amp;A chat
+interface inside Neovim. Two backends are available and can be switched
+at any time:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Backend</th>
+<th class="tableblock halign-left valign-top">When to use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>ollama</strong> (default)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Offline / air-gapped / low-latency — runs locally via Docker</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>claude</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Online — uses the Claude API (<code>claude-3-5-haiku</code>) via <code>ANTHROPIC_API_KEY</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>Version pin:</strong> avante.nvim is pinned to <code>v0.0.27</code> in
+<code>lua/plugins/avante.lua</code>. The <code>build = "make"</code> step downloads prebuilt
+<code>.so</code> binaries from the GitHub release. Do not update beyond <code>v0.0.27</code>
+until a newer release publishes Linux binaries — running <code>make</code> against
+an unreleased commit produces a <code>"release not found"</code> error and avante
+will not load.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_keymaps_global"><a class="anchor" href="#_keymaps_global"></a>Keymaps (global)</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;leader&gt;aa</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Open avante with the current provider</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;leader&gt;ao</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Switch to ollama provider and open avante</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;leader&gt;ac</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Switch to Claude API provider and open avante</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_ollama_setup"><a class="anchor" href="#_ollama_setup"></a>Ollama Setup</h3>
+<div class="paragraph">
+<p>Ollama runs as a persistent Docker service. <strong>Both commands below are
+required on first setup.</strong></p>
+</div>
+<div class="paragraph">
+<p><strong>Step 1 — Start the container</strong> (runs in the background; restarts
+automatically on reboot):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">docker compose -f ~/.config/nvim/docker/ollama/docker-compose.yml up -d</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Step 2 — Download the model into the running container</strong> (one-time per
+model; stored in a named Docker volume so it survives container
+restarts). Pull the default 8B model (~4 GB):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">docker compose -f ~/.config/nvim/docker/ollama/docker-compose.yml \
+  exec ollama ollama pull llama3.1:8b</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>On low-RAM machines (&lt; 8 GB) use the smaller 3B model instead:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">docker compose -f ~/.config/nvim/docker/ollama/docker-compose.yml \
+  exec ollama ollama pull llama3.2:3b</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then update <code>model</code> in <code>lua/plugins/avante.lua</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-lua hljs" data-lang="lua">model = "llama3.2:3b",</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_gpu_acceleration_nvidia"><a class="anchor" href="#_gpu_acceleration_nvidia"></a>GPU Acceleration (NVIDIA)</h4>
+<div class="paragraph">
+<p>GPU support is opt-in. Open <code>docker/ollama/docker-compose.yml</code> and
+uncomment the <code>deploy</code> block:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">deploy:
+  resources:
+    reservations:
+      devices:
+        - driver: nvidia
+          count: 1
+          capabilities: [gpu]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Requires the
+<a href="https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html">NVIDIA Container Toolkit</a>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_when_ollama_is_unreachable"><a class="anchor" href="#_when_ollama_is_unreachable"></a>When ollama is unreachable</h4>
+<div class="paragraph">
+<p>If the ollama service is not running when you submit a question, avante
+will display the HTTP error in its buffer. Neovim will not crash. Start
+the service and retry.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_claude_api_backend"><a class="anchor" href="#_claude_api_backend"></a>Claude API Backend</h3>
+<div class="paragraph">
+<p>The <code>claude</code> provider talks to the Claude API and requires an
+<code>ANTHROPIC_API_KEY</code> in your environment:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">export ANTHROPIC_API_KEY='your-api-key-here'   # from https://platform.claude.com/</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The model is set to <code>claude-3-5-haiku-20241022</code> in
+<code>lua/plugins/avante.lua</code> for cost-effectiveness; change <code>model</code> under the
+<code>claude</code> provider to use a different model.</p>
+</div>
+<hr>
+<div class="paragraph">
+<p>→ <a href="ai-tools-cheatsheet.html" class="xref page">Keybinding cheatsheet</a></p>
+</div>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>This page was built using the Antora default UI.</p>
+  <p>The source code for this UI is licensed under the terms of the MPL-2.0 license.</p>
+</footer>
+<script id="site-script" src="../../_/js/site.js" data-ui-root-path="../../_"></script>
+<script async src="../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

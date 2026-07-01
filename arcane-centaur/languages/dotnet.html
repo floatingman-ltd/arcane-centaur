@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Untitled :: Arcane Centaur Docs</title>
+    <link rel="canonical" href="https://floatingman-ltd.github.io/arcane-centaur/arcane-centaur/languages/dotnet.html">
+    <meta name="generator" content="Antora 3.1.15">
+    <link rel="stylesheet" href="../../_/css/site.css">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://floatingman-ltd.github.io/arcane-centaur">Arcane Centaur Docs</a>
+      <button class="navbar-burger" aria-controls="topbar-nav" aria-expanded="false" aria-label="Toggle main menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="#">Home</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Products</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Product A</a>
+            <a class="navbar-item" href="#">Product B</a>
+            <a class="navbar-item" href="#">Product C</a>
+          </div>
+        </div>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Services</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Service A</a>
+            <a class="navbar-item" href="#">Service B</a>
+            <a class="navbar-item" href="#">Service C</a>
+          </div>
+        </div>
+        <div class="navbar-item">
+          <span class="control">
+            <a class="button is-primary" href="#">Download</a>
+          </span>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="arcane-centaur" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../index.html">Arcane Centaur</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Home</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../getting-started.html">Getting Started</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Languages</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">.NET</span>
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="dotnet.html">Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="dotnet-cheatsheet.html">Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Lisp Family</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lisp.html">Lisp / Clojure / Scheme / Fennel</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lisp-cheatsheet.html">Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="janet.html">Janet Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="janet-cheatsheet.html">Janet Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Haskell</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="haskell.html">Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="haskell-cheatsheet.html">Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Lua</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lua.html">Guide</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Editor Core</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../editor/editing.html">Editing Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../editor/navigation.html">Navigation Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../editor/code-intelligence.html">Code Intelligence Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../editor/git.html">Git Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../editor/git-cheatsheet.html">Git Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../editor/clipboard.html">Clipboard</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">AI &amp; Automation</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../ai/ai-tools.html">AI Tools Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../ai/ai-tools-cheatsheet.html">AI Tools Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Content Creation</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/markdown.html">Markdown Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/markdown-cheatsheet.html">Markdown Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/asciidoc.html">AsciiDoc Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/asciidoc-cheatsheet.html">AsciiDoc Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/diagrams.html">Diagrams &amp; PlantUML</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/presentations.html">Presentations (MARP)</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/rest.html">REST / HTTP Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/rest-cheatsheet.html">REST Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Project Tooling</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../tooling/jira.html">Jira Integration</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../tooling/confluence.html">Confluence Publishing</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Other</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../other/architecture.html">Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../other/contributing.html">Contributing to Docs</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../other/jira-project-map.html">Jira Project Map</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Arcane Centaur</span>
+    <span class="version"></span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <div class="title"><a href="../index.html">Arcane Centaur</a></div>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Arcane Centaur</a></li>
+    <li>Languages</li>
+    <li>.NET</li>
+    <li><a href="dotnet.html">Guide</a></li>
+  </ul>
+</nav>
+<div class="edit-this-page"><a href="file:///antora/docs/modules/ROOT/pages/languages/dotnet.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<div class="sect1">
+<h2 id="_net_guide_c_and_f"><a class="anchor" href="#_net_guide_c_and_f"></a>.NET Guide (C# and F#)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Full support for C# and F# including LSP, REPL-driven development, and
+format-on-save. Both languages share the .NET SDK and the same iron.nvim
+REPL keymaps.</p>
+</div>
+<div class="paragraph">
+<p><strong>Quick navigation</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#quick-start">Quick Start</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Open a file and start the REPL</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#csharp-lsp">C# — LSP (Roslyn)</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Go-to-definition, hover, code actions</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#csharp-repl">C# — REPL (csharprepl)</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">REPL keymaps</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#csharp-formatting">C# — Formatting</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CSharpier format-on-save</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#fsharp-lsp">F# — LSP (fsautocomplete)</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Go-to-definition, hover, code actions</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#fsharp-repl">F# — REPL (dotnet fsi)</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">REPL keymaps</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#fsharp-formatting">F# — Formatting</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">fsautocomplete format-on-save</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#workflow">Typical Workflow</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Side-by-side editor + REPL</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#setup">Setup</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">.NET SDK, language servers, and tools</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#prerequisites">Prerequisites</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">System requirements</p></td>
+</tr>
+</tbody>
+</table>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="quick-start"><a class="anchor" href="#quick-start"></a>Quick Start</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_c"><a class="anchor" href="#_c"></a>C#</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Open any <code>.cs</code> file — Roslyn attaches automatically.</p>
+</li>
+<li>
+<p>If the project has multiple <code>.sln</code> files, run <code>:Roslyn target</code> to
+pick the solution.</p>
+</li>
+<li>
+<p>Start the REPL with <code>,sl</code> on any line, or open it explicitly via
+iron.nvim&#8217;s <code>:IronRepl</code>.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_f"><a class="anchor" href="#_f"></a>F#</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Verify prerequisites:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">dotnet --version
+dotnet tool list -g | grep fsautocomplete</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Open a <code>.fs</code> source file — plugins and LSP attach automatically.</p>
+</li>
+<li>
+<p>Start the REPL with <code>,sl</code> on any line.</p>
+</li>
+</ol>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="csharp-lsp"><a class="anchor" href="#csharp-lsp"></a>C# — LSP (Roslyn)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>All standard LSP keybindings apply in <code>.cs</code> buffers:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Keys</th>
+<th class="tableblock halign-left valign-top">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>gd</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Go to definition</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>K</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Hover documentation</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>gr</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Find references</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;leader&gt;rn</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rename symbol</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;leader&gt;ca</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Code action (includes <em>Fix all</em>, <em>Nested actions</em>, <em>Complex edits</em>)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;leader&gt;e</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Show diagnostic float</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[d</code> / <code>]d</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Previous / next diagnostic</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Roslyn also supports:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Multiple solution files</strong> — use <code>:Roslyn target</code> to switch between them.</p>
+</li>
+<li>
+<p><strong>Source-generated files</strong> — navigates into generated code transparently.</p>
+</li>
+<li>
+<p><strong>Broad root detection</strong> — set <code>broad_search = true</code> in the plugin opts if your <code>.sln</code> lives above the project root.</p>
+</li>
+</ul>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="csharp-repl"><a class="anchor" href="#csharp-repl"></a>C# — REPL (csharprepl via iron.nvim)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>LocalLeader is <code>,</code> in <code>.cs</code> buffers.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Keys</th>
+<th class="tableblock halign-left valign-top">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,sl</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Send current line to REPL</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,sc</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Send motion or visual selection</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,sp</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Send current paragraph</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,sf</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Send entire file</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,s&lt;CR&gt;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Send carriage return</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,si</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Interrupt REPL</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,sq</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Quit / exit REPL</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,cl</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Clear REPL output</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The REPL opens as a horizontal split (40% height) at the bottom of the window.</p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="csharp-formatting"><a class="anchor" href="#csharp-formatting"></a>C# — Formatting (CSharpier)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Format-on-save is enabled automatically in <code>.cs</code> buffers via <code>conform.nvim</code>. Manual trigger:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Keys</th>
+<th class="tableblock halign-left valign-top">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;leader&gt;f</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Format buffer or visual selection</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>CSharpier is opinionated and zero-config — no project-level configuration file required.</p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="fsharp-lsp"><a class="anchor" href="#fsharp-lsp"></a>F# — LSP (fsautocomplete)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>fsautocomplete</code> server is configured in <code>lua/config/lsp.lua</code>. All
+standard LSP keybindings apply in <code>.fs</code>, <code>.fsx</code>, and <code>.fsi</code> buffers:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Keys</th>
+<th class="tableblock halign-left valign-top">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>gd</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Go to definition</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>K</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Hover documentation</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>gr</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Find references</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;leader&gt;rn</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rename symbol</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;leader&gt;ca</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Code action</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;leader&gt;e</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Show diagnostic float</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[d</code> / <code>]d</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Previous / next diagnostic</p></td>
+</tr>
+</tbody>
+</table>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="fsharp-repl"><a class="anchor" href="#fsharp-repl"></a>F# — REPL (dotnet fsi via iron.nvim)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>LocalLeader is <code>,</code> in F# buffers. The REPL opens as a horizontal split
+(40% height) at the bottom of the window.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Keys</th>
+<th class="tableblock halign-left valign-top">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,sl</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Send current line to <code>dotnet fsi</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,sc</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Send motion / visual selection</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,sp</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Send paragraph</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,sf</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Send entire file</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,s&lt;CR&gt;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Send carriage return</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,si</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Interrupt the REPL</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,sq</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Quit the REPL</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,cl</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Clear the REPL buffer</p></td>
+</tr>
+</tbody>
+</table>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="fsharp-formatting"><a class="anchor" href="#fsharp-formatting"></a>F# — Formatting (fsautocomplete)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Format-on-save is enabled via <code>conform.nvim</code> using the fsautocomplete formatter. Manual trigger:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Keys</th>
+<th class="tableblock halign-left valign-top">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;leader&gt;f</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Format buffer or visual selection</p></td>
+</tr>
+</tbody>
+</table>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="workflow"><a class="anchor" href="#workflow"></a>Typical Workflow</h2>
+<div class="sectionbody">
+<div class="literalblock">
+<div class="content">
+<pre> +------------------------------------------------------+
+ |  Neovim                                              |
+ |  +--------------------------+---------------------+  |
+ |  |  Program.cs / hello.fs   |  REPL               |  |
+ |  |                          |                     |  |
+ |  |  var x = 42;             |  &gt; var x = 42;      |  |
+ |  |  Console.WriteLine(x);   |  42                 |  |
+ |  |                          |                     |  |
+ |  |  ,sl to send line -------+                     |  |
+ |  +--------------------------+---------------------+  |
+ +------------------------------------------------------+</pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Open a <code>.cs</code> or <code>.fs</code> file — LSP starts and diagnostics appear.</p>
+</li>
+<li>
+<p>Send snippets to the REPL with <code>,sl</code> / <code>,sc</code> to explore APIs interactively.</p>
+</li>
+<li>
+<p><code>&lt;leader&gt;f</code> (or save) formats with CSharpier / fsautocomplete.</p>
+</li>
+<li>
+<p>Use <code>gd</code> / <code>gr</code> / <code>&lt;leader&gt;ca</code> for full IDE-style navigation and refactoring.</p>
+</li>
+</ol>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_troubleshooting"><a class="anchor" href="#_troubleshooting"></a>Troubleshooting</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_roslyn_does_not_attach"><a class="anchor" href="#_roslyn_does_not_attach"></a>Roslyn does not attach</h3>
+<div class="paragraph">
+<p>Check that <code>Microsoft.CodeAnalysis.LanguageServer</code> is on your <code>$PATH</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">which Microsoft.CodeAnalysis.LanguageServer</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If not found, re-run the install steps in <a href="#prerequisites">Prerequisites</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_fsautocomplete_does_not_attach"><a class="anchor" href="#_fsautocomplete_does_not_attach"></a>fsautocomplete does not attach</h3>
+<div class="paragraph">
+<p>Check that it&#8217;s installed:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">dotnet tool list -g | grep fsautocomplete</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Run <code>:lua =vim.lsp.get_clients({bufnr=0})</code> inside Neovim to check whether
+the server is attached to the current buffer. To open the LSP log:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-vim hljs" data-lang="vim">:lua vim.cmd('e ' .. vim.lsp.get_log_path())</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>:checkhealth lsp</code> gives a broader overview of LSP status.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_repl_does_not_open"><a class="anchor" href="#_repl_does_not_open"></a>REPL does not open</h3>
+<div class="paragraph">
+<p>Check that the REPL backend binary is on your <code>$PATH</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">which csharprepl      # C#
+dotnet fsi --version  # F#</code></pre>
+</div>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="setup"><a class="anchor" href="#setup"></a>Setup</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_installing_net_global_tools"><a class="anchor" href="#_installing_net_global_tools"></a>Installing .NET Global Tools</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">dotnet tool install -g csharpier    # C# formatter
+dotnet tool install -g csharprepl   # C# interactive REPL
+dotnet tool install -g fsautocomplete  # F# language server</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_installing_the_roslyn_language_server"><a class="anchor" href="#_installing_the_roslyn_language_server"></a>Installing the Roslyn Language Server</h3>
+<div class="paragraph">
+<p>The Roslyn LSP is the official Microsoft C# language server used in
+VS Code&#8217;s C# Dev Kit. It is <strong>not</strong> installed via <code>dotnet tool install</code>;
+download the native binary for your platform from the NuGet feed.</p>
+</div>
+<div class="paragraph">
+<p><strong>Linux / WSL2 (x64):</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"># 1. Create an install directory
+mkdir -p ~/.local/share/roslyn
+
+# 2. Download the latest linux-x64 package.
+#    Find the current version at:
+#    https://www.nuget.org/packages/Microsoft.CodeAnalysis.LanguageServer.linux-x64
+VERSION="5.0.0-1.25277.114"   # replace with the latest shown on the NuGet page
+curl -L "https://api.nuget.org/v3-flatcontainer/microsoft.codeanalysis.languageserver.linux-x64/${VERSION}/microsoft.codeanalysis.languageserver.linux-x64.${VERSION}.nupkg" \
+     -o /tmp/roslyn.nupkg
+
+# 3. Extract into the install directory and make executable
+unzip -o /tmp/roslyn.nupkg -d ~/.local/share/roslyn
+chmod +x ~/.local/share/roslyn/content/LanguageServer/linux-x64/Microsoft.CodeAnalysis.LanguageServer
+
+# 4. Add to PATH in your shell rc file, then reload
+echo 'export PATH="$HOME/.local/share/roslyn/content/LanguageServer/linux-x64:$PATH"' &gt;&gt; ~/.bashrc
+source ~/.bashrc
+
+# 5. Verify
+Microsoft.CodeAnalysis.LanguageServer --version</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The NuGet page above lists all available versions. Always pick the
+highest stable version. Use the NuGet v3 API URL shown above — the
+older v2 URL may return a 404 HTML page for some versions, which will
+cause <code>unzip</code> to fail.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="prerequisites"><a class="anchor" href="#prerequisites"></a>Prerequisites</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 34%;">
+<col style="width: 33%;">
+<col style="width: 33%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Dependency</th>
+<th class="tableblock halign-left valign-top">Purpose</th>
+<th class="tableblock halign-left valign-top">Install hint</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>.NET SDK ≥ 8</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">C# and F# compiler, <code>dotnet fsi</code> REPL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://dotnet.microsoft.com/download" class="bare">https://dotnet.microsoft.com/download</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Neovim ≥ 0.12</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Required by roslyn.nvim</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">See <a href="../getting-started.html" class="xref page">Getting Started</a></p></td>
+</tr>
+</tbody>
+</table>
+<div class="sect2">
+<h3 id="_installing_net_sdk"><a class="anchor" href="#_installing_net_sdk"></a>Installing .NET SDK</h3>
+<div class="paragraph">
+<p>Follow the official guide for Ubuntu / WSL:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">wget https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb
+sudo dpkg -i packages-microsoft-prod.deb
+sudo apt update &amp;&amp; sudo apt install -y dotnet-sdk-8.0</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Or download directly from <a href="https://dotnet.microsoft.com/download" class="bare">https://dotnet.microsoft.com/download</a>.</p>
+</div>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>This page was built using the Antora default UI.</p>
+  <p>The source code for this UI is licensed under the terms of the MPL-2.0 license.</p>
+</footer>
+<script id="site-script" src="../../_/js/site.js" data-ui-root-path="../../_"></script>
+<script async src="../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>
