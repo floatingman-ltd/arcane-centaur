@@ -1,8 +1,9 @@
 == AsciiDoc Cheatsheet
 
-*LocalLeader* = `,` in `.adoc` buffers
+*LocalLeader* = `,` in `.adoc` buffers (filetype: `asciidoctor`)
 
-→ Back to xref:editor/keybindings.adoc[main cheatsheet]
+→ Back to xref:editor/keybindings.adoc[main cheatsheet] ·
+xref:content/asciidoc.adoc[Full AsciiDoc guide]
 
 NOTE: AsciiDoc / Antora is the *source of truth* for documentation in this config. All docs pages live under `docs/modules/ROOT/pages/`. The nav entry point is `docs/modules/ROOT/nav.adoc`.
 
@@ -46,10 +47,34 @@ Build output goes to `build/site/` (gitignored).
 
 '''''
 
-== User Commands
+== In-Buffer Render (markview)
 
-No dedicated user commands for AsciiDoc — the keymaps above call inline
-Lua functions defined in `after/ftplugin/asciidoc.lua`.
+`OXY2DEV/markview.nvim` provides opt-in AsciiDoc in-buffer rendering without
+Docker. It starts **disabled** and must be toggled per buffer.
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`,mv` |Normal |Toggle markview in-buffer AsciiDoc render (on / off)
+|===
+
+Toggling on renders AsciiDoc inline via extmarks — useful for focused reading.
+Toggle off to return to raw markup. Does not validate cross-page links.
+
+'''''
+
+== Syntax and Folding
+
+Provided by `habamax/vim-asciidoctor`:
+
+* Section folding — use standard Neovim fold keys (`za`, `zc`, `zo`, `zM`, `zR`).
+* Fenced-code-block highlighting: `[source,lua]` highlights as Lua, etc.
+  Supported languages: `lua`, `bash`, `python`, `clojure`, `fsharp`, `haskell`.
+* Markup conceal is off — raw markup stays visible while editing.
+
+'''''
+
+== Shell Build
 
 To build the Antora site from the shell (requires Docker):
 
@@ -62,13 +87,10 @@ docker compose -f antora-playbook.yml run --rm antora antora-playbook.yml
 
 == LSP / Treesitter
 
-No AsciiDoc LSP is configured in this setup. Treesitter does not include
-an AsciiDoc grammar. Syntax highlighting and folding rely on Neovim's
-built-in AsciiDoc filetype detection.
-
-See `xref:other/architecture.adoc[Architecture]` for notes on potential
-AsciiDoc tooling additions.
+No AsciiDoc LSP is configured. No treesitter parser is included (the
+vim-asciidoctor syntax plugin is the highlighting source). See
+xref:other/architecture.adoc[Architecture] for notes.
 
 '''''
 
-_Keymaps defined in `after/ftplugin/asciidoc.lua`._
+_Keymaps defined in `after/ftplugin/asciidoctor.lua`. Plugin configured in `lua/plugins/asciidoc.lua`._
