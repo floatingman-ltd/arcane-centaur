@@ -1,0 +1,104 @@
+== AsciiDoc Authoring Guide
+
+AsciiDoc/Antora is the **source of truth** for all documentation in this
+configuration. Files live under `docs/modules/ROOT/pages/`. The nav entry
+point is `docs/modules/ROOT/nav.adoc`.
+
+→ xref:content/asciidoc-cheatsheet.adoc[AsciiDoc Cheatsheet]
+
+'''''
+
+== Filetype
+
+All `.adoc`, `.asciidoc`, and `.asciidoctor` files resolve to the canonical
+filetype **`asciidoctor`** (registered via `vim.filetype.add` in
+`lua/plugins/asciidoc.lua`). This is the filetype vim-asciidoctor expects
+and the key all buffer-local keymaps are registered under.
+
+'''''
+
+== Syntax, Folding, and Fenced-Code Highlighting
+
+Powered by **`habamax/vim-asciidoctor`**, which provides:
+
+- Faster, more accurate AsciiDoc syntax highlighting than Neovim's built-in
+  regex highlighter.
+- Section folding — `za`/`zc`/`zo`/`zM`/`zR` (standard Neovim fold keys).
+- Fenced-code-block highlighting: a `[source,lua]` block is highlighted as
+  Lua, `[source,fsharp]` as F#, and so on for `bash`, `python`, `clojure`,
+  `haskell`.
+
+Markup conceal is intentionally **off** (`asciidoctor_syntax_conceal = 0`)
+so raw markup stays visible while editing and does not conflict with markview
+when the in-buffer render is toggled on.
+
+=== Supported fenced languages
+
+`lua`, `bash`, `python`, `clojure`, `fsharp`, `haskell`
+
+Add others by extending `asciidoctor_fenced_languages` in
+`lua/plugins/asciidoc.lua`.
+
+=== Disabling vim-asciidoctor compile commands
+
+vim-asciidoctor ships `:Asciidoctor2HTML` / `:Asciidoctor2PDF` etc.
+These overlap with the Docker preview pipeline below and are disabled
+(`asciidoctor_extensions = {}`). Use the `<localleader>` preview maps
+instead.
+
+'''''
+
+== Preview
+
+=== Single-page preview (Docker)
+
+`<localleader>p` / `<localleader>pp` — converts the current `.adoc` buffer to
+HTML using the `asciidoctor/docker-asciidoctor` image and opens it in the
+system browser.
+
+Requires Docker running and a graphical environment. In SSH/headless sessions
+a warning is shown instead.
+
+=== Full Antora site preview (Docker)
+
+`<localleader>pa` — builds the complete Antora site from
+`antora-playbook-local.yml` (reads the working tree, not the remote Git
+source) and opens `build/site/index.html`. This resolves cross-page `xref:`
+links, includes, and the full nav — the closest production-equivalent preview.
+
+Build output goes to `build/site/` (gitignored).
+
+'''''
+
+== Shell Build
+
+To build the Antora site from the terminal (requires Docker):
+
+[source,sh]
+----
+docker compose -f antora-playbook.yml run --rm antora antora-playbook.yml
+----
+
+Output goes to `build/site/` (gitignored).
+
+'''''
+
+== Configuration
+
+[cols="1,2"]
+|===
+|File |Role
+
+|`lua/plugins/asciidoc.lua`
+|Lazy-loads vim-asciidoctor and markview on the `asciidoctor` filetype.
+Registers the `asciidoctor` filetype and sets folding/fenced-code/conceal globals in `init`.
+
+|`after/ftplugin/asciidoctor.lua`
+|Buffer-local keymaps: Docker single-page preview (`,p`/`,pp`), Antora preview (`,pa`),
+markview toggle (`,mv`).
+|===
+
+'''''
+
+_See also: xref:other/architecture.adoc[Architecture] ·
+xref:content/asciidoc-cheatsheet.adoc[Cheatsheet]_
