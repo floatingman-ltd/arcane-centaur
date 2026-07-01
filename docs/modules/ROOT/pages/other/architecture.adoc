@@ -235,7 +235,7 @@ All plugins are managed by https://github.com/folke/lazy.nvim[lazy.nvim]. Specs 
 [cols="1,3"]
 |===
 |https://github.com/habamax/vim-asciidoctor[vim-asciidoctor] |AsciiDoc syntax, section folding, and fenced-code-block highlighting under the canonical `asciidoctor` filetype (`*.adoc`/`*.asciidoc` → `asciidoctor` via `vim.filetype.add`).
-|https://github.com/OXY2DEV/markview.nvim[markview.nvim] |Opt-in in-buffer AsciiDoc rendering (extmarks). Starts disabled; toggle per buffer with `<localleader>mv`. Scoped to the `asciidoctor` filetype only — Markdown preview is handled by markdown-preview.nvim/glow.
+|https://github.com/OXY2DEV/markview.nvim[markview.nvim] |_(deferred)_ In-buffer AsciiDoc rendering requires the `cathaysia/tree-sitter-asciidoc` treesitter grammar, which is not in nvim-treesitter master. Re-enable when the grammar stabilises.
 |https://github.com/iamcco/markdown-preview.nvim[markdown-preview.nvim] |Live Markdown preview in browser (GUI)
 |https://github.com/ellisonleao/glow.nvim[glow.nvim] |Terminal Markdown preview via glow (console)
 |https://github.com/aklt/plantuml-syntax[plantuml-syntax] |PlantUML syntax highlighting

@@ -47,22 +47,6 @@ Build output goes to `build/site/` (gitignored).
 
 '''''
 
-== In-Buffer Render (markview)
-
-`OXY2DEV/markview.nvim` provides opt-in AsciiDoc in-buffer rendering without
-Docker. It starts **disabled** and must be toggled per buffer.
-
-[cols=",,",options="header",]
-|===
-|Keys |Mode |Action
-|`,mv` |Normal |Toggle markview in-buffer AsciiDoc render (on / off)
-|===
-
-Toggling on renders AsciiDoc inline via extmarks — useful for focused reading.
-Toggle off to return to raw markup. Does not validate cross-page links.
-
-'''''
-
 == Syntax and Folding
 
 Provided by `habamax/vim-asciidoctor`:

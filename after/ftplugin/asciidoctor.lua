@@ -132,7 +132,3 @@ local function antora_preview()
 end
 
 vim.keymap.set("n", "<localleader>pa", antora_preview, { buffer = true, desc = "Antora full-site preview (Docker → build/site/index.html)" })
-
--- ,mv — toggle markview in-buffer AsciiDoc rendering (opt-in; starts disabled)
-vim.keymap.set("n", "<localleader>mv", "<cmd>Markview Toggle<CR>",
-  { buffer = true, desc = "AsciiDoc: toggle markview in-buffer render" })

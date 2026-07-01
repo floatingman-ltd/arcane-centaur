@@ -68,18 +68,6 @@ links, includes, and the full nav — the closest production-equivalent preview.
 
 Build output goes to `build/site/` (gitignored).
 
-=== In-buffer render (markview — opt-in)
-
-`<localleader>mv` — toggles **markview.nvim**'s AsciiDoc in-buffer rendering
-for the current buffer. Useful for focused reading without spinning up Docker.
-
-markview starts **disabled** on every buffer; toggle it on per-buffer as
-needed. Toggle again to return to raw markup view.
-
-NOTE: markview renders AsciiDoc inline via extmarks — it is not a browser
-preview and does not validate cross-page `xref:` links or Antora includes.
-Use `<localleader>pa` for a full-fidelity preview.
-
 '''''
 
 == Shell Build

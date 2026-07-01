@@ -13,7 +13,7 @@
 
 - [x] 3.1 Add an `OXY2DEV/markview.nvim` spec (in `lua/plugins/asciidoc.lua`) scoped to `ft = { "asciidoctor" }`, `preview.enable = false`, `preview.filetypes = { "asciidoctor" }`. Do NOT include `markdown`.
 - [x] 3.2 Add a buffer-local toggle map in `after/ftplugin/asciidoctor.lua`: `<localleader>mv` → `:Markview Toggle`.
-- [ ] 3.3 If markview does not render under the `asciidoctor` filetype (task 1.2 / live test), apply the design's fallback: bind its AsciiDoc spec to `asciidoctor` via markview's registration API, or defer markview-for-AsciiDoc and note it.
+- [x] 3.3 markview AsciiDoc rendering deferred (fallback b): markview's pipeline is fully treesitter-driven; AsciiDoc requires `cathaysia/tree-sitter-asciidoc`, which is not in nvim-treesitter master and is out of scope per the proposal. Removed markview spec + `,mv` keymap; noted in docs and architecture.
 
 ## 4. Validation
 

@@ -19,15 +19,6 @@ return {
       vim.g.asciidoctor_syntax_conceal = 0
     end,
   },
-  {
-    "OXY2DEV/markview.nvim",
-    ft = { "asciidoctor" },
-    opts = {
-      preview = {
-        enable = false,
-        filetypes = { "asciidoctor" },
-        ignore_buftypes = { "nofile" },
-      },
-    },
-  },
+  -- markview.nvim AsciiDoc rendering deferred: requires cathaysia/tree-sitter-asciidoc,
+  -- which is not in nvim-treesitter master. Re-enable when the grammar is available.
 }
