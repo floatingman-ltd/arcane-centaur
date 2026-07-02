@@ -1,6 +1,6 @@
-local lisp_fts = { "lisp", "clojure", "scheme", "fennel", "janet" }
-local function is_lisp(lang)
-  for _, ft in ipairs(lisp_fts) do
+local skip_textobjects = { "lisp", "clojure", "scheme", "fennel", "janet", "markdown", "markdown_inline" }
+local function no_textobjects(lang)
+  for _, ft in ipairs(skip_textobjects) do
     if lang == ft then return true end
   end
   return false
@@ -30,7 +30,7 @@ return {
         select = {
           enable = true,
           lookahead = true,
-          disable = is_lisp,
+          disable = no_textobjects,
           keymaps = {
             ["af"] = "@function.outer",
             ["if"] = "@function.inner",
@@ -43,7 +43,7 @@ return {
         move = {
           enable = true,
           set_jumps = true,
-          disable = is_lisp,
+          disable = no_textobjects,
           goto_next_start = {
             ["]f"] = "@function.outer",
           },
