@@ -53,4 +53,19 @@ return {
     ft = { "cs" },
     opts = {},
   },
+
+  -- easy-dotnet: solution management, test runner, and DAP auto-registration.
+  -- lsp.enabled=false: roslyn.nvim is the sole C# LSP; easy-dotnet must not add a second server.
+  -- auto_register_dap=true (default): registers netcoredbg once nvim-dap is present.
+  {
+    "GustavEikaas/easy-dotnet.nvim",
+    ft = { "cs", "fsharp" },
+    dependencies = { "nvim-lua/plenary.nvim", "ibhagwan/fzf-lua" },
+    opts = {
+      picker = "fzf",
+      lsp = {
+        enabled = false,
+      },
+    },
+  },
 }

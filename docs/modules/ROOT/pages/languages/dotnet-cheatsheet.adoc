@@ -49,3 +49,36 @@ LSP server: *Roslyn* for C# buffers · *fsautocomplete* for F# buffers.
 |Command |Action
 |`:Roslyn target` |Switch solution target (when multiple `.sln` files exist)
 |===
+
+'''''
+
+== Debugging (nvim-dap + netcoredbg)
+
+Prerequisite: `dotnet tool install -g netcoredbg`
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`<F9>` |Normal |Toggle breakpoint
+|`<F5>` |Normal |Continue / start
+|`<S-F5>` |Normal |Terminate
+|`<F10>` |Normal |Step over
+|`<F11>` |Normal |Step into
+|`<F12>` |Normal |Step out
+|`++<++leader++>++bb` |Normal |Toggle breakpoint
+|`++<++leader++>++bc` |Normal |Continue
+|`++<++leader++>++bu` |Normal |Toggle debug UI
+|`++<++leader++>++br` |Normal |Open REPL
+|===
+
+'''''
+
+== Testing & Running (easy-dotnet)
+
+[cols=",",options="header",]
+|===
+|Keys |Action
+|`,tt` |Test project (picker)
+|`,tr` |Run project (picker)
+|`,tb` |Build project (picker)
+|===

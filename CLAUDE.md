@@ -24,6 +24,8 @@ Lazy-loading is filetype-driven: plugins use lazy.nvim's `ft = { ... }` field so
 - **Colorscheme**: TokyoNight; change the `style` variable at the top of `lua/plugins/colorscheme.lua`.
 - **Diagnostics panel**: `folke/trouble.nvim` v3 (`lua/plugins/trouble.lua`) provides `<leader>x` maps for project/buffer diagnostics, symbols, LSP refs, quickfix, and loclist. Native `[d`/`]d`/`<leader>e` are preserved.
 - **TODO annotations**: `folke/todo-comments.nvim` (`lua/plugins/todo-comments.lua`) highlights `TODO`/`FIXME`/`HACK`/`NOTE`/`WARN`; list via `<leader>xT` (fzf-lua) or `<leader>xt` (trouble). `]t`/`[t` remain vim-unimpaired tag navigation.
+- **Debugging**: `nvim-dap` + `nvim-dap-ui` (`lua/plugins/dap.lua`) with function-key maps (`<F5>`/`<F9>`/`<F10>`/`<F11>`/`<F12>`/`<S-F5>`) and `<leader>b` group. netcoredbg auto-registered by easy-dotnet; haskell-tools auto-discovers Haskell DAP configs.
+- **easy-dotnet**: `GustavEikaas/easy-dotnet.nvim` (`lua/plugins/dotnet.lua`, `ft = cs/fsharp`) — solution management, test runner, netcoredbg DAP registration. `lsp.enabled = false` (roslyn.nvim owns C# LSP). `<localleader>tt`/`tr`/`tb` in C# and F# ftplugins.
 
 ## Language support
 

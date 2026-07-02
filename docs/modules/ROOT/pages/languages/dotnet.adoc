@@ -166,6 +166,81 @@ Format-on-save is enabled via `conform.nvim` using the fsautocomplete formatter.
 ---
 
 [[workflow]]
+== Debugging (nvim-dap + netcoredbg)
+
+Breakpoint debugging for C# and F# is provided by https://github.com/mfussenegger/nvim-dap[nvim-dap] +
+https://github.com/rcarriga/nvim-dap-ui[nvim-dap-ui] with the https://github.com/samsung/netcoredbg[netcoredbg]
+adapter auto-registered by easy-dotnet.
+
+=== Prerequisites
+
+Install netcoredbg as a .NET global tool:
+
+[source,sh]
+----
+dotnet tool install -g netcoredbg
+----
+
+Verify it is on your `$PATH`:
+
+[source,sh]
+----
+netcoredbg --version
+----
+
+=== Debug Keymaps
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`<F9>` |Normal |Toggle breakpoint
+|`<F5>` |Normal |Continue / start debug session
+|`<S-F5>` |Normal |Terminate debug session
+|`<F10>` |Normal |Step over
+|`<F11>` |Normal |Step into
+|`<F12>` |Normal |Step out
+|`++<++leader++>++bb` |Normal |Toggle breakpoint
+|`++<++leader++>++bc` |Normal |Continue
+|`++<++leader++>++bu` |Normal |Toggle debug UI
+|`++<++leader++>++br` |Normal |Open debug REPL
+|===
+
+The debug UI opens automatically when a session starts and closes on exit.
+Launch configurations are auto-discovered by easy-dotnet from the project structure
+(no hand-authored `launch.json` required).
+
+'''''
+
+== Testing (easy-dotnet)
+
+https://github.com/GustavEikaas/easy-dotnet.nvim[easy-dotnet.nvim] provides a
+.NET test runner, project picker, and solution management using fzf-lua. It does
+NOT manage the Roslyn LSP — roslyn.nvim remains the sole C# language server.
+
+=== Test / Run / Build Keymaps (C# and F# buffers)
+
+[cols=",",options="header",]
+|===
+|Keys |Action
+|`,tt` |Run tests for selected project
+|`,tr` |Run selected project
+|`,tb` |Build selected project
+|===
+
+=== Easy-Dotnet Commands
+
+[width="100%",cols="50%,50%",options="header",]
+|===
+|Command |Action
+|`:Dotnet run` |Run project (picker)
+|`:Dotnet test` |Test project (picker)
+|`:Dotnet build` |Build project (picker)
+|`:Dotnet restore` |Restore packages
+|`:Dotnet clean` |Clean project
+|===
+
+'''''
+
 == Typical Workflow
 
 ....
