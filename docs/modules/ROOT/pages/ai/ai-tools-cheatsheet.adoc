@@ -7,7 +7,24 @@ Covers in-editor keymaps for the *Claude CLI* (`claude`) and the
 
 '''''
 
-== Claude CLI
+== Claude Code Session (claudecode.nvim)
+
+Persistent editor-aware session via WebSocket MCP protocol (native terminal, no snacks).
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`++<++leader++>++gcc` |Normal |Toggle Claude Code session terminal
+|`++<++leader++>++gcf` |Normal |Focus session terminal
+|`++<++leader++>++gcb` |Normal |Add current buffer to Claude context
+|`++<++leader++>++gcv` |Visual |Send selection to Claude
+|`++<++leader++>++gca` |Normal |Accept Claude's proposed diff
+|`++<++leader++>++gcr` |Normal |Reject Claude's proposed diff
+|===
+
+'''''
+
+== Claude CLI (one-shot)
 
 These commands send the current visual selection (or whole buffer when
 no selection is active) to the `claude` CLI and display the response in

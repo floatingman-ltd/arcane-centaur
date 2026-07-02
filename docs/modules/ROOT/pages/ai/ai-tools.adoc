@@ -74,6 +74,45 @@ required for these commands — they use Claude Code's built-in auth.
 
 ''''''
 
+== Claude Code Session (claudecode.nvim)
+
+https://github.com/coder/claudecode.nvim[claudecode.nvim] provides a persistent,
+editor-aware Claude Code session via the same WebSocket MCP protocol used by the
+official VS Code and JetBrains extensions.
+
+**How it differs from the one-shot CLI commands**
+
+[cols=",,",options="header",]
+|===
+|Capability |Claude CLI (`<leader>gcs`/`gce`) |Session (`<leader>gcc`)
+|Persistent session |No — exits after each command |Yes — Claude watches the session
+|Sees open buffers/selection |No |Yes — via MCP context sharing
+|Proposes diffs |No |Yes — native diff with accept/reject
+|Requires ANTHROPIC_API_KEY |No |No — uses `claude` CLI auth
+|===
+
+Uses Neovim's native terminal provider (no snacks.nvim dependency).
+
+=== Session Keymaps
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`++<++leader++>++gcc` |Normal |Toggle Claude Code session terminal
+|`++<++leader++>++gcf` |Normal |Focus session terminal
+|`++<++leader++>++gcb` |Normal |Add current buffer to Claude context
+|`++<++leader++>++gcv` |Visual |Send selection to Claude
+|`++<++leader++>++gca` |Normal |Accept Claude's proposed diff
+|`++<++leader++>++gcr` |Normal |Reject Claude's proposed diff
+|===
+
+=== Prerequisites
+
+The `claude` CLI must be on your `$PATH` (same requirement as the one-shot CLI commands).
+No extra install needed — claudecode.nvim uses the same binary.
+
+'''''
+
 [[research-popup]]
 == Research Popup
 
