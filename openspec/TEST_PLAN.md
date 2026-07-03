@@ -30,9 +30,9 @@ Complete once before any testing begins.
   # 3. Add to PATH (add this line to ~/.zshrc or ~/.bashrc, then source it)
   export PATH=$PATH:$HOME/.local/share/netcoredbg
   ```
-- [ ] Verify netcoredbg is on PATH: `netcoredbg --version`
-- [ ] Confirm `claude` CLI is installed and authenticated (required for Change 08): `claude --version`
-- [ ] Clone the repo: `git clone git@github.com:floatingman-ltd/arcane-centaur.git ~/.config/nvim`
+- [X] Verify netcoredbg is on PATH: `netcoredbg --version`
+- [X] Confirm `claude` CLI is installed and authenticated (required for Change 08): `claude --version`
+- [X] Clone the repo: `git clone git@github.com:floatingman-ltd/arcane-centaur.git ~/.config/nvim`
 - [ ] Confirm initial main state loads: `nvim` → `:Lazy sync` → no errors in `:messages`
 
 ---
