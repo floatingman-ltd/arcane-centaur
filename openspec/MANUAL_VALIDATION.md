@@ -13,9 +13,10 @@ Run them in order after `:Lazy sync` on the relevant branch before raising a PR.
 
 1. Run `:Lazy sync` and wait for it to complete.
 2. Run `:TSUpdate` and wait.
-3. Run `:TSInstallInfo` and scroll to find `haskell` — confirm it shows `installed`.
+3. Run `:TSInstallInfo`. Scroll to confirm the following parsers show `installed`: `lua`, `fsharp`, `c_sharp`.
+   - `haskell` is also in `ensure_installed` but is optional here — skip it if this is not a Haskell development machine (it is validated in Change 07 § 5.5 if needed).
 4. Run `:messages` and scan for any `textobjects` or `treesitter` errors. There should be none.
-- [ ] All four sub-steps pass.
+- [ ] `lua`, `fsharp`, and `c_sharp` parsers installed; no treesitter errors in `:messages`.
 
 ### 3.2 — Highlight active per filetype
 
@@ -23,8 +24,8 @@ Run them in order after `:Lazy sync` on the relevant branch before raising a PR.
 2. Run `:lua print(vim.treesitter.highlighter.active[vim.api.nvim_get_current_buf()])` — should print a table (not `nil`).
 3. Open an `.fs` or `.fsx` file. Repeat the `:set ft?` check (expect `fsharp`) and the highlighter check.
 4. Open a `.cs` file. Repeat both checks (`c_sharp` highlight active).
-5. Open a `.hs` file. Repeat both checks (`haskell` highlight active).
-- [ ] All five files show correct filetype and non-nil highlighter.
+5. _(Optional — skip if not a Haskell machine)_ Open a `.hs` file. Repeat both checks (`haskell` highlight active).
+- [ ] `lua`, `fsharp`, and `c_sharp` files show correct filetype and non-nil highlighter. Haskell optional.
 
 ### 3.3 — Textobject motions (non-Lisp buffer)
 
@@ -291,7 +292,7 @@ Run them in order after `:Lazy sync` on the relevant branch before raising a PR.
 
 ## Change 07 · add-dotnet-debug-test
 
-**Setup:** checkout `feat/07-add-dotnet-debug-test`, launch Neovim. Requires a .NET solution on disk and `netcoredbg` installed (`dotnet tool install -g netcoredbg`).
+**Setup:** checkout `feat/07-add-dotnet-debug-test`, launch Neovim. Requires a .NET solution on disk and `netcoredbg` on `$PATH` (install from GitHub releases — see `openspec/TEST_PLAN.md` § One-Time Test Machine Setup).
 
 ### 5.1 — Plugins installed
 
