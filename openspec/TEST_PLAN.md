@@ -14,8 +14,23 @@ Complete once before any testing begins.
 - [X] Confirm Git is installed: `git --version`
 - [X] Confirm Node.js + npm are installed (required by markdown-preview.nvim build): `node --version && npm --version`
 - [X] Confirm `dotnet` SDK is installed (required for Change 07 testing): `dotnet --version`
-- [ ] Install netcoredbg (required for Change 07 debugging tests): `dotnet tool install -g netcoredbg` then `netcoredbg --version`
-  - _this tooling does not seem to be available via nuget, and the above command does not work.  Is there a different installation that will work based on the releases found here" https://github.com/Samsung/netcoredbg/releases.
+- [ ] Install netcoredbg (required for Change 07 debugging tests) — **not** a NuGet tool; install from GitHub releases:
+  ```bash
+  # 1. Download the latest linux-amd64 release
+  #    Check https://github.com/Samsung/netcoredbg/releases for current version
+  NCDBG_VER=$(curl -s https://api.github.com/repos/Samsung/netcoredbg/releases/latest \
+    | grep '"tag_name"' | cut -d'"' -f4)
+  curl -L "https://github.com/Samsung/netcoredbg/releases/download/${NCDBG_VER}/netcoredbg-linux-amd64.tar.gz" \
+    -o /tmp/netcoredbg.tar.gz
+
+  # 2. Extract to ~/.local/share/netcoredbg/
+  mkdir -p ~/.local/share/netcoredbg
+  tar -xzf /tmp/netcoredbg.tar.gz -C ~/.local/share/netcoredbg/
+
+  # 3. Add to PATH (add this line to ~/.zshrc or ~/.bashrc, then source it)
+  export PATH=$PATH:$HOME/.local/share/netcoredbg
+  ```
+- [ ] Verify netcoredbg is on PATH: `netcoredbg --version`
 - [ ] Confirm `claude` CLI is installed and authenticated (required for Change 08): `claude --version`
 - [ ] Clone the repo: `git clone git@github.com:floatingman-ltd/arcane-centaur.git ~/.config/nvim`
 - [ ] Confirm initial main state loads: `nvim` → `:Lazy sync` → no errors in `:messages`
