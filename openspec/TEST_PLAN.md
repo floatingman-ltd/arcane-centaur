@@ -14,7 +14,7 @@ Complete once before any testing begins.
 - [X] Confirm Git is installed: `git --version`
 - [X] Confirm Node.js + npm are installed (required by markdown-preview.nvim build): `node --version && npm --version`
 - [X] Confirm `dotnet` SDK is installed (required for Change 07 testing): `dotnet --version`
-- [ ] Install netcoredbg (required for Change 07 debugging tests) — **not** a NuGet tool; install from GitHub releases:
+- [X] Install netcoredbg (required for Change 07 debugging tests) — **not** a NuGet tool; install from GitHub releases:
   ```bash
   # 1. Download the latest linux-amd64 release
   #    Check https://github.com/Samsung/netcoredbg/releases for current version
@@ -41,25 +41,25 @@ Complete once before any testing begins.
 
 ### Merge
 
-- [ ] Raise PR: `fix/treesitter-markdown-highlight-disable` → `main`
-- [ ] Review and approve PR
-- [ ] Merge PR
+- [X] Raise PR: `fix/treesitter-markdown-highlight-disable` → `main`
+- [X] Review and approve PR
+- [X] Merge PR
 
 ### Prepare test machine
 
-- [ ] On test machine: `git pull origin main`
-- [ ] Launch Neovim: `:Lazy sync` — wait for completion
-- [ ] Run `:TSUpdate` — wait for completion
+- [X] On test machine: `git pull origin main`
+- [X] Launch Neovim: `:Lazy sync` — wait for completion
+- [X] Run `:TSUpdate` — wait for completion
 
 ### Validate
 
-- [ ] Open a `.md` file
-- [ ] Run `:messages` — confirm no `nil range` / `languagetree` error appears
-- [ ] Close Neovim
+- [X] Open a `.md` file
+- [X] Run `:messages` — confirm no `nil range` / `languagetree` error appears
+- [X] Close Neovim
 
 ### Sign off
 
-- [ ] Hotfix validated — proceed to Change 03
+- [X] Hotfix validated — proceed to Change 03
 
 ---
 
