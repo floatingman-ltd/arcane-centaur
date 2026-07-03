@@ -20,8 +20,6 @@ Complete once before any testing begins.
 - [X] Confirm Neovim ≥ 0.12 is installed: `nvim --version`
 - [X] Confirm Git is installed: `git --version`
 - [X] Confirm Node.js + npm are installed (required by markdown-preview.nvim build): `node --version && npm --version`
-- [ ] Confirm C compiler and make are installed (required to compile tree-sitter parsers): `gcc --version && make --version`
-  - If missing on Debian/Ubuntu/WSL2: `sudo apt install build-essential`
 - [X] Confirm `dotnet` SDK is installed (required for Change 07 testing): `dotnet --version`
 - [ ] Install netcoredbg (required for Change 07 debugging tests) — **not** a NuGet tool; install from GitHub releases:
   ```bash
