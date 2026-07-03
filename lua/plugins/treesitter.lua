@@ -22,9 +22,15 @@ return {
       },
       highlight = {
         enable = true,
+        -- markdown/markdown_inline use complex injections that crash with a stale
+        -- parser binary (nil range in languagetree.lua). Disable TS highlight for
+        -- these until parsers are rebuilt with :TSUpdate markdown markdown_inline,
+        -- after which this disable can be removed.
+        disable = { "markdown", "markdown_inline" },
       },
       indent = {
         enable = true,
+        disable = { "markdown", "markdown_inline" },
       },
       textobjects = {
         select = {
