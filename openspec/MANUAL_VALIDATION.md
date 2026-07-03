@@ -14,7 +14,8 @@ Run them in order after `:Lazy sync` on the relevant branch before raising a PR.
 1. Run `:Lazy sync` and wait for it to complete.
 2. Run `:TSUpdate` and wait.
 3. Run `:TSInstallInfo`. Scroll to confirm the following parsers show `installed`: `lua`, `fsharp`, `c_sharp`.
-   - `haskell` is also in `ensure_installed` but is optional here — skip it if this is not a Haskell development machine (it is validated in Change 07 § 5.5 if needed).
+   - `haskell` is also in `ensure_installed` but is optional — skip if not a Haskell dev machine.
+   - If `fsharp` or `c_sharp` show as **not installed**: tree-sitter parsers are compiled from C source and require build tools. Run `gcc --version` — if missing, install with `sudo apt install build-essential`, then re-run `:TSUpdate`.
 4. Run `:messages` and scan for any `textobjects` or `treesitter` errors. There should be none.
 - [ ] `lua`, `fsharp`, and `c_sharp` parsers installed; no treesitter errors in `:messages`.
 
