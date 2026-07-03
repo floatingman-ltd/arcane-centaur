@@ -33,7 +33,7 @@ Complete once before any testing begins.
 - [X] Verify netcoredbg is on PATH: `netcoredbg --version`
 - [X] Confirm `claude` CLI is installed and authenticated (required for Change 08): `claude --version`
 - [X] Clone the repo: `git clone git@github.com:floatingman-ltd/arcane-centaur.git ~/.config/nvim`
-- [ ] Confirm initial main state loads: `nvim` → `:Lazy sync` → no errors in `:messages`
+- [X] Confirm initial main state loads: `nvim` → `:Lazy sync` → no errors in `:messages`
 
 ---
 
