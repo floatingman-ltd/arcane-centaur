@@ -10,11 +10,12 @@ Work through this list top to bottom — each section must pass before moving to
 
 Complete once before any testing begins.
 
-- [ ] Confirm Neovim ≥ 0.12 is installed: `nvim --version`
-- [ ] Confirm Git is installed: `git --version`
-- [ ] Confirm Node.js + npm are installed (required by markdown-preview.nvim build): `node --version && npm --version`
-- [ ] Confirm `dotnet` SDK is installed (required for Change 07 testing): `dotnet --version`
+- [X] Confirm Neovim ≥ 0.12 is installed: `nvim --version`
+- [X] Confirm Git is installed: `git --version`
+- [X] Confirm Node.js + npm are installed (required by markdown-preview.nvim build): `node --version && npm --version`
+- [X] Confirm `dotnet` SDK is installed (required for Change 07 testing): `dotnet --version`
 - [ ] Install netcoredbg (required for Change 07 debugging tests): `dotnet tool install -g netcoredbg` then `netcoredbg --version`
+  - _this tooling does not seem to be available via nuget, and the above command does not work.  Is there a different installation that will work based on the releases found here" https://github.com/Samsung/netcoredbg/releases.
 - [ ] Confirm `claude` CLI is installed and authenticated (required for Change 08): `claude --version`
 - [ ] Clone the repo: `git clone git@github.com:floatingman-ltd/arcane-centaur.git ~/.config/nvim`
 - [ ] Confirm initial main state loads: `nvim` → `:Lazy sync` → no errors in `:messages`
