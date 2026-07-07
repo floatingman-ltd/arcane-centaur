@@ -1,15 +1,11 @@
-# Validation Test Plan
+# Test & Validation Plan
 
-Checklist for validating each change before merging to main.
-Test cases are captured in `openspec/MANUAL_VALIDATION.md`.
-Work through this list top to bottom — each section must pass before moving to the next.
+Single source of truth for change validation. Each section covers one change:
+prepare the branch → validate → raise PR → merge → confirm post-merge.
 
-**Workflow per change:**
-1. Switch to the feature branch on the test machine
-2. Run `:Lazy sync` and any required setup
-3. Validate (run the cases in `MANUAL_VALIDATION.md`)
-4. Raise the PR and merge to main only after validation passes
-5. Pull main on the test machine to confirm clean post-merge state
+**Workflow:** validate on the feature branch **before** raising a PR. Never merge first and test after.
+
+Sample files for filetype and highlight tests are in `testdocs/` (`hello.hs`, `hello.cs`, `hello.fs`, `hello.fsx`; an existing richer `hello.lua` is also there).
 
 ---
 
@@ -23,18 +19,13 @@ Complete once before any testing begins.
 - [X] Confirm `dotnet` SDK is installed (required for Change 07 testing): `dotnet --version`
 - [X] Install netcoredbg (required for Change 07 debugging tests) — **not** a NuGet tool; install from GitHub releases:
   ```bash
-  # 1. Download the latest linux-amd64 release
-  #    Check https://github.com/Samsung/netcoredbg/releases for current version
   NCDBG_VER=$(curl -s https://api.github.com/repos/Samsung/netcoredbg/releases/latest \
     | grep '"tag_name"' | cut -d'"' -f4)
   curl -L "https://github.com/Samsung/netcoredbg/releases/download/${NCDBG_VER}/netcoredbg-linux-amd64.tar.gz" \
     -o /tmp/netcoredbg.tar.gz
-
-  # 2. Extract to ~/.local/share/netcoredbg/
   mkdir -p ~/.local/share/netcoredbg
   tar -xzf /tmp/netcoredbg.tar.gz -C ~/.local/share/netcoredbg/
-
-  # 3. Add to PATH (add this line to ~/.zshrc or ~/.bashrc, then source it)
+  # Add to ~/.zshrc or ~/.bashrc then source it:
   export PATH=$PATH:$HOME/.local/share/netcoredbg
   ```
 - [X] Verify netcoredbg is on PATH: `netcoredbg --version`
@@ -44,52 +35,178 @@ Complete once before any testing begins.
 
 ---
 
-## Hotfix: treesitter-markdown-highlight-disable
+## Hotfix · treesitter-markdown-highlight-disable ✓
 
-### Prepare test machine
+Merged as PR #134. No further action needed.
 
-- [ ] Switch to the hotfix branch: `git fetch origin && git checkout fix/treesitter-markdown-highlight-disable`
-- [ ] Launch Neovim: `:Lazy sync` — wait for completion
-- [ ] Run `:TSUpdate` — wait for completion
-
-### Validate
-
-- [ ] Open `samples/hello.lua` (or any `.md` file)
-- [ ] Run `:messages` — confirm no `nil range` / `languagetree` error appears
-- [ ] Open `readme.md` — confirm no crash on markdown open
-- [ ] Close Neovim
-
-### Merge
-
-- [ ] Raise PR: `fix/treesitter-markdown-highlight-disable` → `main`
-- [ ] Review and approve PR
-- [ ] Merge PR
-
-### Post-merge
-
-- [ ] `git checkout main && git pull origin main`
-- [ ] Launch Neovim: `:Lazy sync` — confirm clean
-
-### Sign off
-
-- [ ] Hotfix validated and merged — proceed to Change 03
+- [X] `after/ftplugin/markdown.lua` calls `vim.treesitter.stop()` on buffer open
+- [X] `lua/plugins/treesitter.lua` disables TS highlight and indent for `markdown`/`markdown_inline`
+- [X] Opening a `.md` file produces no `nil range` / `languagetree` error in `:messages`
 
 ---
 
-## Change 03: migrate-completion-blink
+## Change 03 · migrate-completion-blink
 
-### Prepare test machine
+**Branch:** `feat/03-migrate-completion-blink`
 
-- [ ] Switch to the feature branch: `git fetch origin && git checkout feat/03-migrate-completion-blink`
-- [ ] Launch Neovim: `:Lazy sync` — wait for completion, confirm blink.cmp installs
-- [ ] Confirm nvim-cmp and its sources are no longer listed in `:Lazy`
+This branch includes Changes 01 (treesitter textobjects) and 02 (asciidoc authoring) — both were merged
+to main before this branch was created and are inherited here. Validate all three on this branch
+before raising the PR.
 
-### Validate
+### Prepare
 
-- [ ] Run validation cases for Change 03 (see `openspec/MANUAL_VALIDATION.md` § Change 03)
+1. `git fetch origin && git checkout feat/03-migrate-completion-blink`
+2. Launch Neovim: `:Lazy sync` — wait for completion
+3. `:TSUpdate` — wait for completion
 
-### Merge
+- [ ] Branch checked out, `:Lazy sync` and `:TSUpdate` complete with no errors
 
+---
+
+### Validate — Change 01: treesitter textobjects
+
+#### 3.1 — Parser install
+
+1. Run `:TSInstallInfo`. Confirm the following parsers show `installed`: `lua`, `fsharp`, `c_sharp`.
+   - `haskell` is in `ensure_installed` but optional — skip if not a Haskell dev machine.
+   - If `fsharp` or `c_sharp` show **not installed** after `:TSUpdate`:
+     a. Run `:TSInstall fsharp c_sharp` explicitly and wait.
+     b. Run `:messages` — look for any compile or download error.
+     c. Re-run `:TSInstallInfo` to check status again.
+2. Run `:messages` — scan for any `textobjects` or `treesitter` errors. There should be none.
+
+- [X] `lua`, `fsharp`, and `c_sharp` parsers installed; no treesitter errors in `:messages`
+
+#### 3.2 — Highlight active per filetype
+
+1. Open `lua/plugins/treesitter.lua`. Run `:set ft?` — expect `filetype=lua`.
+2. Run `:lua print(vim.treesitter.highlighter.active[vim.api.nvim_get_current_buf()])` — should print a table (not `nil`).
+3. Open `testdocs/hello.fsx`. Run `:set ft?` (expect `fsharp`) and repeat the highlighter check.
+4. Open `testdocs/hello.cs`. Repeat both checks (`c_sharp` highlight active).
+5. _(Optional — skip if not a Haskell machine)_ Open `testdocs/hello.hs`. Repeat both checks.
+
+- [ ] `lua`, `fsharp`, and `c_sharp` files show correct filetype and non-nil highlighter
+
+#### 3.3 — Textobject motions (non-Lisp buffer)
+
+1. Open `lua/plugins/treesitter.lua` and position the cursor inside a function body.
+2. Press `vaf` — the entire function including its signature should be selected.
+3. Press `vif` — only the body should be selected.
+4. Move to a function parameter and press `via` — the argument should be selected.
+5. Position on a function and press `daf` — the whole function should be deleted.
+6. Undo (`u`). Press `]f` — cursor jumps to the next function start. Press `[f` — jumps back.
+
+- [ ] All six sub-steps behave as described
+
+#### 3.4 — Textobjects disabled in Lisp buffers
+
+1. Open a `.clj` file with a `defn` form. Press `vaf`.
+2. Confirm selection follows parentheses (vim-sexp s-expression), not an indented block (treesitter function).
+3. Repeat with a `.lisp` and a `.janet` file.
+
+- [ ] vim-sexp behaviour unchanged in all three Lisp filetypes
+
+#### 3.5 — Unrelated bracket maps intact
+
+1. In a git repo, open a file with a staged/unstaged hunk. Press `]h` / `[h` — jump between hunks.
+2. Press `]b` and `[b` — cycles through open buffers.
+3. Press `yos` — spell toggles on/off (verify with `:set spell?`).
+
+- [ ] All three map groups still work
+
+---
+
+### Validate — Change 02: asciidoc authoring
+
+#### 4.1 — Plugin installed
+
+1. Open `:Lazy`. Search for `vim-asciidoctor` — confirm installed with no error icon.
+
+- [ ] vim-asciidoctor listed as installed, no errors
+
+#### 4.2 — Filetype detection, folding, syntax
+
+1. Open `docs/modules/ROOT/pages/editor/code-intelligence.adoc` cold.
+2. Run `:set ft?` — expect `filetype=asciidoctor`.
+3. Move to a section heading (`==` line). Press `za` — section folds. Press `za` — unfolds.
+4. Find a `[source,lua]` block — Lua inside should be highlighted differently from surrounding AsciiDoc.
+
+- [ ] Filetype correct, fold works, fenced-block highlight active
+
+#### 4.3 — Docker preview maps
+
+1. In the `.adoc` buffer press `,p` (`<localleader>p`).
+   - Docker running: browser tab or terminal output showing rendered HTML.
+   - Docker not running: clean warning/error — no Neovim crash.
+2. Press `,pp` — same preview flow.
+3. Press `,pa` — Antora build starts (or clean Docker-offline message).
+
+- [ ] All three maps fire without crashing Neovim
+
+#### 4.5 — Markdown unaffected; markview absent
+
+1. Open `readme.md`. Confirm markdown preview / glow still works.
+2. Run `:Lazy` — search for `markview`. It should NOT appear.
+
+- [ ] Markdown tooling intact; markview absent from plugin list
+
+---
+
+### Validate — Change 03: blink completion
+
+#### 3.1 — blink installed; nvim-cmp gone
+
+1. Open `:Lazy`. Search for `blink.cmp` — confirm installed.
+2. Search in turn for `nvim-cmp`, `cmp-nvim-lsp`, `cmp-buffer`, `cmp-path`, `cmp-cmdline`, `cmp_luasnip` — none should appear.
+
+- [ ] blink.cmp present; all six cmp plugins absent
+
+#### 3.2 — LSP, buffer, and path completions
+
+1. Open `lua/plugins/blink.lua`. Enter insert mode, type `req` — LSP completions for `require` should appear.
+2. Type a partial word present elsewhere in the file — buffer-word completion should appear.
+3. Type `./` or `~/` — path completions should appear.
+4. Open `testdocs/hello.fsx` with fsautocomplete running. Type `List.` — LSP completions should appear.
+
+- [ ] All three completion sources work in both Lua and F# buffers
+
+#### 3.3 — Keymap behaviour
+
+1. With completion menu open, press `<C-n>` / `<C-p>` — selection moves down/up.
+2. Press `<C-e>` — menu dismisses.
+3. In insert mode with menu closed (no item highlighted), press `<CR>` — inserts a newline, does not accept a completion.
+4. Open menu, highlight an item, press `<CR>` — item is inserted.
+
+- [ ] Navigation, dismiss, and no-preselect newline all behave correctly
+
+#### 3.4 — Command-line completion
+
+1. Press `:`, type `lua/` — file path completions appear.
+2. Type `Laz` — `Lazy` and related commands appear.
+3. Press `/`, type a partial word from the current buffer — buffer-word completions appear.
+
+- [ ] Both `:` and `/` cmdline sources work
+
+#### 3.5 — Conjure completions (Lisp)
+
+1. Open a `.clj` file and connect Conjure to a running nREPL.
+2. In insert mode, type the first few characters of a REPL-defined var — Conjure completions should appear in the blink menu.
+3. If absent: check `:messages` for blink.compat errors and note for follow-up.
+
+- [ ] Conjure completions appear (or absence is noted for follow-up)
+
+#### 3.6 — Spell completions gated by `spell` option
+
+1. Open a markdown file. Run `:set spell`. Type 3+ characters of a misspelled word — spell suggestions appear.
+2. Open a Lua file (`:set spell?` is `nospell`). Type the same misspelled word — no spell suggestions.
+
+- [ ] Spell completions gated correctly by the `spell` option
+
+---
+
+### Raise PR & merge
+
+- [ ] All validation steps above pass
 - [ ] Raise PR: `feat/03-migrate-completion-blink` → `main`
 - [ ] Review and approve PR
 - [ ] Merge PR
@@ -97,29 +214,73 @@ Complete once before any testing begins.
 ### Post-merge
 
 - [ ] `git checkout main && git pull origin main`
-- [ ] Launch Neovim: `:Lazy sync` — confirm clean
-
-### Sign off
-
-- [ ] Pass — proceed to Change 04
-- [ ] Fail — raise issue, fix on branch, re-validate before merging
+- [ ] Launch Neovim: `:Lazy sync` — confirm clean with no errors
 
 ---
 
-## Change 04: modernize-editing-plugins
+## Change 04 · modernize-editing-plugins
 
-### Prepare test machine
+**Branch:** `feat/04-modernize-editing-plugins`
 
-- [ ] Switch to the feature branch: `git fetch origin && git checkout feat/04-modernize-editing-plugins`
-- [ ] Launch Neovim: `:Lazy sync` — wait for completion
-- [ ] Confirm lualine.nvim and nvim-surround install; vim-airline, vim-surround, vim-sensible, vim-commentary absent from `:Lazy`
+### Prepare
+
+1. `git fetch origin && git checkout feat/04-modernize-editing-plugins`
+2. Launch Neovim: `:Lazy sync` — wait for completion
+
+- [ ] Branch checked out, `:Lazy sync` complete with no errors
 
 ### Validate
 
-- [ ] Run validation cases for Change 04 (see `openspec/MANUAL_VALIDATION.md` § Change 04)
+#### 4.1 — Plugin inventory
 
-### Merge
+1. Open `:Lazy`. Confirm `lualine.nvim` and `nvim-surround` are listed as installed.
+2. Confirm the following are absent: `vim-airline`, `vim-surround`, `vim-sensible`, `vim-commentary`.
 
+- [ ] Both new plugins present; all four removed plugins absent
+
+#### 4.2 — Status line
+
+1. Open any file. Confirm the left section shows the current mode (e.g. `NORMAL`).
+2. In a git repo, confirm branch name and diff counts (+/-) appear.
+3. Introduce a diagnostic error (e.g. a syntax error in a Lua file) — diagnostic count updates.
+4. Confirm the right section shows filetype, scroll percentage, and cursor line:column.
+
+- [ ] All four status line elements render correctly
+
+#### 4.3 — Surround operations
+
+1. Position cursor on a word. Type `ysiw"` — word wraps in double quotes.
+2. With cursor on `"`, type `cs"'` — double quotes change to single.
+3. With cursor on `'`, type `ds'` — quotes removed.
+4. Undo all. Re-run `ysiw"`. Press `.` — surround repeats.
+
+- [ ] Add, change, delete, and dot-repeat all work
+
+#### 4.4 — Comment operator
+
+1. Open `lua/plugins/treesitter.lua`. Press `gcc` — line commented. Press `gcc` — uncommented.
+2. Select three lines in visual mode. Press `gc` — all commented. Press `gc` — uncommented.
+3. Run `gcc`, move to another line, press `.` — comment toggle repeats.
+
+- [ ] Toggle, visual range, and dot-repeat all work
+
+#### 4.5 — vim-unimpaired + vim-repeat intact
+
+1. Press `yos` — spell toggles (verify with `:set spell?`).
+2. Open quickfix with `:copen`. Press `]q` / `[q` — walk entries.
+3. Press `]b` / `[b` — cycles through open buffers.
+
+- [ ] All three vim-unimpaired map groups work correctly
+
+#### 4.6 — Clean startup
+
+1. Restart Neovim. Run `:messages` — no errors or warnings about missing plugins or removed options.
+
+- [ ] No startup errors; expected defaults present
+
+### Raise PR & merge
+
+- [ ] All validation steps above pass
 - [ ] Raise PR: `feat/04-modernize-editing-plugins` → `main`
 - [ ] Review and approve PR
 - [ ] Merge PR
@@ -129,28 +290,67 @@ Complete once before any testing begins.
 - [ ] `git checkout main && git pull origin main`
 - [ ] Launch Neovim: `:Lazy sync` — confirm clean
 
-### Sign off
-
-- [ ] Pass — proceed to Change 05
-- [ ] Fail — raise issue, fix, re-validate before merging
-
 ---
 
-## Change 05: upgrade-avante-drop-dressing
+## Change 05 · upgrade-avante-drop-dressing
 
-### Prepare test machine
+**Branch:** `feat/05-upgrade-avante-drop-dressing`
 
-- [ ] Switch to the feature branch: `git fetch origin && git checkout feat/05-upgrade-avante-drop-dressing`
-- [ ] Launch Neovim: `:Lazy update avante.nvim` — wait for update and build step
-- [ ] If build did not run automatically: `:AvanteBuild` — wait for completion
-- [ ] Confirm avante version in `:Lazy` starts with `v0.1.` and dressing.nvim is absent
+### Prepare
+
+1. `git fetch origin && git checkout feat/05-upgrade-avante-drop-dressing`
+2. Launch Neovim: `:Lazy update avante.nvim` — wait for update and build step
+3. If build did not run automatically: `:AvanteBuild` — wait for completion
+
+- [ ] Branch checked out, avante updated and built with no errors
 
 ### Validate
 
-- [ ] Run validation cases for Change 05 (see `openspec/MANUAL_VALIDATION.md` § Change 05)
+#### 4.1 — Avante at new version; build succeeded
 
-### Merge
+1. Open `:Lazy`. Find `avante.nvim` — confirm version starts with `v0.1.` and no build error.
 
+- [ ] Version is v0.1.x, build clean
+
+#### 4.2 — Avante opens with current provider
+
+1. Press `<leader>aa` — Avante panel opens on the right.
+2. Type a short prompt and press `<CR>` — a response is received.
+
+- [ ] Avante opens and responds
+
+#### 4.3 — Ollama provider switch
+
+1. Press `<leader>ao` — Avante switches to Ollama and opens.
+2. If Ollama is not running: clean connection-refused error — no crash.
+
+- [ ] Ollama switch fires cleanly (response or clean error)
+
+#### 4.4 — Claude API provider switch
+
+1. Ensure `ANTHROPIC_API_KEY` is set. Press `<leader>ac` — Avante switches to Claude API.
+2. Type a short prompt — response arrives.
+
+- [ ] Claude API provider works (skip and note if no API key available)
+
+#### 4.5 — Diffview still works (plenary intact)
+
+1. In a git repo with uncommitted changes, run `:DiffviewOpen` — side-by-side diff opens.
+2. Run `:DiffviewClose` — closes cleanly.
+
+- [ ] DiffviewOpen and DiffviewClose work
+
+#### 4.6 — Native vim.ui fallback (dressing gone)
+
+1. Trigger a code action (`<leader>ca`) on a line with an available LSP code action.
+2. A native select prompt appears (not dressing). Select an option.
+3. Confirm no error about missing `dressing.nvim`.
+
+- [ ] vim.ui.select works via native fallback; no dressing errors
+
+### Raise PR & merge
+
+- [ ] All validation steps above pass
 - [ ] Raise PR: `feat/05-upgrade-avante-drop-dressing` → `main`
 - [ ] Review and approve PR
 - [ ] Merge PR
@@ -160,27 +360,71 @@ Complete once before any testing begins.
 - [ ] `git checkout main && git pull origin main`
 - [ ] Launch Neovim: `:Lazy sync` — confirm clean
 
-### Sign off
-
-- [ ] Pass — proceed to Change 06
-- [ ] Fail — raise issue, fix, re-validate before merging
-
 ---
 
-## Change 06: add-diagnostics-todo-panel
+## Change 06 · add-diagnostics-todo-panel
 
-### Prepare test machine
+**Branch:** `feat/06-add-diagnostics-todo-panel`
 
-- [ ] Switch to the feature branch: `git fetch origin && git checkout feat/06-add-diagnostics-todo-panel`
-- [ ] Launch Neovim: `:Lazy sync` — wait for completion
-- [ ] Confirm trouble.nvim and todo-comments.nvim are listed in `:Lazy`
+### Prepare
+
+1. `git fetch origin && git checkout feat/06-add-diagnostics-todo-panel`
+2. Launch Neovim: `:Lazy sync` — wait for completion
+
+- [ ] Branch checked out, `:Lazy sync` complete; trouble.nvim and todo-comments.nvim listed in `:Lazy`
 
 ### Validate
 
-- [ ] Run validation cases for Change 06 (see `openspec/MANUAL_VALIDATION.md` § Change 06)
+#### 4.1 — Plugins installed
 
-### Merge
+1. Open `:Lazy`. Search for `trouble.nvim` — confirm installed.
+2. Search for `todo-comments.nvim` — confirm installed.
 
+- [ ] Both plugins listed as installed with no errors
+
+#### 4.2 — Trouble diagnostic panels
+
+1. Open `lua/plugins/trouble.lua`. Press `<leader>xx` — Trouble project diagnostics panel opens at the bottom.
+2. Move cursor to an entry and press `<CR>` — jumps to that file and line.
+3. Press `<leader>xX` — panel filters to current buffer only.
+4. Press `<leader>xx` again — panel closes.
+
+- [ ] Project panel opens, entry navigation works, buffer filter works
+
+#### 4.3 — Native diagnostic maps unchanged
+
+1. In a file with an LSP error, press `]d` / `[d` — jumps between diagnostics.
+2. Position cursor on a diagnostic. Press `<leader>e` — floating window with diagnostic text appears.
+
+- [ ] `[d`, `]d`, and `<leader>e` all behave as before
+
+#### 4.4 — TODO/FIXME highlighting
+
+1. Open `lua/plugins/treesitter.lua`. Add `-- TODO: test this`.
+2. Confirm `TODO:` is highlighted with a distinct colour and a sign appears in the sign column.
+3. Change `TODO` to `FIXME` — highlighted in a different colour.
+4. Undo both additions.
+
+- [ ] TODO and FIXME highlighted with distinct colours and signs
+
+#### 4.5 — Todo list views
+
+1. With the `-- TODO:` line present, press `<leader>xT` — fzf-lua picker opens listing todo comments.
+2. Press `<Esc>` to close.
+3. Press `<leader>xt` — Trouble panel opens showing todo comments. Entry from step 1 appears.
+
+- [ ] fzf-lua picker and Trouble panel both list todo comments
+
+#### 4.6 — vim-unimpaired tag maps intact
+
+1. Ensure a `tags` file exists (or run `ctags -R`). Press `]t` / `[t` — jumps between tags.
+2. Confirm `]t` / `[t` do tag navigation, NOT todo-comment navigation.
+
+- [ ] `]t` / `[t` do tag navigation, not todo navigation
+
+### Raise PR & merge
+
+- [ ] All validation steps above pass
 - [ ] Raise PR: `feat/06-add-diagnostics-todo-panel` → `main`
 - [ ] Review and approve PR
 - [ ] Merge PR
@@ -190,34 +434,77 @@ Complete once before any testing begins.
 - [ ] `git checkout main && git pull origin main`
 - [ ] Launch Neovim: `:Lazy sync` — confirm clean
 
-### Sign off
-
-- [ ] Pass — proceed to Change 07
-- [ ] Fail — raise issue, fix, re-validate before merging
-
 ---
 
-## Change 07: add-dotnet-debug-test
+## Change 07 · add-dotnet-debug-test
 
-### Prerequisites (confirm before switching branch)
+**Branch:** `feat/07-add-dotnet-debug-test`
 
-- [ ] `netcoredbg --version` responds on test machine (installed in one-time setup)
-- [ ] A runnable .NET solution is available on the test machine for debug/test validation
-- [ ] A Haskell project is available (for DAP discovery check — optional)
+**Prerequisites** (confirm before switching branch):
+- `netcoredbg --version` responds (installed in one-time setup above)
+- A runnable .NET solution is available on the test machine
+- A Haskell project is available (for DAP discovery check — optional)
 
-### Prepare test machine
+### Prepare
 
-- [ ] Switch to the feature branch: `git fetch origin && git checkout feat/07-add-dotnet-debug-test`
-- [ ] Launch Neovim: `:Lazy sync` — wait for completion
-- [ ] Confirm nvim-dap, nvim-dap-ui, nvim-nio, easy-dotnet listed in `:Lazy`
+1. `git fetch origin && git checkout feat/07-add-dotnet-debug-test`
+2. Launch Neovim: `:Lazy sync` — wait for completion
+
+- [ ] Branch checked out; nvim-dap, nvim-dap-ui, nvim-nio, easy-dotnet all listed in `:Lazy`
 
 ### Validate
 
-- [ ] Run validation cases for Change 07 (see `openspec/MANUAL_VALIDATION.md` § Change 07)
+#### 5.1 — Plugins installed
 
-### Merge
+1. Open `:Lazy`. Confirm `nvim-dap`, `nvim-dap-ui`, `nvim-nio`, and `easy-dotnet.nvim` are all installed with no errors.
 
-- [ ] Raise PR: `feat/07-add-dotnet-debug-test` → `main` (pay attention to `lsp.enabled = false` in easy-dotnet opts)
+- [ ] All four plugins installed cleanly
+
+#### 5.2 — Exactly one Roslyn LSP client
+
+1. Open a `.cs` file from a .NET solution. Wait for roslyn.nvim to attach.
+2. Run `:lua =vim.lsp.get_clients({ name = "roslyn" })` — expect exactly one table entry.
+   If two entries appear, easy-dotnet has started a second Roslyn server — configuration error.
+
+- [ ] Exactly one Roslyn client returned
+
+#### 5.3 — Breakpoint and step debugging
+
+1. Open a `.cs` file in a runnable .NET project. Press `<F9>` on a line — breakpoint sign appears.
+2. Press `<F5>` — easy-dotnet project picker appears; select the project.
+3. nvim-dap-ui panel opens automatically. Execution pauses at the breakpoint.
+4. Press `<F10>` (step over), `<F11>` (step into), `<F12>` (step out) — cursor follows.
+5. Press `<S-F5>` — session terminates and dap-ui closes.
+
+- [ ] Full debug cycle (set breakpoint → start → pause → step → stop) works
+
+#### 5.4 — easy-dotnet test and run maps
+
+1. Open a `.cs` file. Press `,tt` — test runner opens and runs tests.
+2. Press `,tr` — project runner fires (picker appears if multiple projects).
+3. Open `testdocs/hello.fsx`. Confirm `,tt` and `,tr` are active in F# buffers too.
+
+- [ ] Test and run maps work in both C# and F# buffers
+
+#### 5.5 — Haskell DAP config discovery
+
+1. Open `testdocs/hello.hs` (or any `.hs` file).
+2. Run `:lua =require("dap").configurations.haskell`.
+3. Non-nil table = haskell-tools registered a config (pass). `nil` = note for follow-up (not blocking).
+
+- [ ] Result noted (non-nil = pass; nil = follow-up required)
+
+#### 5.6 — Existing .NET maps unaffected
+
+1. Open a `.cs` file. Connect the iron.nvim REPL (`<localleader>si`). Press `<localleader>sl` — line sent to REPL.
+2. Confirm `gd`, `K`, and `gr` all work via the Roslyn LSP.
+
+- [ ] iron REPL and LSP navigation intact
+
+### Raise PR & merge
+
+- [ ] All validation steps above pass
+- [ ] Raise PR: `feat/07-add-dotnet-debug-test` → `main` (confirm `lsp = { enabled = false }` in easy-dotnet opts)
 - [ ] Review and approve PR
 - [ ] Merge PR
 
@@ -226,33 +513,78 @@ Complete once before any testing begins.
 - [ ] `git checkout main && git pull origin main`
 - [ ] Launch Neovim: `:Lazy sync` — confirm clean
 
-### Sign off
-
-- [ ] Pass — proceed to Change 08
-- [ ] Fail — raise issue, fix, re-validate before merging
-
 ---
 
-## Change 08: add-claudecode-session
+## Change 08 · add-claudecode-session
 
-### Prerequisites (confirm before switching branch)
+**Branch:** `feat/08-add-claudecode-session`
 
-- [ ] `claude` CLI is installed and authenticated on the test machine: `claude --version`
-- [ ] MCP server can start: run `claude` in a terminal and confirm it launches
+**Prerequisites** (confirm before switching branch):
+- `claude --version` responds and is authenticated
+- Run `claude` in a terminal — CLI launches without error
 
-### Prepare test machine
+### Prepare
 
-- [ ] Switch to the feature branch: `git fetch origin && git checkout feat/08-add-claudecode-session`
-- [ ] Launch Neovim: `:Lazy sync` — wait for completion
-- [ ] Confirm claudecode.nvim is listed in `:Lazy` and snacks.nvim is absent
+1. `git fetch origin && git checkout feat/08-add-claudecode-session`
+2. Launch Neovim: `:Lazy sync` — wait for completion
+
+- [ ] Branch checked out; claudecode.nvim listed in `:Lazy`; snacks.nvim absent
 
 ### Validate
 
-- [ ] Run validation cases for Change 08 (see `openspec/MANUAL_VALIDATION.md` § Change 08)
+#### 3.1 — Plugin installed; snacks absent
 
-### Merge
+1. Open `:Lazy`. Search for `claudecode.nvim` — confirm installed.
+2. Search for `snacks.nvim` — it should NOT appear.
 
-- [ ] Raise PR: `feat/08-add-claudecode-session` → `main` (confirm snacks.nvim is NOT in the dependency list)
+- [ ] claudecode.nvim installed; snacks.nvim absent
+
+#### 3.2 — Session terminal opens and connects
+
+1. Press `<leader>gcc` — native terminal split opens running the `claude` CLI.
+2. Wait for the Claude Code prompt. If MCP does not connect automatically, type `/ide` and press Enter.
+3. No errors about missing providers or snacks.
+
+- [ ] Native terminal opens, `claude` CLI runs, MCP connects
+
+#### 3.3 — Send selection and add buffer
+
+1. Return to the editor (`<C-\><C-n>` then move to an editor window).
+2. Open `lua/plugins/claudecode.lua`. Select two or three lines in visual mode (`V`).
+3. Press `<leader>gcv` — selected lines appear in the Claude session.
+4. Press `<leader>gcb` — current buffer file path added to Claude's context.
+
+- [ ] Selection send and buffer add both reach the session
+
+#### 3.4 — Diff accept and reject
+
+1. In the Claude session, ask Claude to add a comment to `lua/plugins/claudecode.lua`.
+2. Neovim opens a diff view. Press `<leader>gca` — change is accepted and written.
+3. Undo (`u`). Ask for another edit. Press `<leader>gcr` — diff rejected, file unchanged.
+
+- [ ] Accept diff and reject diff both work correctly
+
+#### 3.5 — One-shot claude_cli maps still work
+
+1. Press `<leader>gcs` — floating window appears with a shell command suggestion.
+2. Select a function in visual mode. Press `<leader>gce` — floating window with code explanation.
+3. Press `q` or `<Esc>` to close each.
+
+- [ ] `<leader>gcs` and `<leader>gce` (claude_cli) still work alongside the session
+
+#### 3.6 — Avante maps unaffected
+
+1. Press `<leader>aa` — Avante opens normally.
+2. Press `<leader>ao` — switches to Ollama (or clean error if offline).
+3. Press `<leader>ac` — switches to Claude API provider.
+4. Confirm no `<leader>gc*` map bleeds into the `<leader>a*` namespace.
+
+- [ ] All three Avante maps unaffected; no namespace collision
+
+### Raise PR & merge
+
+- [ ] All validation steps above pass
+- [ ] Raise PR: `feat/08-add-claudecode-session` → `main` (confirm snacks.nvim is NOT in dependencies)
 - [ ] Review and approve PR
 - [ ] Merge PR
 
@@ -260,11 +592,6 @@ Complete once before any testing begins.
 
 - [ ] `git checkout main && git pull origin main`
 - [ ] Launch Neovim: `:Lazy sync` — confirm clean
-
-### Sign off
-
-- [ ] Pass — all changes validated ✓
-- [ ] Fail — raise issue, fix, re-validate before merging
 
 ---
 
@@ -272,4 +599,4 @@ Complete once before any testing begins.
 
 - [ ] All changes (hotfix + 03–08) validated on branch and merged to main
 - [ ] No open issues from validation runs
-- [ ] `openspec/MANUAL_VALIDATION.md` updated with any notes from testing
+- [ ] lazy-lock.json committed on main reflects the final plugin state
