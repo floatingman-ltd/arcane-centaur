@@ -31,12 +31,15 @@ Complete once before any testing begins.
 - [X] Verify netcoredbg is on PATH: `netcoredbg --version`
 - [ ] Install the Roslyn C# language server (required by `roslyn.nvim` for the C# LSP in Changes 03 & 07) — **not** a `dotnet tool`; download the native binary. Full steps in `docs/modules/ROOT/pages/languages/dotnet.adoc` § *Installing the Roslyn Language Server*:
   ```bash
+  # The Roslyn LSP is NOT on nuget.org — it lives on Microsoft's Azure DevOps
+  # "vs-impl" feed, and all releases are prereleases (no stable 5.x; newest is
+  # 5.4.0-2.26179.14 as of this writing — there is no 5.5/5.6).
+  PKG=microsoft.codeanalysis.languageserver.linux-x64
+  FEED="https://pkgs.dev.azure.com/azure-public/vside/_packaging/vs-impl/nuget/v3/flat2/${PKG}"
+  VERSION=$(curl -s "${FEED}/index.json" | tr ',' '\n' | grep -oE '[0-9][0-9.]+-[0-9.]+' | sort -V | tail -1)
+  echo "Installing Roslyn LSP ${VERSION}"
   mkdir -p ~/.local/share/roslyn
-  # Pick the latest version listed at:
-  #   https://www.nuget.org/packages/Microsoft.CodeAnalysis.LanguageServer.linux-x64
-  VERSION=<latest>
-  curl -L "https://api.nuget.org/v3-flatcontainer/microsoft.codeanalysis.languageserver.linux-x64/${VERSION}/microsoft.codeanalysis.languageserver.linux-x64.${VERSION}.nupkg" \
-    -o /tmp/roslyn.nupkg
+  curl -L "${FEED}/${VERSION}/${PKG}.${VERSION}.nupkg" -o /tmp/roslyn.nupkg
   unzip -o /tmp/roslyn.nupkg -d ~/.local/share/roslyn
   chmod +x ~/.local/share/roslyn/content/LanguageServer/linux-x64/Microsoft.CodeAnalysis.LanguageServer
   # Add to ~/.zshrc or ~/.bashrc then source it:
