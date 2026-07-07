@@ -51,6 +51,24 @@ Complete once before any testing begins.
 - [X] Clone the repo: `git clone git@github.com:floatingman-ltd/arcane-centaur.git ~/.config/nvim`
 - [X] Confirm initial main state loads: `nvim` → `:Lazy sync` → no errors in `:messages`
 
+### Troubleshooting — `:Lazy sync` fails on `bracey.vim` (dirty tree)
+
+The build fix (`--no-package-lock`, on `main` and this branch) stops bracey.vim's
+`npm install` from rewriting its tracked `server/package-lock.json` **going forward**.
+On a machine that already ran the old build, the plugin's git tree is already dirty,
+so `:Lazy sync`/`:Lazy update` keeps failing with local-changes errors until you
+reset it **once**:
+
+```bash
+# Discard the dirtied lockfile in the installed plugin, then re-sync in Neovim
+git -C ~/.local/share/nvim/lazy/bracey.vim checkout -- .
+# then in Neovim: :Lazy sync
+```
+
+Alternatively, in Neovim: `:Lazy clean` then `:Lazy sync` (removes and reinstalls
+the plugin cleanly). After this one-time reset the `--no-package-lock` build keeps
+the tree clean on every future sync.
+
 ---
 
 ## Hotfix · treesitter-markdown-highlight-disable ✓
