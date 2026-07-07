@@ -93,7 +93,7 @@ before raising the PR.
 2. Run `:messages` — scan for any `textobjects` or `treesitter` errors. There should be none.
 
 - [X] `lua`, `fsharp`, and `c_sharp` parsers installed; no treesitter errors in `:messages`
-      _(Note: 3.2 below revealed `fsharp`/`c_sharp` were **not** actually installed — re-verify with `:TSInstall fsharp c_sharp` before relying on this.)_
+      _(Note: the underlying cause was a config bug — `ensure_installed` was being ignored, so parsers never auto-installed. Fixed in commit `8080040`; after `git pull` + `:Lazy sync` they install automatically when a C compiler is present. See the 3.2 diagnosis.)_
 
 #### 3.2 — Highlight active per filetype
 
@@ -109,9 +109,12 @@ before raising the PR.
 >  - `c_sharp` and `fsharp` both return a `nil` table result
 >  - `c_sharp`when loaded was unable ot spawn a language server, '... `{"Microsoft.CodeAnalysis.LanguageServer", "--stdio"} failed. The language server is either not installed, missing from PATH, or not executable.'
 >
-> **Diagnosis / resolution:**
-> - `nil` highlighter for `c_sharp`/`fsharp` = their parsers were never compiled. `lua` works only because Neovim bundles it (see 3.1). Fix: ensure `cc`/`gcc` is on PATH, run `:TSInstall c_sharp fsharp`, check `:messages` for compile errors, then re-run this step.
-> - The `Microsoft.CodeAnalysis.LanguageServer` error is a **separate, unrelated** issue — the Roslyn C# LSP server is not installed on this machine (see the new Roslyn install step in *One-Time Test Machine Setup*). C# LSP is **not** required for this treesitter-highlight check, so it does not block 3.2.
+> **Diagnosis / resolution — ROOT CAUSE FOUND & FIXED (commit `8080040`):**
+> - Not a missing-parser problem at heart. `lua/plugins/treesitter.lua` passed all its settings via lazy's `opts`, which lazy applies by calling `require("nvim-treesitter").setup(opts)`. On nvim-treesitter **master** that entry point takes **no arguments and discards `opts`** — so `highlight`, `indent`, `textobjects`, **and `ensure_installed`** never took effect. That's why `c_sharp`/`fsharp` had no highlighter *and* why their parsers were never auto-installed (3.3 textobjects would have failed for the same reason).
+> - `lua` (and `markdown`) appeared to "work" only because **Neovim's core** treesitter highlights them independently of the plugin — masking the bug. A working `lua` highlighter is *not* evidence the plugin is configured.
+> - **Fix:** route opts through `require("nvim-treesitter.configs").setup(opts)` via an explicit `config` function; corrected invalid `ensure_installed` names (`lisp`→`commonlisp`, dropped `plantuml` — both threw "Parser not available" once opts applied); disabled markdown TS highlight to preserve the markdown hotfix. Verified on the dev machine: `c_sharp`/`fsharp`/`lua` highlighters all non-nil, `af`/`if`/`]f`/`[f` textobjects mapped, markdown opens with no nil-range/languagetree error (baseline unchanged).
+> - **To re-validate here:** `git pull`, then `:Lazy sync` — `ensure_installed` now auto-installs the parsers (a **C compiler** must be on PATH; see One-Time Setup). Then re-run steps 1–5.
+> - The `Microsoft.CodeAnalysis.LanguageServer` error is **separate/unrelated** — the Roslyn C# LSP server isn't installed (see the Roslyn step in *One-Time Test Machine Setup*). C# LSP is not required for this highlight check.
 
 #### 3.3 — Textobject motions (non-Lisp buffer)
 
