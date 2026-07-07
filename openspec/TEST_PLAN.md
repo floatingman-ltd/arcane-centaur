@@ -21,7 +21,7 @@ Complete once before any testing begins.
 - [X] Confirm Git is installed: `git --version`
 - [X] Confirm Node.js + npm are installed (required by markdown-preview.nvim build): `node --version && npm --version`
 - [X] Confirm `dotnet` SDK is installed (required for Change 07 testing): `dotnet --version`
-- [ ] Install netcoredbg (required for Change 07 debugging tests) — **not** a NuGet tool; install from GitHub releases:
+- [X] Install netcoredbg (required for Change 07 debugging tests) — **not** a NuGet tool; install from GitHub releases:
   ```bash
   # 1. Download the latest linux-amd64 release
   #    Check https://github.com/Samsung/netcoredbg/releases for current version
@@ -37,10 +37,10 @@ Complete once before any testing begins.
   # 3. Add to PATH (add this line to ~/.zshrc or ~/.bashrc, then source it)
   export PATH=$PATH:$HOME/.local/share/netcoredbg
   ```
-- [ ] Verify netcoredbg is on PATH: `netcoredbg --version`
-- [ ] Confirm `claude` CLI is installed and authenticated (required for Change 08): `claude --version`
-- [ ] Clone the repo: `git clone git@github.com:floatingman-ltd/arcane-centaur.git ~/.config/nvim`
-- [ ] Confirm initial main state loads: `nvim` → `:Lazy sync` → no errors in `:messages`
+- [X] Verify netcoredbg is on PATH: `netcoredbg --version`
+- [X] Confirm `claude` CLI is installed and authenticated (required for Change 08): `claude --version`
+- [X] Clone the repo: `git clone git@github.com:floatingman-ltd/arcane-centaur.git ~/.config/nvim`
+- [X] Confirm initial main state loads: `nvim` → `:Lazy sync` → no errors in `:messages`
 
 ---
 
