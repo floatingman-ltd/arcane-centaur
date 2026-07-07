@@ -29,6 +29,21 @@ Complete once before any testing begins.
   export PATH=$PATH:$HOME/.local/share/netcoredbg
   ```
 - [X] Verify netcoredbg is on PATH: `netcoredbg --version`
+- [ ] Install the Roslyn C# language server (required by `roslyn.nvim` for the C# LSP in Changes 03 & 07) — **not** a `dotnet tool`; download the native binary. Full steps in `docs/modules/ROOT/pages/languages/dotnet.adoc` § *Installing the Roslyn Language Server*:
+  ```bash
+  mkdir -p ~/.local/share/roslyn
+  # Pick the latest version listed at:
+  #   https://www.nuget.org/packages/Microsoft.CodeAnalysis.LanguageServer.linux-x64
+  VERSION=<latest>
+  curl -L "https://api.nuget.org/v3-flatcontainer/microsoft.codeanalysis.languageserver.linux-x64/${VERSION}/microsoft.codeanalysis.languageserver.linux-x64.${VERSION}.nupkg" \
+    -o /tmp/roslyn.nupkg
+  unzip -o /tmp/roslyn.nupkg -d ~/.local/share/roslyn
+  chmod +x ~/.local/share/roslyn/content/LanguageServer/linux-x64/Microsoft.CodeAnalysis.LanguageServer
+  # Add to ~/.zshrc or ~/.bashrc then source it:
+  export PATH="$HOME/.local/share/roslyn/content/LanguageServer/linux-x64:$PATH"
+  ```
+- [ ] Verify the Roslyn server is on PATH: `Microsoft.CodeAnalysis.LanguageServer --version`
+- [ ] Confirm a C compiler is available (nvim-treesitter compiles `fsharp`/`c_sharp` parsers from source): `cc --version` (install `build-essential` on Debian/Ubuntu if missing)
 - [X] Confirm `claude` CLI is installed and authenticated (required for Change 08): `claude --version`
 - [X] Clone the repo: `git clone git@github.com:floatingman-ltd/arcane-centaur.git ~/.config/nvim`
 - [X] Confirm initial main state loads: `nvim` → `:Lazy sync` → no errors in `:messages`
@@ -68,7 +83,9 @@ before raising the PR.
 #### 3.1 — Parser install
 
 1. Run `:TSInstallInfo`. Confirm the following parsers show `installed`: `lua`, `fsharp`, `c_sharp`.
+   - **`lua` is bundled with Neovim** (`$VIMRUNTIME/parser/lua.so`) — it always shows installed and highlights even with zero nvim-treesitter parsers, so it is **not** proof the plugin compiled anything. `fsharp` and `c_sharp` are the meaningful checks.
    - `haskell` is in `ensure_installed` but optional — skip if not a Haskell dev machine.
+   - Compiling `fsharp`/`c_sharp` requires a **C compiler on PATH** (`cc`/`gcc`; `build-essential` on Debian/Ubuntu). Without it the install fails silently and 3.2 will show a `nil` highlighter.
    - If `fsharp` or `c_sharp` show **not installed** after `:TSUpdate`:
      a. Run `:TSInstall fsharp c_sharp` explicitly and wait.
      b. Run `:messages` — look for any compile or download error.
@@ -76,6 +93,7 @@ before raising the PR.
 2. Run `:messages` — scan for any `textobjects` or `treesitter` errors. There should be none.
 
 - [X] `lua`, `fsharp`, and `c_sharp` parsers installed; no treesitter errors in `:messages`
+      _(Note: 3.2 below revealed `fsharp`/`c_sharp` were **not** actually installed — re-verify with `:TSInstall fsharp c_sharp` before relying on this.)_
 
 #### 3.2 — Highlight active per filetype
 
@@ -90,6 +108,10 @@ before raising the PR.
 >  - `c_sharp` and `fsharp` resolve to correct file type
 >  - `c_sharp` and `fsharp` both return a `nil` table result
 >  - `c_sharp`when loaded was unable ot spawn a language server, '... `{"Microsoft.CodeAnalysis.LanguageServer", "--stdio"} failed. The language server is either not installed, missing from PATH, or not executable.'
+>
+> **Diagnosis / resolution:**
+> - `nil` highlighter for `c_sharp`/`fsharp` = their parsers were never compiled. `lua` works only because Neovim bundles it (see 3.1). Fix: ensure `cc`/`gcc` is on PATH, run `:TSInstall c_sharp fsharp`, check `:messages` for compile errors, then re-run this step.
+> - The `Microsoft.CodeAnalysis.LanguageServer` error is a **separate, unrelated** issue — the Roslyn C# LSP server is not installed on this machine (see the new Roslyn install step in *One-Time Test Machine Setup*). C# LSP is **not** required for this treesitter-highlight check, so it does not block 3.2.
 
 #### 3.3 — Textobject motions (non-Lisp buffer)
 
