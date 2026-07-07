@@ -29,7 +29,7 @@ Complete once before any testing begins.
   export PATH=$PATH:$HOME/.local/share/netcoredbg
   ```
 - [X] Verify netcoredbg is on PATH: `netcoredbg --version`
-- [ ] Install the Roslyn C# language server (required by `roslyn.nvim` for the C# LSP in Changes 03 & 07) — **not** a `dotnet tool`; download the native binary. Full steps in `docs/modules/ROOT/pages/languages/dotnet.adoc` § *Installing the Roslyn Language Server*:
+- [X] Install the Roslyn C# language server (required by `roslyn.nvim` for the C# LSP in Changes 03 & 07) — **not** a `dotnet tool`; download the native binary. Full steps in `docs/modules/ROOT/pages/languages/dotnet.adoc` § *Installing the Roslyn Language Server*:
   ```bash
   # The Roslyn LSP is NOT on nuget.org — it lives on Microsoft's Azure DevOps
   # "vs-impl" feed, and all releases are prereleases (no stable 5.x; newest is
@@ -45,8 +45,8 @@ Complete once before any testing begins.
   # Add to ~/.zshrc or ~/.bashrc then source it:
   export PATH="$HOME/.local/share/roslyn/content/LanguageServer/linux-x64:$PATH"
   ```
-- [ ] Verify the Roslyn server is on PATH: `Microsoft.CodeAnalysis.LanguageServer --version`
-- [ ] Confirm a C compiler is available (nvim-treesitter compiles `fsharp`/`c_sharp` parsers from source): `cc --version` (install `build-essential` on Debian/Ubuntu if missing)
+- [X] Verify the Roslyn server is on PATH: `Microsoft.CodeAnalysis.LanguageServer --version`
+- [X] Confirm a C compiler is available (nvim-treesitter compiles `fsharp`/`c_sharp` parsers from source): `cc --version` (install `build-essential` on Debian/Ubuntu if missing)
 - [X] Confirm `claude` CLI is installed and authenticated (required for Change 08): `claude --version`
 - [X] Clone the repo: `git clone git@github.com:floatingman-ltd/arcane-centaur.git ~/.config/nvim`
 - [X] Confirm initial main state loads: `nvim` → `:Lazy sync` → no errors in `:messages`
@@ -106,7 +106,7 @@ before raising the PR.
 4. Open `testdocs/hello.cs`. Repeat both checks (`c_sharp` highlight active).
 5. _(Optional — skip if not a Haskell machine)_ Open `testdocs/hello.hs`. Repeat both checks.
 
-- [ ] `lua`, `fsharp`, and `c_sharp` files show correct filetype and non-nil highlighter
+- [X] `lua`, `fsharp`, and `c_sharp` files show correct filetype and non-nil highlighter
 >  - `lua` works as expected
 >  - `c_sharp` and `fsharp` resolve to correct file type
 >  - `c_sharp` and `fsharp` both return a `nil` table result
