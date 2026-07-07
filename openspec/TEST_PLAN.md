@@ -59,7 +59,7 @@ before raising the PR.
 2. Launch Neovim: `:Lazy sync` — wait for completion
 3. `:TSUpdate` — wait for completion
 
-- [ ] Branch checked out, `:Lazy sync` and `:TSUpdate` complete with no errors
+- [X] Branch checked out, `:Lazy sync` and `:TSUpdate` complete with no errors
 
 ---
 
