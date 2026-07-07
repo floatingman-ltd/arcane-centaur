@@ -20,7 +20,7 @@ Run them in order after `:Lazy sync` on the relevant branch before raising a PR.
      b. Run `:messages` — look for any compile or download error.
      c. Re-run `:TSInstallInfo` to check status again.
 4. Run `:messages` and scan for any `textobjects` or `treesitter` errors. There should be none.
-- [ ] `lua`, `fsharp`, and `c_sharp` parsers installed; no treesitter errors in `:messages`.
+- [X] `lua`, `fsharp`, and `c_sharp` parsers installed; no treesitter errors in `:messages`.
 
 ### 3.2 — Highlight active per filetype
 
