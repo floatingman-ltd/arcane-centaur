@@ -14,18 +14,27 @@ return {
     dependencies = {
       { "nvim-treesitter/nvim-treesitter-textobjects", branch = "master" },
     },
+    -- nvim-treesitter (master) is configured via `nvim-treesitter.configs`.
+    -- lazy's default `opts` path calls `require("nvim-treesitter").setup(opts)`,
+    -- but that entry point takes NO arguments and silently discards opts — so
+    -- highlight/indent/textobjects/ensure_installed never apply. Route the opts
+    -- to the real setup explicitly.
+    config = function(_, opts)
+      require("nvim-treesitter.configs").setup(opts)
+    end,
     opts = {
       ensure_installed = {
-        "lisp", "clojure", "scheme", "lua", "fsharp", "vim",
-        "markdown", "markdown_inline", "plantuml", "http", "c_sharp",
+        -- Common Lisp's parser is named "commonlisp" (not "lisp"); plantuml
+        -- has no tree-sitter parser (it uses the plantuml-syntax vim plugin).
+        "commonlisp", "clojure", "scheme", "lua", "fsharp", "vim",
+        "markdown", "markdown_inline", "http", "c_sharp",
         "haskell",
       },
       highlight = {
         enable = true,
-        -- markdown/markdown_inline use complex injections that crash with a stale
-        -- parser binary (nil range in languagetree.lua). Disable TS highlight for
-        -- these until parsers are rebuilt with :TSUpdate markdown markdown_inline,
-        -- after which this disable can be removed.
+        -- Markdown TS highlight triggers a "nil range"/languagetree error
+        -- (hotfix: treesitter-markdown-highlight-disable). Keep it off here;
+        -- after/ftplugin/markdown.lua also calls vim.treesitter.stop() as backup.
         disable = { "markdown", "markdown_inline" },
       },
       indent = {
