@@ -86,6 +86,10 @@ before raising the PR.
 5. _(Optional — skip if not a Haskell machine)_ Open `testdocs/hello.hs`. Repeat both checks.
 
 - [ ] `lua`, `fsharp`, and `c_sharp` files show correct filetype and non-nil highlighter
+>  - `lua` works as expected
+>  - `c_sharp` and `fsharp` resolve to correct file type
+>  - `c_sharp` and `fsharp` both return a `nil` table result
+>  - `c_sharp`when loaded was unable ot spawn a language server, '... `{"Microsoft.CodeAnalysis.LanguageServer", "--stdio"} failed. The language server is either not installed, missing from PATH, or not executable.'
 
 #### 3.3 — Textobject motions (non-Lisp buffer)
 
