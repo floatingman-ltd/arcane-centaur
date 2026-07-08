@@ -18,11 +18,12 @@ return {
     end,
     opts = {
       ensure_installed = {
-        -- Common Lisp's parser is named "commonlisp" (not "lisp"); plantuml
-        -- has no tree-sitter parser (it uses the plantuml-syntax vim plugin).
-        "commonlisp", "clojure", "scheme", "lua", "fsharp", "vim",
-        "markdown", "markdown_inline", "http", "c_sharp",
-        "haskell",
+        -- Common Lisp's parser is "commonlisp" (not "lisp"); Janet's is
+        -- "janet_simple" (there is no "janet" parser — it maps to the janet
+        -- filetype); plantuml has no tree-sitter parser.
+        "commonlisp", "clojure", "scheme", "fennel", "janet_simple",
+        "lua", "fsharp", "vim", "markdown", "markdown_inline", "http",
+        "c_sharp", "haskell",
       },
       highlight = {
         enable = true,
