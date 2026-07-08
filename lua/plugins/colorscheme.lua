@@ -2,6 +2,15 @@
 -- Change `style` to switch variants: "moon" | "storm" | "night" | "day"
 local style = "moon"
 
+-- Console (non-truecolor / TTY) selection + cursor colours: a UNIFORM grey
+-- background with black text. cterm values use the 16-colour palette
+-- (7 = light grey, 0 = black); gui values are a fallback (termguicolors is off
+-- in the console). Change these two to retune the console look.
+local console_bg_cterm = 7          -- background: light grey
+local console_fg_cterm = 0          -- foreground (text): black
+local console_bg_gui   = "#808080"  -- gui fallback background: grey
+local console_fg_gui   = "#000000"  -- gui fallback foreground: black
+
 return {
   "folke/tokyonight.nvim",
   priority = 1000,
@@ -16,12 +25,15 @@ return {
     -- terminal to avoid guicursor artifacts.
     if not term.has_truecolor then
       vim.o.termguicolors = false
-      -- Force Visual to a clean reverse of Normal. Clearing the explicit
-      -- cterm/gui colors is essential: the default scheme's Visual sets
-      -- ctermfg/ctermbg, and reversing *those* can land back on the Normal
-      -- colors (→ invisible selection). `guicursor` is left at its default so
-      -- the cursor still changes shape between modes.
-      vim.cmd("highlight Visual cterm=reverse gui=reverse ctermfg=NONE ctermbg=NONE guifg=NONE guibg=NONE")
+      -- Uniform grey background + black text for the selection AND the cursor.
+      -- (reverse looked inconsistent — it inverts each cell's syntax colours.)
+      local sel = ("cterm=NONE gui=NONE ctermbg=%d ctermfg=%d guibg=%s guifg=%s"):format(
+        console_bg_cterm, console_fg_cterm, console_bg_gui, console_fg_gui)
+      vim.cmd("highlight Visual " .. sel)
+      vim.cmd("highlight Cursor " .. sel)
+      -- Steady block cursor with no per-mode shape switching — the Linux console
+      -- mangles the shape-change escapes into the stray "extended character".
+      vim.o.guicursor = "a:block-Cursor"
       return
     end
 

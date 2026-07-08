@@ -205,10 +205,11 @@ Sanity check that the treesitter changes did not disturb Lisp structural editing
 >
 > **Resolved:** Visual was invisible because the truecolor-first TokyoNight theme
 > renders poorly in a non-truecolor console (`TERM=linux`, no `COLORTERM`). Fixed — the
-> config now detects real truecolor capability (`term.has_truecolor`); in a non-truecolor
-> console it **skips TokyoNight** (keeps Neovim's default 16-color scheme), sets
-> `termguicolors` off, and makes Visual **reverse-video** (visible with or without
-> termguicolors). `hello.janet` now has real `defn` forms.
+> config detects real truecolor capability (`term.has_truecolor`); in a non-truecolor
+> console it **skips TokyoNight** (default 16-color scheme), sets `termguicolors` off, and
+> gives **Visual and Cursor an explicit uniform grey background + black text** (the colours
+> are named constants at the top of `lua/plugins/colorscheme.lua`). `hello.janet` now has
+> real `defn` forms.
 
 #### 1.5 — Bracket maps unaffected (gitsigns / vim-unimpaired)
 
@@ -279,11 +280,11 @@ Confirms the treesitter changes did not clobber other plugins' bracket mappings.
 
 > - Not related this defect directly, but the block cursor has an extended character in reverse - could this be related to the `:hightlight ...` set earlier?
 >
-> **Cursor:** an attempt to clear `guicursor` was reverted — it froze the cursor to a
-> static underscore with no mode switching. The default `guicursor` (block in normal, bar
-> in insert) is kept. The original "extended character" artifact is a **Linux VT-console
-> cursor-shape limitation** (the console can't render arbitrary cursor shapes), not a
-> config defect, and doesn't affect editing. Re-check after pull.
+> **Cursor:** now a steady block (`guicursor=a:block-Cursor`) coloured grey-bg/black-fg via
+> the `Cursor` group — no per-mode shape switching, which is what produced the stray
+> "extended character" in the Linux console. If the artifact persists it means the VT
+> console can't apply cursor colours (it mangles the OSC escape); fall back to plain
+> `a:block` (an uncoloured block). Re-check after pull.
 
 ---
 
