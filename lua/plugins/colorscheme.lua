@@ -25,16 +25,17 @@ return {
     -- terminal to avoid guicursor artifacts.
     if not term.has_truecolor then
       vim.o.termguicolors = false
-      -- Uniform grey background + black text for the selection AND the cursor.
-      -- (reverse looked inconsistent — it inverts each cell's syntax colours.)
+      -- Uniform grey background + black text for the Visual selection (reverse
+      -- looked inconsistent — it inverts each cell's syntax colours).
       local sel = ("cterm=NONE gui=NONE ctermbg=%d ctermfg=%d guibg=%s guifg=%s"):format(
         console_bg_cterm, console_fg_cterm, console_bg_gui, console_fg_gui)
       vim.cmd("highlight Visual " .. sel)
-      -- Steady block cursor, NOT colour-referenced. Referencing a highlight group
-      -- (e.g. `a:block-Cursor`) makes Neovim send an OSC "set cursor colour" escape
-      -- that the bare Linux VT console renders as a stray "extended character".
-      -- A plain block just inverts the cell using the console's own colours.
-      vim.o.guicursor = "a:block"
+      -- Leave `guicursor` at Neovim's default (per-mode block/bar). NOTE: on the
+      -- bare Linux VT console the block cursor inverts each cell, so over a
+      -- *coloured* character the glyph shows through the block. That's a console
+      -- rendering limitation — the only way to make the cursor a solid block is a
+      -- cursor-colour OSC escape the console mangles into a stray glyph, so we
+      -- don't. A real terminal emulator (SSH client) renders the cursor cleanly.
       return
     end
 

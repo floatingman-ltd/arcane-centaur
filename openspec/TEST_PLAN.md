@@ -280,12 +280,12 @@ Confirms the treesitter changes did not clobber other plugins' bracket mappings.
 
 > - Not related this defect directly, but the block cursor has an extended character in reverse - could this be related to the `:hightlight ...` set earlier?
 >
-> **Cursor:** the glyph was the OSC "set cursor colour" escape (Neovim sends it when
-> `guicursor` references a highlight group like `Cursor`), which the bare Linux VT console
-> can't apply and renders as a stray character. The config now uses plain
-> `guicursor=a:block` — **no colour escape, so no glyph**; the block simply inverts the
-> cell using the console's own colours. A *coloured* cursor isn't achievable in the bare
-> VT console — use a terminal emulator (SSH client) if you need one.
+> **Cursor:** `guicursor` is left at Neovim's default (per-mode block/bar). On the bare
+> Linux VT console the block cursor inverts each cell, so over a **coloured** character the
+> colored glyph shows through the block (it's clean over default-grey text). This is a
+> console rendering limitation: making the cursor a solid, uniformly-coloured block needs a
+> cursor-colour OSC escape the console mangles into a stray glyph — so we don't set one.
+> A real terminal emulator (SSH client) renders the cursor cleanly. Not blocking.
 
 ---
 
