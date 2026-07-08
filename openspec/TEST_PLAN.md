@@ -85,7 +85,7 @@ Merged as PR #134. No further action needed.
 
 **Branch:** `feat/03-migrate-completion-blink`
 
-This branch includes Changes 01 (treesitter textobjects) and 02 (asciidoc authoring) — both were merged
+This branch includes Changes 01 (treesitter highlight — text objects backed out) and 02 (asciidoc authoring) — both were merged
 to main before this branch was created and are inherited here. Validate all three on this branch
 before raising the PR.
 
@@ -99,7 +99,7 @@ before raising the PR.
 
 ---
 
-### Validate — Change 01: treesitter textobjects
+### Validate — Change 01: treesitter highlight  _(text objects backed out — see 3.3)_
 
 #### 3.1 — Parser install
 
@@ -111,7 +111,7 @@ before raising the PR.
      a. Run `:TSInstall fsharp c_sharp` explicitly and wait.
      b. Run `:messages` — look for any compile or download error.
      c. Re-run `:TSInstallInfo` to check status again.
-2. Run `:messages` — scan for any `textobjects` or `treesitter` errors. There should be none.
+2. Run `:messages` — scan for any `treesitter` errors. There should be none.
 
 - [X] `lua`, `fsharp`, and `c_sharp` parsers installed; no treesitter errors in `:messages`
       _(Note: the underlying cause was a config bug — `ensure_installed` was being ignored, so parsers never auto-installed. Fixed in commit `8080040`; after `git pull` + `:Lazy sync` they install automatically when a C compiler is present. See the 3.2 diagnosis.)_
@@ -133,25 +133,28 @@ before raising the PR.
 > **Diagnosis / resolution — ROOT CAUSE FOUND & FIXED (commit `8080040`):**
 > - Not a missing-parser problem at heart. `lua/plugins/treesitter.lua` passed all its settings via lazy's `opts`, which lazy applies by calling `require("nvim-treesitter").setup(opts)`. On nvim-treesitter **master** that entry point takes **no arguments and discards `opts`** — so `highlight`, `indent`, `textobjects`, **and `ensure_installed`** never took effect. That's why `c_sharp`/`fsharp` had no highlighter *and* why their parsers were never auto-installed (3.3 textobjects would have failed for the same reason).
 > - `lua` (and `markdown`) appeared to "work" only because **Neovim's core** treesitter highlights them independently of the plugin — masking the bug. A working `lua` highlighter is *not* evidence the plugin is configured.
-> - **Fix:** route opts through `require("nvim-treesitter.configs").setup(opts)` via an explicit `config` function; corrected invalid `ensure_installed` names (`lisp`→`commonlisp`, dropped `plantuml` — both threw "Parser not available" once opts applied); disabled markdown TS highlight to preserve the markdown hotfix. Verified on the dev machine: `c_sharp`/`fsharp`/`lua` highlighters all non-nil, `af`/`if`/`]f`/`[f` textobjects mapped, markdown opens with no nil-range/languagetree error (baseline unchanged).
+> - **Fix (highlight, kept):** route opts through `require("nvim-treesitter.configs").setup(opts)` via an explicit `config` function; corrected invalid `ensure_installed` names (`lisp`→`commonlisp`, dropped `plantuml` — both threw "Parser not available" once opts applied); disabled markdown TS highlight to preserve the markdown hotfix. Verified: `c_sharp`/`fsharp`/`lua` highlighters non-nil, markdown opens with no nil-range/languagetree error (baseline unchanged).
+> - **Text objects (backed out):** the keymaps registered but silently no-op on Neovim 0.12 — frozen `master` calls a removed API (`tsrange.lua` → `:start()`). They were **removed** (commit `e2b5a7f`); restoring them requires moving to the `main` branch, tracked by the `migrate-treesitter-main` OpenSpec change. So steps 3.3/3.4 below no longer apply.
 > - **To re-validate here:** `git pull`, then `:Lazy sync` — `ensure_installed` now auto-installs the parsers (a **C compiler** must be on PATH; see One-Time Setup). Then re-run steps 1–5.
 > - The `Microsoft.CodeAnalysis.LanguageServer` error is **separate/unrelated** — the Roslyn C# LSP server isn't installed (see the Roslyn step in *One-Time Test Machine Setup*). C# LSP is not required for this highlight check.
 
-#### 3.3 — Textobject motions (non-Lisp buffer)
+#### 3.3 — Text objects — BACKED OUT (nothing to test)
 
-1. Open `lua/plugins/treesitter.lua` and position the cursor inside a function body.
-2. Press `vaf` — the entire function including its signature should be selected.
-3. Press `vif` — only the body should be selected.
-4. Move to a function parameter and press `via` — the argument should be selected.
-5. Position on a function and press `daf` — the whole function should be deleted.
-6. Undo (`u`). Press `]f` — cursor jumps to the next function start. Press `[f` — jumps back.
+Treesitter text objects (`vaf`/`vif`/`via`/`daf`, `]f`/`[f`/`]F`/`[F`) were **removed**
+(commit `e2b5a7f`): on Neovim 0.12 the frozen `master` branch's query path calls a
+removed API (`tsrange.lua` → `:start()`), so they silently no-op. Restoring them is
+tracked by the `migrate-treesitter-main` OpenSpec change (moves nvim-treesitter to the
+maintained `main` branch).
 
-- [ ] All six sub-steps behave as described
+- [X] N/A — text objects backed out; nothing to validate here
 
-#### 3.4 — Textobjects disabled in Lisp buffers
+#### 3.4 — vim-sexp still works in Lisp buffers
+
+Sanity check that the treesitter changes did not disturb Lisp structural editing
+(vim-sexp was never driven by treesitter text objects).
 
 1. Open a `.clj` file with a `defn` form. Press `vaf`.
-2. Confirm selection follows parentheses (vim-sexp s-expression), not an indented block (treesitter function).
+2. Confirm the selection follows the s-expression (vim-sexp), as before.
 3. Repeat with a `.lisp` and a `.janet` file.
 
 - [ ] vim-sexp behaviour unchanged in all three Lisp filetypes
