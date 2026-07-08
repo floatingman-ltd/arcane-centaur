@@ -73,6 +73,32 @@ the tree clean on every future sync.
 
 ---
 
+## Per-Branch Sync & Sanity Check
+
+_Run this on the test machine before validating each change (Change 03 onward)._
+
+### Update the branch — reset, don't pull, after a force-push
+
+Feature branches here are sometimes **rebased and force-pushed** (e.g. to stay current
+with `main`). That rewrites the branch's history, so a plain `git pull` on the test
+machine will **diverge or fail**. **Reset to the remote instead of pulling:**
+
+```bash
+git fetch origin
+git checkout <branch>                 # e.g. feat/03-migrate-completion-blink
+git reset --hard origin/<branch>      # discards local branch state — `git stash` first if you need it
+```
+
+### Confirm the machine is in the expected state
+
+- [ ] **On the expected branch, in sync** — `git status -sb` first line shows `## <branch>...origin/<branch>` with **no** `[ahead N]` / `[behind N]`
+- [ ] **Clean working tree** — the same `git status -sb` lists no modified/untracked files (no stray edits, no dirty plugin lockfile)
+- [ ] **Right commit** — `git log -1 --oneline` matches the latest commit shown on the branch's GitHub page
+- [ ] **Plugins synced** — launch Neovim, `:Lazy sync` completes with no errors; `:Lazy` shows no error icons or pending updates
+- [ ] **Clean startup** — `:messages` shows no plugin / treesitter / LSP load errors
+
+---
+
 ## Hotfix · treesitter-markdown-highlight-disable ✓
 
 Merged as PR #134. No further action needed.
@@ -92,6 +118,10 @@ to main before this branch was created and are inherited here. Validate all thre
 before raising the PR.
 
 ### Prepare
+
+> Run the **Per-Branch Sync & Sanity Check** above first. This branch has been
+> **rebased/force-pushed** — on a machine that already had it, `git reset --hard
+> origin/feat/03-migrate-completion-blink` (do **not** `git pull`).
 
 1. `git fetch origin && git checkout feat/03-migrate-completion-blink`
 2. Launch Neovim: `:Lazy sync` — wait for completion
