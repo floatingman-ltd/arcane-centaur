@@ -203,10 +203,12 @@ Sanity check that the treesitter changes did not disturb Lisp structural editing
 
 > The sample `hello.janet` file in the testdocs is missing ther required `defn` block to test.
 >
-> **Resolved:** Visual root cause was `termguicolors` forced on in a real Linux TTY
-> (`TERM=linux`), where TokyoNight's gui-only Visual highlight can't render. Fixed —
-> `termguicolors` is now off on a real TTY, with a `cterm=reverse` Visual fallback for
-> console sessions. `hello.janet` now has real `defn` forms.
+> **Resolved:** Visual was invisible because the truecolor-first TokyoNight theme
+> renders poorly in a non-truecolor console (`TERM=linux`, no `COLORTERM`). Fixed — the
+> config now detects real truecolor capability (`term.has_truecolor`); in a non-truecolor
+> console it **skips TokyoNight** (keeps Neovim's default 16-color scheme), sets
+> `termguicolors` off, and makes Visual **reverse-video** (visible with or without
+> termguicolors). `hello.janet` now has real `defn` forms.
 
 #### 1.5 — Bracket maps unaffected (gitsigns / vim-unimpaired)
 
@@ -277,11 +279,10 @@ Confirms the treesitter changes did not clobber other plugins' bracket mappings.
 
 > - Not related this defect directly, but the block cursor has an extended character in reverse - could this be related to the `:hightlight ...` set earlier?
 >
-> **Likely terminal-related.** The block-cursor artifact is a `guicursor` / terminal
-> cursor-shape rendering effect in the TTY, tied to the same no-truecolor situation — not
-> a config defect and unrelated to markdown. With `termguicolors` now auto-off on a real
-> TTY (plus the Visual cterm fallback), re-check whether it persists; if it does, it's a
-> terminal-emulator cursor setting. Not blocking.
+> **Fixed (terminal cursor).** The block-cursor artifact is a `guicursor` cursor-shape
+> effect in the console. In a non-truecolor console the config now clears `guicursor`
+> (`vim.o.guicursor = ""`) so the terminal draws its native cursor. Re-check after pull;
+> if it persists it's a terminal-emulator setting, not the config.
 
 ---
 
