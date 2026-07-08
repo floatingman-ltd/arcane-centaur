@@ -30,10 +30,11 @@ return {
       local sel = ("cterm=NONE gui=NONE ctermbg=%d ctermfg=%d guibg=%s guifg=%s"):format(
         console_bg_cterm, console_fg_cterm, console_bg_gui, console_fg_gui)
       vim.cmd("highlight Visual " .. sel)
-      vim.cmd("highlight Cursor " .. sel)
-      -- Steady block cursor with no per-mode shape switching — the Linux console
-      -- mangles the shape-change escapes into the stray "extended character".
-      vim.o.guicursor = "a:block-Cursor"
+      -- Steady block cursor, NOT colour-referenced. Referencing a highlight group
+      -- (e.g. `a:block-Cursor`) makes Neovim send an OSC "set cursor colour" escape
+      -- that the bare Linux VT console renders as a stray "extended character".
+      -- A plain block just inverts the cell using the console's own colours.
+      vim.o.guicursor = "a:block"
       return
     end
 
