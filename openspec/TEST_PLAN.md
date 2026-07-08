@@ -5,6 +5,8 @@ prepare the branch → validate → raise PR → merge → confirm post-merge.
 
 **Workflow:** validate on the feature branch **before** raising a PR. Never merge first and test after.
 
+**Step numbering:** validation steps are prefixed with their change number — Change 01 steps are `1.x`, Change 02 are `2.x`, … Change 08 are `8.x`. (Changes 01–03 are all validated under the Change 03 section, since that branch inherits them.)
+
 Sample files for filetype and highlight tests are in `testdocs/` (`hello.hs`, `hello.cs`, `hello.fs`, `hello.fsx`; an existing richer `hello.lua` is also there).
 
 ---
@@ -99,14 +101,14 @@ before raising the PR.
 
 ---
 
-### Validate — Change 01: treesitter highlight  _(text objects backed out — see 3.3)_
+### Validate — Change 01: treesitter highlight  _(text objects backed out — see 1.3)_
 
-#### 3.1 — Parser install
+#### 1.1 — Parser install
 
 1. Run `:TSInstallInfo`. Confirm the following parsers show `installed`: `lua`, `fsharp`, `c_sharp`.
    - **`lua` is bundled with Neovim** (`$VIMRUNTIME/parser/lua.so`) — it always shows installed and highlights even with zero nvim-treesitter parsers, so it is **not** proof the plugin compiled anything. `fsharp` and `c_sharp` are the meaningful checks.
    - `haskell` is in `ensure_installed` but optional — skip if not a Haskell dev machine.
-   - Compiling `fsharp`/`c_sharp` requires a **C compiler on PATH** (`cc`/`gcc`; `build-essential` on Debian/Ubuntu). Without it the install fails silently and 3.2 will show a `nil` highlighter.
+   - Compiling `fsharp`/`c_sharp` requires a **C compiler on PATH** (`cc`/`gcc`; `build-essential` on Debian/Ubuntu). Without it the install fails silently and 1.2 will show a `nil` highlighter.
    - If `fsharp` or `c_sharp` show **not installed** after `:TSUpdate`:
      a. Run `:TSInstall fsharp c_sharp` explicitly and wait.
      b. Run `:messages` — look for any compile or download error.
@@ -114,9 +116,9 @@ before raising the PR.
 2. Run `:messages` — scan for any `treesitter` errors. There should be none.
 
 - [X] `lua`, `fsharp`, and `c_sharp` parsers installed; no treesitter errors in `:messages`
-      _(Note: the underlying cause was a config bug — `ensure_installed` was being ignored, so parsers never auto-installed. Fixed in commit `8080040`; after `git pull` + `:Lazy sync` they install automatically when a C compiler is present. See the 3.2 diagnosis.)_
+      _(Note: the underlying cause was a config bug — `ensure_installed` was being ignored, so parsers never auto-installed. Fixed in commit `8080040`; after `git pull` + `:Lazy sync` they install automatically when a C compiler is present. See the 1.2 diagnosis.)_
 
-#### 3.2 — Highlight active per filetype
+#### 1.2 — Highlight active per filetype
 
 1. Open `lua/plugins/treesitter.lua`. Run `:set ft?` — expect `filetype=lua`.
 2. Run `:lua print(vim.treesitter.highlighter.active[vim.api.nvim_get_current_buf()])` — should print a table (not `nil`).
@@ -131,24 +133,29 @@ before raising the PR.
 >  - `c_sharp`when loaded was unable ot spawn a language server, '... `{"Microsoft.CodeAnalysis.LanguageServer", "--stdio"} failed. The language server is either not installed, missing from PATH, or not executable.'
 >
 > **Diagnosis / resolution — ROOT CAUSE FOUND & FIXED (commit `8080040`):**
-> - Not a missing-parser problem at heart. `lua/plugins/treesitter.lua` passed all its settings via lazy's `opts`, which lazy applies by calling `require("nvim-treesitter").setup(opts)`. On nvim-treesitter **master** that entry point takes **no arguments and discards `opts`** — so `highlight`, `indent`, `textobjects`, **and `ensure_installed`** never took effect. That's why `c_sharp`/`fsharp` had no highlighter *and* why their parsers were never auto-installed (3.3 textobjects would have failed for the same reason).
+> - Not a missing-parser problem at heart. `lua/plugins/treesitter.lua` passed all its settings via lazy's `opts`, which lazy applies by calling `require("nvim-treesitter").setup(opts)`. On nvim-treesitter **master** that entry point takes **no arguments and discards `opts`** — so `highlight`, `indent`, `textobjects`, **and `ensure_installed`** never took effect. That's why `c_sharp`/`fsharp` had no highlighter *and* why their parsers were never auto-installed (1.3 text objects would have failed for the same reason).
 > - `lua` (and `markdown`) appeared to "work" only because **Neovim's core** treesitter highlights them independently of the plugin — masking the bug. A working `lua` highlighter is *not* evidence the plugin is configured.
 > - **Fix (highlight, kept):** route opts through `require("nvim-treesitter.configs").setup(opts)` via an explicit `config` function; corrected invalid `ensure_installed` names (`lisp`→`commonlisp`, dropped `plantuml` — both threw "Parser not available" once opts applied); disabled markdown TS highlight to preserve the markdown hotfix. Verified: `c_sharp`/`fsharp`/`lua` highlighters non-nil, markdown opens with no nil-range/languagetree error (baseline unchanged).
-> - **Text objects (backed out):** the keymaps registered but silently no-op on Neovim 0.12 — frozen `master` calls a removed API (`tsrange.lua` → `:start()`). They were **removed** (commit `e2b5a7f`); restoring them requires moving to the `main` branch, tracked by the `migrate-treesitter-main` OpenSpec change. So steps 3.3/3.4 below no longer apply.
+> - **Text objects (backed out):** the keymaps registered but silently no-op on Neovim 0.12 — frozen `master` calls a removed API (`tsrange.lua` → `:start()`). They were **removed** (commit `e2b5a7f`); restoring them requires moving to the `main` branch, tracked by the `migrate-treesitter-main` OpenSpec change. So step 1.3 below no longer applies.
 > - **To re-validate here:** `git pull`, then `:Lazy sync` — `ensure_installed` now auto-installs the parsers (a **C compiler** must be on PATH; see One-Time Setup). Then re-run steps 1–5.
 > - The `Microsoft.CodeAnalysis.LanguageServer` error is **separate/unrelated** — the Roslyn C# LSP server isn't installed (see the Roslyn step in *One-Time Test Machine Setup*). C# LSP is not required for this highlight check.
 
-#### 3.3 — Text objects — BACKED OUT (nothing to test)
+#### 1.3 — ~~Text object motions (non-Lisp buffer)~~ — REMOVED, not tested
 
-Treesitter text objects (`vaf`/`vif`/`via`/`daf`, `]f`/`[f`/`]F`/`[F`) were **removed**
-(commit `e2b5a7f`): on Neovim 0.12 the frozen `master` branch's query path calls a
-removed API (`tsrange.lua` → `:start()`), so they silently no-op. Restoring them is
-tracked by the `migrate-treesitter-main` OpenSpec change (moves nvim-treesitter to the
-maintained `main` branch).
+> Struck through because the feature was **backed out** with the reverted `master`-branch
+> decision: on Neovim 0.12 the frozen `master` text-object query path crashes
+> (`tsrange.lua` → `:start()`), so the objects silently no-op. These steps were **never
+> tested and never passed**. Restoring text objects is tracked by the
+> `migrate-treesitter-main` OpenSpec change (moves nvim-treesitter to the maintained `main` branch).
 
-- [X] N/A — text objects backed out; nothing to validate here
+~~1. Inside a function body, `vaf` selects the whole function; `vif` selects the body.~~
+~~2. On a parameter, `via` selects the argument.~~
+~~3. `daf` deletes the whole function.~~
+~~4. `]f`/`[f` jump to next/previous function start; `]F`/`[F` to function ends.~~
 
-#### 3.4 — vim-sexp still works in Lisp buffers
+- [ ] ~~All text-object motions behave as described~~ — N/A, feature removed
+
+#### 1.4 — vim-sexp still works in Lisp buffers
 
 Sanity check that the treesitter changes did not disturb Lisp structural editing
 (vim-sexp was never driven by treesitter text objects).
@@ -159,7 +166,7 @@ Sanity check that the treesitter changes did not disturb Lisp structural editing
 
 - [ ] vim-sexp behaviour unchanged in all three Lisp filetypes
 
-#### 3.5 — Unrelated bracket maps intact
+#### 1.5 — Unrelated bracket maps intact
 
 1. In a git repo, open a file with a staged/unstaged hunk. Press `]h` / `[h` — jump between hunks.
 2. Press `]b` and `[b` — cycles through open buffers.
@@ -171,13 +178,13 @@ Sanity check that the treesitter changes did not disturb Lisp structural editing
 
 ### Validate — Change 02: asciidoc authoring
 
-#### 4.1 — Plugin installed
+#### 2.1 — Plugin installed
 
 1. Open `:Lazy`. Search for `vim-asciidoctor` — confirm installed with no error icon.
 
 - [ ] vim-asciidoctor listed as installed, no errors
 
-#### 4.2 — Filetype detection, folding, syntax
+#### 2.2 — Filetype detection, folding, syntax
 
 1. Open `docs/modules/ROOT/pages/editor/code-intelligence.adoc` cold.
 2. Run `:set ft?` — expect `filetype=asciidoctor`.
@@ -186,7 +193,7 @@ Sanity check that the treesitter changes did not disturb Lisp structural editing
 
 - [ ] Filetype correct, fold works, fenced-block highlight active
 
-#### 4.3 — Docker preview maps
+#### 2.3 — Docker preview maps
 
 1. In the `.adoc` buffer press `,p` (`<localleader>p`).
    - Docker running: browser tab or terminal output showing rendered HTML.
@@ -196,7 +203,7 @@ Sanity check that the treesitter changes did not disturb Lisp structural editing
 
 - [ ] All three maps fire without crashing Neovim
 
-#### 4.5 — Markdown unaffected; markview absent
+#### 2.4 — Markdown unaffected; markview absent
 
 1. Open `readme.md`. Confirm markdown preview / glow still works.
 2. Run `:Lazy` — search for `markview`. It should NOT appear.
@@ -359,41 +366,41 @@ Sanity check that the treesitter changes did not disturb Lisp structural editing
 
 ### Validate
 
-#### 4.1 — Avante at new version; build succeeded
+#### 5.1 — Avante at new version; build succeeded
 
 1. Open `:Lazy`. Find `avante.nvim` — confirm version starts with `v0.1.` and no build error.
 
 - [ ] Version is v0.1.x, build clean
 
-#### 4.2 — Avante opens with current provider
+#### 5.2 — Avante opens with current provider
 
 1. Press `<leader>aa` — Avante panel opens on the right.
 2. Type a short prompt and press `<CR>` — a response is received.
 
 - [ ] Avante opens and responds
 
-#### 4.3 — Ollama provider switch
+#### 5.3 — Ollama provider switch
 
 1. Press `<leader>ao` — Avante switches to Ollama and opens.
 2. If Ollama is not running: clean connection-refused error — no crash.
 
 - [ ] Ollama switch fires cleanly (response or clean error)
 
-#### 4.4 — Claude API provider switch
+#### 5.4 — Claude API provider switch
 
 1. Ensure `ANTHROPIC_API_KEY` is set. Press `<leader>ac` — Avante switches to Claude API.
 2. Type a short prompt — response arrives.
 
 - [ ] Claude API provider works (skip and note if no API key available)
 
-#### 4.5 — Diffview still works (plenary intact)
+#### 5.5 — Diffview still works (plenary intact)
 
 1. In a git repo with uncommitted changes, run `:DiffviewOpen` — side-by-side diff opens.
 2. Run `:DiffviewClose` — closes cleanly.
 
 - [ ] DiffviewOpen and DiffviewClose work
 
-#### 4.6 — Native vim.ui fallback (dressing gone)
+#### 5.6 — Native vim.ui fallback (dressing gone)
 
 1. Trigger a code action (`<leader>ca`) on a line with an available LSP code action.
 2. A native select prompt appears (not dressing). Select an option.
@@ -428,14 +435,14 @@ Sanity check that the treesitter changes did not disturb Lisp structural editing
 
 ### Validate
 
-#### 4.1 — Plugins installed
+#### 6.1 — Plugins installed
 
 1. Open `:Lazy`. Search for `trouble.nvim` — confirm installed.
 2. Search for `todo-comments.nvim` — confirm installed.
 
 - [ ] Both plugins listed as installed with no errors
 
-#### 4.2 — Trouble diagnostic panels
+#### 6.2 — Trouble diagnostic panels
 
 1. Open `lua/plugins/trouble.lua`. Press `<leader>xx` — Trouble project diagnostics panel opens at the bottom.
 2. Move cursor to an entry and press `<CR>` — jumps to that file and line.
@@ -444,14 +451,14 @@ Sanity check that the treesitter changes did not disturb Lisp structural editing
 
 - [ ] Project panel opens, entry navigation works, buffer filter works
 
-#### 4.3 — Native diagnostic maps unchanged
+#### 6.3 — Native diagnostic maps unchanged
 
 1. In a file with an LSP error, press `]d` / `[d` — jumps between diagnostics.
 2. Position cursor on a diagnostic. Press `<leader>e` — floating window with diagnostic text appears.
 
 - [ ] `[d`, `]d`, and `<leader>e` all behave as before
 
-#### 4.4 — TODO/FIXME highlighting
+#### 6.4 — TODO/FIXME highlighting
 
 1. Open `lua/plugins/treesitter.lua`. Add `-- TODO: test this`.
 2. Confirm `TODO:` is highlighted with a distinct colour and a sign appears in the sign column.
@@ -460,7 +467,7 @@ Sanity check that the treesitter changes did not disturb Lisp structural editing
 
 - [ ] TODO and FIXME highlighted with distinct colours and signs
 
-#### 4.5 — Todo list views
+#### 6.5 — Todo list views
 
 1. With the `-- TODO:` line present, press `<leader>xT` — fzf-lua picker opens listing todo comments.
 2. Press `<Esc>` to close.
@@ -468,7 +475,7 @@ Sanity check that the treesitter changes did not disturb Lisp structural editing
 
 - [ ] fzf-lua picker and Trouble panel both list todo comments
 
-#### 4.6 — vim-unimpaired tag maps intact
+#### 6.6 — vim-unimpaired tag maps intact
 
 1. Ensure a `tags` file exists (or run `ctags -R`). Press `]t` / `[t` — jumps between tags.
 2. Confirm `]t` / `[t` do tag navigation, NOT todo-comment navigation.
@@ -507,13 +514,13 @@ Sanity check that the treesitter changes did not disturb Lisp structural editing
 
 ### Validate
 
-#### 5.1 — Plugins installed
+#### 7.1 — Plugins installed
 
 1. Open `:Lazy`. Confirm `nvim-dap`, `nvim-dap-ui`, `nvim-nio`, and `easy-dotnet.nvim` are all installed with no errors.
 
 - [ ] All four plugins installed cleanly
 
-#### 5.2 — Exactly one Roslyn LSP client
+#### 7.2 — Exactly one Roslyn LSP client
 
 1. Open a `.cs` file from a .NET solution. Wait for roslyn.nvim to attach.
 2. Run `:lua =vim.lsp.get_clients({ name = "roslyn" })` — expect exactly one table entry.
@@ -521,7 +528,7 @@ Sanity check that the treesitter changes did not disturb Lisp structural editing
 
 - [ ] Exactly one Roslyn client returned
 
-#### 5.3 — Breakpoint and step debugging
+#### 7.3 — Breakpoint and step debugging
 
 1. Open a `.cs` file in a runnable .NET project. Press `<F9>` on a line — breakpoint sign appears.
 2. Press `<F5>` — easy-dotnet project picker appears; select the project.
@@ -531,7 +538,7 @@ Sanity check that the treesitter changes did not disturb Lisp structural editing
 
 - [ ] Full debug cycle (set breakpoint → start → pause → step → stop) works
 
-#### 5.4 — easy-dotnet test and run maps
+#### 7.4 — easy-dotnet test and run maps
 
 1. Open a `.cs` file. Press `,tt` — test runner opens and runs tests.
 2. Press `,tr` — project runner fires (picker appears if multiple projects).
@@ -539,7 +546,7 @@ Sanity check that the treesitter changes did not disturb Lisp structural editing
 
 - [ ] Test and run maps work in both C# and F# buffers
 
-#### 5.5 — Haskell DAP config discovery
+#### 7.5 — Haskell DAP config discovery
 
 1. Open `testdocs/hello.hs` (or any `.hs` file).
 2. Run `:lua =require("dap").configurations.haskell`.
@@ -547,7 +554,7 @@ Sanity check that the treesitter changes did not disturb Lisp structural editing
 
 - [ ] Result noted (non-nil = pass; nil = follow-up required)
 
-#### 5.6 — Existing .NET maps unaffected
+#### 7.6 — Existing .NET maps unaffected
 
 1. Open a `.cs` file. Connect the iron.nvim REPL (`<localleader>si`). Press `<localleader>sl` — line sent to REPL.
 2. Confirm `gd`, `K`, and `gr` all work via the Roslyn LSP.
@@ -585,14 +592,14 @@ Sanity check that the treesitter changes did not disturb Lisp structural editing
 
 ### Validate
 
-#### 3.1 — Plugin installed; snacks absent
+#### 8.1 — Plugin installed; snacks absent
 
 1. Open `:Lazy`. Search for `claudecode.nvim` — confirm installed.
 2. Search for `snacks.nvim` — it should NOT appear.
 
 - [ ] claudecode.nvim installed; snacks.nvim absent
 
-#### 3.2 — Session terminal opens and connects
+#### 8.2 — Session terminal opens and connects
 
 1. Press `<leader>gcc` — native terminal split opens running the `claude` CLI.
 2. Wait for the Claude Code prompt. If MCP does not connect automatically, type `/ide` and press Enter.
@@ -600,7 +607,7 @@ Sanity check that the treesitter changes did not disturb Lisp structural editing
 
 - [ ] Native terminal opens, `claude` CLI runs, MCP connects
 
-#### 3.3 — Send selection and add buffer
+#### 8.3 — Send selection and add buffer
 
 1. Return to the editor (`<C-\><C-n>` then move to an editor window).
 2. Open `lua/plugins/claudecode.lua`. Select two or three lines in visual mode (`V`).
@@ -609,7 +616,7 @@ Sanity check that the treesitter changes did not disturb Lisp structural editing
 
 - [ ] Selection send and buffer add both reach the session
 
-#### 3.4 — Diff accept and reject
+#### 8.4 — Diff accept and reject
 
 1. In the Claude session, ask Claude to add a comment to `lua/plugins/claudecode.lua`.
 2. Neovim opens a diff view. Press `<leader>gca` — change is accepted and written.
@@ -617,7 +624,7 @@ Sanity check that the treesitter changes did not disturb Lisp structural editing
 
 - [ ] Accept diff and reject diff both work correctly
 
-#### 3.5 — One-shot claude_cli maps still work
+#### 8.5 — One-shot claude_cli maps still work
 
 1. Press `<leader>gcs` — floating window appears with a shell command suggestion.
 2. Select a function in visual mode. Press `<leader>gce` — floating window with code explanation.
@@ -625,7 +632,7 @@ Sanity check that the treesitter changes did not disturb Lisp structural editing
 
 - [ ] `<leader>gcs` and `<leader>gce` (claude_cli) still work alongside the session
 
-#### 3.6 — Avante maps unaffected
+#### 8.6 — Avante maps unaffected
 
 1. Press `<leader>aa` — Avante opens normally.
 2. Press `<leader>ao` — switches to Ollama (or clean error if offline).
