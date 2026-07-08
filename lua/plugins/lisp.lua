@@ -38,7 +38,14 @@ return {
   -- Ergonomic keybindings for vim-sexp
   {
     "tpope/vim-sexp-mappings-for-regular-people",
-    ft = { "lisp", "clojure", "scheme", "janet" },
+    ft = { "lisp", "clojure", "scheme", "fennel", "janet" },
+    init = function()
+      -- vim-sexp only activates for its built-in default filetypes
+      -- (clojure,scheme,lisp,timl), so its text objects (`af`/`if`) and motions
+      -- never appear in fennel/janet buffers. Add them here — must be set before
+      -- vim-sexp loads.
+      vim.g.sexp_filetypes = "clojure,scheme,lisp,timl,fennel,janet"
+    end,
     dependencies = {
       "guns/vim-sexp",
     },
