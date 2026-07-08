@@ -196,6 +196,11 @@ Sanity check that the treesitter changes did not disturb Lisp structural editing
 
 - [ ] vim-sexp behaviour unchanged in all three Lisp filetypes
 
+> During testing it was discovered that visual highlighting was disabled, it has been re-enabled with:
+> `:highlight Visual cterm=reverse ctermbg=None guibg=Grey`
+> not sure where or when it was disabled but this does need to be enabled.  The command above does not
+> need to be the definitive answer.
+
 #### 1.5 — Unrelated bracket maps intact
 
 1. In a git repo, open a file with a staged/unstaged hunk. Press `]h` / `[h` — jump between hunks.
