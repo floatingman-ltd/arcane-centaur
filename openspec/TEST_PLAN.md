@@ -201,6 +201,8 @@ Sanity check that the treesitter changes did not disturb Lisp structural editing
 > not sure where or when it was disabled but this does need to be enabled.  The command above does not
 > need to be the definitive answer.
 
+> The sample `hello.janet` file in the testdocs is missing ther required `defn` block to test.
+
 #### 1.5 — Unrelated bracket maps intact
 
 1. In a git repo, open a file with a staged/unstaged hunk. Press `]h` / `[h` — jump between hunks.
@@ -208,6 +210,11 @@ Sanity check that the treesitter changes did not disturb Lisp structural editing
 3. Press `yos` — spell toggles on/off (verify with `:set spell?`).
 
 - [ ] All three map groups still work
+
+> The test plan is unclear, this needs to be more explicit:
+> - include the filetype to check
+> - include the steps required to set up the "staged/unstaged hunks"
+> - what indicates that "cycles through the open buffers" is working 
 
 ---
 
@@ -217,7 +224,7 @@ Sanity check that the treesitter changes did not disturb Lisp structural editing
 
 1. Open `:Lazy`. Search for `vim-asciidoctor` — confirm installed with no error icon.
 
-- [ ] vim-asciidoctor listed as installed, no errors
+- [X] vim-asciidoctor listed as installed, no errors
 
 #### 2.2 — Filetype detection, folding, syntax
 
@@ -227,6 +234,9 @@ Sanity check that the treesitter changes did not disturb Lisp structural editing
 4. Find a `[source,lua]` block — Lua inside should be highlighted differently from surrounding AsciiDoc.
 
 - [ ] Filetype correct, fold works, fenced-block highlight active
+
+> - The fold/unfold does not work.
+> - There does not appear to be any text change to the `[source,lua]` block
 
 #### 2.3 — Docker preview maps
 
@@ -238,12 +248,16 @@ Sanity check that the treesitter changes did not disturb Lisp structural editing
 
 - [ ] All three maps fire without crashing Neovim
 
+> - This does nothing in the pure tty terminal on a linux server and responds "Antora preview rtequires a graphical environment."
+
 #### 2.4 — Markdown unaffected; markview absent
 
 1. Open `readme.md`. Confirm markdown preview / glow still works.
 2. Run `:Lazy` — search for `markview`. It should NOT appear.
 
-- [ ] Markdown tooling intact; markview absent from plugin list
+- [X] Markdown tooling intact; markview absent from plugin list
+
+> - Not related this defect directly, but the block cursor has an extended character in reverse - could this be related to the `:hightlight ...` set earlier?
 
 ---
 
