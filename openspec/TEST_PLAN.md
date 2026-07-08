@@ -194,7 +194,7 @@ Sanity check that the treesitter changes did not disturb Lisp structural editing
 2. Confirm the selection follows the s-expression (vim-sexp), as before.
 3. Repeat with a `.lisp` and a `.janet` file.
 
-- [ ] vim-sexp behaviour unchanged in all three Lisp filetypes
+- [X] vim-sexp behaviour unchanged in all three Lisp filetypes
 
 > During testing it was discovered that visual highlighting was disabled, it has been re-enabled with:
 > `:highlight Visual cterm=reverse ctermbg=None guibg=Grey`
