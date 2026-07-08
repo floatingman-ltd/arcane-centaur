@@ -8,6 +8,19 @@ return {
   config = function()
     local term = require("config.terminal")
 
+    -- Non-truecolor console (real TTY / bare SSH): TokyoNight is truecolor-first
+    -- and renders poorly there — the Visual selection is invisible and the block
+    -- cursor shows artifacts. Keep Neovim's default colorscheme (proper 16-color
+    -- highlights), force termguicolors off, make Visual reverse-video (visible
+    -- whether or not termguicolors is on), and hand the cursor shape back to the
+    -- terminal to avoid guicursor artifacts.
+    if not term.has_truecolor then
+      vim.o.termguicolors = false
+      vim.cmd("highlight Visual cterm=reverse gui=reverse")
+      vim.o.guicursor = ""
+      return
+    end
+
     require("tokyonight").setup({
       style = style,
       -- Sync the 16-color ANSI palette with the TokyoNight palette
@@ -44,13 +57,5 @@ return {
     })
 
     vim.cmd("colorscheme tokyonight-" .. style)
-
-    -- In a real console/TTY (no truecolor, termguicolors off) TokyoNight's
-    -- gui-only Visual highlight doesn't render, leaving selections invisible.
-    -- Give Visual a cterm fallback so it stays visible there. (Harmless when
-    -- termguicolors is on — cterm attributes are ignored.)
-    if term.is_console then
-      vim.cmd("highlight Visual cterm=reverse ctermbg=NONE")
-    end
   end,
 }

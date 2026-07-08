@@ -22,9 +22,10 @@ o.relativenumber = true       -- add numbers to each line on the left side
 o.cursorline = true           -- highlight cursor line underneath the cursor horizontally
 o.splitbelow = true           -- open new vertical split bottom
 o.splitright = true           -- open new horizontal splits right
--- 24-bit color — but a real Linux TTY (TERM=linux) can't render it, and forcing
--- it there leaves gui-only highlights (e.g. Visual) invisible. Enable everywhere else.
-o.termguicolors = term.name ~= "tty"
+-- 24-bit color — only where the terminal actually supports it. A real TTY / bare
+-- SSH session can't render it, and forcing it there leaves gui-only highlights
+-- (e.g. Visual) invisible. colorscheme.lua reaffirms this for the console case.
+o.termguicolors = term.has_truecolor
 o.showmode = false            -- we are experienced, wo don't need the "-- INSERT --" mode hint
 
 -- Searching
