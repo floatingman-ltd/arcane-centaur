@@ -16,8 +16,12 @@ return {
     -- terminal to avoid guicursor artifacts.
     if not term.has_truecolor then
       vim.o.termguicolors = false
-      vim.cmd("highlight Visual cterm=reverse gui=reverse")
-      vim.o.guicursor = ""
+      -- Force Visual to a clean reverse of Normal. Clearing the explicit
+      -- cterm/gui colors is essential: the default scheme's Visual sets
+      -- ctermfg/ctermbg, and reversing *those* can land back on the Normal
+      -- colors (→ invisible selection). `guicursor` is left at its default so
+      -- the cursor still changes shape between modes.
+      vim.cmd("highlight Visual cterm=reverse gui=reverse ctermfg=NONE ctermbg=NONE guifg=NONE guibg=NONE")
       return
     end
 

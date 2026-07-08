@@ -279,10 +279,11 @@ Confirms the treesitter changes did not clobber other plugins' bracket mappings.
 
 > - Not related this defect directly, but the block cursor has an extended character in reverse - could this be related to the `:hightlight ...` set earlier?
 >
-> **Fixed (terminal cursor).** The block-cursor artifact is a `guicursor` cursor-shape
-> effect in the console. In a non-truecolor console the config now clears `guicursor`
-> (`vim.o.guicursor = ""`) so the terminal draws its native cursor. Re-check after pull;
-> if it persists it's a terminal-emulator setting, not the config.
+> **Cursor:** an attempt to clear `guicursor` was reverted — it froze the cursor to a
+> static underscore with no mode switching. The default `guicursor` (block in normal, bar
+> in insert) is kept. The original "extended character" artifact is a **Linux VT-console
+> cursor-shape limitation** (the console can't render arbitrary cursor shapes), not a
+> config defect, and doesn't affect editing. Re-check after pull.
 
 ---
 
