@@ -44,5 +44,13 @@ return {
     })
 
     vim.cmd("colorscheme tokyonight-" .. style)
+
+    -- In a real console/TTY (no truecolor, termguicolors off) TokyoNight's
+    -- gui-only Visual highlight doesn't render, leaving selections invisible.
+    -- Give Visual a cterm fallback so it stays visible there. (Harmless when
+    -- termguicolors is on — cterm attributes are ignored.)
+    if term.is_console then
+      vim.cmd("highlight Visual cterm=reverse ctermbg=NONE")
+    end
   end,
 }
