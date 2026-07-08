@@ -202,19 +202,23 @@ Sanity check that the treesitter changes did not disturb Lisp structural editing
 > need to be the definitive answer.
 
 > The sample `hello.janet` file in the testdocs is missing ther required `defn` block to test.
+>
+> **Resolved:** Visual root cause was `termguicolors` forced on in a real Linux TTY
+> (`TERM=linux`), where TokyoNight's gui-only Visual highlight can't render. Fixed —
+> `termguicolors` is now off on a real TTY, with a `cterm=reverse` Visual fallback for
+> console sessions. `hello.janet` now has real `defn` forms.
 
-#### 1.5 — Unrelated bracket maps intact
+#### 1.5 — Bracket maps unaffected (gitsigns / vim-unimpaired)
 
-1. In a git repo, open a file with a staged/unstaged hunk. Press `]h` / `[h` — jump between hunks.
-2. Press `]b` and `[b` — cycles through open buffers.
-3. Press `yos` — spell toggles on/off (verify with `:set spell?`).
+Confirms the treesitter changes did not clobber other plugins' bracket mappings.
 
-- [ ] All three map groups still work
+1. **gitsigns `]h` / `[h`** — open a *tracked* file in this repo (e.g. `lua/options.lua`), change a couple of separate lines (no need to save; gitsigns marks the buffer against the index). Change-signs appear in the gutter. With the cursor above the first change, press `]h` → cursor jumps to the next changed hunk; `[h` → jumps to the previous one.
+2. **buffer cycle `]b` / `[b`** — open two buffers: `:e testdocs/hello.lua` then `:e testdocs/hello.cs`. Press `]b` → the current buffer changes to the next one (confirm with `:ls` — the `%` current-buffer marker moves); `[b` → previous; it wraps around.
+3. **spell toggle `yos`** — in any buffer press `yos`; `:set spell?` flips between `spell` and `nospell` on each press.
 
-> The test plan is unclear, this needs to be more explicit:
-> - include the filetype to check
-> - include the steps required to set up the "staged/unstaged hunks"
-> - what indicates that "cycles through the open buffers" is working 
+- [ ] gitsigns `]h`/`[h`, buffer `]b`/`[b`, and spell `yos` all behave as described
+
+> _(Clarified per test feedback: filetype/how-to-create-hunks/pass-criteria now specified above.)_
 
 ---
 
@@ -237,6 +241,14 @@ Sanity check that the treesitter changes did not disturb Lisp structural editing
 
 > - The fold/unfold does not work.
 > - There does not appear to be any text change to the `[source,lua]` block
+>
+> **Diagnosis:** the source-block highlight failed because vim-asciidoctor errored with
+> `E484: Can't open file syntax/fsharp.vim` on every `.adoc` open — `fsharp` has no Vim
+> syntax file. **Fixed** by dropping `fsharp` from `asciidoctor_fenced_languages`.
+> **Fold:** on the dev machine `foldmethod=expr` / `foldexpr=AsciidoctorFold()` is set
+> correctly, so `za` on a `==`/`===` heading line should fold — re-test after `git pull`
+> (the E484 error may have interrupted setup). If it still fails, put the cursor **on a
+> section-heading line** and run `:verbose set foldmethod?` / `:echo foldlevel('.')`.
 
 #### 2.3 — Docker preview maps
 
@@ -249,6 +261,12 @@ Sanity check that the treesitter changes did not disturb Lisp structural editing
 - [ ] All three maps fire without crashing Neovim
 
 > - This does nothing in the pure tty terminal on a linux server and responds "Antora preview rtequires a graphical environment."
+>
+> **Expected — PASS on a headless server.** The `,p`/`,pp`/`,pa` maps deliberately check
+> for a graphical environment (`term.is_console`) and emit that clean WARN instead of
+> trying to launch a browser. On a pure TTY there is no browser to open, so the warning
+> **is** the correct no-crash behaviour. Full browser preview can only be validated on a
+> machine with a GUI. On a headless server, treat "clean WARN, no crash" as the pass.
 
 #### 2.4 — Markdown unaffected; markview absent
 
@@ -258,6 +276,12 @@ Sanity check that the treesitter changes did not disturb Lisp structural editing
 - [X] Markdown tooling intact; markview absent from plugin list
 
 > - Not related this defect directly, but the block cursor has an extended character in reverse - could this be related to the `:hightlight ...` set earlier?
+>
+> **Likely terminal-related.** The block-cursor artifact is a `guicursor` / terminal
+> cursor-shape rendering effect in the TTY, tied to the same no-truecolor situation — not
+> a config defect and unrelated to markdown. With `termguicolors` now auto-off on a real
+> TTY (plus the Visual cterm fallback), re-check whether it persists; if it does, it's a
+> terminal-emulator cursor setting. Not blocking.
 
 ---
 
