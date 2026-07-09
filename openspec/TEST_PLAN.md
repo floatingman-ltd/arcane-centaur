@@ -354,11 +354,15 @@ Confirms the treesitter changes did not clobber other plugins' bracket mappings.
 >   - `:lua =vim.lsp.get_clients({ bufnr = 0 })` — is a `fsautocomplete` client attached?
 >     Empty = not attaching (check `:LspLog`); non-empty = attached, see next.
 >   - `:lua vim.cmd('e ' .. vim.lsp.get_log_path())` — look for fsautocomplete startup errors.
->   - If attached: **F# LSP is slow to initialise** (loads the compiler + analyses the script) —
->     wait for it to finish (watch `:messages`/statusline) before typing `List.`; the first
->     completion can take 10–30 s. A standalone `.fsx` here is analysed as a script
->     (`UseSdkScripts=true`), so FSharp.Core (`List.`) should complete once loaded. Also confirm
->     `.` triggers completion (try `System.` too).
+>   - **Observed:** fsautocomplete *is* attached, but `:LspLog` shows
+>     **"Error getting project options for … hello.fsx"** — it can't resolve the *script's*
+>     compiler options, so it has no symbols to complete. This is F# script tooling (.NET SDK),
+>     not a blink/Neovim defect. Checks:
+>     - `dotnet --list-sdks` must list a full **SDK** (not just a runtime) — script resolution needs it.
+>     - `:lua =vim.fn.exepath('dotnet')` — Neovim (hence fsautocomplete) must be able to find `dotnet`.
+>     - `dotnet fsi testdocs/hello.fsx` from a terminal — if FSI can't run the script, fsautocomplete can't resolve it either.
+>     - Standalone `.fsx` is the finickiest case; F# completion is most reliable inside a real
+>       `.fsproj`/`.sln` project. Consider validating there, or switch the fixture to a tiny F# project.
 
 #### 3.3 — Keymap behaviour
 
