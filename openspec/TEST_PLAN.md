@@ -303,10 +303,11 @@ Confirms the treesitter changes did not clobber other plugins' bracket mappings.
 > the HTML fine, but the preview is written to `~/.cache/nvim/asciidoc-preview-<n>.html` (a
 > hidden dir) and opened as a `file://` URL. **snap-packaged Firefox** (the Ubuntu default)
 > is sandboxed and cannot read `file://` paths under hidden/`.cache` dirs — hence the denial.
-> The Neovim side works (no crash); this is a browser-sandbox limitation. Options:
-> (a) use a non-snap browser as the default handler (Mozilla-PPA/apt Firefox, or Chromium);
-> (b) request the config fix — serve the preview over `http://localhost` (like the Markdown
-> preview) or write it to a non-hidden, snap-readable path.
+> The Neovim side works (no crash). **Fixed:** `,p`/`,pp` now convert with Docker as before,
+> then serve the HTML over `http://127.0.0.1:8092` using a tiny **built-in libuv** server
+> (`lua/config/http_preview.lua` — no python/node) and open that URL, so snap browsers can
+> load `http://` (no more "access denied"). The server runs in-process (dies with Neovim) and
+> is reused across previews. Re-test `,p` and expect the rendered page to open over http.
 
 #### 2.4 — Markdown unaffected; markview absent
 
