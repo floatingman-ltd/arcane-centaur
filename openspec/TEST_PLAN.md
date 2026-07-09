@@ -53,8 +53,8 @@ Complete once before any testing begins.
   ```
 - [X] Verify the Roslyn server is on PATH: `Microsoft.CodeAnalysis.LanguageServer --version`
 - [X] Confirm a C compiler is available (nvim-treesitter compiles `fsharp`/`c_sharp` parsers from source): `cc --version` (install `build-essential` on Debian/Ubuntu if missing)
-- [ ] Install **lua-language-server** (Lua LSP completions, Change 03 §3.2) — not in apt/snap on Ubuntu 24.04; download from https://github.com/LuaLS/lua-language-server/releases, extract, and put `bin/lua-language-server` on PATH. Verify: `lua-language-server --version`
-- [ ] Install **fsautocomplete** (F# LSP completions, Change 03 §3.2): `dotnet tool install -g fsautocomplete` (needs the dotnet SDK above; ensure `~/.dotnet/tools` is on PATH). Verify: `fsautocomplete --version`
+- [X] Install **lua-language-server** (Lua LSP completions, Change 03 §3.2) — not in apt/snap on Ubuntu 24.04; download from https://github.com/LuaLS/lua-language-server/releases, extract, and put `bin/lua-language-server` on PATH. Verify: `lua-language-server --version`
+- [X] Install **fsautocomplete** (F# LSP completions, Change 03 §3.2): `dotnet tool install -g fsautocomplete` (needs the dotnet SDK above; ensure `~/.dotnet/tools` is on PATH). Verify: `fsautocomplete --version`
 - [X] Confirm `claude` CLI is installed and authenticated (required for Change 08): `claude --version`
 - [X] Clone the repo: `git clone git@github.com:floatingman-ltd/arcane-centaur.git ~/.config/nvim`
 - [X] Confirm initial main state loads: `nvim` → `:Lazy sync` → no errors in `:messages`
@@ -466,6 +466,19 @@ Markdown buffers have `spell` on by default; code filetypes set `nospell` (see
 ## Change 04 · modernize-editing-plugins
 
 **Branch:** `feat/04-modernize-editing-plugins`
+
+### Before you start
+
+- **Dirty-tree first.** This is the first branch that changes the plugin set (adds
+  `lualine.nvim` + `nvim-surround`, removes four), so Prepare's `:Lazy sync` is the first sync to
+  actually run plugin builds. If it fails on `markdown-preview.nvim` / `bracey.vim`, run the reset
+  in *Troubleshooting — `:Lazy sync` fails … (dirty tree)* near the top of this file, then re-sync.
+- **4.2 diagnostics need an LSP.** Open a `.lua` file and let `lua_ls` attach *before* introducing
+  the syntax error — the status line's diagnostic count is populated by `vim.diagnostic`, which only
+  has entries once a diagnostic producer (`lua-language-server`, from one-time setup) is attached.
+- **4.4 comments are Neovim-native.** vim-commentary was removed with no replacement plugin;
+  `gc`/`gcc` come from Neovim's built-in commenting. A `gcc` failure means the built-in, not a
+  missing plugin.
 
 ### Prepare
 
