@@ -22,7 +22,7 @@ Complete once before any testing begins.
 - [X] Confirm Neovim ≥ 0.12 is installed: `nvim --version`
 - [X] Confirm Git is installed: `git --version`
 - [X] Confirm Node.js + npm are installed (required by markdown-preview.nvim build): `node --version && npm --version`
-- [X] Confirm `dotnet` SDK is installed (required for Change 07 testing): `dotnet --version`
+- [X] Confirm the `dotnet` SDK is installed: `dotnet --version` (list all with `dotnet --list-sdks`). **The sample F#/C# projects target `net8.0`** — either install the `net8.0` runtime/SDK, or bump `<TargetFramework>` in `testdocs/fsharp-project`/`testdocs/csharp-project` to your installed version; a mismatch means the F#/C# LSP can't resolve the project (no completions).
 - [X] Install netcoredbg (required for Change 07 debugging tests) — **not** a NuGet tool; install from GitHub releases:
   ```bash
   NCDBG_VER=$(curl -s https://api.github.com/repos/Samsung/netcoredbg/releases/latest \
@@ -352,14 +352,22 @@ Confirms the treesitter changes did not clobber other plugins' bracket mappings.
 3. Type `./` or `~/` — path completions should appear.
 4. Open `testdocs/hello.fsx` with fsautocomplete running. Type `List.` — LSP completions should appear.
 
-- [ ] All three completion sources work in both Lua and F# buffers
+- [X] All three completion sources work in both Lua and F# buffers — Lua + F# LSP both complete (F# after aligning the SDK/TargetFramework, see root cause below); buffer + path confirmed
 
 > **Buffer + path completion work with no server** (blink is fine). LSP completions need the
 > servers installed (see *One-Time Setup*): Lua → `lua-language-server`; F# → `fsautocomplete`.
 >
 > - **Lua: ✅ works** (`req` → `require`) once `lua-language-server` is on PATH.
-> - **F#: `fsautocomplete` installed (`--version` responds) but `List.` shows no menu.** The
->   tool being on PATH ≠ the server attaching/completing. Diagnose in an open `.fsx`:
+> - **F#: `fsautocomplete` installed but `List.` shows no menu.**
+>   - **ROOT CAUSE (confirmed): SDK ↔ TargetFramework mismatch.** The installed SDK was
+>     **10.0** but the project targets **`net8.0`**, so the SDK can't resolve the project's
+>     options → FSharp.Core never loads → `List.` (and all FSharp.Core) don't complete, while
+>     `System.` still does (it comes from the BCL default references). **Fix — make them
+>     match:** either install the runtime/SDK the project targets (`net8.0`), *or* bump
+>     `<TargetFramework>` in the `.fsproj`/`.csproj` to your installed version (e.g. `net10.0`;
+>     see `dotnet --list-sdks`). Confirm with `dotnet build` succeeding against your SDK, then
+>     reopen the file — `List.` completes.
+>   - If it *still* doesn't complete, the tool being on PATH ≠ the server attaching. Diagnose in an open `.fs`/`.fsx`:
 >   - `:lua =vim.lsp.get_clients({ bufnr = 0 })` — is a `fsautocomplete` client attached?
 >     Empty = not attaching (check `:LspLog`); non-empty = attached, see next.
 >   - `:lua vim.cmd('e ' .. vim.lsp.get_log_path())` — look for fsautocomplete startup errors.
