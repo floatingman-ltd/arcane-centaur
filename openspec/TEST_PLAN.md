@@ -345,13 +345,20 @@ Confirms the treesitter changes did not clobber other plugins' bracket mappings.
 
 - [ ] All three completion sources work in both Lua and F# buffers
 
-> **Confirmed on the test machine: buffer + path completion work; LSP (`req` in Lua, `List.`
-> in F#) does not** — which is exactly the signature of the `lsp` source having **no attached
-> server**. It needs the language servers installed (see *One-Time Setup*): Lua →
-> `lua-language-server` on PATH; F# → `fsautocomplete`. Verify attachment from inside an open
-> `.lua`/`.fsx` buffer: `:lua =vim.lsp.get_clients({ bufnr = 0 })` — an empty result means no
-> server attached (so no LSP completions — not a blink defect). Install the servers, reopen
-> the file, confirm a client attaches, then re-test steps 1 and 4.
+> **Buffer + path completion work with no server** (blink is fine). LSP completions need the
+> servers installed (see *One-Time Setup*): Lua → `lua-language-server`; F# → `fsautocomplete`.
+>
+> - **Lua: ✅ works** (`req` → `require`) once `lua-language-server` is on PATH.
+> - **F#: `fsautocomplete` installed (`--version` responds) but `List.` shows no menu.** The
+>   tool being on PATH ≠ the server attaching/completing. Diagnose in an open `.fsx`:
+>   - `:lua =vim.lsp.get_clients({ bufnr = 0 })` — is a `fsautocomplete` client attached?
+>     Empty = not attaching (check `:LspLog`); non-empty = attached, see next.
+>   - `:lua vim.cmd('e ' .. vim.lsp.get_log_path())` — look for fsautocomplete startup errors.
+>   - If attached: **F# LSP is slow to initialise** (loads the compiler + analyses the script) —
+>     wait for it to finish (watch `:messages`/statusline) before typing `List.`; the first
+>     completion can take 10–30 s. A standalone `.fsx` here is analysed as a script
+>     (`UseSdkScripts=true`), so FSharp.Core (`List.`) should complete once loaded. Also confirm
+>     `.` triggers completion (try `System.` too).
 
 #### 3.3 — Keymap behaviour
 
