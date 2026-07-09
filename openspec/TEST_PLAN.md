@@ -451,7 +451,7 @@ Markdown buffers have `spell` on by default; code filetypes set `nospell` (see
 
 ### Raise PR & merge
 
-- [ ] All validation steps above pass
+- [X] All validation steps above pass — Change 01 (highlight), 02 (asciidoc), 03 (blink) all green; `1.3` text objects **N/A** (backed out) and `3.5` Conjure/Clojure **deferred** (out of scope)
 - [ ] Raise PR: `feat/03-migrate-completion-blink` → `main`
 - [ ] Review and approve PR
 - [ ] Merge PR
