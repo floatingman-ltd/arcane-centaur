@@ -7,7 +7,11 @@ prepare the branch → validate → raise PR → merge → confirm post-merge.
 
 **Step numbering:** validation steps are prefixed with their change number — Change 01 steps are `1.x`, Change 02 are `2.x`, … Change 08 are `8.x`. (Changes 01–03 are all validated under the Change 03 section, since that branch inherits them.)
 
-Sample files for filetype and highlight tests are in `testdocs/` (`hello.hs`, `hello.cs`, `hello.fs`, `hello.fsx`; an existing richer `hello.lua` is also there).
+Sample files for filetype/highlight/completion tests are in `testdocs/`: single-file samples
+(`hello.lua`, `hello.cs`, `hello.fs`, `hello.fsx`, `hello.hs`, `hello.clj`, `hello.scm`,
+`hello.fnl`, `hello.janet`, `hello.lisp`, `hello.http`, `index.html`/`style.css`/`script.js`,
+`test.adoc`/`test.md`/`test.puml`), plus full project fixtures for reliable LSP/debug testing:
+`testdocs/fsharp-project/` (a `.fsproj`) and `testdocs/csharp-project/` (a `.csproj`).
 
 ---
 
@@ -366,8 +370,9 @@ Confirms the treesitter changes did not clobber other plugins' bracket mappings.
 >     - `dotnet --list-sdks` must list a full **SDK** (not just a runtime) — script resolution needs it.
 >     - `:lua =vim.fn.exepath('dotnet')` — Neovim (hence fsautocomplete) must be able to find `dotnet`.
 >     - `dotnet fsi testdocs/hello.fsx` from a terminal — if FSI can't run the script, fsautocomplete can't resolve it either.
->     - Standalone `.fsx` is the finickiest case; F# completion is most reliable inside a real
->       `.fsproj`/`.sln` project. Consider validating there, or switch the fixture to a tiny F# project.
+>     - Standalone `.fsx` is the finickiest case. **A real project fixture now exists** — open
+>       `testdocs/fsharp-project/Program.fs` and type `List.` there; fsautocomplete resolves
+>       *project* options, so completion is reliable. That is the recommended F# test.
 
 #### 3.3 — Keymap behaviour
 
