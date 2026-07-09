@@ -373,6 +373,13 @@ Confirms the treesitter changes did not clobber other plugins' bracket mappings.
 >     - Standalone `.fsx` is the finickiest case. **A real project fixture now exists** — open
 >       `testdocs/fsharp-project/Program.fs` and type `List.` there; fsautocomplete resolves
 >       *project* options, so completion is reliable. That is the recommended F# test.
+>     - **`System.` completing while `List.` doesn't is NOT a missing `open`/`using`.** In F#
+>       the `List` module is auto-opened (FSharp.Core's `Microsoft.FSharp.Collections`) — the
+>       fixture's `Program.fs` uses `List.map`/`List.sum` with no `open` and compiles. `System.`
+>       resolves from the .NET **BCL default references** even when script options fail; `List.`
+>       needs **FSharp.Core** resolved, which is precisely what the standalone-`.fsx`
+>       "Error getting project options" blocks. In the `.fsproj` fixture FSharp.Core resolves,
+>       so `List.` completes — no `open` required.
 
 #### 3.3 — Keymap behaviour
 
