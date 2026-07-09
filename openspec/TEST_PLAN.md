@@ -498,12 +498,19 @@ Markdown buffers have `spell` on by default; code filetypes set `nospell` (see
 
 #### 4.2 — Status line
 
-1. Open any file. Confirm the left section shows the current mode (e.g. `NORMAL`).
-2. In a git repo, confirm branch name and diff counts (+/-) appear.
-3. Introduce a diagnostic error (e.g. a syntax error in a Lua file) — diagnostic count updates.
-4. Confirm the right section shows filetype, scroll percentage, and cursor line:column.
+The status line is global (`globalstatus`). Layout, left → right:
+**mode** · **branch** + **diff (+/-)** + **diagnostics** · **filename** … (right) **filetype** · **scroll %** · **line:column**.
+Note the **diagnostics count sits in the left section, right after the branch/diff — not on the right**.
 
-- [ ] All four status line elements render correctly
+1. Open any file. The far-left shows the current mode (e.g. `NORMAL`).
+2. In a git repo, the next section shows the branch name and, after an edit, diff counts (+/-).
+3. Open a `.lua` file and confirm `lua_ls` is attached (`:LspInfo`). Introduce a *real* error —
+   e.g. type `local x =` alone on a line, or delete a function's closing `end`. Within a second a
+   diagnostics count (error glyph + number) appears **in the left section, just after the branch/diff**.
+   Only LSP diagnostics show here (`sources = { "nvim_lsp" }`), so an attached LSP is required.
+4. The right side shows filetype, scroll percentage, and cursor line:column.
+
+- [ ] All status line elements render, including the diagnostics count in the left section
 
 #### 4.3 — Surround operations
 
@@ -524,11 +531,17 @@ Markdown buffers have `spell` on by default; code filetypes set `nospell` (see
 
 #### 4.5 — vim-unimpaired + vim-repeat intact
 
-1. Press `yos` — spell toggles (verify with `:set spell?`).
-2. Open quickfix with `:copen`. Press `]q` / `[q` — walk entries.
-3. Press `]b` / `[b` — cycles through open buffers.
+vim-unimpaired adds `[`/`]` "previous/next" pairs. Each needs something to move through:
 
-- [ ] All three vim-unimpaired map groups work correctly
+1. `yos` — toggle spell (verify with `:set spell?`; it flips `spell` ⇄ `nospell`).
+2. **Quickfix** — `]q`/`[q` map to `:cnext`/`:cprevious`. Populate the list first, e.g.
+   `:vimgrep /return/ **/*.lua` (or `:helpgrep quickfix`), then `:copen`. `]q` jumps to the next
+   entry, `[q` the previous — the cursor moves between matches. *(On an empty quickfix list they do
+   nothing — `E42: No Errors`; that's why bare `:copen` shows no effect.)*
+3. **Buffers** — `]b`/`[b` map to `:bnext`/`:bprevious`. Open a second file so at least two buffers
+   are listed (check `:ls`), then `]b` / `[b` cycles the current window between them.
+
+- [ ] `yos`, `]q`/`[q` (quickfix), and `]b`/`[b` (buffers) all work
 
 #### 4.6 — Clean startup
 
