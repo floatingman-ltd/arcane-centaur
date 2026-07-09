@@ -1,3 +1,7 @@
 # lazy-lock.json
 
 build/
+
+# .NET build output from the testdocs sample projects
+testdocs/**/bin/
+testdocs/**/obj/

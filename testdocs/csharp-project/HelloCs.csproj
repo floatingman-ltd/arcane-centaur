@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <!-- TargetFramework MUST match an installed SDK/runtime (check `dotnet --list-sdks`).
+         If you only have a newer SDK (e.g. 10.0), bump this to match (e.g. net10.0) — the
+         sample code is version-agnostic. A mismatch means roslyn/nvim-dap cannot resolve the
+         project. -->
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>
