@@ -485,7 +485,7 @@ Markdown buffers have `spell` on by default; code filetypes set `nospell` (see
 1. `git fetch origin && git checkout feat/04-modernize-editing-plugins`
 2. Launch Neovim: `:Lazy sync` — wait for completion
 
-- [ ] Branch checked out, `:Lazy sync` complete with no errors
+- [X] Branch checked out, `:Lazy sync` complete with no errors
 
 ### Validate
 
@@ -494,7 +494,7 @@ Markdown buffers have `spell` on by default; code filetypes set `nospell` (see
 1. Open `:Lazy`. Confirm `lualine.nvim` and `nvim-surround` are listed as installed.
 2. Confirm the following are absent: `vim-airline`, `vim-surround`, `vim-sensible`, `vim-commentary`.
 
-- [ ] Both new plugins present; all four removed plugins absent
+- [X] Both new plugins present; all four removed plugins absent
 
 #### 4.2 — Status line
 
@@ -504,7 +504,9 @@ Note the **diagnostics count sits in the left section, right after the branch/di
 
 1. Open any file. The far-left shows the current mode (e.g. `NORMAL`).
 2. In a git repo, the next section shows the branch name and, after an edit, diff counts (+/-).
-3. Open a `.lua` file and confirm `lua_ls` is attached (`:LspInfo`). Introduce a *real* error —
+3. Open a `.lua` file and confirm `lua_ls` is attached — this config uses Neovim's native LSP, so
+   there is **no `:LspInfo`** command; check with `:checkhealth vim.lsp` or
+   `:lua =vim.lsp.get_clients({ bufnr = 0 })`. Introduce a *real* error —
    e.g. type `local x =` alone on a line, or delete a function's closing `end`. Within a second a
    diagnostics count (error glyph + number) appears **in the left section, just after the branch/diff**.
    Only LSP diagnostics show here (`sources = { "nvim_lsp" }`), so an attached LSP is required.
@@ -519,7 +521,7 @@ Note the **diagnostics count sits in the left section, right after the branch/di
 3. With cursor on `'`, type `ds'` — quotes removed.
 4. Undo all. Re-run `ysiw"`. Press `.` — surround repeats.
 
-- [ ] Add, change, delete, and dot-repeat all work
+- [X] Add, change, delete, and dot-repeat all work
 
 #### 4.4 — Comment operator
 
@@ -527,7 +529,7 @@ Note the **diagnostics count sits in the left section, right after the branch/di
 2. Select three lines in visual mode. Press `gc` — all commented. Press `gc` — uncommented.
 3. Run `gcc`, move to another line, press `.` — comment toggle repeats.
 
-- [ ] Toggle, visual range, and dot-repeat all work
+- [X] Toggle, visual range, and dot-repeat all work
 
 #### 4.5 — vim-unimpaired + vim-repeat intact
 
@@ -547,7 +549,7 @@ vim-unimpaired adds `[`/`]` "previous/next" pairs. Each needs something to move 
 
 1. Restart Neovim. Run `:messages` — no errors or warnings about missing plugins or removed options.
 
-- [ ] No startup errors; expected defaults present
+- [X] No startup errors; expected defaults present
 
 ### Raise PR & merge
 
