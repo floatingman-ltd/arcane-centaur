@@ -500,16 +500,19 @@ Markdown buffers have `spell` on by default; code filetypes set `nospell` (see
 
 The status line is global (`globalstatus`). Layout, left → right:
 **mode** · **branch** + **diff (+/-)** + **diagnostics** · **filename** … (right) **filetype** · **scroll %** · **line:column**.
-Note the **diagnostics count sits in the left section, right after the branch/diff — not on the right**.
+Both the **diff counts and the diagnostics count sit in the left section, right after the branch — not
+on the right.** (The `[+]` shown *after the filename* is lualine's "modified" flag, not the diff.)
 
 1. Open any file. The far-left shows the current mode (e.g. `NORMAL`).
-2. In a git repo, the next section shows the branch name and, after an edit, diff counts (+/-).
+2. In a git repo, the next section shows the branch name. Edit a tracked file — the diff counts
+   (added/changed/removed) update **live from gitsigns**, right after the branch (no save needed).
 3. Open a `.lua` file and confirm `lua_ls` is attached — this config uses Neovim's native LSP, so
    there is **no `:LspInfo`** command; check with `:checkhealth vim.lsp` or
-   `:lua =vim.lsp.get_clients({ bufnr = 0 })`. Introduce a *real* error —
-   e.g. type `local x =` alone on a line, or delete a function's closing `end`. Within a second a
-   diagnostics count (error glyph + number) appears **in the left section, just after the branch/diff**.
-   Only LSP diagnostics show here (`sources = { "nvim_lsp" }`), so an attached LSP is required.
+   `:lua =vim.lsp.get_clients({ bufnr = 0 })`. Introduce a *real* error — e.g. type `local x =`
+   alone on a line, or delete a function's closing `end`. Within a second a diagnostics count
+   (error glyph + number) appears **in the left section, just after the branch/diff**. The component
+   reads the unified diagnostic API (`sources = { "nvim_diagnostic" }`); if the count doesn't show,
+   confirm the buffer actually has diagnostics with `:lua =vim.diagnostic.get(0)`.
 4. The right side shows filetype, scroll percentage, and cursor line:column.
 
 - [ ] All status line elements render, including the diagnostics count in the left section
@@ -533,13 +536,16 @@ Note the **diagnostics count sits in the left section, right after the branch/di
 
 #### 4.5 — vim-unimpaired + vim-repeat intact
 
-vim-unimpaired adds `[`/`]` "previous/next" pairs. Each needs something to move through:
+vim-unimpaired adds `[`/`]` "previous/next" pairs. Each moves through a *list*, not the word under the
+cursor. For "jump to the next/previous occurrence of the word I'm on" you want Vim's built-ins, no
+typing: `*` / `#` (next/previous occurrence of the word under the cursor) and `n` / `N` to repeat;
+`]d` / `[d` (LSP, from `lua/config/lsp.lua`) jump between diagnostics.
 
 1. `yos` — toggle spell (verify with `:set spell?`; it flips `spell` ⇄ `nospell`).
-2. **Quickfix** — `]q`/`[q` map to `:cnext`/`:cprevious`. Populate the list first, e.g.
-   `:vimgrep /return/ **/*.lua` (or `:helpgrep quickfix`), then `:copen`. `]q` jumps to the next
-   entry, `[q` the previous — the cursor moves between matches. *(On an empty quickfix list they do
-   nothing — `E42: No Errors`; that's why bare `:copen` shows no effect.)*
+2. **Quickfix** — `]q`/`[q` map to `:cnext`/`:cprevious` and walk the *quickfix list* (a set of
+   locations built by LSP/grep/etc.). Build one without typing a glob: put the cursor on a symbol
+   used more than once and press `gr` (LSP references → quickfix). Then `]q` / `[q` jump between the
+   references. *(On an empty quickfix list they do nothing — `E42: No Errors`.)*
 3. **Buffers** — `]b`/`[b` map to `:bnext`/`:bprevious`. Open a second file so at least two buffers
    are listed (check `:ls`), then `]b` / `[b` cycles the current window between them.
 
