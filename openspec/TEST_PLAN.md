@@ -49,11 +49,13 @@ Complete once before any testing begins.
   ```
 - [X] Verify the Roslyn server is on PATH: `Microsoft.CodeAnalysis.LanguageServer --version`
 - [X] Confirm a C compiler is available (nvim-treesitter compiles `fsharp`/`c_sharp` parsers from source): `cc --version` (install `build-essential` on Debian/Ubuntu if missing)
+- [ ] Install **lua-language-server** (Lua LSP completions, Change 03 §3.2) — not in apt/snap on Ubuntu 24.04; download from https://github.com/LuaLS/lua-language-server/releases, extract, and put `bin/lua-language-server` on PATH. Verify: `lua-language-server --version`
+- [ ] Install **fsautocomplete** (F# LSP completions, Change 03 §3.2): `dotnet tool install -g fsautocomplete` (needs the dotnet SDK above; ensure `~/.dotnet/tools` is on PATH). Verify: `fsautocomplete --version`
 - [X] Confirm `claude` CLI is installed and authenticated (required for Change 08): `claude --version`
 - [X] Clone the repo: `git clone git@github.com:floatingman-ltd/arcane-centaur.git ~/.config/nvim`
 - [X] Confirm initial main state loads: `nvim` → `:Lazy sync` → no errors in `:messages`
 
-### Troubleshooting — `:Lazy sync` fails on `bracey.vim` (dirty tree)
+### Troubleshooting — `:Lazy sync` fails on `bracey.vim` / `markdown-preview.nvim` (dirty tree)
 
 The build fix (`--no-package-lock`, on `main` and this branch) stops bracey.vim's
 `npm install` from rewriting its tracked `server/package-lock.json` **going forward**.
@@ -70,6 +72,17 @@ git -C ~/.local/share/nvim/lazy/bracey.vim checkout -- .
 Alternatively, in Neovim: `:Lazy clean` then `:Lazy sync` (removes and reinstalls
 the plugin cleanly). After this one-time reset the `--no-package-lock` build keeps
 the tree clean on every future sync.
+
+**`markdown-preview.nvim`** has the same failure: its old `cd app && npm install` build
+left `app/package-lock.json` (untracked) and modified `app/yarn.lock`. The build now uses
+the plugin's own installer (`mkdp#util#install` — downloads a prebuilt binary) which doesn't
+touch the tree. On a machine already dirtied by the old build, reset it once:
+
+```bash
+git -C ~/.local/share/nvim/lazy/markdown-preview.nvim checkout -- .
+git -C ~/.local/share/nvim/lazy/markdown-preview.nvim clean -fd app/
+# then in Neovim: :Lazy sync   (or :Lazy clean && :Lazy sync)
+```
 
 ---
 
@@ -219,7 +232,7 @@ Confirms the treesitter changes did not clobber other plugins' bracket mappings.
 2. **buffer cycle `]b` / `[b`** — open two buffers: `:e testdocs/hello.lua` then `:e testdocs/hello.cs`. Press `]b` → the current buffer changes to the next one (confirm with `:ls` — the `%` current-buffer marker moves); `[b` → previous; it wraps around.
 3. **spell toggle `yos`** — in any buffer press `yos`; `:set spell?` flips between `spell` and `nospell` on each press.
 
-- [ ] gitsigns `]h`/`[h`, buffer `]b`/`[b`, and spell `yos` all behave as described
+- [X] gitsigns `]h`/`[h`, buffer `]b`/`[b`, and spell `yos` all behave as described
 
 > _(Clarified per test feedback: filetype/how-to-create-hunks/pass-criteria now specified above.)_
 
@@ -249,9 +262,13 @@ Confirms the treesitter changes did not clobber other plugins' bracket mappings.
 > `E484: Can't open file syntax/fsharp.vim` on every `.adoc` open — `fsharp` has no Vim
 > syntax file. **Fixed** by dropping `fsharp` from `asciidoctor_fenced_languages`.
 > **Fold:** on the dev machine `foldmethod=expr` / `foldexpr=AsciidoctorFold()` is set
-> correctly, so `za` on a `==`/`===` heading line should fold — re-test after `git pull`
-> (the E484 error may have interrupted setup). If it still fails, put the cursor **on a
-> section-heading line** and run `:verbose set foldmethod?` / `:echo foldlevel('.')`.
+> correctly — cursor on a `==` heading gives `foldlevel=1` and `zc` closes the fold, so
+> folding **works**. Two changes make it robust: `fsharp` removed from
+> `asciidoctor_fenced_languages` (the E484 error may have interrupted fold setup), and
+> **nvim-ufo now yields folding to vim-asciidoctor** for the `asciidoctor` filetype
+> (`provider_selector` returns `""`). **Re-test after pull** with the cursor **on a `==`/`===`
+> heading line** and press `za`. If it still fails there, run `:verbose set foldmethod?`
+> (expect `expr`, from vim-asciidoctor) and `:echo foldlevel('.')` (expect ≥1 on a heading).
 
 #### 2.3 — Docker preview maps
 
@@ -270,6 +287,17 @@ Confirms the treesitter changes did not clobber other plugins' bracket mappings.
 > trying to launch a browser. On a pure TTY there is no browser to open, so the warning
 > **is** the correct no-crash behaviour. Full browser preview can only be validated on a
 > machine with a GUI. On a headless server, treat "clean WARN, no crash" as the pass.
+>
+> **Starting the Docker daemon** (only needed to render an actual preview, i.e. on a GUI
+> machine — not on a pure TTY):
+> ```bash
+> sudo systemctl start docker      # systemd; or: sudo service docker start
+> docker info                      # confirm the daemon is reachable
+> # run docker without sudo: add your user to the group, then re-login:
+> sudo usermod -aG docker "$USER"
+> ```
+> The first `,p`/`,pa` also pulls the `asciidoctor/docker-asciidoctor` / `antora/antora`
+> images (needs network), so the first run is slow.
 
 #### 2.4 — Markdown unaffected; markview absent
 
@@ -296,7 +324,7 @@ Confirms the treesitter changes did not clobber other plugins' bracket mappings.
 1. Open `:Lazy`. Search for `blink.cmp` — confirm installed.
 2. Search in turn for `nvim-cmp`, `cmp-nvim-lsp`, `cmp-buffer`, `cmp-path`, `cmp-cmdline`, `cmp_luasnip` — none should appear.
 
-- [ ] blink.cmp present; all six cmp plugins absent
+- [X] blink.cmp present; all six cmp plugins absent
 
 #### 3.2 — LSP, buffer, and path completions
 
@@ -307,6 +335,13 @@ Confirms the treesitter changes did not clobber other plugins' bracket mappings.
 
 - [ ] All three completion sources work in both Lua and F# buffers
 
+> **The `lsp` source needs the language servers installed** (see *One-Time Setup*): Lua
+> completions require `lua-language-server` on PATH; F# completions require `fsautocomplete`.
+> If they're missing, `:checkhealth vim.lsp` / `:lua =vim.lsp.get_clients()` shows no client
+> attached, and only buffer/path/snippet completions appear (no LSP items) — that's an
+> environment gap, not a blink defect. `buffer`/`path` completion (steps 2–3) works with no
+> server, so verify those independently of the LSP steps.
+
 #### 3.3 — Keymap behaviour
 
 1. With completion menu open, press `<C-n>` / `<C-p>` — selection moves down/up.
@@ -314,30 +349,56 @@ Confirms the treesitter changes did not clobber other plugins' bracket mappings.
 3. In insert mode with menu closed (no item highlighted), press `<CR>` — inserts a newline, does not accept a completion.
 4. Open menu, highlight an item, press `<CR>` — item is inserted.
 
-- [ ] Navigation, dismiss, and no-preselect newline all behave correctly
+- [X] Navigation, dismiss, and no-preselect newline all behave correctly
 
 #### 3.4 — Command-line completion
 
-1. Press `:`, type `lua/` — file path completions appear.
-2. Type `Laz` — `Lazy` and related commands appear.
-3. Press `/`, type a partial word from the current buffer — buffer-word completions appear.
+blink provides completion for the **`:` command line** (sources: `cmdline` + `path`).
+`/` and `?` are Vim's incremental **search** — that search is the primary, expected
+behaviour there (a buffer-word menu may also appear, but the search is not a "failure").
+Navigate the menu with `<Tab>`/`<C-n>`/`<C-p>` and accept with `<CR>` (blink `cmdline`
+keymap preset).
 
-- [ ] Both `:` and `/` cmdline sources work
+1. Press `:` then type `Laz` — a menu appears listing `Lazy` and related commands; `<Tab>`
+   selects, `<CR>` accepts.
+2. Press `:` then type `e lua/` — file/directory path completions under `lua/` appear.
+3. Press `/` then type a few characters — Neovim performs an incremental search (expected).
+   A buffer-word menu may also show; either way, search working is the pass here.
+
+- [ ] `:` shows command + path completion (menu appears and accepts); `/` searches normally
 
 #### 3.5 — Conjure completions (Lisp)
 
-1. Open a `.clj` file and connect Conjure to a running nREPL.
-2. In insert mode, type the first few characters of a REPL-defined var — Conjure completions should appear in the blink menu.
-3. If absent: check `:messages` for blink.compat errors and note for follow-up.
+Conjure auto-connects to an nREPL via the `.nrepl-port` file the REPL writes into the
+project dir. You need a real Clojure project (a bare `.clj` has no REPL).
+
+1. Start an nREPL from a terminal, in a project dir:
+   - **Leiningen** (`project.clj`): `lein repl` — writes `.nrepl-port` automatically.
+   - **deps.edn**: `clojure -Sdeps '{:deps {nrepl/nrepl {:mvn/version "1.3.0"}}}' -M -m nrepl.cmdline` — add `--port 0` to auto-pick a port and write `.nrepl-port`.
+2. Open a `.clj` file in that project — Conjure auto-connects (or run `:ConjureConnect`); the
+   HUD shows the connection.
+3. In insert mode, type the first characters of a REPL-defined var (e.g. `pri` for
+   `println`) — Conjure completions appear in the blink menu.
+4. If absent: check `:messages` for blink.compat errors and note for follow-up.
 
 - [ ] Conjure completions appear (or absence is noted for follow-up)
 
 #### 3.6 — Spell completions gated by `spell` option
 
-1. Open a markdown file. Run `:set spell`. Type 3+ characters of a misspelled word — spell suggestions appear.
-2. Open a Lua file (`:set spell?` is `nospell`). Type the same misspelled word — no spell suggestions.
+The `spell` completion source (dictionary words) is enabled **only when `spell` is on** and
+only after **3+ characters** typed (`min_keyword_length = 3` in `lua/plugins/blink.lua`).
+Markdown buffers have `spell` on by default; code filetypes set `nospell` (see
+`after/ftplugin/*.lua`).
 
-- [ ] Spell completions gated correctly by the `spell` option
+1. Open `testdocs/test.md`. Confirm `:set spell?` prints `spell`. In insert mode type
+   `helllo` (misspelled, 6 chars). **Expected:** the blink menu includes dictionary
+   suggestions such as `hello` / `hallo`; accepting one replaces the word.
+2. In that same buffer run `:set nospell`, then type `helllo` again. **Expected:** *no*
+   dictionary suggestions in the menu (spell source disabled).
+3. Open `testdocs/hello.lua` (`:set spell?` prints `nospell`). Type `helllo`. **Expected:**
+   no dictionary suggestions (only lsp/buffer/path/snippet items).
+
+- [ ] Dictionary suggestions appear only with `spell` on (3+ chars) and are absent when `spell` is off
 
 ---
 
