@@ -278,7 +278,7 @@ Confirms the treesitter changes did not clobber other plugins' bracket mappings.
 2. Press `,pp` — same preview flow.
 3. Press `,pa` — Antora build starts (or clean Docker-offline message).
 
-- [ ] All three maps fire without crashing Neovim
+- [X] All three maps fire without crashing Neovim — `,p`/`,pp` render over http, **confirmed working**
 
 > - This does nothing in the pure tty terminal on a linux server and responds "Antora preview rtequires a graphical environment."
 >
@@ -307,7 +307,12 @@ Confirms the treesitter changes did not clobber other plugins' bracket mappings.
 > then serve the HTML over `http://127.0.0.1:8092` using a tiny **built-in libuv** server
 > (`lua/config/http_preview.lua` — no python/node) and open that URL, so snap browsers can
 > load `http://` (no more "access denied"). The server runs in-process (dies with Neovim) and
-> is reused across previews. Re-test `,p` and expect the rendered page to open over http.
+> is reused across previews. **Confirmed working.**
+>
+> _Follow-up: `,pa` (Antora full-site) still opens `build/site/index.html` via `file://`, which
+> lives under the hidden `~/.config/...` path — so it will hit the same snap-browser block if
+> used. It can get the same http-serve treatment (serve `build/site/` via the libuv server)
+> when Antora preview is exercised._
 
 #### 2.4 — Markdown unaffected; markview absent
 
