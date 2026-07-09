@@ -39,7 +39,10 @@ _Keymaps defined in `lua/config/lsp.lua`._
 
 '''''
 
-== Auto-Completion (nvim-cmp)
+== Auto-Completion (blink.cmp)
+
+Powered by https://github.com/saghen/blink.cmp[blink.cmp] v1 — a Rust-based
+fuzzy completion engine with sub-millisecond latency. Replaces nvim-cmp.
 
 === Completion Menu
 
@@ -56,19 +59,19 @@ _Keymaps defined in `lua/config/lsp.lua`._
 |===
 
 `Enter` only inserts when an entry is actively highlighted — it will not
-accidentally confirm the first suggestion.
+accidentally confirm the first suggestion (`preselect = false`).
 
 === Completion Sources
 
 [cols=",",options="header",]
 |===
 |Source |Provides
-|`nvim++_++lsp` |Language server completions
-|`luasnip` |Snippet expansions
+|`lsp` |Language server completions (with capabilities advertised to servers)
+|`snippets` |Built-in snippet engine (replaces dead LuaSnip config)
 |`buffer` |Words from open buffers
 |`path` |File-system paths
-|`spell` |Dictionary words (when `spell` is active)
-|`cmp-conjure` |Conjure REPL completions (Lisp buffers)
+|`spell` |Dictionary words when `:set spell` is active (min 3 chars); bridged via blink.compat
+|`conjure` |Conjure REPL completions (Lisp/Clojure/Scheme/Fennel/Janet buffers); bridged via blink.compat
 |===
 
 === Command-line Completion
@@ -76,11 +79,11 @@ accidentally confirm the first suggestion.
 [cols=",",options="header",]
 |===
 |Mode |Sources
-|`/` search |Buffer words
+|`/` / `?` search |Buffer words
 |`:` commands |File paths, then Ex commands
 |===
 
-_Configured in `lua/plugins/nvim-cmp.lua`._
+_Configured in `lua/plugins/blink.lua`. LSP capabilities wired in `lua/config/lsp.lua`._
 
 '''''
 

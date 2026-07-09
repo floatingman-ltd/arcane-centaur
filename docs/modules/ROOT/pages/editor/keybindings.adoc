@@ -76,24 +76,6 @@ xref:editor/clipboard.adoc[full guide]
 
 '''''
 
-=== Treesitter Text Objects
-
-Active in **F#, Haskell, C#, Lua** buffers (disabled in Lisp-family — vim-sexp handles those).
-
-[cols=",,",options="header",]
-|===
-|Keys |Mode |Action
-|`af` / `if` |Op / Visual |Outer / inner function
-|`ac` / `ic` |Op / Visual |Outer / inner class
-|`aa` / `ia` |Op / Visual |Outer / inner argument
-|`++]++f` / `++[++f` |Normal |Next / previous function start
-|`++]++F` / `++[++F` |Normal |Next / previous function end
-|===
-
-→ xref:editor/navigation.adoc[Full reference]
-
-'''''
-
 === Folding (nvim-ufo)
 
 [cols=",,",options="header",]
@@ -274,7 +256,7 @@ window)
 
 '''''
 
-=== Auto-Completion (nvim-cmp)
+=== Auto-Completion (blink.cmp)
 
 [cols=",,",options="header",]
 |===

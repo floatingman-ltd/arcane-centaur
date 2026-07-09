@@ -9,6 +9,11 @@ return {
         if filetype == "markdown" then
           return { "indent" }
         end
+        -- asciidoctor manages its own section folding (foldmethod=expr via
+        -- vim-asciidoctor); let it own folds rather than ufo's lsp/indent providers.
+        if filetype == "asciidoctor" then
+          return ""
+        end
         return { "lsp", "indent" }
       end,
       fold_virt_text_handler = function(virtText, lnum, endLnum, width, truncate)

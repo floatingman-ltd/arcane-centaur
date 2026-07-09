@@ -1,68 +1,40 @@
-local skip_textobjects = { "lisp", "clojure", "scheme", "fennel", "janet", "markdown", "markdown_inline" }
-local function no_textobjects(lang)
-  for _, ft in ipairs(skip_textobjects) do
-    if lang == ft then return true end
-  end
-  return false
-end
-
 return {
   {
     "nvim-treesitter/nvim-treesitter",
     branch = "master",
     build = ":TSUpdate",
-    dependencies = {
-      { "nvim-treesitter/nvim-treesitter-textobjects", branch = "master" },
-    },
+    -- nvim-treesitter (master) is configured via `nvim-treesitter.configs`.
+    -- lazy's default `opts` path calls `require("nvim-treesitter").setup(opts)`,
+    -- but that entry point takes NO arguments and silently discards opts — so
+    -- highlight/indent/ensure_installed never apply. Route the opts to the real
+    -- setup explicitly.
+    --
+    -- NOTE: text objects (nvim-treesitter-textobjects) were removed — the master
+    -- branch's query path crashes on Neovim 0.12 (tsrange.lua calls a removed
+    -- API), so `vaf`/`]f`/etc. silently no-op. Highlight is unaffected because it
+    -- runs through Neovim's core treesitter, not that path.
+    config = function(_, opts)
+      require("nvim-treesitter.configs").setup(opts)
+    end,
     opts = {
       ensure_installed = {
-        "lisp", "clojure", "scheme", "lua", "fsharp", "vim",
-        "markdown", "markdown_inline", "plantuml", "http", "c_sharp",
-        "haskell",
+        -- Common Lisp's parser is "commonlisp" (not "lisp"); Janet's is
+        -- "janet_simple" (there is no "janet" parser — it maps to the janet
+        -- filetype); plantuml has no tree-sitter parser.
+        "commonlisp", "clojure", "scheme", "fennel", "janet_simple",
+        "lua", "fsharp", "vim", "markdown", "markdown_inline", "http",
+        "c_sharp", "haskell",
       },
       highlight = {
         enable = true,
-        -- markdown/markdown_inline use complex injections that crash with a stale
-        -- parser binary (nil range in languagetree.lua). Disable TS highlight for
-        -- these until parsers are rebuilt with :TSUpdate markdown markdown_inline,
-        -- after which this disable can be removed.
+        -- Markdown TS highlight triggers a "nil range"/languagetree error
+        -- (hotfix: treesitter-markdown-highlight-disable). Keep it off here;
+        -- after/ftplugin/markdown.lua also calls vim.treesitter.stop() as backup.
         disable = { "markdown", "markdown_inline" },
       },
       indent = {
         enable = true,
         disable = { "markdown", "markdown_inline" },
-      },
-      textobjects = {
-        select = {
-          enable = true,
-          lookahead = true,
-          disable = no_textobjects,
-          keymaps = {
-            ["af"] = "@function.outer",
-            ["if"] = "@function.inner",
-            ["ac"] = "@class.outer",
-            ["ic"] = "@class.inner",
-            ["aa"] = "@parameter.outer",
-            ["ia"] = "@parameter.inner",
-          },
-        },
-        move = {
-          enable = true,
-          set_jumps = true,
-          disable = no_textobjects,
-          goto_next_start = {
-            ["]f"] = "@function.outer",
-          },
-          goto_next_end = {
-            ["]F"] = "@function.outer",
-          },
-          goto_previous_start = {
-            ["[f"] = "@function.outer",
-          },
-          goto_previous_end = {
-            ["[F"] = "@function.outer",
-          },
-        },
       },
     },
   },

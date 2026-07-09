@@ -1,0 +1,26 @@
+# Sample HTTP requests — exercises the REST client (rest.nvim / kulala.nvim)
+# and treesitter highlight. Run the request under the cursor with the buffer's
+# REST keymap (see the REST guide / cheatsheet).
+
+### Simple GET
+GET https://httpbin.org/get
+Accept: application/json
+
+### GET with query parameters
+GET https://httpbin.org/get?editor=neovim&feature=rest
+Accept: application/json
+
+### POST with a JSON body
+POST https://httpbin.org/post
+Content-Type: application/json
+
+{
+  "name": "arcane-centaur",
+  "editor": "neovim",
+  "features": ["lsp", "treesitter", "repl"]
+}
+
+### Custom headers
+GET https://httpbin.org/headers
+Accept: application/json
+X-Sample-Header: test-value
