@@ -6,25 +6,8 @@ local util = require("config.util")
 -- browsers can load it. Backed by Neovim's built-in libuv — no external
 -- runtime (python/node). See lua/config/http_preview.lua.
 local http_preview = require("config.http_preview")
-local PREVIEW_PORT = 8092
-
-local function open_in_browser(filepath)
-  if term.is_wsl then
-    local win_path = vim.fn.system("wslpath -w " .. vim.fn.shellescape(filepath)):gsub("\n", "")
-    vim.fn.jobstart(
-      {
-        "powershell.exe",
-        "-NoProfile",
-        "-Command",
-        "param($p) Start-Process -FilePath $p",
-        win_path,
-      },
-      { detach = true }
-    )
-  else
-    vim.fn.jobstart({ "xdg-open", filepath }, { detach = true })
-  end
-end
+local PREVIEW_PORT = 8092  -- single-file AsciiDoc preview (,p / ,pp)
+local ANTORA_PORT  = 8093  -- full Antora site preview (,pa)
 
 local function asciidoc_preview()
   if term.is_console then
@@ -116,8 +99,7 @@ local function antora_preview()
     return
   end
 
-  local playbook   = repo_root .. "/antora-playbook-local.yml"
-  local index_html = repo_root .. "/build/site/index.html"
+  local site_dir = repo_root .. "/build/site"
 
   vim.notify("Antora preview: building site…", vim.log.levels.INFO)
 
@@ -136,11 +118,15 @@ local function antora_preview()
           )
           return
         end
-        vim.notify("Antora preview: build complete — opening browser.", vim.log.levels.INFO)
-        open_in_browser(index_html)
+        -- Serve the built site over http (same reason as ,p: snap browsers block
+        -- file:// under the hidden ~/.config path).
+        if http_preview.ensure(site_dir, ANTORA_PORT) then
+          vim.notify("Antora preview: build complete — opening browser.", vim.log.levels.INFO)
+          util.open_url("http://127.0.0.1:" .. ANTORA_PORT .. "/index.html")
+        end
       end)
     end,
   })
 end
 
-vim.keymap.set("n", "<localleader>pa", antora_preview, { buffer = true, desc = "Antora full-site preview (Docker → build/site/index.html)" })
+vim.keymap.set("n", "<localleader>pa", antora_preview, { buffer = true, desc = "Antora full-site preview (Docker → served over http)" })

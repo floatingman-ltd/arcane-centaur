@@ -12,7 +12,8 @@
 
 local uv = vim.uv or vim.loop
 
-local M = { _server = nil, _root = nil, _port = nil }
+-- One server per port: M._servers[port] = { server = <uv_tcp|nil>, root = <dir> }
+local M = { _servers = {} }
 
 local MIME = {
   html = "text/html; charset=utf-8",
@@ -72,20 +73,21 @@ end
 --- Ensure a static server is serving `root` on 127.0.0.1:`port`.
 --- Reuses a server already bound to the same root/port. Returns true on success.
 function M.ensure(root, port)
-  if M._server and M._root == root and M._port == port then
-    return true
+  local existing = M._servers[port]
+  if existing and existing.root == root then
+    return true -- already serving this root on this port
   end
-  if M._server then
-    pcall(function() M._server:close() end)
-    M._server = nil
+  if existing and existing.server then
+    pcall(function() existing.server:close() end)
   end
+  M._servers[port] = nil
   local server = uv.new_tcp()
   local ok = pcall(function() server:bind("127.0.0.1", port) end)
   if not ok then
     pcall(function() server:close() end)
     -- Port already bound (e.g. another Neovim instance already serving) — assume
     -- it serves the same preview dir and let the browser reach it.
-    M._server, M._root, M._port = nil, root, port
+    M._servers[port] = { server = nil, root = root }
     return true
   end
   server:listen(128, function(err)
@@ -94,7 +96,7 @@ function M.ensure(root, port)
     server:accept(client)
     serve_request(client, root)
   end)
-  M._server, M._root, M._port = server, root, port
+  M._servers[port] = { server = server, root = root }
   return true
 end
 
