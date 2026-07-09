@@ -253,7 +253,7 @@ Confirms the treesitter changes did not clobber other plugins' bracket mappings.
 3. Move to a section heading (`==` line). Press `za` — section folds. Press `za` — unfolds.
 4. Find a `[source,lua]` block — Lua inside should be highlighted differently from surrounding AsciiDoc.
 
-- [ ] Filetype correct, fold works, fenced-block highlight active
+- [X] Filetype correct, fold works, fenced-block highlight active — **confirmed working after pull** (E484 fix + ufo yields folding to vim-asciidoctor)
 
 > - The fold/unfold does not work.
 > - There does not appear to be any text change to the `[source,lua]` block
@@ -298,6 +298,15 @@ Confirms the treesitter changes did not clobber other plugins' bracket mappings.
 > ```
 > The first `,p`/`,pa` also pulls the `asciidoctor/docker-asciidoctor` / `antora/antora`
 > images (needs network), so the first run is slow.
+>
+> **Finding (GUI machine): Firefox shows "Access to the file was denied".** Docker generates
+> the HTML fine, but the preview is written to `~/.cache/nvim/asciidoc-preview-<n>.html` (a
+> hidden dir) and opened as a `file://` URL. **snap-packaged Firefox** (the Ubuntu default)
+> is sandboxed and cannot read `file://` paths under hidden/`.cache` dirs — hence the denial.
+> The Neovim side works (no crash); this is a browser-sandbox limitation. Options:
+> (a) use a non-snap browser as the default handler (Mozilla-PPA/apt Firefox, or Chromium);
+> (b) request the config fix — serve the preview over `http://localhost` (like the Markdown
+> preview) or write it to a non-hidden, snap-readable path.
 
 #### 2.4 — Markdown unaffected; markview absent
 
@@ -335,12 +344,13 @@ Confirms the treesitter changes did not clobber other plugins' bracket mappings.
 
 - [ ] All three completion sources work in both Lua and F# buffers
 
-> **The `lsp` source needs the language servers installed** (see *One-Time Setup*): Lua
-> completions require `lua-language-server` on PATH; F# completions require `fsautocomplete`.
-> If they're missing, `:checkhealth vim.lsp` / `:lua =vim.lsp.get_clients()` shows no client
-> attached, and only buffer/path/snippet completions appear (no LSP items) — that's an
-> environment gap, not a blink defect. `buffer`/`path` completion (steps 2–3) works with no
-> server, so verify those independently of the LSP steps.
+> **Confirmed on the test machine: buffer + path completion work; LSP (`req` in Lua, `List.`
+> in F#) does not** — which is exactly the signature of the `lsp` source having **no attached
+> server**. It needs the language servers installed (see *One-Time Setup*): Lua →
+> `lua-language-server` on PATH; F# → `fsautocomplete`. Verify attachment from inside an open
+> `.lua`/`.fsx` buffer: `:lua =vim.lsp.get_clients({ bufnr = 0 })` — an empty result means no
+> server attached (so no LSP completions — not a blink defect). Install the servers, reopen
+> the file, confirm a client attaches, then re-test steps 1 and 4.
 
 #### 3.3 — Keymap behaviour
 
@@ -365,7 +375,7 @@ keymap preset).
 3. Press `/` then type a few characters — Neovim performs an incremental search (expected).
    A buffer-word menu may also show; either way, search working is the pass here.
 
-- [ ] `:` shows command + path completion (menu appears and accepts); `/` searches normally
+- [X] `:` shows command + path completion (menu appears and accepts); `/` searches normally
 
 #### 3.5 — Conjure completions (Lisp)
 
@@ -381,7 +391,7 @@ project dir. You need a real Clojure project (a bare `.clj` has no REPL).
    `println`) — Conjure completions appear in the blink menu.
 4. If absent: check `:messages` for blink.compat errors and note for follow-up.
 
-- [ ] Conjure completions appear (or absence is noted for follow-up)
+- [ ] _(Deferred — Clojure is not in scope right now; revisit when actually needed. Steps above kept for that point.)_
 
 #### 3.6 — Spell completions gated by `spell` option
 
@@ -398,7 +408,7 @@ Markdown buffers have `spell` on by default; code filetypes set `nospell` (see
 3. Open `testdocs/hello.lua` (`:set spell?` prints `nospell`). Type `helllo`. **Expected:**
    no dictionary suggestions (only lsp/buffer/path/snippet items).
 
-- [ ] Dictionary suggestions appear only with `spell` on (3+ chars) and are absent when `spell` is off
+- [X] Dictionary suggestions appear only with `spell` on (3+ chars) and are absent when `spell` is off
 
 ---
 
