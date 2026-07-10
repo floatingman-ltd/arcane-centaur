@@ -688,10 +688,13 @@ is nothing to validate here.
 
 #### 5.5 — Diffview still works (plenary intact)
 
-1. In a git repo with uncommitted changes, run `:DiffviewOpen` — side-by-side diff opens.
-2. Run `:DiffviewClose` — closes cleanly.
+Keymaps exist (in `lua/plugins/git.lua`, under the `<leader>g` group) — no need to type the commands:
 
-- [ ] DiffviewOpen and DiffviewClose work
+1. In a git repo with uncommitted changes, press `<leader>gD` (`:DiffviewOpen`) — side-by-side diff opens.
+2. Press `<leader>gX` (`:DiffviewClose`) — closes cleanly.
+3. `<leader>gH` (`:DiffviewFileHistory %`) — opens history for the current file.
+
+- [X] DiffviewOpen / close / file-history work via `<leader>gD` / `<leader>gX` / `<leader>gH`
 
 #### 5.6 — Native vim.ui.select / vim.ui.input (dressing.nvim removed)
 
@@ -729,16 +732,22 @@ command from Normal mode (type `:` then paste).
    Expect: prints `false` (module not found). Then `:messages` — expect **no** `dressing`-related
    error from steps 1–3.
 
-5. **(Optional real-world path) LSP code action.** Open `testdocs/hello.lua`, put the cursor on a
-   line lua_ls flags (e.g. an unused `local`), press `<leader>ca`. If lua_ls offers actions, the
-   same native numbered list from step 1 appears — pick one and confirm it applies. If no action is
-   offered for that line, skip this step; steps 1–4 already prove the native fallback.
+5. **(Optional real-world path) LSP code action** (`<leader>ca`). The native list also backs LSP
+   code actions — but the *set* of actions is LSP-dependent:
+   - **lua_ls** (`testdocs/hello.lua`) mostly offers **diagnostic-suppression** actions ("Disable
+     diagnostics here", "Mark as global") — LuaLS is not a refactoring server, so that's expected,
+     not a bug.
+   - For a genuine **code-level** action, use **roslyn** in `testdocs/csharp-project/Program.cs`:
+     put the cursor on `var total = 0;` (in `SumOfSquares`) and press `<leader>ca` → roslyn offers a
+     real refactor such as *Use explicit type* (`var` → `int`). Pick it and the code actually changes.
+   Either way the point is only that the native select UI appears and applies your choice — steps
+   1–4 already prove the fallback deterministically.
 
-- [ ] Steps 1–4 pass: native `vim.ui.select` (choose **and** cancel) and `vim.ui.input` both work, and `dressing` is absent with no dressing errors
+- [X] Steps 1–4 pass: native `vim.ui.select` (choose **and** cancel) and `vim.ui.input` both work, and `dressing` is absent with no dressing errors
 
 ### Raise PR & merge
 
-- [ ] All validation steps above pass
+- [X] All validation steps above pass — 5.1/5.2/5.3/5.5/5.6 pass; 5.4 N/A (claude removed)
 - [ ] Raise PR: `feat/05-upgrade-avante-drop-dressing` → `main`
 - [ ] Review and approve PR
 - [ ] Merge PR
