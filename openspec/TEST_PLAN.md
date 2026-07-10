@@ -515,7 +515,7 @@ on the right.** (The `[+]` shown *after the filename* is lualine's "modified" fl
    confirm the buffer actually has diagnostics with `:lua =vim.diagnostic.get(0)`.
 4. The right side shows filetype, scroll percentage, and cursor line:column.
 
-- [ ] All status line elements render, including the diagnostics count in the left section
+- [X] All status line elements render, including the diagnostics count in the left section
 
 #### 4.3 — Surround operations
 
@@ -562,15 +562,15 @@ typing: `*` / `#` (next/previous occurrence of the word under the cursor) and `n
 
 ### Raise PR & merge
 
-- [ ] All validation steps above pass
-- [ ] Raise PR: `feat/04-modernize-editing-plugins` → `main`
-- [ ] Review and approve PR
-- [ ] Merge PR
+- [X] All validation steps above pass
+- [X] Raise PR: `feat/04-modernize-editing-plugins` → `main`
+- [X] Review and approve PR
+- [X] Merge PR (PR #139)
 
 ### Post-merge
 
-- [ ] `git checkout main && git pull origin main`
-- [ ] Launch Neovim: `:Lazy sync` — confirm clean
+- [X] `git checkout main && git pull origin main`
+- [X] Launch Neovim: `:Lazy sync` — confirm clean
 
 ---
 
