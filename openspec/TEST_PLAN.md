@@ -98,6 +98,48 @@ git -C ~/.local/share/nvim/lazy/markdown-preview.nvim clean -fd app/
 
 ---
 
+## Known defect — Docker container storage is read-only (trace during validation)
+
+**Status:** open — trace down during validation. **Not blocking Changes 05–08** (05 uses native
+Ollama; 06/07/08 are Docker-free). Affects only Docker-based features: Change 02's full-site Antora
+preview (`,pa`), PlantUML, MARP, Markdown export, and the Lisp REPL containers.
+
+**Symptom (test machine):** every container comes up with a read-only rootfs.
+
+- `docker run --rm alpine sh -c 'touch /t'` → `read-only file system` (EROFS)
+- ollama model pull inside the container, and via its HTTP API → `… read-only file system`
+- `docker compose exec` → `failed to create runc console socket: … read-only file system`
+
+**Ruled out:** bare metal (`systemd-detect-virt` → `none`); host fs healthy + writable (git
+clone/commit work); lots of free space; `dmesg` shows no fs errors / no ro-remount; official
+Docker (`/usr/bin/docker`, not snap); only `/var/lib/snapd/*` squashfs mounts are read-only
+(normal). `docker info`: Storage Driver `overlayfs`, Docker Root Dir `/var/lib/docker`.
+
+**Leading hypothesis:** overlay-on-overlay — `/var/lib/docker` sits on an `overlay` root
+filesystem, so the overlay storage driver cannot create a writable upper layer (→ read-only
+container rootfs + runc console-socket EROFS).
+
+**Next diagnostics:**
+
+```bash
+docker info 2>&1 | grep -i 'Backing Filesystem'
+findmnt -no FSTYPE,SOURCE /var/lib/docker
+findmnt -no FSTYPE,OPTIONS /
+```
+
+**Candidate fix:** point Docker's `data-root` at a real (ext4/xfs) partition via
+`/etc/docker/daemon.json` (`{ "data-root": "/opt/docker" }`) then `sudo systemctl restart docker`;
+or boot a non-overlay root.
+
+**Workaround in place:** Change 05 uses native Ollama (`curl -fsSL https://ollama.com/install.sh | sh`),
+which writes to the host fs and serves the same `127.0.0.1:11434` — avante needs no config change.
+
+- [ ] Root cause confirmed (backing fs / overlay-on-overlay per the diagnostics above)
+- [ ] Fix applied — `docker run --rm alpine sh -c 'touch /t && echo OK'` succeeds
+- [ ] Docker-based features re-validated (Antora `,pa`, PlantUML, MARP, Markdown export, Lisp containers)
+
+---
+
 ## Per-Branch Sync & Sanity Check
 
 _Run this on the test machine before validating each change (Change 03 onward)._
