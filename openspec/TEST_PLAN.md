@@ -58,14 +58,14 @@ Complete once before any testing begins.
 - [X] Confirm `claude` CLI is installed and authenticated (required for Change 08): `claude --version`
 - [X] Clone the repo: `git clone git@github.com:floatingman-ltd/arcane-centaur.git ~/.config/nvim`
 - [X] Confirm initial main state loads: `nvim` → `:Lazy sync` → no errors in `:messages`
-- [ ] Start the **Ollama backend** — avante's *default* provider (needed for Change 05 §5.2/§5.3); requires Docker Engine + Compose. Bring it up **and pull the model avante is configured for** (the compose file starts the server but pulls no models). Avante defaults to the small **`llama3.2:1b`** (~1.3 GB, chosen for limited-RAM machines; even lighter: `qwen2.5:0.5b`. For more capability use `llama3.2:3b` and set the same tag as `model` in `lua/plugins/avante.lua`):
+- [ ] Start the **Ollama backend** — avante's *default* provider (needed for Change 05 §5.2/§5.3); requires Docker Engine + Compose. Bring it up **and pull the model avante is configured for** (the compose file starts the server but pulls no models). Avante defaults to the small **`qwen2.5:0.5b`** (~0.4 GB, chosen for very-limited-RAM machines; for more capability bump to `llama3.2:1b` (~1.3 GB) or `llama3.2:3b` and set the same tag as `model` in `lua/plugins/avante.lua`):
   ```bash
   docker compose -f ~/.config/nvim/docker/ollama/docker-compose.yml up -d
   # Pull via Ollama's HTTP API — no `docker exec`, so it avoids the runc console-socket
   # "read-only file system" error that `docker compose exec` hits on some hosts (with or without -T):
-  curl http://127.0.0.1:11434/api/pull -d '{"name":"llama3.2:1b"}'
+  curl http://127.0.0.1:11434/api/pull -d '{"name":"qwen2.5:0.5b"}'
   ```
-  Verify: `curl -s http://127.0.0.1:11434/api/tags` lists `llama3.2:1b`. (If the *container itself* won't start, fix Docker — see *Known defect — Docker container storage is read-only* below. Keep Ollama containerized; do not install it natively.) Details: `docs/…/getting-started.adoc` § Ollama.
+  Verify: `curl -s http://127.0.0.1:11434/api/tags` lists `qwen2.5:0.5b`. (If the *container itself* won't start, fix Docker — see *Known defect — Docker container storage is read-only* below. Keep Ollama containerized; do not install it natively.) Details: `docs/…/getting-started.adoc` § Ollama.
 
 ### Troubleshooting — `:Lazy sync` fails on `bracey.vim` / `markdown-preview.nvim` (dirty tree)
 

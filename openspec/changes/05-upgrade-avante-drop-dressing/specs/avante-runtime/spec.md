@@ -26,7 +26,7 @@ Retaining `plenary.nvim` in avante's dependency list SHALL keep `diffview.nvim` 
 - **THEN** the diff view SHALL open without a missing-plenary error
 
 ### Requirement: avante is Ollama-only after the upgrade
-The upgraded avante SHALL configure **only** the `ollama` provider (default), model `llama3.2:1b`, with no `claude` provider. The keymaps SHALL be `<leader>aa` (open with current provider) and `<leader>ao` (select ollama and open); `<leader>ac` SHALL NOT be mapped.
+The upgraded avante SHALL configure **only** the `ollama` provider (default), model `qwen2.5:0.5b`, with no `claude` provider. The keymaps SHALL be `<leader>aa` (open with current provider) and `<leader>ao` (select ollama and open); `<leader>ac` SHALL NOT be mapped.
 
 #### Scenario: Ollama keymaps work; claude keymap absent
 - **WHEN** the user presses `<leader>aa` or `<leader>ao` on the upgraded avante

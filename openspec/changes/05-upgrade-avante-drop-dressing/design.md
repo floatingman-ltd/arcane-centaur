@@ -31,7 +31,7 @@ Cross-validation of the four declared dependencies:
 **Goals**
 - Move avante to a current, maintained release with working Linux binaries.
 - Remove the archived dressing.nvim dependency cleanly.
-- Make avante Ollama-only: small default model (`llama3.2:1b`) for limited-RAM machines, and remove the `claude` provider + `<leader>ac` (Anthropic subscription-OAuth is ToS-scoped to Claude Code/claude.ai; avoid an `ANTHROPIC_API_KEY` dependency too).
+- Make avante Ollama-only: small default model (`qwen2.5:0.5b`) for limited-RAM machines, and remove the `claude` provider + `<leader>ac` (Anthropic subscription-OAuth is ToS-scoped to Claude Code/claude.ai; avoid an `ANTHROPIC_API_KEY` dependency too).
 - Keep diffview working by retaining plenary.
 
 **Non-Goals**
@@ -56,7 +56,7 @@ After removal, `vim.ui.select`/`vim.ui.input` revert to Neovim's native implemen
 Even though diffview is the transitive beneficiary, plenary's only *declared* home is avante. Leaving it in avante's `dependencies` keeps diffview working without adding a redundant declaration to `git.lua`. (A more robust future cleanup would declare plenary where diffview lives, but that is out of scope.)
 
 ### Ollama-only: small model, claude provider removed
-`providers` is reduced to `ollama` alone, model **`llama3.2:1b`** (endpoint `http://127.0.0.1:11434`) — a ~1.3 GB model that runs on limited-RAM machines. The `claude` provider and `<leader>ac` are **removed**: avante's only in-panel route to Anthropic would be a subscription OAuth token (ToS-scoped to Claude Code / claude.ai, so using it from avante risks a violation) or an `ANTHROPIC_API_KEY` (an external account/billing dependency this config avoids). `<leader>aa`/`<leader>ao` are kept. A comment in `avante.lua` documents re-adding a `claude` provider with `auth_type = "api"` + `api_key_name = "ANTHROPIC_API_KEY"` for anyone who wants the API-key path.
+`providers` is reduced to `ollama` alone, model **`qwen2.5:0.5b`** (endpoint `http://127.0.0.1:11434`) — a ~0.4 GB model that runs on very-limited-RAM machines. The `claude` provider and `<leader>ac` are **removed**: avante's only in-panel route to Anthropic would be a subscription OAuth token (ToS-scoped to Claude Code / claude.ai, so using it from avante risks a violation) or an `ANTHROPIC_API_KEY` (an external account/billing dependency this config avoids). `<leader>aa`/`<leader>ao` are kept. A comment in `avante.lua` documents re-adding a `claude` provider with `auth_type = "api"` + `api_key_name = "ANTHROPIC_API_KEY"` for anyone who wants the API-key path.
 
 This affects **only** avante's in-panel provider. The CLI-based Claude features — `:ClaudeSuggest`/`:ClaudeExplain` (`<leader>gcs`/`<leader>gce`) and the research popup (`<leader>?l`/`<leader>?a`) — shell out to the `claude` binary using Claude Code's own auth (the sanctioned path) and are untouched (see `claude-cli-integration`).
 
@@ -72,9 +72,9 @@ This affects **only** avante's in-panel provider. The CLI-based Claude features 
 
 ## Validation outline
 1. Choose the target release tag; read its build docs.
-2. Update `version`, `build`, remove dressing, set the ollama model to `llama3.2:1b`, remove the claude provider + `<leader>ac`, rewrite the comment.
+2. Update `version`, `build`, remove dressing, set the ollama model to `qwen2.5:0.5b`, remove the claude provider + `<leader>ac`, rewrite the comment.
 3. `:Lazy update` then run the documented build; `:Lazy clean` to remove dressing. **Restart Neovim** (a v0.0→v0.1 in-place update leaves stale Lua modules — see TEST_PLAN §5).
-4. `<leader>ao` opens avante on ollama (with `llama3.2:1b` pulled and the service up) and returns an answer or a clean error.
+4. `<leader>ao` opens avante on ollama (with `qwen2.5:0.5b` pulled and the service up) and returns an answer or a clean error.
 5. `<leader>ac` is unmapped (claude provider removed); `<leader>aa` opens with the current provider (ollama).
 6. `:DiffviewOpen` still works (plenary intact).
 7. Native `vim.ui.select`/`vim.ui.input` still function (dressing gone).

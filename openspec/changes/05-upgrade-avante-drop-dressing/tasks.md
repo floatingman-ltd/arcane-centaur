@@ -9,7 +9,7 @@
 - [x] 2.2 `build = "make"` unchanged (documented for this series).
 - [x] 2.3 Removed `"stevearc/dressing.nvim"` from `dependencies`; kept plenary, nui, web-devicons.
 - [x] 2.4 Rewrote header comment (dropped "do not update" warning; noted v0.1.*, dressing removal, Ollama-only + how to re-enable claude via API key).
-- [x] 2.5 Set the ollama provider model to `llama3.2:1b` (small, limited-RAM) @ 127.0.0.1:11434.
+- [x] 2.5 Set the ollama provider model to `qwen2.5:0.5b` (small, limited-RAM) @ 127.0.0.1:11434.
 - [x] 2.6 Removed the `claude` provider block and `<leader>ac` keymap — avante is Ollama-only (Anthropic subscription-OAuth ToS; avoid API-key dependency). Kept `<leader>aa`/`<leader>ao`. (CLI claude features `<leader>gcs`/`<leader>gce` and `<leader>?l`/`<leader>?a` are untouched — separate `claude-cli-integration`.)
 
 ## 3. Build and clean
@@ -31,4 +31,4 @@
 
 - [x] 5.1 `architecture.adoc` updated (v0.1.*, dressing removed, Ollama-only backend).
 - [x] 5.2 `CLAUDE.md` avante line updated to Ollama-only + small model + claude-disabled note.
-- [x] 5.3 `ai-tools.adoc` (+cheatsheet) and `getting-started.adoc` updated: Ollama-only, `llama3.2:1b` pull via HTTP API, disabled-claude section + API-key re-enable.
+- [x] 5.3 `ai-tools.adoc` (+cheatsheet) and `getting-started.adoc` updated: Ollama-only, `qwen2.5:0.5b` pull via HTTP API, disabled-claude section + API-key re-enable.

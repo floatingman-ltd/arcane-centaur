@@ -3,10 +3,11 @@
 -- Keymaps:
 --   <leader>aa  open avante with the current provider (ollama)
 --   <leader>ao  (re)select the ollama provider and open avante
+--   (submit a prompt inside the avante input with <C-s>; <CR> inserts a newline)
 --
 -- Prerequisites:
 --   - ollama: start with `docker compose -f docker/ollama/docker-compose.yml up -d`,
---     then `ollama pull llama3.2:1b` (the model set below).
+--     then `ollama pull qwen2.5:0.5b` (the model set below).
 --
 -- The Claude (Anthropic) provider is intentionally NOT configured. Subscription OAuth tokens
 -- are scoped by Anthropic's ToS to Claude Code / claude.ai, so driving them from a third-party
@@ -36,10 +37,10 @@ return {
       providers = {
         ollama = {
           endpoint = "http://127.0.0.1:11434",
-          -- Small model for limited-RAM machines (~1.3 GB). Pull with `ollama pull llama3.2:1b`.
-          -- Bump to llama3.2:3b (or drop to qwen2.5:0.5b) for a different capability/RAM trade-off
-          -- — pull the matching tag first so it matches this value.
-          model = "llama3.2:1b",
+          -- Small model for very limited RAM (~0.4 GB). Pull with `ollama pull qwen2.5:0.5b`.
+          -- Bump to llama3.2:1b (~1.3 GB) or llama3.2:3b for more capability — pull the
+          -- matching tag first so it matches this value.
+          model = "qwen2.5:0.5b",
         },
       },
     },
