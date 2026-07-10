@@ -583,8 +583,15 @@ typing: `*` / `#` (next/previous occurrence of the word under the cursor) and `n
 1. `git fetch origin && git checkout feat/05-upgrade-avante-drop-dressing`
 2. Launch Neovim: `:Lazy update avante.nvim` — wait for update and build step
 3. If build did not run automatically: `:AvanteBuild` — wait for completion
+4. **Restart Neovim before validating.** This upgrade jumps avante v0.0.x → v0.1.x *in place*.
+   `:Lazy update` rewrites the files on disk, but the running session keeps the **old avante Lua
+   modules cached** (it loads on `VeryLazy`), so the new `ftplugin/AvanteInput.lua` calls into stale
+   code and errors with `attempt to call field 'place_sign_at_first_line' (a nil value)` the moment
+   you type in the prompt. A full quit + relaunch loads the v0.1.x modules cleanly. _(If it still
+   errors after a restart, do a clean reinstall: `:Lazy clean avante.nvim` → `:Lazy install` →
+   `:AvanteBuild` → restart.)_
 
-- [ ] Branch checked out, avante updated and built with no errors
+- [ ] Branch checked out, avante updated + built, **Neovim restarted** — no errors
 
 ### Validate
 
@@ -592,7 +599,7 @@ typing: `*` / `#` (next/previous occurrence of the word under the cursor) and `n
 
 1. Open `:Lazy`. Find `avante.nvim` — confirm version starts with `v0.1.` and no build error.
 
-- [ ] Version is v0.1.x, build clean
+- [X] Version is v0.1.x, build clean
 
 #### 5.2 — Avante opens with current provider
 
