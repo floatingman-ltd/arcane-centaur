@@ -41,6 +41,14 @@ return {
           -- Bump to llama3.2:1b (~1.3 GB) or llama3.2:3b for more capability — pull the
           -- matching tag first so it matches this value.
           model = "qwen2.5:0.5b",
+          -- Small models (0.5–1B) tend to loop / repeat the last paragraph. Nudge Ollama's
+          -- repetition penalty above its 1.1 default. Ollama sampling options live under
+          -- `options` in the request body; avante forwards them via `extra_request_body`.
+          extra_request_body = {
+            options = {
+              repeat_penalty = 1.3,
+            },
+          },
         },
       },
     },

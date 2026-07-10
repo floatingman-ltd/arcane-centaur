@@ -271,6 +271,14 @@ set the matching tag as `model` in `lua/plugins/avante.lua`:
 model = "llama3.2:3b",
 ----
 
+[NOTE]
+====
+Very small models (0.5–1B) tend to loop and repeat the final paragraph. The ollama provider sets
+`repeat_penalty = 1.3` (above Ollama's `1.1` default) via `extra_request_body.options` in
+`lua/plugins/avante.lua` to curb it. Raise it further, or move to a larger model, if looping
+persists.
+====
+
 [TIP]
 ====
 If the *container itself* won't start, fix Docker — this config keeps Ollama and
