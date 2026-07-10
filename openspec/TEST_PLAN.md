@@ -542,14 +542,17 @@ typing: `*` / `#` (next/previous occurrence of the word under the cursor) and `n
 `]d` / `[d` (LSP, from `lua/config/lsp.lua`) jump between diagnostics.
 
 1. `yos` — toggle spell (verify with `:set spell?`; it flips `spell` ⇄ `nospell`).
-2. **Quickfix** — `]q`/`[q` map to `:cnext`/`:cprevious` and walk the *quickfix list* (a set of
-   locations built by LSP/grep/etc.). Build one without typing a glob: put the cursor on a symbol
-   used more than once and press `gr` (LSP references → quickfix). Then `]q` / `[q` jump between the
-   references. *(On an empty quickfix list they do nothing — `E42: No Errors`.)*
+2. **Quickfix** — `]q`/`[q` map to `:cnext`/`:cprevious` and walk the *quickfix list*: file locations
+   you build with real commands. Concrete producers: **`gr`** (LSP references — every use of the
+   symbol under the cursor), **`:lua vim.diagnostic.setqflist()`** (all LSP errors/warnings, to fix in
+   turn), **`:grep`/`:vimgrep` then `:cdo s/old/new/g | update`** (project-wide search-and-replace),
+   **`:make`** (build errors). For the test: put the cursor on a symbol used more than once, press
+   `gr`, then `]q` / `[q` step through the references. *(Empty list → nothing happens, `E42: No
+   Errors`.)* Full workflows: `docs/…/editor/navigation.adoc` → Quickfix.
 3. **Buffers** — `]b`/`[b` map to `:bnext`/`:bprevious`. Open a second file so at least two buffers
    are listed (check `:ls`), then `]b` / `[b` cycles the current window between them.
 
-- [ ] `yos`, `]q`/`[q` (quickfix), and `]b`/`[b` (buffers) all work
+- [X] `yos`, `]q`/`[q` (quickfix), and `]b`/`[b` (buffers) all work
 
 #### 4.6 — Clean startup
 
