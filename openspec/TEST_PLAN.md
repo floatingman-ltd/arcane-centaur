@@ -597,7 +597,7 @@ typing: `*` / `#` (next/previous occurrence of the word under the cursor) and `n
    errors after a restart, do a clean reinstall: `:Lazy clean avante.nvim` → `:Lazy install` →
    `:AvanteBuild` → restart.)_
 
-- [ ] Branch checked out, avante updated + built, **Neovim restarted** — no errors
+- [X] Branch checked out, avante updated + built, **Neovim restarted** — no errors
 
 ### Validate
 
