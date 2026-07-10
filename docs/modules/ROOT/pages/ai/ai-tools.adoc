@@ -272,10 +272,10 @@ model = "llama3.2:3b",
 
 [TIP]
 ====
-If the *container itself* won't start (host Docker/runc issues), skip Docker
-and install Ollama natively — `curl -fsSL https://ollama.com/install.sh | sh`,
-then `ollama pull llama3.2:1b`. The native systemd service listens on the same
-`127.0.0.1:11434`, so avante needs no config change.
+If the *container itself* won't start, fix Docker — this config keeps Ollama and
+the other services containerized on purpose, so don't install them natively. A
+fresh `docker run --rm alpine sh -c 'touch /t'` that fails with `read-only file
+system` points at Docker's storage/overlay layer.
 ====
 
 ==== GPU Acceleration (NVIDIA)

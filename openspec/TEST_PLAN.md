@@ -65,7 +65,7 @@ Complete once before any testing begins.
   # "read-only file system" error that `docker compose exec` hits on some hosts (with or without -T):
   curl http://127.0.0.1:11434/api/pull -d '{"name":"llama3.2:1b"}'
   ```
-  Verify: `curl -s http://127.0.0.1:11434/api/tags` lists `llama3.2:1b`. (If the *container itself* won't start on this host's Docker/runc, install ollama natively instead — `curl -fsSL https://ollama.com/install.sh | sh`, then `ollama pull llama3.2:1b`; it serves the same `127.0.0.1:11434`.) Details: `docs/…/getting-started.adoc` § Ollama.
+  Verify: `curl -s http://127.0.0.1:11434/api/tags` lists `llama3.2:1b`. (If the *container itself* won't start, fix Docker — see *Known defect — Docker container storage is read-only* below. Keep Ollama containerized; do not install it natively.) Details: `docs/…/getting-started.adoc` § Ollama.
 
 ### Troubleshooting — `:Lazy sync` fails on `bracey.vim` / `markdown-preview.nvim` (dirty tree)
 
@@ -100,9 +100,9 @@ git -C ~/.local/share/nvim/lazy/markdown-preview.nvim clean -fd app/
 
 ## Known defect — Docker container storage is read-only (trace during validation)
 
-**Status:** open — trace down during validation. **Not blocking Changes 05–08** (05 uses native
-Ollama; 06/07/08 are Docker-free). Affects only Docker-based features: Change 02's full-site Antora
-preview (`,pa`), PlantUML, MARP, Markdown export, and the Lisp REPL containers.
+**Status:** open — trace down during validation. **Blocks Change 05 §5.2/§5.3** (the containerized
+Ollama backend); 06/07/08 are Docker-free. Also affects Change 02's full-site Antora preview
+(`,pa`), PlantUML, MARP, Markdown export, and the Lisp REPL containers.
 
 **Symptom (test machine):** every container comes up with a read-only rootfs.
 
@@ -131,8 +131,10 @@ findmnt -no FSTYPE,OPTIONS /
 `/etc/docker/daemon.json` (`{ "data-root": "/opt/docker" }`) then `sudo systemctl restart docker`;
 or boot a non-overlay root.
 
-**Workaround in place:** Change 05 uses native Ollama (`curl -fsSL https://ollama.com/install.sh | sh`),
-which writes to the host fs and serves the same `127.0.0.1:11434` — avante needs no config change.
+**No native workaround.** This config keeps Ollama (and the other services) containerized by design,
+so the fix is to make Docker able to run containers — not a host install. This therefore **blocks
+Change 05 §5.2/§5.3** (which need the containerized Ollama); 5.4/5.5/5.6 don't use Ollama and can
+proceed meanwhile.
 
 - [ ] Root cause confirmed (backing fs / overlay-on-overlay per the diagnostics above)
 - [ ] Fix applied — `docker run --rm alpine sh -c 'touch /t && echo OK'` succeeds

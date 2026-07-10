@@ -236,9 +236,9 @@ curl -s http://127.0.0.1:11434/api/tags   # should list llama3.2:1b
 docker compose -f ~/.config/nvim/docker/ollama/docker-compose.yml down
 ----
 
-TIP: If the *container itself* won't start (host Docker/runc problems), skip Docker and install
-Ollama natively: `curl -fsSL https://ollama.com/install.sh | sh`, then `ollama pull llama3.2:1b`.
-The native service listens on the same `127.0.0.1:11434`, so avante needs no config change.
+TIP: If the *container itself* won't start, fix Docker rather than bypassing it — this config keeps
+Ollama and the other services containerized on purpose. A fresh `docker run --rm alpine sh -c 'touch
+/t'` that fails with `read-only file system` points at Docker's storage/overlay layer.
 
 ---
 
