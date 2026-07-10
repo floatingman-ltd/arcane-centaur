@@ -248,15 +248,17 @@ automatically on reboot):
 docker compose -f ~/.config/nvim/docker/ollama/docker-compose.yml up -d
 ----
 
-*Step 2 — Download the model into the running container* (one-time per
-model; stored in a named Docker volume so it survives container
-restarts). Avante's default is the small `llama3.2:1b` (~1.3 GB), chosen
-so it runs on limited-RAM machines:
+*Step 2 — Download the model* (one-time per model; stored in a named
+Docker volume so it survives container restarts). Avante's default is the
+small `llama3.2:1b` (~1.3 GB), chosen so it runs on limited-RAM machines.
+Pull through Ollama's HTTP API rather than `docker exec` — `exec` sets up a
+runc console socket that fails on some hosts with `failed to create runc
+console socket: … read-only file system`; the API call talks straight to
+the running server and avoids that:
 
 [source,sh]
 ----
-docker compose -f ~/.config/nvim/docker/ollama/docker-compose.yml \
-  exec -T ollama ollama pull llama3.2:1b   # -T: no TTY (avoids WSL2 runc console-socket error)
+curl http://127.0.0.1:11434/api/pull -d '{"name":"llama3.2:1b"}'
 ----
 
 For more capability on machines with more RAM, pull a larger model
@@ -267,6 +269,14 @@ tag as `model` in `lua/plugins/avante.lua`:
 ----
 model = "llama3.2:3b",
 ----
+
+[TIP]
+====
+If the *container itself* won't start (host Docker/runc issues), skip Docker
+and install Ollama natively — `curl -fsSL https://ollama.com/install.sh | sh`,
+then `ollama pull llama3.2:1b`. The native systemd service listens on the same
+`127.0.0.1:11434`, so avante needs no config change.
+====
 
 ==== GPU Acceleration (NVIDIA)
 
