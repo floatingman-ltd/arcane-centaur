@@ -114,22 +114,29 @@ Ollama backend); 06/07/08 are Docker-free. Also affects Change 02's full-site An
 clone/commit work); lots of free space; `dmesg` shows no fs errors / no ro-remount; official
 Docker (`/usr/bin/docker`, not snap); only `/var/lib/snapd/*` squashfs mounts are read-only
 (normal). `docker info`: Storage Driver `overlayfs`, Docker Root Dir `/var/lib/docker`.
+**`/` is `ext4` on LVM** (`/dev/mapper/ubuntu--vg-ubuntu--lv`) → **overlay-on-overlay ruled out**
+(root is a normal, writable disk filesystem).
 
-**Leading hypothesis:** overlay-on-overlay — `/var/lib/docker` sits on an `overlay` root
-filesystem, so the overlay storage driver cannot create a writable upper layer (→ read-only
-container rootfs + runc console-socket EROFS).
+**Leading hypothesis (revised):** the defect is in Docker's own storage layer, not the host fs.
+The reported driver `overlayfs` is the **containerd-snapshotter** name (not the classic `overlay2`),
+so the image store is containerd. Suspects: the containerd snapshotter/overlay mounts coming up
+read-only, a `/var/lib/docker` or `/var/lib/containerd` sub-mount that is read-only, or a bad
+`daemon.json` (e.g. a forced `data-root`/`storage-driver`/read-only option).
 
 **Next diagnostics:**
 
 ```bash
-docker info 2>&1 | grep -i 'Backing Filesystem'
-findmnt -no FSTYPE,SOURCE /var/lib/docker
-findmnt -no FSTYPE,OPTIONS /
+docker info 2>&1 | grep -iE 'Backing Filesystem|WARNING'
+findmnt /var/lib/docker           # separate mount? read-only?
+findmnt /var/lib/containerd       # containerd snapshotter store
+cat /etc/docker/daemon.json 2>/dev/null   # any forced data-root / storage-driver / options?
 ```
 
-**Candidate fix:** point Docker's `data-root` at a real (ext4/xfs) partition via
-`/etc/docker/daemon.json` (`{ "data-root": "/opt/docker" }`) then `sudo systemctl restart docker`;
-or boot a non-overlay root.
+**Candidate fixes (pending the above):** if a `/var/lib/docker*`/`/var/lib/containerd` sub-mount is
+read-only, remount it rw / fix its fstab entry; if `daemon.json` forces the containerd snapshotter
+or an odd `data-root`, revert to the classic `overlay2` graph driver (remove the
+`features.containerd-snapshotter` flag) or point `data-root` at a writable ext4 path, then
+`sudo systemctl restart docker`.
 
 **No native workaround.** This config keeps Ollama (and the other services) containerized by design,
 so the fix is to make Docker able to run containers — not a host install. This therefore **blocks
