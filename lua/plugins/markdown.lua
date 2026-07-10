@@ -17,7 +17,11 @@ return {
   {
     "iamcco/markdown-preview.nvim",
     ft = { "markdown" },
-    build = "cd app && npm install",
+    -- Use the plugin's own installer (downloads a prebuilt binary) instead of
+    -- `cd app && npm install`, which rewrites app/package-lock.json + yarn.lock and
+    -- leaves the plugin's git tree dirty so `:Lazy sync` fails (same class as the
+    -- bracey.vim issue).
+    build = function() vim.fn["mkdp#util#install"]() end,
     cond = function() return not require("config.terminal").is_console end,
   },
   {

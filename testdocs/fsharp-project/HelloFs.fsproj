@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <!-- TargetFramework MUST match an installed SDK/runtime (check `dotnet --list-sdks`).
+         If you only have a newer SDK (e.g. 10.0), bump this to match (e.g. net10.0) — the
+         sample code is version-agnostic. A mismatch means fsautocomplete cannot resolve the
+         project's options, so completions like `List.` never appear (System. still works, as
+         it comes from the BCL default references). -->
+    <TargetFramework>net8.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+
+</Project>

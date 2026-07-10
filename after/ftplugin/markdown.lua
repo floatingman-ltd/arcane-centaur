@@ -1,5 +1,11 @@
 vim.b.maplocalleader = ","
 
+-- Neovim 0.10+ and nvim-treesitter/master can both auto-start treesitter for
+-- markdown. The markdown_inline injection parser causes a nil-range crash in
+-- languagetree.lua with mismatched parser binaries. Stop the language tree
+-- explicitly; glow/markdown-preview/marksman are unaffected (they don't use it).
+vim.treesitter.stop()
+
 -- Route preview keymap to glow (console) or markdown-preview (GUI).
 local term = require("config.terminal")
 

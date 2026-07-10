@@ -1,6 +1,7 @@
 -- alias'
 local global = vim.g
 local o = vim.opt
+local term = require("config.terminal")
 
 -- Hint: use `:h <option>` to figure out the meaning if needed
 o.clipboard = 'unnamedplus'   -- use system clipboard 
@@ -21,7 +22,10 @@ o.relativenumber = true       -- add numbers to each line on the left side
 o.cursorline = true           -- highlight cursor line underneath the cursor horizontally
 o.splitbelow = true           -- open new vertical split bottom
 o.splitright = true           -- open new horizontal splits right
-o.termguicolors = true         -- enable 24-bit RGB color in the TUI
+-- 24-bit color — only where the terminal actually supports it. A real TTY / bare
+-- SSH session can't render it, and forcing it there leaves gui-only highlights
+-- (e.g. Visual) invisible. colorscheme.lua reaffirms this for the console case.
+o.termguicolors = term.has_truecolor
 o.showmode = false            -- we are experienced, wo don't need the "-- INSERT --" mode hint
 
 -- Searching
@@ -44,9 +48,8 @@ o.foldcolumn     = "1"        -- thin gutter indicator
 o.spell = true
 o.spelllang = "en_ca"
 
--- Nerd Font support — auto-detected from the terminal emulator.
+-- Nerd Font support — auto-detected from the terminal emulator (`term` required above).
 -- Override to true/false here if the detection is wrong for your setup.
-local term = require("config.terminal")
 global.have_nerd_font = term.has_nerd_font
 
 -- Clipboard provider — chosen by environment.

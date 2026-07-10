@@ -1,24 +1,13 @@
 vim.b.maplocalleader = ","
 
 local term = require("config.terminal")
-
-local function open_in_browser(filepath)
-  if term.is_wsl then
-    local win_path = vim.fn.system("wslpath -w " .. vim.fn.shellescape(filepath)):gsub("\n", "")
-    vim.fn.jobstart(
-      {
-        "powershell.exe",
-        "-NoProfile",
-        "-Command",
-        "param($p) Start-Process -FilePath $p",
-        win_path,
-      },
-      { detach = true }
-    )
-  else
-    vim.fn.jobstart({ "xdg-open", filepath }, { detach = true })
-  end
-end
+local util = require("config.util")
+-- Serve the preview over http://127.0.0.1 (not file://) so snap-sandboxed
+-- browsers can load it. Backed by Neovim's built-in libuv — no external
+-- runtime (python/node). See lua/config/http_preview.lua.
+local http_preview = require("config.http_preview")
+local PREVIEW_PORT = 8092  -- single-file AsciiDoc preview (,p / ,pp)
+local ANTORA_PORT  = 8093  -- full Antora site preview (,pa)
 
 local function asciidoc_preview()
   if term.is_console then
@@ -51,15 +40,17 @@ local function asciidoc_preview()
   local docdir   = vim.fn.expand("%:p:h")
   local filename = vim.fn.expand("%:t")
   local bufnr    = vim.api.nvim_get_current_buf()
-  local cachedir = vim.fn.stdpath("cache")
-  local outfile  = cachedir .. "/asciidoc-preview-" .. bufnr .. ".html"
+  local servedir = vim.fn.stdpath("cache") .. "/asciidoc-preview"
+  local outname  = "preview-" .. bufnr .. ".html"
+  local outfile  = servedir .. "/" .. outname
+  vim.fn.mkdir(servedir, "p")
 
   vim.notify("AsciiDoc preview: converting…", vim.log.levels.INFO)
 
   vim.fn.jobstart({
     "docker", "run", "--rm",
     "-v", docdir .. ":/documents",
-    "-v", cachedir .. ":" .. cachedir,
+    "-v", servedir .. ":" .. servedir,
     "asciidoctor/docker-asciidoctor",
     "asciidoctor", "/documents/" .. filename,
     "-o", outfile,
@@ -76,16 +67,20 @@ local function asciidoc_preview()
         return
       end
       vim.schedule(function()
-        open_in_browser(outfile)
+        -- Serve over http://127.0.0.1 and open that URL (file:// is blocked by
+        -- snap-sandboxed browsers on ~/.cache).
+        if http_preview.ensure(servedir, PREVIEW_PORT) then
+          util.open_url("http://127.0.0.1:" .. PREVIEW_PORT .. "/" .. outname)
+        end
       end)
     end,
   })
 end
 
--- ,p / ,pp — convert to HTML via Docker asciidoctor, open in system browser (GUI only)
--- Both keymaps trigger the same one-shot convert-and-open flow (no popup equivalent for HTML output).
-vim.keymap.set("n", "<localleader>p",  asciidoc_preview, { buffer = true, desc = "AsciiDoc browser preview (Docker asciidoctor → HTML)" })
-vim.keymap.set("n", "<localleader>pp", asciidoc_preview, { buffer = true, desc = "AsciiDoc browser preview (Docker asciidoctor → HTML)" })
+-- ,p / ,pp — convert to HTML via Docker asciidoctor, serve it over http://127.0.0.1
+-- and open in the browser. Using http (not file://) avoids snap-browser sandboxing of ~/.cache.
+vim.keymap.set("n", "<localleader>p",  asciidoc_preview, { buffer = true, desc = "AsciiDoc preview (Docker → HTML, served over http)" })
+vim.keymap.set("n", "<localleader>pp", asciidoc_preview, { buffer = true, desc = "AsciiDoc preview (Docker → HTML, served over http)" })
 
 -- ,pa — full Antora site build + open in browser (reads working tree via antora-playbook-local.yml)
 local function antora_preview()
@@ -104,8 +99,7 @@ local function antora_preview()
     return
   end
 
-  local playbook   = repo_root .. "/antora-playbook-local.yml"
-  local index_html = repo_root .. "/build/site/index.html"
+  local site_dir = repo_root .. "/build/site"
 
   vim.notify("Antora preview: building site…", vim.log.levels.INFO)
 
@@ -124,11 +118,15 @@ local function antora_preview()
           )
           return
         end
-        vim.notify("Antora preview: build complete — opening browser.", vim.log.levels.INFO)
-        open_in_browser(index_html)
+        -- Serve the built site over http (same reason as ,p: snap browsers block
+        -- file:// under the hidden ~/.config path).
+        if http_preview.ensure(site_dir, ANTORA_PORT) then
+          vim.notify("Antora preview: build complete — opening browser.", vim.log.levels.INFO)
+          util.open_url("http://127.0.0.1:" .. ANTORA_PORT .. "/index.html")
+        end
       end)
     end,
   })
 end
 
-vim.keymap.set("n", "<localleader>pa", antora_preview, { buffer = true, desc = "Antora full-site preview (Docker → build/site/index.html)" })
+vim.keymap.set("n", "<localleader>pa", antora_preview, { buffer = true, desc = "Antora full-site preview (Docker → served over http)" })

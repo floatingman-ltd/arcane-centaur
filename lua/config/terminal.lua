@@ -80,4 +80,14 @@ M.is_wsl        = is_wsl
 M.is_console = (vim.env.DISPLAY or "") == ""
            and (vim.env.WAYLAND_DISPLAY or "") == ""
 
+--- True when the terminal can render 24-bit ("true") color. A real Linux TTY
+--- (TERM=linux) and many bare SSH terminals cannot; truecolor-first themes such
+--- as TokyoNight render poorly there (invisible Visual, odd cursor). When false,
+--- the config falls back to Neovim's default colorscheme. Detected from
+--- $COLORTERM, known-truecolor terminals, and VTE.
+M.has_truecolor =
+  ((vim.env.COLORTERM or "") == "truecolor" or (vim.env.COLORTERM or "") == "24bit")
+  or nerd_font_terminals[M.name] == true
+  or M.is_vte
+
 return M

@@ -1,25 +1,43 @@
+# 01 — treesitter text objects → **re-scoped to treesitter highlight**
+
+> **Outcome (revised 2026-07-07):** the text objects this change was named for were
+> **backed out**. nvim-treesitter's `master` branch and `nvim-treesitter-textobjects`
+> (master) are frozen and break on **Neovim 0.12** — the textobjects query path calls
+> a removed API (`nvim-treesitter/tsrange.lua` → `:start()`), so `vaf`/`vif`/`daf`/`]f`/`[f`
+> silently no-op. The part that survives and is worth keeping is **treesitter
+> highlight/indent for non-core languages** (F#/C#/Haskell/Lua), which works because
+> highlighting runs through Neovim's **core** engine, not the broken path.
+>
+> Relevant commits: `f5b66ed` (original), `8080040` (route `opts` through
+> `configs.setup` so the config actually applies), `e2b5a7f` (remove text objects).
+>
+> **To get text objects working**, nvim-treesitter **and** nvim-treesitter-textobjects
+> must move to their `main` branch (a config rewrite) — tracked as a separate change,
+> not here.
+
 ## 1. Branch reconciliation + parser
 
-- [x] 1.1 In `lua/plugins/treesitter.lua`, add `branch = "master"` to the `nvim-treesitter` spec.
-- [x] 1.2 Add `nvim-treesitter/nvim-treesitter-textobjects` (also `branch = "master"`) to the spec's `dependencies`.
-- [x] 1.3 Add `"haskell"` to `ensure_installed` (leave `fsharp`/`c_sharp` — already present).
+- [x] 1.1 In `lua/plugins/treesitter.lua`, keep `branch = "master"` on the `nvim-treesitter` spec.
+- [x] 1.2 Route `opts` through `require("nvim-treesitter.configs").setup(opts)` — lazy's default `opts` path calls a zero-arg `require("nvim-treesitter").setup()` that discards them.
+- [x] 1.3 `ensure_installed`: add `haskell`; fix invalid names (`lisp`→`commonlisp`, drop `plantuml` — no parser).
+- [x] 1.4 ~~Add `nvim-treesitter/nvim-treesitter-textobjects` dependency~~ — **REMOVED** (broken on 0.12).
 
-## 2. Configure text objects (gated)
+## 2. Highlight (kept) / text objects (backed out)
 
-- [x] 2.1 Add a `textobjects.select` block with `af`/`if`, `ac`/`ic`, `aa`/`ia` keymaps, `lookahead = true`, and a `disable` function returning true for lisp/clojure/scheme/fennel/janet.
-- [x] 2.2 Add a `textobjects.move` block with `]f`/`[f`/`]F`/`[F` (function start/end), `set_jumps = true`, and the same `disable` gate. Do NOT map `]c`/`[c` (class) — diff-mode collision.
+- [x] 2.1 `highlight` + `indent` enabled via `configs.setup`; `markdown`/`markdown_inline` disabled (nil-range hotfix).
+- [x] 2.2 ~~`textobjects.select`/`move` blocks (`af`/`if`/`ac`/`ic`/`aa`/`ia`, `]f`/`[f`/`]F`/`[F`) gated off for Lisp~~ — **REMOVED** (see Outcome).
 
 ## 3. Validation
 
-- [ ] 3.1 `:Lazy sync`; `:TSUpdate` — confirm the `haskell` parser installs and textobjects loads without error.
-- [ ] 3.2 Confirm Treesitter highlighting is active in Lua, F#, C#, and Haskell buffers (it was a no-op on the `main` branch before).
-- [ ] 3.3 In an F#/Haskell/C#/Lua buffer: `vaf` selects a function, `vif` its body, `via` an argument, `daf` deletes a function, `]f`/`[f` jump between functions.
-- [ ] 3.4 In a `.clj`/`.lisp`/`.janet` buffer: `vaf` still selects an s-expression form (vim-sexp), confirming textobjects is disabled there.
-- [ ] 3.5 Confirm vim-unimpaired bracket maps and gitsigns `]h`/`[h` are unaffected.
-- [x] 3.6 `find . -name '*.lua' -print0 | xargs -0 luac -p`.
+- [x] 3.1 Parsers install (`commonlisp`/`clojure`/`scheme`/`lua`/`fsharp`/`vim`/`markdown`+`_inline`/`http`/`c_sharp`/`haskell`); a C compiler must be on PATH.
+- [x] 3.2 Treesitter highlighting active in Lua/F#/C#/Haskell buffers — verified: highlighter non-nil (was a no-op before `8080040`).
+- [x] 3.3 ~~`vaf`/`vif`/`via`/`daf`/`]f`/`[f` text objects~~ — **N/A** (backed out; broken on Neovim 0.12).
+- [x] 3.4 Lisp buffers (`.clj`/`.lisp`/`.janet`) still use vim-sexp — text objects never attached there.
+- [x] 3.5 vim-unimpaired / gitsigns bracket maps unaffected — no `]f`/`[f` maps are added.
+- [x] 3.6 `find . -name '*.lua' -print0 | xargs -0 luac -p` passes.
 
 ## 4. Documentation
 
-- [x] 4.1 Update `docs/modules/ROOT/pages/editor/navigation.adoc` (and/or `editor/editing.adoc`) with the select objects (`af`/`if`/`ac`/`ic`/`aa`/`ia`) and move motions (`]f`/`[f`/`]F`/`[F`), noting they apply to F#/Haskell/C#/Lua and that Lisp uses vim-sexp.
-- [x] 4.2 Add the text-object maps to the relevant editor cheatsheet.
-- [x] 4.3 Update `docs/modules/ROOT/pages/other/architecture.adoc` if it describes the treesitter setup (note the `master` pin + textobjects module).
+- [x] 4.1 Text-object section removed from `docs/modules/ROOT/pages/editor/navigation.adoc`.
+- [x] 4.2 Text-object rows removed from the editor cheatsheet (`editor/keybindings.adoc`).
+- [x] 4.3 `docs/modules/ROOT/pages/other/architecture.adoc` treesitter entries reworded (`master` pin + `configs.setup`; no text objects).
