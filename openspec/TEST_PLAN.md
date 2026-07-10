@@ -667,7 +667,7 @@ typing: `*` / `#` (next/previous occurrence of the word under the cursor) and `n
 #### 5.2 — Avante opens with current provider
 
 1. Press `<leader>aa` — Avante panel opens on the right.
-2. Type a short prompt and press `<CR>` — a response is received.
+2. Type a short prompt and press `<C-s>` to submit (avante's submit key — `<CR>` just inserts a newline) — a response is received.
 
 - [ ] Avante opens and responds
 

@@ -117,6 +117,7 @@ The same workflows are available as Claude Code skills:
 |Key |Action
 |`++<++leader++>++aa` |Open avante with the current provider (ollama)
 |`++<++leader++>++ao` |Select the ollama provider and open avante
+|`++<++C++>++s` |Submit the prompt (inside the avante input; `++<++CR++>++` = newline)
 |===
 
 _Avante is Ollama-only; the Claude backend is disabled (Anthropic OAuth ToS) — see the guide to re-enable via API key._
