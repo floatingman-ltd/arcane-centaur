@@ -98,62 +98,58 @@ git -C ~/.local/share/nvim/lazy/markdown-preview.nvim clean -fd app/
 
 ---
 
-## Known defect — Docker container storage is read-only (trace during validation)
+## Known defect — root filesystem `/` mounted read-only (trace during validation)
 
-**Status:** open — trace down during validation. **Blocks Change 05 §5.2/§5.3** (the containerized
-Ollama backend); 06/07/08 are Docker-free. Also affects Change 02's full-site Antora preview
-(`,pa`), PlantUML, MARP, Markdown export, and the Lisp REPL containers.
+**Root cause found:** the test machine's **root filesystem `/` is mounted read-only.** Everything
+that writes under `/` fails; only the separately-mounted, writable `/home` works. This is **not** a
+Docker bug — Docker was collateral damage (its storage lives under `/var/lib/docker`).
 
-**Symptom (test machine):** every container comes up with a read-only rootfs.
+**Status:** open. Blocks anything that writes under `/`, incl. **all Docker-based features** (Change
+05's containerized Ollama §5.2/§5.3; Change 02's full-site Antora preview `,pa`; PlantUML, MARP,
+Markdown export, Lisp REPL containers). 06/07/08 write only under `~` and are unaffected.
 
-- `docker run --rm alpine sh -c 'touch /t'` → `read-only file system` (EROFS)
-- ollama model pull inside the container, and via its HTTP API → `… read-only file system`
-- `docker compose exec` → `failed to create runc console socket: … read-only file system`
+**Symptom:** writes under `/` → EROFS; writes under `/home` → OK.
 
-**Ruled out:** bare metal (`systemd-detect-virt` → `none`); host fs healthy + writable (git
-clone/commit work); lots of free space; `dmesg` shows no fs errors / no ro-remount; official
-Docker (`/usr/bin/docker`, not snap); only `/var/lib/snapd/*` squashfs mounts are read-only
-(normal). `docker info`: Storage Driver `overlayfs`, Docker Root Dir `/var/lib/docker`.
-**`/` is `ext4` on LVM** (`/dev/mapper/ubuntu--vg-ubuntu--lv`) → **overlay-on-overlay ruled out**
-(root is a normal, writable disk filesystem).
+- `sudo tee /etc/docker/daemon.json` → `Read-only file system` ← the tell
+- `docker run --rm alpine sh -c 'touch /t'` → `read-only file system`; ollama model write (volume
+  under `/var/lib/docker`) → `… read-only file system`; `docker compose exec` runc socket → EROFS;
+  `sudo systemctl restart docker` fails (dockerd can't init on read-only `/var/lib/docker`)
+- **Works:** git, `:Lazy sync` (`~/.local/share/nvim`), libuv AsciiDoc preview (`~/.cache`) — all
+  under the writable `/home`.
 
-**Further ruled out:** `docker info` has **no `Backing Filesystem` line** (the classic `overlay2`
-driver reports it; the containerd snapshotter does not) and **no `WARNING`s**; `findmnt
-/var/lib/docker` and `findmnt /var/lib/containerd` both return nothing (neither is a separate
-mount — both on the writable ext4 root); **no `/etc/docker/daemon.json`** (stock config). So there
-is no read-only mount and no config forcing anything.
+**Why it was mis-diagnosed at first:** `findmnt / ` was run with `FSTYPE,SOURCE` (not `OPTIONS`), so
+the `ro` flag didn't show → it looked like a healthy ext4 root and the trail wrongly pointed at the
+containerd snapshotter. `/` is ext4 on LVM (`/dev/mapper/ubuntu--vg-ubuntu--lv`) — a fine fs, just
+mounted read-only.
 
-**Leading hypothesis (narrowed):** the **containerd `overlayfs` snapshotter** itself is bringing up
-each container's rootfs read-only on this Docker/kernel, even though everything it writes to is a
-writable ext4 dir. This is the one non-standard variable left (the classic graph driver is
-`overlay2`; this host is on the containerd image store).
-
-**Candidate fix — switch back to the classic `overlay2` graph driver** (disable the containerd
-image store). Create `/etc/docker/daemon.json`:
-
-```json
-{ "features": { "containerd-snapshotter": false } }
-```
-
-then `sudo systemctl restart docker` and re-check:
+**Fix — remount `/` read-write, then make it stick:**
 
 ```bash
-docker info 2>&1 | grep -i 'Storage Driver'          # expect: overlay2
+findmnt -no OPTIONS /            # confirm it shows `ro`
+sudo mount -o remount,rw /       # remount read-write
+findmnt -no OPTIONS /            # confirm now `rw`
+sudo systemctl restart docker    # dockerd now initializes; stock config is fine (snapshotter OK)
 docker run --rm alpine sh -c 'touch /t && echo OK'   # expect: OK
 ```
 
-(Switching image stores hides images pulled under the snapshotter — re-pull as needed, e.g. the
-ollama image. If `overlay2` still comes up read-only, the next look is the `runc`/kernel-overlay
-level, but that is unlikely given a stock ext4 host.)
+Then find **why** it went read-only so it survives a reboot:
 
-**No native workaround.** This config keeps Ollama (and the other services) containerized by design,
-so the fix is to make Docker able to run containers — not a host install. This therefore **blocks
-Change 05 §5.2/§5.3** (which need the containerized Ollama); 5.4/5.5/5.6 don't use Ollama and can
-proceed meanwhile.
+```bash
+grep -E '\s/\s' /etc/fstab                                   # is / set `ro` in fstab? fix to defaults / errors=remount-ro
+dmesg | grep -iE 'EXT4-fs|remount|read-only|I/O error' | tail   # fs error → needs fsck
+```
 
-- [ ] Switched off the containerd snapshotter (`daemon.json` → `overlay2`) and restarted Docker
-- [ ] Fix confirmed — `docker run --rm alpine sh -c 'touch /t && echo OK'` succeeds
-- [ ] Docker-based features re-validated (Antora `,pa`, PlantUML, MARP, Markdown export, Lisp containers)
+- fstab has `ro` for `/` → correct it and reboot.
+- `dmesg` shows ext4/I-O errors → the kernel remounted `/` ro defensively: `sudo touch /forcefsck && sudo reboot` to repair (a possibly-failing disk — check SMART).
+- Neither → transient `errors=remount-ro` trip; `remount,rw` holds for now, but run `fsck` to be safe.
+
+Once `/` is read-write, Docker works normally with the **stock** config (the containerd snapshotter
+was never the problem — no `daemon.json` change needed), and everything stays containerized.
+
+- [ ] `/` remounted read-write (`findmnt -no OPTIONS /` shows `rw`)
+- [ ] Root cause of the ro state identified (fstab vs fsck-level fs error) and made permanent
+- [ ] Docker confirmed — `docker run --rm alpine sh -c 'touch /t && echo OK'` succeeds
+- [ ] Docker-based features re-validated (Ollama §5.2/§5.3, Antora `,pa`, PlantUML, MARP, Markdown export, Lisp containers)
 
 ---
 
