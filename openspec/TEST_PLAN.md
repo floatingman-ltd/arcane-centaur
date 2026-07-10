@@ -669,28 +669,22 @@ typing: `*` / `#` (next/previous occurrence of the word under the cursor) and `n
 1. Press `<leader>aa` — Avante panel opens on the right.
 2. Type a short prompt and press `<C-s>` to submit (avante's submit key — `<CR>` just inserts a newline) — a response is received.
 
-- [ ] Avante opens and responds
+- [X] Avante opens and responds
 
 #### 5.3 — Ollama provider switch
 
 1. Press `<leader>ao` — Avante switches to Ollama and opens.
 2. If Ollama is not running: clean connection-refused error — no crash.
 
-- [ ] Ollama switch fires cleanly (response or clean error)
+- [X] Ollama switch fires cleanly (response or clean error)
 
-#### 5.4 — Claude backend disabled (Ollama-only)
+#### 5.4 — ~~Claude backend~~ (removed) — N/A
 
-The Claude/Anthropic provider is intentionally **not configured** — subscription OAuth tokens are
-scoped by Anthropic's ToS to Claude Code / claude.ai, so avante stays Ollama-only (no API key, no
-external account). This step confirms the feature is cleanly absent, not broken.
+The Claude/Anthropic provider was removed entirely — avante is Ollama-only (Anthropic's ToS scopes
+subscription OAuth tokens to Claude Code / claude.ai, and the API-key path was declined too). There
+is nothing to validate here.
 
-1. `<leader>ac` is **not mapped** — pressing it does nothing / shows "no mapping" (which-key won't
-   list it under `<leader>a`). Only `<leader>aa` and `<leader>ao` exist.
-2. `:lua =require("avante.config").providers.claude` — the config has no user-defined claude
-   provider block (avante's built-in default may print, but our config adds none / no `auth_type`).
-3. No `ANTHROPIC_API_KEY` is required anywhere for avante.
-
-- [ ] Claude backend absent by design — only `<leader>aa`/`<leader>ao` (ollama) exist, no API key needed
+- [ ] ~~Claude provider works~~ — N/A, provider removed
 
 #### 5.5 — Diffview still works (plenary intact)
 
@@ -699,13 +693,48 @@ external account). This step confirms the feature is cleanly absent, not broken.
 
 - [ ] DiffviewOpen and DiffviewClose work
 
-#### 5.6 — Native vim.ui fallback (dressing gone)
+#### 5.6 — Native vim.ui.select / vim.ui.input (dressing.nvim removed)
 
-1. Trigger a code action (`<leader>ca`) on a line with an available LSP code action.
-2. A native select prompt appears (not dressing). Select an option.
-3. Confirm no error about missing `dressing.nvim`.
+With `dressing.nvim` gone, `vim.ui.select` and `vim.ui.input` must fall back to Neovim's built-in
+implementations. Test each **directly** — deterministic, no LSP or plugin state needed. Run each
+command from Normal mode (type `:` then paste).
 
-- [ ] vim.ui.select works via native fallback; no dressing errors
+1. **`vim.ui.select` — choose.** Run exactly:
+
+   ```
+   :lua vim.ui.select({ "one", "two", "three" }, { prompt = "Pick:" }, function(c) vim.notify("picked: " .. tostring(c)) end)
+   ```
+
+   Expect: a numbered prompt in the command area — `Pick:` then `1: one`, `2: two`, `3: three`.
+   Type `2`, press `<CR>`. Expect: a notification / `:messages` line reads exactly `picked: two`.
+
+2. **`vim.ui.select` — cancel.** Run the same command again, then press `<Esc>` (don't type a number).
+   Expect: `picked: nil`, no error.
+
+3. **`vim.ui.input`.** Run exactly:
+
+   ```
+   :lua vim.ui.input({ prompt = "Name: " }, function(i) vim.notify("got: " .. tostring(i)) end)
+   ```
+
+   Expect: a `Name:` prompt on the command line. Type `hello`, press `<CR>`. Expect: `got: hello`.
+   Repeat and press `<Esc>` instead → expect `got: nil`.
+
+4. **dressing is actually gone.** Run:
+
+   ```
+   :lua print(pcall(require, "dressing"))
+   ```
+
+   Expect: prints `false` (module not found). Then `:messages` — expect **no** `dressing`-related
+   error from steps 1–3.
+
+5. **(Optional real-world path) LSP code action.** Open `testdocs/hello.lua`, put the cursor on a
+   line lua_ls flags (e.g. an unused `local`), press `<leader>ca`. If lua_ls offers actions, the
+   same native numbered list from step 1 appears — pick one and confirm it applies. If no action is
+   offered for that line, skip this step; steps 1–4 already prove the native fallback.
+
+- [ ] Steps 1–4 pass: native `vim.ui.select` (choose **and** cancel) and `vim.ui.input` both work, and `dressing` is absent with no dressing errors
 
 ### Raise PR & merge
 
