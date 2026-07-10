@@ -28,7 +28,7 @@ assistants such as Claude Code
 | xref:#research-popup[Research popup] | Free-form question popup
 | xref:#openspec[OpenSpec] | Change workflow from Neovim keymaps
 | xref:#serena[Serena MCP Server] | Symbol-aware code intelligence
-| xref:#avante[Avante] | Q&A chat with ollama or Claude
+| xref:#avante[Avante] | Q&A chat with a local ollama model
 |===
 
 '''''
@@ -206,15 +206,17 @@ uv tool install serena-agent
 == AI Research — Avante
 
 https://github.com/yetone/avante.nvim[avante.nvim] provides a Q&A chat
-interface inside Neovim. Two backends are available and can be switched
-at any time:
+interface inside Neovim. It is configured *Ollama-only* — an offline, local
+model with no external account or API key.
 
-[width="100%",cols="50%,50%",options="header",]
-|===
-|Backend |When to use
-|*ollama* (default) |Offline / air-gapped / low-latency — runs locally via Docker
-|*claude* |Online — Claude (`claude-3-5-haiku`) via a Claude Pro/Max *subscription OAuth* (no API key)
-|===
+[NOTE]
+====
+The Claude (Anthropic) backend is intentionally *disabled*. Subscription
+OAuth tokens are scoped by Anthropic's Terms of Service to Claude Code /
+claude.ai, so driving them from a third-party tool risks a ToS violation.
+See <<claude-disabled>> to re-enable it with an API key if you accept that
+path.
+====
 
 [NOTE]
 ====
@@ -229,9 +231,8 @@ native `vim.ui` for its select/input prompts.
 [cols=",",options="header",]
 |===
 |Key |Action
-|`++<++leader++>++aa` |Open avante with the current provider
-|`++<++leader++>++ao` |Switch to ollama provider and open avante
-|`++<++leader++>++ac` |Switch to the Claude provider (subscription OAuth) and open avante
+|`++<++leader++>++aa` |Open avante with the current provider (ollama)
+|`++<++leader++>++ao` |Select the ollama provider and open avante
 |===
 
 === Ollama Setup
@@ -292,27 +293,37 @@ If the ollama service is not running when you submit a question, avante
 will display the HTTP error in its buffer. Neovim will not crash. Start
 the service and retry.
 
-=== Claude Backend (subscription OAuth)
+[[claude-disabled]]
+=== Claude Backend (disabled)
 
-The `claude` provider is configured with `auth_type = "max"` in
-`lua/plugins/avante.lua`, so it uses a *Claude Pro/Max subscription via
-OAuth* — no `ANTHROPIC_API_KEY`. On the first `++<++leader++>++ac`, avante
-opens a browser auth page and prompts for the code via a native
-`vim.ui.input`; the token is stored in
-`~/.local/share/nvim/avante/claude-auth.json` and refreshed automatically.
+The Claude (Anthropic) provider is *not configured*. Two reasons:
 
-[NOTE]
-====
-Anthropic scopes subscription OAuth tokens to Claude Code / claude.ai;
-using them from third-party tools may violate the Terms of Service. To use
-an API key instead, set `auth_type = "api"` and
-`api_key_name = "ANTHROPIC_API_KEY"` under the `claude` provider, and export
-the key (from https://platform.claude.com/).
-====
+* *Subscription OAuth* (`auth_type = "max"`) would let avante use a Claude
+  Pro/Max plan without an API key — but Anthropic's Terms of Service scope
+  those OAuth tokens to Claude Code / claude.ai, so using them from a
+  third-party tool like avante risks a ToS violation.
+* The API-key path (`ANTHROPIC_API_KEY`) avoids that, but adds an external
+  account/billing dependency this config would rather not require.
 
-The model is set to `claude-3-5-haiku-20241022`; change `model` under the
-`claude` provider to use a different one (a Pro/Max subscription also allows
-Sonnet/Opus).
+So avante stays Ollama-only. To re-enable Claude with an API key (the
+ToS-safe path), add a `claude` provider back to `lua/plugins/avante.lua` and
+a `++<++leader++>++ac` mapping:
+
+[source,lua]
+----
+providers = {
+  ollama = { --[[ ... ]] },
+  claude = {
+    endpoint = "https://api.anthropic.com",
+    model = "claude-3-5-haiku-20241022",
+    auth_type = "api",
+    api_key_name = "ANTHROPIC_API_KEY",
+  },
+},
+----
+
+Then `export ANTHROPIC_API_KEY='…'` (from https://platform.claude.com/) and
+map `++<++leader++>++ac` to `require("avante.api").switch_provider("claude")`.
 
 ''''''
 

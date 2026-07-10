@@ -115,9 +115,10 @@ The same workflows are available as Claude Code skills:
 [cols=",",options="header",]
 |===
 |Key |Action
-|`++<++leader++>++aa` |Open avante with the current provider
-|`++<++leader++>++ao` |Switch to ollama provider and open avante
-|`++<++leader++>++ac` |Switch to the Claude provider (subscription OAuth) and open avante
+|`++<++leader++>++aa` |Open avante with the current provider (ollama)
+|`++<++leader++>++ao` |Select the ollama provider and open avante
 |===
+
+_Avante is Ollama-only; the Claude backend is disabled (Anthropic OAuth ToS) — see the guide to re-enable via API key._
 
 _Plugin configured in `lua/plugins/avante.lua`. See xref:ai/ai-tools.adoc#avante[full Avante guide]._

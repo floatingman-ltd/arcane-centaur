@@ -621,22 +621,19 @@ typing: `*` / `#` (next/previous occurrence of the word under the cursor) and `n
 
 - [ ] Ollama switch fires cleanly (response or clean error)
 
-#### 5.4 — Claude provider via subscription OAuth
+#### 5.4 — Claude backend disabled (Ollama-only)
 
-The claude provider is configured with `auth_type = "max"` (`lua/plugins/avante.lua`) to use a
-Claude Pro/Max subscription — **no `ANTHROPIC_API_KEY`**.
+The Claude/Anthropic provider is intentionally **not configured** — subscription OAuth tokens are
+scoped by Anthropic's ToS to Claude Code / claude.ai, so avante stays Ollama-only (no API key, no
+external account). This step confirms the feature is cleanly absent, not broken.
 
-1. Press `<leader>ac`. On first use avante opens a browser OAuth page and prompts for the auth code
-   via a **native `vim.ui.input`** prompt (dressing is gone, which sidesteps avante#2967 where the
-   dressing provider breaks the OAuth prompt). Paste the code. The token is saved to
-   `~/.local/share/nvim/avante/claude-auth.json` and auto-refreshed thereafter.
-2. Type a short prompt — a response arrives.
+1. `<leader>ac` is **not mapped** — pressing it does nothing / shows "no mapping" (which-key won't
+   list it under `<leader>a`). Only `<leader>aa` and `<leader>ao` exist.
+2. `:lua =require("avante.config").providers.claude` — the config has no user-defined claude
+   provider block (avante's built-in default may print, but our config adds none / no `auth_type`).
+3. No `ANTHROPIC_API_KEY` is required anywhere for avante.
 
-> **ToS note:** Anthropic scopes subscription OAuth tokens to Claude Code / claude.ai; using them
-> from third-party tools may violate the ToS. Switch to `auth_type = "api"` + `ANTHROPIC_API_KEY`
-> if you prefer the API-key path.
-
-- [ ] Claude provider authenticates via OAuth (native code prompt) and responds — no API key
+- [ ] Claude backend absent by design — only `<leader>aa`/`<leader>ao` (ollama) exist, no API key needed
 
 #### 5.5 — Diffview still works (plenary intact)
 
