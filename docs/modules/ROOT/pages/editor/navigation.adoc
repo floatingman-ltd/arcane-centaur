@@ -177,6 +177,26 @@ vim-unimpaired provides pairs of bracket mappings — `++[++` for
 |`++]++l` |Next location list entry
 |===
 
+The stepping keys only move *through* entries — you fill the list first with a
+command. Common real-world producers:
+
+[cols="1,2",options="header",]
+|===
+|Command |What lands in the quickfix list
+|`gr` (LSP references) |Every use of the symbol under the cursor. Walk the call
+sites with `++]++q` before renaming or deleting it.
+|`:lua vim.diagnostic.setqflist()` |All LSP errors/warnings across loaded buffers;
+step through them with `++]++q` and fix each in turn.
+|`:grep {pat}` / `:vimgrep /{pat}/ **/*.lua` |Project-wide text search. Review hits
+with `++]++q`, then apply one edit to every match with `:cdo s/old/new/g \| update`.
+|`:make` |Compiler / build errors parsed via `errorformat` — jump straight to each
+failing line.
+|===
+
+TIP: To jump to the next/previous *occurrence of the word under the cursor* — a
+different job — use Vim's built-in `++*++` / `++#++` and `n` / `N` (no list
+needed). `++]++d` / `++[++d` step between LSP diagnostics.
+
 === Argument list
 
 [cols=",",options="header",]

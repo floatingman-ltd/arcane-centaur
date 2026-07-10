@@ -2,10 +2,7 @@ return {
   -- general
   "neovim/nvim-lspconfig",
   "tpope/vim-repeat",
-  "tpope/vim-sensible",
-  "tpope/vim-surround",
   "tpope/vim-unimpaired",
-  "vim-airline/vim-airline",
 
 -- other
   -- "Shougo/neosnippet.vim",

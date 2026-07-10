@@ -53,8 +53,8 @@ Complete once before any testing begins.
   ```
 - [X] Verify the Roslyn server is on PATH: `Microsoft.CodeAnalysis.LanguageServer --version`
 - [X] Confirm a C compiler is available (nvim-treesitter compiles `fsharp`/`c_sharp` parsers from source): `cc --version` (install `build-essential` on Debian/Ubuntu if missing)
-- [ ] Install **lua-language-server** (Lua LSP completions, Change 03 §3.2) — not in apt/snap on Ubuntu 24.04; download from https://github.com/LuaLS/lua-language-server/releases, extract, and put `bin/lua-language-server` on PATH. Verify: `lua-language-server --version`
-- [ ] Install **fsautocomplete** (F# LSP completions, Change 03 §3.2): `dotnet tool install -g fsautocomplete` (needs the dotnet SDK above; ensure `~/.dotnet/tools` is on PATH). Verify: `fsautocomplete --version`
+- [X] Install **lua-language-server** (Lua LSP completions, Change 03 §3.2) — not in apt/snap on Ubuntu 24.04; download from https://github.com/LuaLS/lua-language-server/releases, extract, and put `bin/lua-language-server` on PATH. Verify: `lua-language-server --version`
+- [X] Install **fsautocomplete** (F# LSP completions, Change 03 §3.2): `dotnet tool install -g fsautocomplete` (needs the dotnet SDK above; ensure `~/.dotnet/tools` is on PATH). Verify: `fsautocomplete --version`
 - [X] Confirm `claude` CLI is installed and authenticated (required for Change 08): `claude --version`
 - [X] Clone the repo: `git clone git@github.com:floatingman-ltd/arcane-centaur.git ~/.config/nvim`
 - [X] Confirm initial main state loads: `nvim` → `:Lazy sync` → no errors in `:messages`
@@ -467,12 +467,25 @@ Markdown buffers have `spell` on by default; code filetypes set `nospell` (see
 
 **Branch:** `feat/04-modernize-editing-plugins`
 
+### Before you start
+
+- **Dirty-tree first.** This is the first branch that changes the plugin set (adds
+  `lualine.nvim` + `nvim-surround`, removes four), so Prepare's `:Lazy sync` is the first sync to
+  actually run plugin builds. If it fails on `markdown-preview.nvim` / `bracey.vim`, run the reset
+  in *Troubleshooting — `:Lazy sync` fails … (dirty tree)* near the top of this file, then re-sync.
+- **4.2 diagnostics need an LSP.** Open a `.lua` file and let `lua_ls` attach *before* introducing
+  the syntax error — the status line's diagnostic count is populated by `vim.diagnostic`, which only
+  has entries once a diagnostic producer (`lua-language-server`, from one-time setup) is attached.
+- **4.4 comments are Neovim-native.** vim-commentary was removed with no replacement plugin;
+  `gc`/`gcc` come from Neovim's built-in commenting. A `gcc` failure means the built-in, not a
+  missing plugin.
+
 ### Prepare
 
 1. `git fetch origin && git checkout feat/04-modernize-editing-plugins`
 2. Launch Neovim: `:Lazy sync` — wait for completion
 
-- [ ] Branch checked out, `:Lazy sync` complete with no errors
+- [X] Branch checked out, `:Lazy sync` complete with no errors
 
 ### Validate
 
@@ -481,16 +494,28 @@ Markdown buffers have `spell` on by default; code filetypes set `nospell` (see
 1. Open `:Lazy`. Confirm `lualine.nvim` and `nvim-surround` are listed as installed.
 2. Confirm the following are absent: `vim-airline`, `vim-surround`, `vim-sensible`, `vim-commentary`.
 
-- [ ] Both new plugins present; all four removed plugins absent
+- [X] Both new plugins present; all four removed plugins absent
 
 #### 4.2 — Status line
 
-1. Open any file. Confirm the left section shows the current mode (e.g. `NORMAL`).
-2. In a git repo, confirm branch name and diff counts (+/-) appear.
-3. Introduce a diagnostic error (e.g. a syntax error in a Lua file) — diagnostic count updates.
-4. Confirm the right section shows filetype, scroll percentage, and cursor line:column.
+The status line is global (`globalstatus`). Layout, left → right:
+**mode** · **branch** + **diff (+/-)** + **diagnostics** · **filename** … (right) **filetype** · **scroll %** · **line:column**.
+Both the **diff counts and the diagnostics count sit in the left section, right after the branch — not
+on the right.** (The `[+]` shown *after the filename* is lualine's "modified" flag, not the diff.)
 
-- [ ] All four status line elements render correctly
+1. Open any file. The far-left shows the current mode (e.g. `NORMAL`).
+2. In a git repo, the next section shows the branch name. Edit a tracked file — the diff counts
+   (added/changed/removed) update **live from gitsigns**, right after the branch (no save needed).
+3. Open a `.lua` file and confirm `lua_ls` is attached — this config uses Neovim's native LSP, so
+   there is **no `:LspInfo`** command; check with `:checkhealth vim.lsp` or
+   `:lua =vim.lsp.get_clients({ bufnr = 0 })`. Introduce a *real* error — e.g. type `local x =`
+   alone on a line, or delete a function's closing `end`. Within a second a diagnostics count
+   (error glyph + number) appears **in the left section, just after the branch/diff**. The component
+   reads the unified diagnostic API (`sources = { "nvim_diagnostic" }`); if the count doesn't show,
+   confirm the buffer actually has diagnostics with `:lua =vim.diagnostic.get(0)`.
+4. The right side shows filetype, scroll percentage, and cursor line:column.
+
+- [ ] All status line elements render, including the diagnostics count in the left section
 
 #### 4.3 — Surround operations
 
@@ -499,7 +524,7 @@ Markdown buffers have `spell` on by default; code filetypes set `nospell` (see
 3. With cursor on `'`, type `ds'` — quotes removed.
 4. Undo all. Re-run `ysiw"`. Press `.` — surround repeats.
 
-- [ ] Add, change, delete, and dot-repeat all work
+- [X] Add, change, delete, and dot-repeat all work
 
 #### 4.4 — Comment operator
 
@@ -507,21 +532,33 @@ Markdown buffers have `spell` on by default; code filetypes set `nospell` (see
 2. Select three lines in visual mode. Press `gc` — all commented. Press `gc` — uncommented.
 3. Run `gcc`, move to another line, press `.` — comment toggle repeats.
 
-- [ ] Toggle, visual range, and dot-repeat all work
+- [X] Toggle, visual range, and dot-repeat all work
 
 #### 4.5 — vim-unimpaired + vim-repeat intact
 
-1. Press `yos` — spell toggles (verify with `:set spell?`).
-2. Open quickfix with `:copen`. Press `]q` / `[q` — walk entries.
-3. Press `]b` / `[b` — cycles through open buffers.
+vim-unimpaired adds `[`/`]` "previous/next" pairs. Each moves through a *list*, not the word under the
+cursor. For "jump to the next/previous occurrence of the word I'm on" you want Vim's built-ins, no
+typing: `*` / `#` (next/previous occurrence of the word under the cursor) and `n` / `N` to repeat;
+`]d` / `[d` (LSP, from `lua/config/lsp.lua`) jump between diagnostics.
 
-- [ ] All three vim-unimpaired map groups work correctly
+1. `yos` — toggle spell (verify with `:set spell?`; it flips `spell` ⇄ `nospell`).
+2. **Quickfix** — `]q`/`[q` map to `:cnext`/`:cprevious` and walk the *quickfix list*: file locations
+   you build with real commands. Concrete producers: **`gr`** (LSP references — every use of the
+   symbol under the cursor), **`:lua vim.diagnostic.setqflist()`** (all LSP errors/warnings, to fix in
+   turn), **`:grep`/`:vimgrep` then `:cdo s/old/new/g | update`** (project-wide search-and-replace),
+   **`:make`** (build errors). For the test: put the cursor on a symbol used more than once, press
+   `gr`, then `]q` / `[q` step through the references. *(Empty list → nothing happens, `E42: No
+   Errors`.)* Full workflows: `docs/…/editor/navigation.adoc` → Quickfix.
+3. **Buffers** — `]b`/`[b` map to `:bnext`/`:bprevious`. Open a second file so at least two buffers
+   are listed (check `:ls`), then `]b` / `[b` cycles the current window between them.
+
+- [X] `yos`, `]q`/`[q` (quickfix), and `]b`/`[b` (buffers) all work
 
 #### 4.6 — Clean startup
 
 1. Restart Neovim. Run `:messages` — no errors or warnings about missing plugins or removed options.
 
-- [ ] No startup errors; expected defaults present
+- [X] No startup errors; expected defaults present
 
 ### Raise PR & merge
 

@@ -162,7 +162,7 @@ All plugins are managed by https://github.com/folke/lazy.nvim[lazy.nvim]. Specs 
 |===
 |https://github.com/ibhagwan/fzf-lua[fzf-lua] |Fuzzy finder for files, grep, buffers, diagnostics
 |https://github.com/nvim-tree/nvim-tree.lua[nvim-tree.lua] |File explorer sidebar
-|https://github.com/vim-airline/vim-airline[vim-airline] |Status line
+|https://github.com/nvim-lualine/lualine.nvim[lualine.nvim] |Status line (tokyonight theme, globalstatus, gitsigns diff + diagnostics)
 |https://github.com/nvim-tree/nvim-web-devicons[nvim-web-devicons] |File type icons (requires Nerd Font)
 |===
 
@@ -171,11 +171,9 @@ All plugins are managed by https://github.com/folke/lazy.nvim[lazy.nvim]. Specs 
 [cols="1,3"]
 |===
 |https://github.com/nvim-treesitter/nvim-treesitter[nvim-treesitter] (pinned: `master`) |Syntax highlighting and indent. Pinned to `master` and configured via `require("nvim-treesitter.configs").setup(opts)` so the `opts`-style API (`ensure_installed`/`highlight`/`indent`) is active. (Text objects were removed — the `master` query path is broken on Neovim 0.12.)
-|https://github.com/tpope/vim-surround[vim-surround] |Surround text with quotes, brackets, tags
-|https://github.com/tpope/vim-commentary[vim-commentary] |Toggle comments (`gcc`, `gc`)
+|https://github.com/kylechui/nvim-surround[nvim-surround] |Surround text with quotes, brackets, tags (`ys`/`cs`/`ds`, identical keys to vim-surround)
 |https://github.com/tpope/vim-unimpaired[vim-unimpaired] |Paired bracket keymaps (`[b`, `]b`, etc.)
 |https://github.com/tpope/vim-repeat[vim-repeat] |Repeat plugin commands with `.`
-|https://github.com/tpope/vim-sensible[vim-sensible] |Sensible default settings
 |https://github.com/jakewvincent/mkdnflow.nvim[mkdnflow.nvim] |Markdown link following and note navigation
 |===
 
