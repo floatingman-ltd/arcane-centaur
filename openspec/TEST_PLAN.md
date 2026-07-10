@@ -117,34 +117,42 @@ Docker (`/usr/bin/docker`, not snap); only `/var/lib/snapd/*` squashfs mounts ar
 **`/` is `ext4` on LVM** (`/dev/mapper/ubuntu--vg-ubuntu--lv`) → **overlay-on-overlay ruled out**
 (root is a normal, writable disk filesystem).
 
-**Leading hypothesis (revised):** the defect is in Docker's own storage layer, not the host fs.
-The reported driver `overlayfs` is the **containerd-snapshotter** name (not the classic `overlay2`),
-so the image store is containerd. Suspects: the containerd snapshotter/overlay mounts coming up
-read-only, a `/var/lib/docker` or `/var/lib/containerd` sub-mount that is read-only, or a bad
-`daemon.json` (e.g. a forced `data-root`/`storage-driver`/read-only option).
+**Further ruled out:** `docker info` has **no `Backing Filesystem` line** (the classic `overlay2`
+driver reports it; the containerd snapshotter does not) and **no `WARNING`s**; `findmnt
+/var/lib/docker` and `findmnt /var/lib/containerd` both return nothing (neither is a separate
+mount — both on the writable ext4 root); **no `/etc/docker/daemon.json`** (stock config). So there
+is no read-only mount and no config forcing anything.
 
-**Next diagnostics:**
+**Leading hypothesis (narrowed):** the **containerd `overlayfs` snapshotter** itself is bringing up
+each container's rootfs read-only on this Docker/kernel, even though everything it writes to is a
+writable ext4 dir. This is the one non-standard variable left (the classic graph driver is
+`overlay2`; this host is on the containerd image store).
 
-```bash
-docker info 2>&1 | grep -iE 'Backing Filesystem|WARNING'
-findmnt /var/lib/docker           # separate mount? read-only?
-findmnt /var/lib/containerd       # containerd snapshotter store
-cat /etc/docker/daemon.json 2>/dev/null   # any forced data-root / storage-driver / options?
+**Candidate fix — switch back to the classic `overlay2` graph driver** (disable the containerd
+image store). Create `/etc/docker/daemon.json`:
+
+```json
+{ "features": { "containerd-snapshotter": false } }
 ```
 
-**Candidate fixes (pending the above):** if a `/var/lib/docker*`/`/var/lib/containerd` sub-mount is
-read-only, remount it rw / fix its fstab entry; if `daemon.json` forces the containerd snapshotter
-or an odd `data-root`, revert to the classic `overlay2` graph driver (remove the
-`features.containerd-snapshotter` flag) or point `data-root` at a writable ext4 path, then
-`sudo systemctl restart docker`.
+then `sudo systemctl restart docker` and re-check:
+
+```bash
+docker info 2>&1 | grep -i 'Storage Driver'          # expect: overlay2
+docker run --rm alpine sh -c 'touch /t && echo OK'   # expect: OK
+```
+
+(Switching image stores hides images pulled under the snapshotter — re-pull as needed, e.g. the
+ollama image. If `overlay2` still comes up read-only, the next look is the `runc`/kernel-overlay
+level, but that is unlikely given a stock ext4 host.)
 
 **No native workaround.** This config keeps Ollama (and the other services) containerized by design,
 so the fix is to make Docker able to run containers — not a host install. This therefore **blocks
 Change 05 §5.2/§5.3** (which need the containerized Ollama); 5.4/5.5/5.6 don't use Ollama and can
 proceed meanwhile.
 
-- [ ] Root cause confirmed (backing fs / overlay-on-overlay per the diagnostics above)
-- [ ] Fix applied — `docker run --rm alpine sh -c 'touch /t && echo OK'` succeeds
+- [ ] Switched off the containerd snapshotter (`daemon.json` → `overlay2`) and restarted Docker
+- [ ] Fix confirmed — `docker run --rm alpine sh -c 'touch /t && echo OK'` succeeds
 - [ ] Docker-based features re-validated (Antora `,pa`, PlantUML, MARP, Markdown export, Lisp containers)
 
 ---
