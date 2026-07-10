@@ -256,7 +256,7 @@ so it runs on limited-RAM machines:
 [source,sh]
 ----
 docker compose -f ~/.config/nvim/docker/ollama/docker-compose.yml \
-  exec ollama ollama pull llama3.2:1b
+  exec -T ollama ollama pull llama3.2:1b   # -T: no TTY (avoids WSL2 runc console-socket error)
 ----
 
 For more capability on machines with more RAM, pull a larger model

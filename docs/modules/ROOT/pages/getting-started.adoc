@@ -226,12 +226,17 @@ machines; bump to `llama3.2:3b` (or down to `qwen2.5:0.5b`) and set the matching
 [source,sh]
 ----
 docker compose -f ~/.config/nvim/docker/ollama/docker-compose.yml up -d
-# Pull the model Avante's default (ollama) provider expects:
-docker compose -f ~/.config/nvim/docker/ollama/docker-compose.yml exec ollama ollama pull llama3.2:1b
+# Pull the model Avante's default (ollama) provider expects.
+# NOTE the `-T` (no pseudo-TTY): a plain `exec` allocates a TTY, which on WSL2 fails with
+# "failed to create runc console socket: mkdir …: read-only file system". `-T` avoids it.
+docker compose -f ~/.config/nvim/docker/ollama/docker-compose.yml exec -T ollama ollama pull llama3.2:1b
 # Confirm it is served on the endpoint Avante uses:
 curl -s http://127.0.0.1:11434/api/tags   # should list llama3.2:1b
 docker compose -f ~/.config/nvim/docker/ollama/docker-compose.yml down
 ----
+
+TIP: If the pull still fails, pull straight through Ollama's HTTP API (no `docker exec` at
+all): `curl http://127.0.0.1:11434/api/pull -d '{"name":"llama3.2:1b"}'`.
 
 ---
 

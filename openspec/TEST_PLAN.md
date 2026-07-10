@@ -61,9 +61,10 @@ Complete once before any testing begins.
 - [ ] Start the **Ollama backend** — avante's *default* provider (needed for Change 05 §5.2/§5.3); requires Docker Engine + Compose. Bring it up **and pull the model avante is configured for** (the compose file starts the server but pulls no models). Avante defaults to the small **`llama3.2:1b`** (~1.3 GB, chosen for limited-RAM machines; even lighter: `qwen2.5:0.5b`. For more capability use `llama3.2:3b` and set the same tag as `model` in `lua/plugins/avante.lua`):
   ```bash
   docker compose -f ~/.config/nvim/docker/ollama/docker-compose.yml up -d
-  docker compose -f ~/.config/nvim/docker/ollama/docker-compose.yml exec ollama ollama pull llama3.2:1b
+  # -T (no TTY) avoids the WSL2 "failed to create runc console socket … read-only file system" error:
+  docker compose -f ~/.config/nvim/docker/ollama/docker-compose.yml exec -T ollama ollama pull llama3.2:1b
   ```
-  Verify the endpoint avante uses is live and has the model: `curl -s http://127.0.0.1:11434/api/tags` lists `llama3.2:1b`. Details: `docs/…/getting-started.adoc` § Ollama.
+  Verify the endpoint avante uses is live and has the model: `curl -s http://127.0.0.1:11434/api/tags` lists `llama3.2:1b`. (If the pull still fails, use the API directly: `curl http://127.0.0.1:11434/api/pull -d '{"name":"llama3.2:1b"}'`.) Details: `docs/…/getting-started.adoc` § Ollama.
 
 ### Troubleshooting — `:Lazy sync` fails on `bracey.vim` / `markdown-preview.nvim` (dirty tree)
 
