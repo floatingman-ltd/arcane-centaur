@@ -218,10 +218,17 @@ docker compose -f ~/.config/nvim/docker/markserv/docker-compose.yml down
 Compose file: `docker/ollama/docker-compose.yml`
 
 Runs a local Ollama LLM server used by Avante and other AI tools for offline model inference.
+The compose file starts the server but pulls *no* models — pull the one Avante is configured to
+use (`llama3.2:3b`, see `lua/plugins/avante.lua`) after the container is up, or Avante's default
+provider will connect but return nothing.
 
 [source,sh]
 ----
 docker compose -f ~/.config/nvim/docker/ollama/docker-compose.yml up -d
+# Pull the model Avante's default (ollama) provider expects:
+docker compose -f ~/.config/nvim/docker/ollama/docker-compose.yml exec ollama ollama pull llama3.2:3b
+# Confirm it is served on the endpoint Avante uses:
+curl -s http://127.0.0.1:11434/api/tags   # should list llama3.2:3b
 docker compose -f ~/.config/nvim/docker/ollama/docker-compose.yml down
 ----
 

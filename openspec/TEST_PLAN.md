@@ -58,6 +58,12 @@ Complete once before any testing begins.
 - [X] Confirm `claude` CLI is installed and authenticated (required for Change 08): `claude --version`
 - [X] Clone the repo: `git clone git@github.com:floatingman-ltd/arcane-centaur.git ~/.config/nvim`
 - [X] Confirm initial main state loads: `nvim` → `:Lazy sync` → no errors in `:messages`
+- [ ] Start the **Ollama backend** — avante's *default* provider (needed for Change 05 §5.2/§5.3); requires Docker Engine + Compose. Bring it up **and pull the model avante is configured for** (`llama3.2:3b`; the compose file starts the server but pulls no models):
+  ```bash
+  docker compose -f ~/.config/nvim/docker/ollama/docker-compose.yml up -d
+  docker compose -f ~/.config/nvim/docker/ollama/docker-compose.yml exec ollama ollama pull llama3.2:3b
+  ```
+  Verify the endpoint avante uses is live and has the model: `curl -s http://127.0.0.1:11434/api/tags` lists `llama3.2:3b`. Details: `docs/…/getting-started.adoc` § Ollama.
 
 ### Troubleshooting — `:Lazy sync` fails on `bracey.vim` / `markdown-preview.nvim` (dirty tree)
 
@@ -620,7 +626,13 @@ typing: `*` / `#` (next/previous occurrence of the word under the cursor) and `n
 1. Ensure `ANTHROPIC_API_KEY` is set. Press `<leader>ac` — Avante switches to Claude API.
 2. Type a short prompt — response arrives.
 
-- [ ] Claude API provider works (skip and note if no API key available)
+> **This machine:** authenticates to Anthropic via an **OAuth token** (Claude Code / `claude` login),
+> not a raw API key. Avante's claude provider reads `api_key_name = "ANTHROPIC_API_KEY"` (see
+> `lua/plugins/avante.lua`), which isn't set here — so the API-key path is **N/A on this machine**.
+> To exercise it, either export a real `ANTHROPIC_API_KEY`, or wire avante to the OAuth token
+> (separate change).
+
+- [ ] _(Skipped — machine uses an Anthropic OAuth token, no `ANTHROPIC_API_KEY`; Claude-API path N/A here.)_
 
 #### 5.5 — Diffview still works (plenary intact)
 
