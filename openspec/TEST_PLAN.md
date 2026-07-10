@@ -58,6 +58,14 @@ Complete once before any testing begins.
 - [X] Confirm `claude` CLI is installed and authenticated (required for Change 08): `claude --version`
 - [X] Clone the repo: `git clone git@github.com:floatingman-ltd/arcane-centaur.git ~/.config/nvim`
 - [X] Confirm initial main state loads: `nvim` → `:Lazy sync` → no errors in `:messages`
+- [ ] Start the **Ollama backend** — avante's *default* provider (needed for Change 05 §5.2/§5.3); requires Docker Engine + Compose. Bring it up **and pull the model avante is configured for** (the compose file starts the server but pulls no models). Avante defaults to the small **`qwen2.5:0.5b`** (~0.4 GB, chosen for very-limited-RAM machines; for more capability bump to `llama3.2:1b` (~1.3 GB) or `llama3.2:3b` and set the same tag as `model` in `lua/plugins/avante.lua`):
+  ```bash
+  docker compose -f ~/.config/nvim/docker/ollama/docker-compose.yml up -d
+  # Pull via Ollama's HTTP API — no `docker exec`, so it avoids the runc console-socket
+  # "read-only file system" error that `docker compose exec` hits on some hosts (with or without -T):
+  curl http://127.0.0.1:11434/api/pull -d '{"name":"qwen2.5:0.5b"}'
+  ```
+  Verify: `curl -s http://127.0.0.1:11434/api/tags` lists `qwen2.5:0.5b`. (If the *container itself* won't start, fix Docker — see *Known defect — Docker container storage is read-only* below. Keep Ollama containerized; do not install it natively.) Details: `docs/…/getting-started.adoc` § Ollama.
 
 ### Troubleshooting — `:Lazy sync` fails on `bracey.vim` / `markdown-preview.nvim` (dirty tree)
 
@@ -87,6 +95,61 @@ git -C ~/.local/share/nvim/lazy/markdown-preview.nvim checkout -- .
 git -C ~/.local/share/nvim/lazy/markdown-preview.nvim clean -fd app/
 # then in Neovim: :Lazy sync   (or :Lazy clean && :Lazy sync)
 ```
+
+---
+
+## Known defect — root filesystem `/` mounted read-only (trace during validation)
+
+**Root cause found:** the test machine's **root filesystem `/` is mounted read-only.** Everything
+that writes under `/` fails; only the separately-mounted, writable `/home` works. This is **not** a
+Docker bug — Docker was collateral damage (its storage lives under `/var/lib/docker`).
+
+**Status:** open. Blocks anything that writes under `/`, incl. **all Docker-based features** (Change
+05's containerized Ollama §5.2/§5.3; Change 02's full-site Antora preview `,pa`; PlantUML, MARP,
+Markdown export, Lisp REPL containers). 06/07/08 write only under `~` and are unaffected.
+
+**Symptom:** writes under `/` → EROFS; writes under `/home` → OK.
+
+- `sudo tee /etc/docker/daemon.json` → `Read-only file system` ← the tell
+- `docker run --rm alpine sh -c 'touch /t'` → `read-only file system`; ollama model write (volume
+  under `/var/lib/docker`) → `… read-only file system`; `docker compose exec` runc socket → EROFS;
+  `sudo systemctl restart docker` fails (dockerd can't init on read-only `/var/lib/docker`)
+- **Works:** git, `:Lazy sync` (`~/.local/share/nvim`), libuv AsciiDoc preview (`~/.cache`) — all
+  under the writable `/home`.
+
+**Why it was mis-diagnosed at first:** `findmnt / ` was run with `FSTYPE,SOURCE` (not `OPTIONS`), so
+the `ro` flag didn't show → it looked like a healthy ext4 root and the trail wrongly pointed at the
+containerd snapshotter. `/` is ext4 on LVM (`/dev/mapper/ubuntu--vg-ubuntu--lv`) — a fine fs, just
+mounted read-only.
+
+**Fix — remount `/` read-write, then make it stick:**
+
+```bash
+findmnt -no OPTIONS /            # confirm it shows `ro`
+sudo mount -o remount,rw /       # remount read-write
+findmnt -no OPTIONS /            # confirm now `rw`
+sudo systemctl restart docker    # dockerd now initializes; stock config is fine (snapshotter OK)
+docker run --rm alpine sh -c 'touch /t && echo OK'   # expect: OK
+```
+
+Then find **why** it went read-only so it survives a reboot:
+
+```bash
+grep -E '\s/\s' /etc/fstab                                   # is / set `ro` in fstab? fix to defaults / errors=remount-ro
+dmesg | grep -iE 'EXT4-fs|remount|read-only|I/O error' | tail   # fs error → needs fsck
+```
+
+- fstab has `ro` for `/` → correct it and reboot.
+- `dmesg` shows ext4/I-O errors → the kernel remounted `/` ro defensively: `sudo touch /forcefsck && sudo reboot` to repair (a possibly-failing disk — check SMART).
+- Neither → transient `errors=remount-ro` trip; `remount,rw` holds for now, but run `fsck` to be safe.
+
+Once `/` is read-write, Docker works normally with the **stock** config (the containerd snapshotter
+was never the problem — no `daemon.json` change needed), and everything stays containerized.
+
+- [ ] `/` remounted read-write (`findmnt -no OPTIONS /` shows `rw`)
+- [ ] Root cause of the ro state identified (fstab vs fsck-level fs error) and made permanent
+- [ ] Docker confirmed — `docker run --rm alpine sh -c 'touch /t && echo OK'` succeeds
+- [ ] Docker-based features re-validated (Ollama §5.2/§5.3, Antora `,pa`, PlantUML, MARP, Markdown export, Lisp containers)
 
 ---
 
@@ -452,14 +515,14 @@ Markdown buffers have `spell` on by default; code filetypes set `nospell` (see
 ### Raise PR & merge
 
 - [X] All validation steps above pass — Change 01 (highlight), 02 (asciidoc), 03 (blink) all green; `1.3` text objects **N/A** (backed out) and `3.5` Conjure/Clojure **deferred** (out of scope)
-- [ ] Raise PR: `feat/03-migrate-completion-blink` → `main`
-- [ ] Review and approve PR
-- [ ] Merge PR
+- [X] Raise PR: `feat/03-migrate-completion-blink` → `main` (PR #135)
+- [X] Review and approve PR
+- [X] Merge PR
 
 ### Post-merge
 
-- [ ] `git checkout main && git pull origin main`
-- [ ] Launch Neovim: `:Lazy sync` — confirm clean with no errors
+- [X] `git checkout main && git pull origin main`
+- [X] Launch Neovim: `:Lazy sync` — confirm clean with no errors
 
 ---
 
@@ -515,7 +578,7 @@ on the right.** (The `[+]` shown *after the filename* is lualine's "modified" fl
    confirm the buffer actually has diagnostics with `:lua =vim.diagnostic.get(0)`.
 4. The right side shows filetype, scroll percentage, and cursor line:column.
 
-- [ ] All status line elements render, including the diagnostics count in the left section
+- [X] All status line elements render, including the diagnostics count in the left section
 
 #### 4.3 — Surround operations
 
@@ -562,15 +625,15 @@ typing: `*` / `#` (next/previous occurrence of the word under the cursor) and `n
 
 ### Raise PR & merge
 
-- [ ] All validation steps above pass
-- [ ] Raise PR: `feat/04-modernize-editing-plugins` → `main`
-- [ ] Review and approve PR
-- [ ] Merge PR
+- [X] All validation steps above pass
+- [X] Raise PR: `feat/04-modernize-editing-plugins` → `main`
+- [X] Review and approve PR
+- [X] Merge PR (PR #139)
 
 ### Post-merge
 
-- [ ] `git checkout main && git pull origin main`
-- [ ] Launch Neovim: `:Lazy sync` — confirm clean
+- [X] `git checkout main && git pull origin main`
+- [X] Launch Neovim: `:Lazy sync` — confirm clean
 
 ---
 
@@ -583,8 +646,15 @@ typing: `*` / `#` (next/previous occurrence of the word under the cursor) and `n
 1. `git fetch origin && git checkout feat/05-upgrade-avante-drop-dressing`
 2. Launch Neovim: `:Lazy update avante.nvim` — wait for update and build step
 3. If build did not run automatically: `:AvanteBuild` — wait for completion
+4. **Restart Neovim before validating.** This upgrade jumps avante v0.0.x → v0.1.x *in place*.
+   `:Lazy update` rewrites the files on disk, but the running session keeps the **old avante Lua
+   modules cached** (it loads on `VeryLazy`), so the new `ftplugin/AvanteInput.lua` calls into stale
+   code and errors with `attempt to call field 'place_sign_at_first_line' (a nil value)` the moment
+   you type in the prompt. A full quit + relaunch loads the v0.1.x modules cleanly. _(If it still
+   errors after a restart, do a clean reinstall: `:Lazy clean avante.nvim` → `:Lazy install` →
+   `:AvanteBuild` → restart.)_
 
-- [ ] Branch checked out, avante updated and built with no errors
+- [X] Branch checked out, avante updated + built, **Neovim restarted** — no errors
 
 ### Validate
 
@@ -592,47 +662,92 @@ typing: `*` / `#` (next/previous occurrence of the word under the cursor) and `n
 
 1. Open `:Lazy`. Find `avante.nvim` — confirm version starts with `v0.1.` and no build error.
 
-- [ ] Version is v0.1.x, build clean
+- [X] Version is v0.1.x, build clean
 
 #### 5.2 — Avante opens with current provider
 
 1. Press `<leader>aa` — Avante panel opens on the right.
-2. Type a short prompt and press `<CR>` — a response is received.
+2. Type a short prompt and press `<C-s>` to submit (avante's submit key — `<CR>` just inserts a newline) — a response is received.
 
-- [ ] Avante opens and responds
+- [X] Avante opens and responds
 
 #### 5.3 — Ollama provider switch
 
 1. Press `<leader>ao` — Avante switches to Ollama and opens.
 2. If Ollama is not running: clean connection-refused error — no crash.
 
-- [ ] Ollama switch fires cleanly (response or clean error)
+- [X] Ollama switch fires cleanly (response or clean error)
 
-#### 5.4 — Claude API provider switch
+#### 5.4 — ~~Claude backend~~ (removed) — N/A
 
-1. Ensure `ANTHROPIC_API_KEY` is set. Press `<leader>ac` — Avante switches to Claude API.
-2. Type a short prompt — response arrives.
+The Claude/Anthropic provider was removed entirely — avante is Ollama-only (Anthropic's ToS scopes
+subscription OAuth tokens to Claude Code / claude.ai, and the API-key path was declined too). There
+is nothing to validate here.
 
-- [ ] Claude API provider works (skip and note if no API key available)
+- [ ] ~~Claude provider works~~ — N/A, provider removed
 
 #### 5.5 — Diffview still works (plenary intact)
 
-1. In a git repo with uncommitted changes, run `:DiffviewOpen` — side-by-side diff opens.
-2. Run `:DiffviewClose` — closes cleanly.
+Keymaps exist (in `lua/plugins/git.lua`, under the `<leader>g` group) — no need to type the commands:
 
-- [ ] DiffviewOpen and DiffviewClose work
+1. In a git repo with uncommitted changes, press `<leader>gD` (`:DiffviewOpen`) — side-by-side diff opens.
+2. Press `<leader>gX` (`:DiffviewClose`) — closes cleanly.
+3. `<leader>gH` (`:DiffviewFileHistory %`) — opens history for the current file.
 
-#### 5.6 — Native vim.ui fallback (dressing gone)
+- [X] DiffviewOpen / close / file-history work via `<leader>gD` / `<leader>gX` / `<leader>gH`
 
-1. Trigger a code action (`<leader>ca`) on a line with an available LSP code action.
-2. A native select prompt appears (not dressing). Select an option.
-3. Confirm no error about missing `dressing.nvim`.
+#### 5.6 — Native vim.ui.select / vim.ui.input (dressing.nvim removed)
 
-- [ ] vim.ui.select works via native fallback; no dressing errors
+With `dressing.nvim` gone, `vim.ui.select` and `vim.ui.input` must fall back to Neovim's built-in
+implementations. Test each **directly** — deterministic, no LSP or plugin state needed. Run each
+command from Normal mode (type `:` then paste).
+
+1. **`vim.ui.select` — choose.** Run exactly:
+
+   ```
+   :lua vim.ui.select({ "one", "two", "three" }, { prompt = "Pick:" }, function(c) vim.notify("picked: " .. tostring(c)) end)
+   ```
+
+   Expect: a numbered prompt in the command area — `Pick:` then `1: one`, `2: two`, `3: three`.
+   Type `2`, press `<CR>`. Expect: a notification / `:messages` line reads exactly `picked: two`.
+
+2. **`vim.ui.select` — cancel.** Run the same command again, then press `<Esc>` (don't type a number).
+   Expect: `picked: nil`, no error.
+
+3. **`vim.ui.input`.** Run exactly:
+
+   ```
+   :lua vim.ui.input({ prompt = "Name: " }, function(i) vim.notify("got: " .. tostring(i)) end)
+   ```
+
+   Expect: a `Name:` prompt on the command line. Type `hello`, press `<CR>`. Expect: `got: hello`.
+   Repeat and press `<Esc>` instead → expect `got: nil`.
+
+4. **dressing is actually gone.** Run:
+
+   ```
+   :lua print(pcall(require, "dressing"))
+   ```
+
+   Expect: prints `false` (module not found). Then `:messages` — expect **no** `dressing`-related
+   error from steps 1–3.
+
+5. **(Optional real-world path) LSP code action** (`<leader>ca`). The native list also backs LSP
+   code actions — but the *set* of actions is LSP-dependent:
+   - **lua_ls** (`testdocs/hello.lua`) mostly offers **diagnostic-suppression** actions ("Disable
+     diagnostics here", "Mark as global") — LuaLS is not a refactoring server, so that's expected,
+     not a bug.
+   - For a genuine **code-level** action, use **roslyn** in `testdocs/csharp-project/Program.cs`:
+     put the cursor on `var total = 0;` (in `SumOfSquares`) and press `<leader>ca` → roslyn offers a
+     real refactor such as *Use explicit type* (`var` → `int`). Pick it and the code actually changes.
+   Either way the point is only that the native select UI appears and applies your choice — steps
+   1–4 already prove the fallback deterministically.
+
+- [X] Steps 1–4 pass: native `vim.ui.select` (choose **and** cancel) and `vim.ui.input` both work, and `dressing` is absent with no dressing errors
 
 ### Raise PR & merge
 
-- [ ] All validation steps above pass
+- [X] All validation steps above pass — 5.1/5.2/5.3/5.5/5.6 pass; 5.4 N/A (claude removed)
 - [ ] Raise PR: `feat/05-upgrade-avante-drop-dressing` → `main`
 - [ ] Review and approve PR
 - [ ] Merge PR

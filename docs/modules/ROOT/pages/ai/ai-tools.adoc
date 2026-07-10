@@ -28,7 +28,7 @@ assistants such as Claude Code
 | xref:#research-popup[Research popup] | Free-form question popup
 | xref:#openspec[OpenSpec] | Change workflow from Neovim keymaps
 | xref:#serena[Serena MCP Server] | Symbol-aware code intelligence
-| xref:#avante[Avante] | Q&A chat with ollama or Claude
+| xref:#avante[Avante] | Q&A chat with a local ollama model
 |===
 
 '''''
@@ -206,24 +206,24 @@ uv tool install serena-agent
 == AI Research — Avante
 
 https://github.com/yetone/avante.nvim[avante.nvim] provides a Q&A chat
-interface inside Neovim. Two backends are available and can be switched
-at any time:
-
-[width="100%",cols="50%,50%",options="header",]
-|===
-|Backend |When to use
-|*ollama* (default) |Offline / air-gapped / low-latency — runs locally via Docker
-|*claude* |Online — uses the Claude API (`claude-3-5-haiku`) via `ANTHROPIC_API_KEY`
-|===
+interface inside Neovim. It is configured *Ollama-only* — an offline, local
+model with no external account or API key.
 
 [NOTE]
 ====
-*Version pin:* avante.nvim is pinned to `v0.0.27` in
-`lua/plugins/avante.lua`. The `build = "make"` step downloads prebuilt
-`.so` binaries from the GitHub release. Do not update beyond `v0.0.27`
-until a newer release publishes Linux binaries — running `make` against
-an unreleased commit produces a `"release not found"` error and avante
-will not load.
+The Claude (Anthropic) backend is intentionally *disabled*. Subscription
+OAuth tokens are scoped by Anthropic's Terms of Service to Claude Code /
+claude.ai, so driving them from a third-party tool risks a ToS violation.
+See <<claude-disabled>> to re-enable it with an API key if you accept that
+path.
+====
+
+[NOTE]
+====
+*Version:* avante.nvim is pinned to `v0.1.*` in `lua/plugins/avante.lua`
+(prebuilt Linux binaries ship from `v0.0.29+`); the `build = "make"` step
+downloads them. `dressing.nvim` has been removed — avante uses Neovim's
+native `vim.ui` for its select/input prompts.
 ====
 
 === Keymaps (global)
@@ -231,9 +231,9 @@ will not load.
 [cols=",",options="header",]
 |===
 |Key |Action
-|`++<++leader++>++aa` |Open avante with the current provider
-|`++<++leader++>++ao` |Switch to ollama provider and open avante
-|`++<++leader++>++ac` |Switch to Claude API provider and open avante
+|`++<++leader++>++aa` |Open avante with the current provider (ollama)
+|`++<++leader++>++ao` |Select the ollama provider and open avante
+|`++<++C++>++s` |Submit the prompt (inside the avante input; `++<++CR++>++` inserts a newline)
 |===
 
 === Ollama Setup
@@ -249,30 +249,43 @@ automatically on reboot):
 docker compose -f ~/.config/nvim/docker/ollama/docker-compose.yml up -d
 ----
 
-*Step 2 — Download the model into the running container* (one-time per
-model; stored in a named Docker volume so it survives container
-restarts). Pull the default 8B model (~4 GB):
+*Step 2 — Download the model* (one-time per model; stored in a named
+Docker volume so it survives container restarts). Avante's default is the
+small `qwen2.5:0.5b` (~0.4 GB), chosen so it runs on very-limited-RAM machines.
+Pull through Ollama's HTTP API rather than `docker exec` — `exec` sets up a
+runc console socket that fails on some hosts with `failed to create runc
+console socket: … read-only file system`; the API call talks straight to
+the running server and avoids that:
 
 [source,sh]
 ----
-docker compose -f ~/.config/nvim/docker/ollama/docker-compose.yml \
-  exec ollama ollama pull llama3.1:8b
+curl http://127.0.0.1:11434/api/pull -d '{"name":"qwen2.5:0.5b"}'
 ----
 
-On low-RAM machines (< 8 GB) use the smaller 3B model instead:
-
-[source,sh]
-----
-docker compose -f ~/.config/nvim/docker/ollama/docker-compose.yml \
-  exec ollama ollama pull llama3.2:3b
-----
-
-Then update `model` in `lua/plugins/avante.lua`:
+For more capability on machines with more RAM, pull a larger model
+(e.g. `llama3.2:1b` ~1.3 GB, `llama3.2:3b` ~2 GB, or `llama3.1:8b` ~4 GB) and
+set the matching tag as `model` in `lua/plugins/avante.lua`:
 
 [source,lua]
 ----
 model = "llama3.2:3b",
 ----
+
+[NOTE]
+====
+Very small models (0.5–1B) tend to loop and repeat the final paragraph. The ollama provider sets
+`repeat_penalty = 1.3` (above Ollama's `1.1` default) via `extra_request_body.options` in
+`lua/plugins/avante.lua` to curb it. Raise it further, or move to a larger model, if looping
+persists.
+====
+
+[TIP]
+====
+If the *container itself* won't start, fix Docker — this config keeps Ollama and
+the other services containerized on purpose, so don't install them natively. A
+fresh `docker run --rm alpine sh -c 'touch /t'` that fails with `read-only file
+system` points at Docker's storage/overlay layer.
+====
 
 ==== GPU Acceleration (NVIDIA)
 
@@ -299,19 +312,37 @@ If the ollama service is not running when you submit a question, avante
 will display the HTTP error in its buffer. Neovim will not crash. Start
 the service and retry.
 
-=== Claude API Backend
+[[claude-disabled]]
+=== Claude Backend (disabled)
 
-The `claude` provider talks to the Claude API and requires an
-`ANTHROPIC_API_KEY` in your environment:
+The Claude (Anthropic) provider is *not configured*. Two reasons:
 
-[source,sh]
+* *Subscription OAuth* (`auth_type = "max"`) would let avante use a Claude
+  Pro/Max plan without an API key — but Anthropic's Terms of Service scope
+  those OAuth tokens to Claude Code / claude.ai, so using them from a
+  third-party tool like avante risks a ToS violation.
+* The API-key path (`ANTHROPIC_API_KEY`) avoids that, but adds an external
+  account/billing dependency this config would rather not require.
+
+So avante stays Ollama-only. To re-enable Claude with an API key (the
+ToS-safe path), add a `claude` provider back to `lua/plugins/avante.lua` and
+a `++<++leader++>++ac` mapping:
+
+[source,lua]
 ----
-export ANTHROPIC_API_KEY='your-api-key-here'   # from https://platform.claude.com/
+providers = {
+  ollama = { --[[ ... ]] },
+  claude = {
+    endpoint = "https://api.anthropic.com",
+    model = "claude-3-5-haiku-20241022",
+    auth_type = "api",
+    api_key_name = "ANTHROPIC_API_KEY",
+  },
+},
 ----
 
-The model is set to `claude-3-5-haiku-20241022` in
-`lua/plugins/avante.lua` for cost-effectiveness; change `model` under the
-`claude` provider to use a different model.
+Then `export ANTHROPIC_API_KEY='…'` (from https://platform.claude.com/) and
+map `++<++leader++>++ac` to `require("avante.api").switch_provider("claude")`.
 
 ''''''
 
