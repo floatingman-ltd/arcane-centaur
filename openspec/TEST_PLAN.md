@@ -55,6 +55,7 @@ Complete once before any testing begins.
 - [X] Confirm a C compiler is available (nvim-treesitter compiles `fsharp`/`c_sharp` parsers from source): `cc --version` (install `build-essential` on Debian/Ubuntu if missing)
 - [X] Install **lua-language-server** (Lua LSP completions, Change 03 §3.2) — not in apt/snap on Ubuntu 24.04; download from https://github.com/LuaLS/lua-language-server/releases, extract, and put `bin/lua-language-server` on PATH. Verify: `lua-language-server --version`
 - [X] Install **fsautocomplete** (F# LSP completions, Change 03 §3.2): `dotnet tool install -g fsautocomplete` (needs the dotnet SDK above; ensure `~/.dotnet/tools` is on PATH). Verify: `fsautocomplete --version`
+- [ ] Install **ripgrep** (`rg`) — required by todo-comments.nvim's search commands for Change 06 §6.5 (`<leader>xt` / `<leader>xT`), and used by fzf-lua generally: `sudo apt install ripgrep` (Debian/Ubuntu; or `brew install ripgrep` / `sudo dnf install ripgrep`). Verify: `rg --version`
 - [X] Confirm `claude` CLI is installed and authenticated (required for Change 08): `claude --version`
 - [X] Clone the repo: `git clone git@github.com:floatingman-ltd/arcane-centaur.git ~/.config/nvim`
 - [X] Confirm initial main state loads: `nvim` → `:Lazy sync` → no errors in `:messages`
@@ -797,7 +798,7 @@ command from Normal mode (type `:` then paste).
 3. Press `<leader>xX` — panel filters to current buffer only.
 4. Press `<leader>xx` again — panel closes.
 
-- [ ] Project panel opens, entry navigation works, buffer filter works
+- [X] Project panel opens, entry navigation works, buffer filter works — **pass after the trouble.nvim fix below** (`branch = main` @ `bd67efe`)
 
 > **Defect found & fixed — trouble.nvim crashed on panel render (Neovim 0.12 API drift).**
 > Opening the panel threw, from trouble's own treesitter decoration provider:
@@ -823,19 +824,56 @@ command from Normal mode (type `:` then paste).
 
 #### 6.3 — Native diagnostic maps unchanged
 
-1. In a file with an LSP error, press `]d` / `[d` — jumps between diagnostics.
-2. Position cursor on a diagnostic. Press `<leader>e` — floating window with diagnostic text appears.
+These maps live in `lua/config/lsp.lua` and are set in `on_attach`, so they work **only in a
+buffer with an LSP attached and at least one diagnostic**. Use a Lua file — `lua_ls` (one-time
+setup) attaches automatically. Bindings: `<leader>e` = `vim.diagnostic.open_float`;
+`[d` / `]d` = `vim.diagnostic.jump({ count = -1 / 1 })`.
+
+1. Open `testdocs/hello.lua`. Confirm lua_ls is attached:
+   `:lua =vim.lsp.get_clients({ bufnr = 0 })` returns a **non-empty** list (or `:checkhealth vim.lsp`).
+2. Introduce **two** errors so there is something to jump between — on two separate blank lines
+   type each of the following (an incomplete assignment is a hard syntax error lua_ls always flags):
+
+   ```lua
+   local a =
+   local b =
+   ```
+
+   Within ~1s two red error signs appear in the sign column. Confirm the count:
+   `:lua =#vim.diagnostic.get(0)` (expect ≥ 2).
+3. Put the cursor at the top of the file. Press `]d` → jumps to the first error; `]d` again →
+   the second; `[d` → back to the previous one.
+4. With the cursor on an error line, press `<leader>e` → a floating window shows the diagnostic
+   text (e.g. *"Expected expression"* / *"unexpected symbol"*).
+5. Undo the two edits (`u`) so the buffer is clean again.
 
 - [ ] `[d`, `]d`, and `<leader>e` all behave as before
 
 #### 6.4 — TODO/FIXME highlighting
 
-1. Open `lua/plugins/treesitter.lua`. Add `-- TODO: test this`.
-2. Confirm `TODO:` is highlighted with a distinct colour and a sign appears in the sign column.
-3. Change `TODO` to `FIXME` — highlighted in a different colour.
-4. Undo both additions.
+todo-comments runs with `opts = {}` (all **defaults**, `merge_keywords = true`), so the
+recognised "magic strings" are the plugin defaults below. **Each highlights only when written as
+`KEYWORD:` (with the trailing colon) inside a comment.** Primary keyword → alternates (each
+alternate shares its primary's colour):
 
-- [ ] TODO and FIXME highlighted with distinct colours and signs
+| Keyword  | Colour           | Alternates (same colour)              |
+|----------|------------------|---------------------------------------|
+| `TODO:`  | info (blue)      | —                                     |
+| `FIX:`   | error (red)      | `FIXME:` `BUG:` `FIXIT:` `ISSUE:`     |
+| `HACK:`  | warning (yellow) | —                                     |
+| `WARN:`  | warning (yellow) | `WARNING:` `XXX:`                     |
+| `PERF:`  | default          | `OPTIM:` `PERFORMANCE:` `OPTIMIZE:`   |
+| `NOTE:`  | hint (green)     | `INFO:`                               |
+| `TEST:`  | test             | `TESTING:` `PASSED:` `FAILED:`        |
+
+1. Open `lua/plugins/treesitter.lua`. Add `-- TODO: test this` → `TODO:` shows the info colour
+   and a sign appears in the sign column.
+2. Change it to `-- FIXME: test this` → highlights in the **error** colour (FIXME maps to FIX).
+3. Spot-check the other families, e.g. `-- WARN: x`, `-- PERF: x`, `-- NOTE: x` — each takes its
+   colour from the table. A bare `TODO` with **no colon** should **not** highlight.
+4. Undo the additions.
+
+- [ ] Default keyword families highlight (colour + sign) only when written as `KEYWORD:`
 
 #### 6.5 — Todo list views
 
@@ -844,6 +882,17 @@ command from Normal mode (type `:` then paste).
 3. Press `<leader>xt` — Trouble panel opens showing todo comments. Entry from step 1 appears.
 
 - [ ] fzf-lua picker and Trouble panel both list todo comments
+
+> **Blocked on the test machine — ripgrep (`rg`) not installed (not a config defect).** Both
+> `<leader>xt` (`:TodoTrouble`) and `<leader>xT` (`:TodoFzfLua`) search the project for todo
+> comments via **ripgrep**; without it trouble throws
+> `.../trouble/view/section.lua:109: Vim:rg was not found on your path`. **Fix:** install ripgrep,
+> then re-run 6.5:
+> ```bash
+> sudo apt install ripgrep      # Debian/Ubuntu; or: brew install ripgrep / sudo dnf install ripgrep
+> rg --version                  # confirm on PATH
+> ```
+> (Added to *One-Time Test Machine Setup* above — it was missing on the replacement test machine.)
 
 #### 6.6 — vim-unimpaired tag maps intact
 
