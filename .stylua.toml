@@ -1,0 +1,4 @@
+# Match the repo's existing Lua style so format-on-save (conform → stylua) stops
+# flipping files to stylua's default (tabs). All committed Lua here is 2-space.
+indent_type = "Spaces"
+indent_width = 2

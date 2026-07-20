@@ -148,49 +148,6 @@ _Global keymaps defined in `lua/keymaps.lua`. Tree plugin configured in
 
 '''''
 
-== Treesitter Text Objects (nvim-treesitter-textobjects)
-
-Text objects and motions are available in **F#, Haskell, C#, and Lua** buffers.
-They are **disabled** in Lisp-family buffers (lisp/clojure/scheme/fennel/janet)
-where vim-sexp provides structural `af`/`if` form objects instead.
-
-=== Select objects
-
-Use with any operator (`d`, `c`, `y`, `v`):
-
-[cols=",",options="header",]
-|===
-|Keys |Object
-|`af` / `if` |Outer / inner function
-|`ac` / `ic` |Outer / inner class
-|`aa` / `ia` |Outer / inner argument (parameter)
-|===
-
-Examples: `daf` deletes a whole function; `vif` selects the function body; `cia`
-changes an argument.
-
-=== Move motions
-
-Jump between functions; each jump is added to the jumplist (`Ctrl-o` / `Ctrl-i`
-to navigate).
-
-[cols=",",options="header",]
-|===
-|Keys |Action
-|`++]++f` |Next function start
-|`++[++f` |Previous function start
-|`++]++F` |Next function end
-|`++[++F` |Previous function end
-|===
-
-NOTE: Class motions (`++]++c` / `++[++c`) are intentionally absent — those keys
-are reserved for Vim's built-in diff-mode change navigation.
-
-_Plugin: `nvim-treesitter/nvim-treesitter-textobjects`, configured in
-`lua/plugins/treesitter.lua`._
-
-'''''
-
 == Unimpaired (vim-unimpaired)
 
 vim-unimpaired provides pairs of bracket mappings — `++[++` for
@@ -219,6 +176,26 @@ vim-unimpaired provides pairs of bracket mappings — `++[++` for
 |`++[++l` |Previous location list entry
 |`++]++l` |Next location list entry
 |===
+
+The stepping keys only move *through* entries — you fill the list first with a
+command. Common real-world producers:
+
+[cols="1,2",options="header",]
+|===
+|Command |What lands in the quickfix list
+|`gr` (LSP references) |Every use of the symbol under the cursor. Walk the call
+sites with `++]++q` before renaming or deleting it.
+|`:lua vim.diagnostic.setqflist()` |All LSP errors/warnings across loaded buffers;
+step through them with `++]++q` and fix each in turn.
+|`:grep {pat}` / `:vimgrep /{pat}/ **/*.lua` |Project-wide text search. Review hits
+with `++]++q`, then apply one edit to every match with `:cdo s/old/new/g \| update`.
+|`:make` |Compiler / build errors parsed via `errorformat` — jump straight to each
+failing line.
+|===
+
+TIP: To jump to the next/previous *occurrence of the word under the cursor* — a
+different job — use Vim's built-in `++*++` / `++#++` and `n` / `N` (no list
+needed). `++]++d` / `++[++d` step between LSP diagnostics.
 
 === Argument list
 
