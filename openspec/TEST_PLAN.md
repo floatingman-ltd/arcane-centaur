@@ -759,14 +759,14 @@ command from Normal mode (type `:` then paste).
 ### Raise PR & merge
 
 - [X] All validation steps above pass — 5.1/5.2/5.3/5.5/5.6 pass; 5.4 N/A (claude removed)
-- [ ] Raise PR: `feat/05-upgrade-avante-drop-dressing` → `main`
-- [ ] Review and approve PR
-- [ ] Merge PR
+- [X] Raise PR: `feat/05-upgrade-avante-drop-dressing` → `main` (PR #140)
+- [X] Review and approve PR
+- [X] Merge PR (PR #140)
 
 ### Post-merge
 
-- [ ] `git checkout main && git pull origin main`
-- [ ] Launch Neovim: `:Lazy sync` — confirm clean
+- [X] `git checkout main && git pull origin main`
+- [X] Launch Neovim: `:Lazy sync` — confirm clean
 
 ---
 
