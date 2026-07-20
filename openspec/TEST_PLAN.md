@@ -98,15 +98,23 @@ git -C ~/.local/share/nvim/lazy/markdown-preview.nvim clean -fd app/
 
 ---
 
-## Known defect — root filesystem `/` mounted read-only (trace during validation)
+## Resolved defect (runbook retained) — root filesystem `/` mounted read-only
 
-**Root cause found:** the test machine's **root filesystem `/` is mounted read-only.** Everything
-that writes under `/` fails; only the separately-mounted, writable `/home` works. This is **not** a
-Docker bug — Docker was collateral damage (its storage lives under `/var/lib/docker`).
+> **Status: RESOLVED (2026-07-13) — mitigated by replacing the test machine.** The original test
+> machine suffered a **catastrophic HDD failure (the swap partition died)**, which is what had
+> forced `/` read-only. It has been retired and replaced; on the new test machine `/` mounts
+> read-write and all Docker-based features work normally.
+>
+> **This section is kept as a runbook** in case a read-only `/` recurs on any future machine — the
+> diagnosis and fix below still apply. It no longer blocks validation.
 
-**Status:** open. Blocks anything that writes under `/`, incl. **all Docker-based features** (Change
-05's containerized Ollama §5.2/§5.3; Change 02's full-site Antora preview `,pa`; PlantUML, MARP,
-Markdown export, Lisp REPL containers). 06/07/08 write only under `~` and are unaffected.
+**Root cause found:** the (now-retired) test machine's **root filesystem `/` was mounted read-only.**
+Everything that wrote under `/` failed; only the separately-mounted, writable `/home` worked. This
+was **not** a Docker bug — Docker was collateral damage (its storage lives under `/var/lib/docker`).
+
+**Impact (historical):** blocked anything that writes under `/`, incl. **all Docker-based features**
+(Change 05's containerized Ollama §5.2/§5.3; Change 02's full-site Antora preview `,pa`; PlantUML,
+MARP, Markdown export, Lisp REPL containers). 06/07/08 write only under `~` and were unaffected.
 
 **Symptom:** writes under `/` → EROFS; writes under `/home` → OK.
 
@@ -145,6 +153,9 @@ dmesg | grep -iE 'EXT4-fs|remount|read-only|I/O error' | tail   # fs error → n
 
 Once `/` is read-write, Docker works normally with the **stock** config (the containerd snapshotter
 was never the problem — no `daemon.json` change needed), and everything stays containerized.
+
+**Recovery checklist — only if a read-only `/` recurs on some future machine** (not pending work; the
+current test machine is unaffected):
 
 - [ ] `/` remounted read-write (`findmnt -no OPTIONS /` shows `rw`)
 - [ ] Root cause of the ro state identified (fstab vs fsck-level fs error) and made permanent
@@ -748,14 +759,14 @@ command from Normal mode (type `:` then paste).
 ### Raise PR & merge
 
 - [X] All validation steps above pass — 5.1/5.2/5.3/5.5/5.6 pass; 5.4 N/A (claude removed)
-- [ ] Raise PR: `feat/05-upgrade-avante-drop-dressing` → `main`
-- [ ] Review and approve PR
-- [ ] Merge PR
+- [X] Raise PR: `feat/05-upgrade-avante-drop-dressing` → `main` (PR #140)
+- [X] Review and approve PR
+- [X] Merge PR (PR #140)
 
 ### Post-merge
 
-- [ ] `git checkout main && git pull origin main`
-- [ ] Launch Neovim: `:Lazy sync` — confirm clean
+- [X] `git checkout main && git pull origin main`
+- [X] Launch Neovim: `:Lazy sync` — confirm clean
 
 ---
 
