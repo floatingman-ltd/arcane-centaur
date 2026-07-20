@@ -1,7 +1,12 @@
 return {
   {
     "folke/trouble.nvim",
-    version = "*",
+    -- Track `main`, not the latest release: the Neovim 0.12 decoration-provider
+    -- fixes (upstream #656/#661 — `on_line` → `on_range`) are on `main` only;
+    -- the newest tag (v3.7.1) still calls the removed `TSHighlighter._on_line`
+    -- and crashes when the panel renders. Revert to `version = "*"` once a
+    -- release ≥ 3.7.2 ships the fix. lazy-lock.json pins the exact commit.
+    branch = "main",
     cmd = "Trouble",
     opts = {},
     keys = {

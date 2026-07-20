@@ -799,6 +799,28 @@ command from Normal mode (type `:` then paste).
 
 - [ ] Project panel opens, entry navigation works, buffer filter works
 
+> **Defect found & fixed — trouble.nvim crashed on panel render (Neovim 0.12 API drift).**
+> Opening the panel threw, from trouble's own treesitter decoration provider:
+> ```
+> Decoration provider "line" (ns=trouble.treesitter):
+> Lua: .../trouble.nvim/lua/trouble/view/treesitter.lua:18: attempt to call a nil value
+> ```
+> **Root cause:** trouble **v3.7.1** registers `on_line = wrap("_on_line")` and calls
+> `vim.treesitter.highlighter._on_line`. Neovim **0.12** refactored the highlighter and
+> **removed `_on_line`** (replaced by `_on_range`; `_on_win` remains), so the lookup is
+> `nil` → crash on the `on_line` decoration callback. Same 0.12-API-drift family as the
+> treesitter-master issue.
+> **Upstream already fixed it** (folke #656/#661): `main` branches on
+> `if TSHighlighter._on_range then` (uses `on_range` on 0.12, `on_line` only on older
+> Neovim). The fix is **not in any tagged release** — newest tag is v3.7.1 (our pin), so
+> `version = "*"` can't reach it.
+> **Fix applied (this branch):** `lua/plugins/trouble.lua` now tracks `branch = "main"`
+> (was `version = "*"`); `lazy-lock.json` bumped to `bd67efe` (includes #656/#661). Revert
+> to `version = "*"` once a release ≥ 3.7.2 ships the fix.
+> **Re-test on the test machine:** `:Lazy sync` (or `:Lazy update trouble.nvim`) → confirm
+> trouble.nvim is at `bd67efe` / branch `main` in `:Lazy` → **restart Neovim** → re-run 6.2.
+> If it still errors, force a clean checkout: `:Lazy clean trouble.nvim` → `:Lazy install` → restart.
+
 #### 6.3 — Native diagnostic maps unchanged
 
 1. In a file with an LSP error, press `]d` / `[d` — jumps between diagnostics.
