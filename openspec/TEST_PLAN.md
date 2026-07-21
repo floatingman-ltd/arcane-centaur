@@ -1141,16 +1141,33 @@ plus `haskell-debug-adapter`; open a real cabal/stack project; then:
 
 #### 7.6 — Existing .NET maps unaffected
 
-Confirms dap/easy-dotnet did not disturb the iron REPL or Roslyn LSP maps.
+Confirms dap/easy-dotnet did not disturb the iron REPL or Roslyn LSP maps. **The iron
+`<localleader>s*` maps are bound in the code buffer** (via the ftplugin's `maplocalleader = ","`)
+and send code TO the REPL — they are not active inside the REPL terminal itself.
 
-1. **iron REPL** — in `testdocs/csharp-project/Program.cs`, put the cursor on a line and press
-   `<localleader>sl` (send line). A REPL split opens at the bottom (`csharprepl` for C#) and
-   evaluates the line; `<localleader>sq` quits it. (Needs `csharprepl` on PATH — see Prerequisites.)
-   Repeat in `testdocs/fsharp-project/Program.fs` (`dotnet fsi`).
-2. **Roslyn LSP nav** — in the C# buffer, `gd` (definition), `K` (hover), and `gr` (references) all
-   work via the single Roslyn client from 7.2.
+1. **iron REPL** — in `testdocs/csharp-project/Program.cs`, cursor on a line, `<localleader>sl`
+   (send line) opens a **bottom split** REPL and sends the line. Move into it with `<C-j>` or
+   `:IronFocus`, then `i` to type. `csharprepl` (C#) is a TUI — drive it by typing directly;
+   `dotnet fsi` (F#, in `Program.fs`) evaluates a submission only after `;;` (e.g. `1 + 1 ;;`).
+   Quit with `exit` inside the REPL, `<localleader>sq` from the code buffer, or `:IronHide`.
+2. **Roslyn LSP nav** — in the C# buffer, `gd` (definition), `K` (hover), and `gr` (references,
+   opens the quickfix list) all work via the single Roslyn client from 7.2.
 
-- [ ] iron REPL and LSP navigation intact
+- [X] iron REPL and LSP navigation intact — LSP nav works; iron REPL works after the fixes below
+
+> **Pre-existing iron REPL defects fixed here (none caused by change 07 — it never touched iron):**
+> - **F# REPL was broken.** The command was `dotnet fsi --stdin`; `--stdin` is not a valid fsi
+>   option (`error FS0243`), so the REPL exited the instant it opened. Fixed → `dotnet fsi`.
+> - **REPL opened as a floating window** (`iron.view.bottom(40)`) — overlaid the code and couldn't be
+>   reached by window motions (only `:IronFocus`). Fixed → bottom split (`iron.view.split.botright(15)`),
+>   reachable with `<C-j>`.
+> - **csharprepl rendered invisible** (its truecolor VisualStudio_Dark theme). Fixed → launch with
+>   `--useTerminalPaletteTheme` so it uses the terminal's palette.
+>
+> **Known limitation (not fixed):** csharprepl is a full-screen TUI (PrettyPrompt) that does not
+> reliably submit on iron's injected `<CR>`, so `<localleader>sl` *sends* but does not auto-run the
+> C# line — type in it directly (`:IronFocus`). F# `dotnet fsi` runs fine via `,sl` + a trailing
+> `;;`. A plainer C# REPL would send-to-repl better — candidate for a future iron-REPL cleanup.
 
 ### Raise PR & merge
 
