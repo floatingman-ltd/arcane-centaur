@@ -782,7 +782,7 @@ command from Normal mode (type `:` then paste).
 1. `git fetch origin && git checkout feat/06-add-diagnostics-todo-panel`
 2. Launch Neovim: `:Lazy sync` — wait for completion
 
-- [ ] Branch checked out, `:Lazy sync` complete; trouble.nvim and todo-comments.nvim listed in `:Lazy`
+- [X] Branch checked out, `:Lazy sync` complete; trouble.nvim and todo-comments.nvim listed in `:Lazy`
 
 ### Validate
 
@@ -791,7 +791,7 @@ command from Normal mode (type `:` then paste).
 1. Open `:Lazy`. Search for `trouble.nvim` — confirm installed.
 2. Search for `todo-comments.nvim` — confirm installed.
 
-- [ ] Both plugins listed as installed with no errors
+- [X] Both plugins listed as installed with no errors
 
 #### 6.2 — Trouble diagnostic panels
 
@@ -883,7 +883,7 @@ alternate shares its primary's colour):
 2. Press `<Esc>` to close.
 3. Press `<leader>xt` — Trouble panel opens showing todo comments. Entry from step 1 appears.
 
-- [ ] fzf-lua picker and Trouble panel both list todo comments
+- [X] fzf-lua picker and Trouble panel both list todo comments — pass (both list todos; no errors after installing `rg` + `fzf`)
 
 > **Blocked on the test machine — two external binaries missing (not config defects).** The
 > replacement test machine lacked both tools these maps shell out to:
@@ -927,11 +927,11 @@ definitions across `lua/config/`).
    - `E428: Cannot go beyond last matching tag` / `E425: Cannot go before first matching tag` at the
      list ends is **normal** — still tag navigation, not a mapping failure.
 
-- [ ] `]t` / `[t` do tag navigation (vim-unimpaired `:tnext`/`:tprevious`), not todo navigation
+- [X] `]t` / `[t` do tag navigation (vim-unimpaired `:tnext`/`:tprevious`), not todo navigation
 
 ### Raise PR & merge
 
-- [ ] All validation steps above pass
+- [X] All validation steps above pass — 6.1–6.6 all green (6.2 after the trouble.nvim `branch=main` fix; 6.5 after installing `rg`+`fzf`; usage documented in `code-intelligence.adoc`)
 - [ ] Raise PR: `feat/06-add-diagnostics-todo-panel` → `main`
 - [ ] Review and approve PR
 - [ ] Merge PR
