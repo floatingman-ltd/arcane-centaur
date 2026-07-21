@@ -166,19 +166,36 @@ Format-on-save is enabled via `conform.nvim` using the fsautocomplete formatter.
 ---
 
 [[workflow]]
+[[debugging]]
 == Debugging (nvim-dap + netcoredbg)
 
 Breakpoint debugging for C# and F# is provided by https://github.com/mfussenegger/nvim-dap[nvim-dap] +
-https://github.com/rcarriga/nvim-dap-ui[nvim-dap-ui] with the https://github.com/samsung/netcoredbg[netcoredbg]
-adapter auto-registered by easy-dotnet.
+https://github.com/rcarriga/nvim-dap-ui[nvim-dap-ui] with the https://github.com/Samsung/netcoredbg[netcoredbg]
+adapter, which easy-dotnet auto-registers with nvim-dap once both are loaded (there is no
+hand-written `dap.adapters` entry — a session therefore only starts from a `.cs`/`.fsharp` buffer,
+where easy-dotnet is loaded).
 
 === Prerequisites
 
-Install netcoredbg as a .NET global tool:
+`netcoredbg` is *not* a NuGet / `dotnet tool` package (there is no `dotnet tool install -g netcoredbg`).
+Download the prebuilt binary from the
+https://github.com/Samsung/netcoredbg/releases[Samsung/netcoredbg releases] and put it on your `$PATH`.
+
+*Linux / WSL2 (x64):*
 
 [source,sh]
 ----
-dotnet tool install -g netcoredbg
+# Resolve the latest release tag, download the linux-amd64 build, and extract it
+NCDBG_VER=$(curl -s https://api.github.com/repos/Samsung/netcoredbg/releases/latest \
+  | grep '"tag_name"' | cut -d'"' -f4)
+curl -L "https://github.com/Samsung/netcoredbg/releases/download/${NCDBG_VER}/netcoredbg-linux-amd64.tar.gz" \
+  -o /tmp/netcoredbg.tar.gz
+mkdir -p ~/.local/share/netcoredbg
+tar -xzf /tmp/netcoredbg.tar.gz -C ~/.local/share/netcoredbg/
+
+# Add to your shell rc (~/.bashrc or ~/.zshrc), then reload:
+echo 'export PATH="$PATH:$HOME/.local/share/netcoredbg"' >> ~/.bashrc
+source ~/.bashrc
 ----
 
 Verify it is on your `$PATH`:
@@ -187,6 +204,12 @@ Verify it is on your `$PATH`:
 ----
 netcoredbg --version
 ----
+
+[NOTE]
+====
+If `netcoredbg --version` is not found afterward, the tarball extracted into a nested
+`netcoredbg/` subdirectory — point `PATH` at `~/.local/share/netcoredbg/netcoredbg` instead.
+====
 
 === Debug Keymaps
 
@@ -374,6 +397,9 @@ To pin a specific version instead of auto-resolving the newest, set
 |Dependency |Purpose |Install hint
 |*.NET SDK ≥ 8* |C# and F# compiler, `dotnet fsi` REPL |https://dotnet.microsoft.com/download
 |*Neovim ≥ 0.12* |Required by roslyn.nvim |See xref:getting-started.adoc[Getting Started]
+|*Roslyn LSP* |C# language server (roslyn.nvim) |<<setup,Installing the Roslyn Language Server>>
+|*netcoredbg* |C#/F# debug adapter (nvim-dap) |<<debugging,Debugging § Prerequisites>>
+|*`fzf`* |easy-dotnet project/test picker |`sudo apt install fzf` (or brew/dnf)
 |===
 
 === Installing .NET SDK
