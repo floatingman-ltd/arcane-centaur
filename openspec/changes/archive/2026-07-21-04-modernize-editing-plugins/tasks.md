@@ -17,12 +17,12 @@
 
 ## 4. Validation
 
-- [ ] 4.1 `:Lazy sync` — confirm `vim-airline`, `vim-surround`, `vim-sensible`, `vim-commentary` are removed and `lualine.nvim`, `nvim-surround` install without errors.
-- [ ] 4.2 Confirm the lualine statusline renders mode, git branch, diff hunk counts, diagnostics, filetype, and cursor position.
-- [ ] 4.3 Confirm surround ops: `ysiw"` adds quotes, `cs"'` changes them, `ds"` deletes them, and `.` repeats the last surround.
-- [ ] 4.4 Confirm native commenting: `gcc` toggles the current line, `gc` + a motion toggles a range, both dot-repeatable.
-- [ ] 4.5 Confirm `vim-unimpaired` still works and dot-repeats (e.g. `yos` toggles spell, `]q`/`[q` walk the quickfix).
-- [ ] 4.6 Confirm no startup errors and no missing-option regressions from removing vim-sensible.
+- [x] 4.1 `:Lazy sync` — confirm `vim-airline`, `vim-surround`, `vim-sensible`, `vim-commentary` are removed and `lualine.nvim`, `nvim-surround` install without errors.
+- [x] 4.2 Confirm the lualine statusline renders mode, git branch, diff hunk counts, diagnostics, filetype, and cursor position.
+- [x] 4.3 Confirm surround ops: `ysiw"` adds quotes, `cs"'` changes them, `ds"` deletes them, and `.` repeats the last surround.
+- [x] 4.4 Confirm native commenting: `gcc` toggles the current line, `gc` + a motion toggles a range, both dot-repeatable.
+- [x] 4.5 Confirm `vim-unimpaired` still works and dot-repeats (e.g. `yos` toggles spell, `]q`/`[q` walk the quickfix).
+- [x] 4.6 Confirm no startup errors and no missing-option regressions from removing vim-sensible.
 - [x] 4.7 Run Lua syntax check: `find . -name '*.lua' -print0 | xargs -0 luac -p`.
 
 ## 5. Documentation

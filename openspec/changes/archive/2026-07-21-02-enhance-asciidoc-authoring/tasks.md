@@ -17,11 +17,11 @@
 
 ## 4. Validation
 
-- [ ] 4.1 `:Lazy sync` — vim-asciidoctor and markview install with no errors.
-- [ ] 4.2 Open a `.adoc` file cold (first of the session): `:set filetype?` → `asciidoctor`; syntax is highlighted; sections fold; a `[source,lua]` block highlights as Lua.
-- [ ] 4.3 Confirm `<localleader>p`/`pp` (Docker HTML) and `<localleader>pa` (Antora) still fire.
-- [ ] 4.4 Toggle markview (`<localleader>mv`): rendered view appears; toggle again restores raw markup.
-- [ ] 4.5 Open a `.md` file: markview does NOT activate; markdown-preview/glow still work.
+- [x] 4.1 `:Lazy sync` — vim-asciidoctor installs with no errors. _(markview deferred per 3.3; not installed.)_ (TEST_PLAN §2.1)
+- [x] 4.2 Open a `.adoc` file cold (first of the session): `:set filetype?` → `asciidoctor`; syntax is highlighted; sections fold; a `[source,lua]` block highlights as Lua. (TEST_PLAN §2.2)
+- [x] 4.3 Confirm `<localleader>p`/`pp` (Docker HTML) and `<localleader>pa` (Antora) still fire. (TEST_PLAN §2.3)
+- [x] 4.4 ~~Toggle markview (`<localleader>mv`): rendered view appears; toggle again restores raw markup.~~ — N/A: markview deferred (3.3); validated instead that markview is **absent** from `:Lazy` (TEST_PLAN §2.4).
+- [x] 4.5 Open a `.md` file: markview does not activate (not installed); markdown-preview/glow still work. (TEST_PLAN §2.4)
 - [x] 4.6 `grep -rn asciidoc lua/ after/` shows no stale `asciidoc`-keyed logic.
 - [x] 4.7 `find . -name '*.lua' -print0 | xargs -0 luac -p`.
 

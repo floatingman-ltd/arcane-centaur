@@ -15,12 +15,12 @@
 
 ## 4. Validation
 
-- [ ] 4.1 `:Lazy sync` — trouble.nvim and todo-comments.nvim install cleanly.
-- [ ] 4.2 In a file with LSP diagnostics: `<leader>xx` opens the project panel, `<leader>xX` the buffer view; selecting an entry jumps to it.
-- [ ] 4.3 Confirm `[d`/`]d`/`<leader>e` are unchanged.
-- [ ] 4.4 Add `-- TODO:` / `-- FIXME:` comments: confirm highlighting + signs.
-- [ ] 4.5 `<leader>xT` lists todos via fzf-lua; `<leader>xt` lists them in trouble.
-- [ ] 4.6 Confirm vim-unimpaired `]t`/`[t` still do tag navigation.
+- [x] 4.1 `:Lazy sync` — trouble.nvim and todo-comments.nvim install cleanly.
+- [x] 4.2 In a file with LSP diagnostics: `<leader>xx` opens the project panel, `<leader>xX` the buffer view; selecting an entry jumps to it.
+- [x] 4.3 Confirm `[d`/`]d`/`<leader>e` are unchanged.
+- [x] 4.4 Add `-- TODO:` / `-- FIXME:` comments: confirm highlighting + signs.
+- [x] 4.5 `<leader>xT` lists todos via fzf-lua; `<leader>xt` lists them in trouble.
+- [x] 4.6 Confirm vim-unimpaired `]t`/`[t` still do tag navigation.
 - [x] 4.7 `find . -name '*.lua' -print0 | xargs -0 luac -p` — passes clean.
 
 ## 5. Documentation
