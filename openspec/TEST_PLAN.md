@@ -988,7 +988,7 @@ entry, so a debug session only starts from a `.cs`/`.fsharp` buffer (where easy-
 3. Open a C# file once — `:e testdocs/csharp-project/Program.cs` — so the `ft = { "cs", "fsharp" }`
    plugins (roslyn.nvim, easy-dotnet) load.
 
-- [ ] Branch checked out, `:Lazy sync` clean; `nvim-dap`, `nvim-dap-ui`, `nvim-nio`, `easy-dotnet.nvim` listed in `:Lazy`
+- [X] Branch checked out, `:Lazy sync` clean; `nvim-dap`, `nvim-dap-ui`, `nvim-nio`, `easy-dotnet.nvim` listed in `:Lazy`
 
 ### Validate
 
@@ -1001,7 +1001,7 @@ entry, so a debug session only starts from a `.cs`/`.fsharp` buffer (where easy-
      pass here, not a failure. `easy-dotnet.nvim` loads on `ft = { cs, fsharp }`.
 2. Run `:messages` — no plugin load errors.
 
-- [ ] All four plugins installed cleanly (loaded lazily is fine)
+- [X] All four plugins installed cleanly (loaded lazily is fine)
 
 #### 7.2 — Exactly one Roslyn LSP client
 
@@ -1016,7 +1016,26 @@ server — roslyn.nvim owns the LSP. This step proves there is exactly one.
    - **Two** entries → easy-dotnet started its own Roslyn (the `lsp.enabled = false` opt regressed) —
      a configuration error. Do not proceed; note it.
 
-- [ ] Exactly one Roslyn client returned
+- [X] Exactly one Roslyn client returned — **pass after the roslyn cmd fix below**
+
+> **Defect found & fixed — Roslyn server exited 1 on attach (`Client roslyn quit with exit code 1`).**
+> `:LspLog` showed the server rejecting its own launch:
+> ```
+> "Microsoft.CodeAnalysis.LanguageServer" "stderr" "Option '--logLevel' is required."
+> "Microsoft.CodeAnalysis.LanguageServer" "stderr" "Option '--extensionLogDirectory' is required."
+> ```
+> **Root cause:** roslyn.nvim (`main`) builds its cmd as `{ get_roslyn_lsp_path(), "--stdio" }`, which
+> targets a `roslyn-language-server` **wrapper** that supplies those args internally. Against the raw
+> `Microsoft.CodeAnalysis.LanguageServer` this repo installs, the two **REQUIRED** args
+> (`--logLevel`, `--extensionLogDirectory`) are missing, so the server exits 1. (The raw server *does*
+> support `--stdio` — that flag was not the problem.) This surfaced now because C# LSP attach is
+> validated end-to-end here for the first time.
+> **Fix (this branch):** `lua/config/lsp.lua` overrides the `roslyn` `cmd` with the full invocation
+> (`--stdio --logLevel Information --extensionLogDirectory <nvim-log>/roslyn`). roslyn.nvim only ever
+> sets `capabilities` (config.lua), never `cmd`, so the override holds. Verified: the server emits
+> `[Program] Language server initialized` over stdio and exactly one client attaches.
+> **Re-test:** restart Neovim → open `testdocs/csharp-project/Program.cs` → wait for attach →
+> `:lua =vim.lsp.get_clients({ name = "roslyn" })` returns exactly one client.
 
 #### 7.3 — Breakpoint and step debugging
 
