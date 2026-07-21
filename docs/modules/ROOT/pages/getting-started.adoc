@@ -218,12 +218,27 @@ docker compose -f ~/.config/nvim/docker/markserv/docker-compose.yml down
 Compose file: `docker/ollama/docker-compose.yml`
 
 Runs a local Ollama LLM server used by Avante and other AI tools for offline model inference.
+The compose file starts the server but pulls *no* models — pull the one Avante is configured to
+use (see `lua/plugins/avante.lua`) after the container is up, or Avante's default provider will
+connect but return nothing. Avante defaults to the small `qwen2.5:0.5b` (~0.4 GB) for very-limited-RAM
+machines; bump to `llama3.2:1b` (~1.3 GB) or `llama3.2:3b` and set the matching `model` in the config.
 
 [source,sh]
 ----
 docker compose -f ~/.config/nvim/docker/ollama/docker-compose.yml up -d
+# Pull the model Avante's default (ollama) provider expects. Pull through Ollama's HTTP API
+# rather than `docker compose exec` — exec sets up a runc console socket that fails on some
+# hosts with "failed to create runc console socket: … read-only file system"; the API call
+# talks straight to the running server and sidesteps it:
+curl http://127.0.0.1:11434/api/pull -d '{"name":"qwen2.5:0.5b"}'
+# Confirm it is served on the endpoint Avante uses:
+curl -s http://127.0.0.1:11434/api/tags   # should list qwen2.5:0.5b
 docker compose -f ~/.config/nvim/docker/ollama/docker-compose.yml down
 ----
+
+TIP: If the *container itself* won't start, fix Docker rather than bypassing it — this config keeps
+Ollama and the other services containerized on purpose. A fresh `docker run --rm alpine sh -c 'touch
+/t'` that fails with `read-only file system` points at Docker's storage/overlay layer.
 
 ---
 
@@ -272,6 +287,21 @@ nvm alias default lts/*
 # Verify
 node --version
 npm --version
+----
+
+=== Universal Ctags (optional — enables tag navigation)
+
+A *soft dependency*: nothing in the configuration invokes it, but installing
+https://github.com/universal-ctags/ctags[universal-ctags] lets you generate a `tags` index so
+Vim's tag navigation works — `]t` / `[t` (vim-unimpaired) and `<C-]>` (jump to definition). Without
+a `tags` file those maps simply have nothing to jump to; they do not error.
+
+[source,sh]
+----
+sudo apt install universal-ctags   # Debian/Ubuntu; or: brew install universal-ctags
+
+# Generate the index at the project root (the generated `tags` file is gitignored)
+ctags -R
 ----
 
 ---

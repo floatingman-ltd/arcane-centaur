@@ -39,7 +39,7 @@ Lazy-loading is filetype-driven: plugins use lazy.nvim's `ft = { ... }` field so
 ## AI assistance
 
 - **`lua/config/claude_cli.lua`** — `:ClaudeSuggest` / `:ClaudeExplain` (`<leader>gcs` / `<leader>gce`). These shell out to the `claude` CLI via `claude -p <prompt>` (`vim.system`) and show the result in a floating scratch window — they rely on Claude Code's own auth and the `claude` binary being on `$PATH`, **not** on `ANTHROPIC_API_KEY`.
-- **`lua/plugins/avante.lua`** — Avante.nvim chat: `<leader>aa` open with current provider, `<leader>ac` Claude API provider (needs `ANTHROPIC_API_KEY`), `<leader>ao` offline Ollama (default).
+- **`lua/plugins/avante.lua`** — Avante.nvim chat, **Ollama-only** (offline, small `qwen2.5:0.5b` model): `<leader>aa` open with current provider, `<leader>ao` (re)select ollama and open. The Claude/Anthropic provider is intentionally disabled (subscription-OAuth ToS risk); re-enable via an API key per the avante guide if needed.
 
 GitHub Copilot and OpenCode have been removed in favour of Claude; the OpenSpec/feature workflows now live as Claude Code skills in `.claude/skills/` (see below).
 
@@ -53,7 +53,7 @@ The OpenSpec and project workflows are also available as Claude Code skills in *
 
 **AsciiDoc under `docs/modules/ROOT/pages/` is the source of truth** (Antora site). The only Markdown in the repo is the root `readme.md` (metadata + link to the hosted site). Pages are organized by area: `languages/`, `editor/`, `ai/`, `content/`, `tooling/`, `learning/`. Each guide typically has a matching `*-cheatsheet.adoc`. The nav is `docs/modules/ROOT/nav.adoc` — add an `xref:` entry there when you add a page.
 
-AsciiDoc filetype in-editor is **`asciidoctor`** (not `asciidoc`) — registered by `lua/plugins/asciidoc.lua` via `vim.filetype.add`. All `after/ftplugin/` and filetype-keyed config must use `asciidoctor`. Syntax/folding: `habamax/vim-asciidoctor`. In-buffer preview toggle (opt-in, off by default): `OXY2DEV/markview.nvim` via `<localleader>mv`. Docker/Antora preview: `after/ftplugin/asciidoctor.lua`.
+AsciiDoc filetype in-editor is **`asciidoctor`** (not `asciidoc`) — registered by `lua/plugins/asciidoc.lua` via `vim.filetype.add`. All `after/ftplugin/` and filetype-keyed config must use `asciidoctor`. Syntax/folding: `habamax/vim-asciidoctor`. In-buffer `markview.nvim` rendering was **deferred** (it needs `cathaysia/tree-sitter-asciidoc`, which is absent from nvim-treesitter master) — there is no `markview`/`<localleader>mv` toggle; re-enable when the grammar is available. Docker/Antora preview: `after/ftplugin/asciidoctor.lua`.
 
 **User-visible changes must update the matching docs** (new/changed plugin → the relevant `languages|editor|ai|content|tooling` guide + cheatsheet; new keybinding → the relevant cheatsheet; new language → a new guide + cheatsheet + nav entries).
 

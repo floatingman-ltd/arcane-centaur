@@ -52,10 +52,15 @@ return {
       },
       cmdline = {
         enabled = true,
+        -- The main keymap uses preset "none", which cmdline would otherwise
+        -- inherit (leaving no keys to navigate/accept). Give cmdline its own
+        -- preset and auto-show the menu so `:` command/path completion appears.
+        keymap = { preset = "cmdline" },
+        completion = { menu = { auto_show = true } },
         sources = function()
           local t = vim.fn.getcmdtype()
           if t == "/" or t == "?" then return { "buffer" } end
-          if t == ":" then return { "path", "cmdline" } end
+          if t == ":" then return { "cmdline", "path" } end
           return {}
         end,
       },

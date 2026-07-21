@@ -172,8 +172,7 @@ All plugins are managed by https://github.com/folke/lazy.nvim[lazy.nvim]. Specs 
 
 [cols="1,3"]
 |===
-|https://github.com/nvim-treesitter/nvim-treesitter[nvim-treesitter] (pinned: `master`) |Syntax highlighting, indent, and text objects. Pinned to the `master` branch so the `opts`-style API (`ensure_installed`/`highlight`/`indent`/`textobjects`) is active.
-|https://github.com/nvim-treesitter/nvim-treesitter-textobjects[nvim-treesitter-textobjects] (pinned: `master`) |Semantic text objects (`af`/`if` function, `ac`/`ic` class, `aa`/`ia` argument) and jump motions (`++]++f`/`++[++f`/`++]++F`/`++[++F`). Disabled in Lisp-family buffers (vim-sexp handles those).
+|https://github.com/nvim-treesitter/nvim-treesitter[nvim-treesitter] (pinned: `master`) |Syntax highlighting and indent. Pinned to `master` and configured via `require("nvim-treesitter.configs").setup(opts)` so the `opts`-style API (`ensure_installed`/`highlight`/`indent`) is active. (Text objects were removed — the `master` query path is broken on Neovim 0.12.)
 |https://github.com/kylechui/nvim-surround[nvim-surround] |Surround text with quotes, brackets, tags (`ys`/`cs`/`ds`, identical keys to vim-surround)
 |https://github.com/tpope/vim-unimpaired[vim-unimpaired] |Paired bracket keymaps (`[b`, `]b`, etc.)
 |https://github.com/tpope/vim-repeat[vim-repeat] |Repeat plugin commands with `.`
@@ -232,7 +231,7 @@ haskell-tools.nvim auto-discovers Haskell DAP configurations once nvim-dap is pr
 
 [cols="1,3"]
 |===
-|https://github.com/yetone/avante.nvim[avante.nvim] v0.1.* |AI chat panel (Claude API {plus} Ollama backends). dressing.nvim removed (archived upstream); vim.ui falls back to native.
+|https://github.com/yetone/avante.nvim[avante.nvim] v0.1.* |AI chat panel, Ollama-only backend (Claude disabled — Anthropic subscription-OAuth ToS). dressing.nvim removed (archived upstream); vim.ui falls back to native.
 |https://github.com/MunifTanjim/nui.nvim[nui.nvim] |UI component library (required by avante)
 |https://github.com/nvim-lua/plenary.nvim[plenary.nvim] |Lua utility library (required by avante + diffview)
 |===
@@ -341,7 +340,7 @@ surround, etc.)
 |`colorscheme.lua` |TokyoNight theme; change `style =` to switch
 variants
 
-|`avante.lua` |avante.nvim AI chat (ollama {plus} Claude API backends)
+|`avante.lua` |avante.nvim AI chat (Ollama-only backend)
 
 |`conform.lua` |Format-on-save via conform.nvim
 
@@ -364,7 +363,7 @@ terminal)
 |`plantuml.lua` |PlantUML syntax {plus} ASCII/PNG preview via Docker
 server
 
-|`treesitter.lua` |Tree-sitter parsers for syntax highlighting and text objects. Pins `nvim-treesitter` to `master`; includes `nvim-treesitter-textobjects` dependency with select/move objects gated off for Lisp-family filetypes.
+|`treesitter.lua` |Tree-sitter parsers for syntax highlighting and indent. Pins `nvim-treesitter` to `master` and routes `opts` through `nvim-treesitter.configs.setup`. Markdown highlight/indent disabled (nil-range hotfix).
 |===
 
 Plugins use `ft = ++{++ "markdown" }` (lazy-load on filetype) or

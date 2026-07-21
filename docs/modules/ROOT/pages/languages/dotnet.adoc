@@ -324,22 +324,25 @@ dotnet tool install -g fsautocomplete  # F# language server
 === Installing the Roslyn Language Server
 
 The Roslyn LSP is the official Microsoft C# language server used in
-VS Code's C# Dev Kit. It is *not* installed via `dotnet tool install`;
-download the native binary for your platform from the NuGet feed.
+VS Code's C# Dev Kit. It is *not* installed via `dotnet tool install`,
+and it is *not* on the public nuget.org feed. It is published to
+Microsoft's Azure DevOps *vs-impl* feed, and every release is a
+prerelease (there is no stable `5.x` — the newest is `5.4.0-2.26179.14`
+at the time of writing; there is no `5.5`/`5.6`).
 
 *Linux / WSL2 (x64):*
 
 [source,sh]
 ----
-# 1. Create an install directory
-mkdir -p ~/.local/share/roslyn
+# 1. Resolve the newest version from the Azure DevOps vs-impl feed
+PKG=microsoft.codeanalysis.languageserver.linux-x64
+FEED="https://pkgs.dev.azure.com/azure-public/vside/_packaging/vs-impl/nuget/v3/flat2/${PKG}"
+VERSION=$(curl -s "${FEED}/index.json" | tr ',' '\n' | grep -oE '[0-9][0-9.]+-[0-9.]+' | sort -V | tail -1)
+echo "Installing Roslyn LSP ${VERSION}"
 
-# 2. Download the latest linux-x64 package.
-#    Find the current version at:
-#    https://www.nuget.org/packages/Microsoft.CodeAnalysis.LanguageServer.linux-x64
-VERSION="5.0.0-1.25277.114"   # replace with the latest shown on the NuGet page
-curl -L "https://api.nuget.org/v3-flatcontainer/microsoft.codeanalysis.languageserver.linux-x64/${VERSION}/microsoft.codeanalysis.languageserver.linux-x64.${VERSION}.nupkg" \
-     -o /tmp/roslyn.nupkg
+# 2. Download the linux-x64 package (self-contained native binary)
+mkdir -p ~/.local/share/roslyn
+curl -L "${FEED}/${VERSION}/${PKG}.${VERSION}.nupkg" -o /tmp/roslyn.nupkg
 
 # 3. Extract into the install directory and make executable
 unzip -o /tmp/roslyn.nupkg -d ~/.local/share/roslyn
@@ -355,10 +358,10 @@ Microsoft.CodeAnalysis.LanguageServer --version
 
 [TIP]
 ====
-The NuGet page above lists all available versions. Always pick the
-highest stable version. Use the NuGet v3 API URL shown above — the
-older v2 URL may return a 404 HTML page for some versions, which will
-cause `unzip` to fail.
+Browse all versions at `${FEED}/index.json`. The `nuget.org` package of
+the same name carries only a single stale prerelease — do not use it.
+To pin a specific version instead of auto-resolving the newest, set
+`VERSION=` manually (e.g. `VERSION=5.4.0-2.26179.14`).
 ====
 
 ---

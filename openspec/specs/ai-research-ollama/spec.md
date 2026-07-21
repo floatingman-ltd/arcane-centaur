@@ -1,13 +1,18 @@
-## Requirements
+## Purpose
 
+Provide offline, local AI assistance in `avante.nvim` through an Ollama provider at
+`http://127.0.0.1:11434`, so chat/research works without external API keys, accounts, or network
+access. Ollama is avante's only provider.
+## Requirements
 ### Requirement: Avante ollama provider configured
-`avante.nvim` SHALL be configured with an `ollama` vendor pointing to
-`http://127.0.0.1:11434`. The default model SHALL be `llama3.1:8b`. The ollama provider
-SHALL be the default active provider on startup.
+`avante.nvim` SHALL be configured with an `ollama` provider pointing to
+`http://127.0.0.1:11434`. The default model SHALL be `qwen2.5:0.5b` (a small model chosen so it
+runs on limited-RAM machines). The ollama provider SHALL be avante's **only** provider and the
+default active provider on startup.
 
 #### Scenario: Avante starts with ollama provider
 - **WHEN** Neovim starts and avante.nvim is loaded
-- **THEN** the active provider SHALL be `ollama`
+- **THEN** the active provider SHALL be `ollama` with model `qwen2.5:0.5b`
 - **THEN** requests SHALL be sent to `http://127.0.0.1:11434`
 
 ### Requirement: Keymap to open avante with ollama provider
@@ -27,3 +32,4 @@ error in its interface. Neovim SHALL not crash.
 - **WHEN** `<leader>ao` opens avante and a question is submitted
 - **THEN** if the ollama endpoint is unreachable, an error SHALL be shown in the avante buffer
 - **THEN** Neovim SHALL remain functional
+
