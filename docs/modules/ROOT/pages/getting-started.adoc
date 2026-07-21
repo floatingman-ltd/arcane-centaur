@@ -289,6 +289,21 @@ node --version
 npm --version
 ----
 
+=== Universal Ctags (optional — enables tag navigation)
+
+A *soft dependency*: nothing in the configuration invokes it, but installing
+https://github.com/universal-ctags/ctags[universal-ctags] lets you generate a `tags` index so
+Vim's tag navigation works — `]t` / `[t` (vim-unimpaired) and `<C-]>` (jump to definition). Without
+a `tags` file those maps simply have nothing to jump to; they do not error.
+
+[source,sh]
+----
+sudo apt install universal-ctags   # Debian/Ubuntu; or: brew install universal-ctags
+
+# Generate the index at the project root (the generated `tags` file is gitignored)
+ctags -R
+----
+
 ---
 
 == Troubleshooting

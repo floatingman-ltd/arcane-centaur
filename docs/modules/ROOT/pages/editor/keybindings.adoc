@@ -256,6 +256,27 @@ window)
 
 '''''
 
+=== Diagnostics Panel (trouble.nvim)
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`++<++leader++>++xx` |Normal |Project diagnostics
+|`++<++leader++>++xX` |Normal |Buffer diagnostics
+|`++<++leader++>++xs` |Normal |Symbols panel
+|`++<++leader++>++xr` |Normal |LSP references / definitions
+|`++<++leader++>++xl` |Normal |Location list
+|`++<++leader++>++xq` |Normal |Quickfix list
+|`++<++leader++>++xt` |Normal |TODO list (Trouble)
+|`++<++leader++>++xT` |Normal |TODO list (fzf-lua)
+|===
+
+NOTE: `]t`/`[t` remain vim-unimpaired tag navigation (not remapped for todos).
+
+→ xref:editor/code-intelligence.adoc[Full reference]
+
+'''''
+
 === Auto-Completion (blink.cmp)
 
 [cols=",,",options="header",]

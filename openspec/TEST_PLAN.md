@@ -55,6 +55,9 @@ Complete once before any testing begins.
 - [X] Confirm a C compiler is available (nvim-treesitter compiles `fsharp`/`c_sharp` parsers from source): `cc --version` (install `build-essential` on Debian/Ubuntu if missing)
 - [X] Install **lua-language-server** (Lua LSP completions, Change 03 §3.2) — not in apt/snap on Ubuntu 24.04; download from https://github.com/LuaLS/lua-language-server/releases, extract, and put `bin/lua-language-server` on PATH. Verify: `lua-language-server --version`
 - [X] Install **fsautocomplete** (F# LSP completions, Change 03 §3.2): `dotnet tool install -g fsautocomplete` (needs the dotnet SDK above; ensure `~/.dotnet/tools` is on PATH). Verify: `fsautocomplete --version`
+- [ ] Install **ripgrep** (`rg`) — required by todo-comments.nvim's search commands for Change 06 §6.5 (`<leader>xt` / `<leader>xT`), and used by fzf-lua generally: `sudo apt install ripgrep` (Debian/Ubuntu; or `brew install ripgrep` / `sudo dnf install ripgrep`). Verify: `rg --version`
+- [ ] Install the **`fzf`** binary — fzf-lua wraps the `fzf` fuzzy finder (no pure-Lua fallback); needed by `<leader>xT` (`:TodoFzfLua`) in Change 06 §6.5 and any fzf-lua picker: `sudo apt install fzf` (Debian/Ubuntu; or `brew install fzf` / `sudo dnf install fzf`). Verify: `fzf --version`
+- [ ] Install **universal-ctags** (`ctags`) — a **soft/optional dependency** (documented in `getting-started.adoc` §System Dependencies): the config never invokes it, but it generates the `tags` file that tag navigation reads — needed here to exercise Change 06 §6.6 (`]t`/`[t`). `sudo apt install universal-ctags` (Debian/Ubuntu; or `brew install universal-ctags`). Verify: `ctags --version`
 - [X] Confirm `claude` CLI is installed and authenticated (required for Change 08): `claude --version`
 - [X] Clone the repo: `git clone git@github.com:floatingman-ltd/arcane-centaur.git ~/.config/nvim`
 - [X] Confirm initial main state loads: `nvim` → `:Lazy sync` → no errors in `:messages`
@@ -779,7 +782,7 @@ command from Normal mode (type `:` then paste).
 1. `git fetch origin && git checkout feat/06-add-diagnostics-todo-panel`
 2. Launch Neovim: `:Lazy sync` — wait for completion
 
-- [ ] Branch checked out, `:Lazy sync` complete; trouble.nvim and todo-comments.nvim listed in `:Lazy`
+- [X] Branch checked out, `:Lazy sync` complete; trouble.nvim and todo-comments.nvim listed in `:Lazy`
 
 ### Validate
 
@@ -788,7 +791,7 @@ command from Normal mode (type `:` then paste).
 1. Open `:Lazy`. Search for `trouble.nvim` — confirm installed.
 2. Search for `todo-comments.nvim` — confirm installed.
 
-- [ ] Both plugins listed as installed with no errors
+- [X] Both plugins listed as installed with no errors
 
 #### 6.2 — Trouble diagnostic panels
 
@@ -797,23 +800,82 @@ command from Normal mode (type `:` then paste).
 3. Press `<leader>xX` — panel filters to current buffer only.
 4. Press `<leader>xx` again — panel closes.
 
-- [ ] Project panel opens, entry navigation works, buffer filter works
+- [X] Project panel opens, entry navigation works, buffer filter works — **pass after the trouble.nvim fix below** (`branch = main` @ `bd67efe`)
+
+> **Defect found & fixed — trouble.nvim crashed on panel render (Neovim 0.12 API drift).**
+> Opening the panel threw, from trouble's own treesitter decoration provider:
+> ```
+> Decoration provider "line" (ns=trouble.treesitter):
+> Lua: .../trouble.nvim/lua/trouble/view/treesitter.lua:18: attempt to call a nil value
+> ```
+> **Root cause:** trouble **v3.7.1** registers `on_line = wrap("_on_line")` and calls
+> `vim.treesitter.highlighter._on_line`. Neovim **0.12** refactored the highlighter and
+> **removed `_on_line`** (replaced by `_on_range`; `_on_win` remains), so the lookup is
+> `nil` → crash on the `on_line` decoration callback. Same 0.12-API-drift family as the
+> treesitter-master issue.
+> **Upstream already fixed it** (folke #656/#661): `main` branches on
+> `if TSHighlighter._on_range then` (uses `on_range` on 0.12, `on_line` only on older
+> Neovim). The fix is **not in any tagged release** — newest tag is v3.7.1 (our pin), so
+> `version = "*"` can't reach it.
+> **Fix applied (this branch):** `lua/plugins/trouble.lua` now tracks `branch = "main"`
+> (was `version = "*"`); `lazy-lock.json` bumped to `bd67efe` (includes #656/#661). Revert
+> to `version = "*"` once a release ≥ 3.7.2 ships the fix.
+> **Re-test on the test machine:** `:Lazy sync` (or `:Lazy update trouble.nvim`) → confirm
+> trouble.nvim is at `bd67efe` / branch `main` in `:Lazy` → **restart Neovim** → re-run 6.2.
+> If it still errors, force a clean checkout: `:Lazy clean trouble.nvim` → `:Lazy install` → restart.
 
 #### 6.3 — Native diagnostic maps unchanged
 
-1. In a file with an LSP error, press `]d` / `[d` — jumps between diagnostics.
-2. Position cursor on a diagnostic. Press `<leader>e` — floating window with diagnostic text appears.
+These maps live in `lua/config/lsp.lua` and are set in `on_attach`, so they work **only in a
+buffer with an LSP attached and at least one diagnostic**. Use a Lua file — `lua_ls` (one-time
+setup) attaches automatically. Bindings: `<leader>e` = `vim.diagnostic.open_float`;
+`[d` / `]d` = `vim.diagnostic.jump({ count = -1 / 1 })`.
 
-- [ ] `[d`, `]d`, and `<leader>e` all behave as before
+1. Open `testdocs/hello.lua`. Confirm lua_ls is attached:
+   `:lua =vim.lsp.get_clients({ bufnr = 0 })` returns a **non-empty** list (or `:checkhealth vim.lsp`).
+2. Introduce **two** errors so there is something to jump between — on two separate blank lines
+   type each of the following (an incomplete assignment is a hard syntax error lua_ls always flags):
+
+   ```lua
+   local a =
+   local b =
+   ```
+
+   Within ~1s two red error signs appear in the sign column. Confirm the count:
+   `:lua =#vim.diagnostic.get(0)` (expect ≥ 2).
+3. Put the cursor at the top of the file. Press `]d` → jumps to the first error; `]d` again →
+   the second; `[d` → back to the previous one.
+4. With the cursor on an error line, press `<leader>e` → a floating window shows the diagnostic
+   text (e.g. *"Expected expression"* / *"unexpected symbol"*).
+5. Undo the two edits (`u`) so the buffer is clean again.
+
+- [X] `[d`, `]d`, and `<leader>e` all behave as before
 
 #### 6.4 — TODO/FIXME highlighting
 
-1. Open `lua/plugins/treesitter.lua`. Add `-- TODO: test this`.
-2. Confirm `TODO:` is highlighted with a distinct colour and a sign appears in the sign column.
-3. Change `TODO` to `FIXME` — highlighted in a different colour.
-4. Undo both additions.
+todo-comments runs with `opts = {}` (all **defaults**, `merge_keywords = true`), so the
+recognised "magic strings" are the plugin defaults below. **Each highlights only when written as
+`KEYWORD:` (with the trailing colon) inside a comment.** Primary keyword → alternates (each
+alternate shares its primary's colour):
 
-- [ ] TODO and FIXME highlighted with distinct colours and signs
+| Keyword  | Colour           | Alternates (same colour)              |
+|----------|------------------|---------------------------------------|
+| `TODO:`  | info (blue)      | —                                     |
+| `FIX:`   | error (red)      | `FIXME:` `BUG:` `FIXIT:` `ISSUE:`     |
+| `HACK:`  | warning (yellow) | —                                     |
+| `WARN:`  | warning (yellow) | `WARNING:` `XXX:`                     |
+| `PERF:`  | default          | `OPTIM:` `PERFORMANCE:` `OPTIMIZE:`   |
+| `NOTE:`  | hint (green)     | `INFO:`                               |
+| `TEST:`  | test             | `TESTING:` `PASSED:` `FAILED:`        |
+
+1. Open `lua/plugins/treesitter.lua`. Add `-- TODO: test this` → `TODO:` shows the info colour
+   and a sign appears in the sign column.
+2. Change it to `-- FIXME: test this` → highlights in the **error** colour (FIXME maps to FIX).
+3. Spot-check the other families, e.g. `-- WARN: x`, `-- PERF: x`, `-- NOTE: x` — each takes its
+   colour from the table. A bare `TODO` with **no colon** should **not** highlight.
+4. Undo the additions.
+
+- [X] Default keyword families highlight (colour + sign) only when written as `KEYWORD:`
 
 #### 6.5 — Todo list views
 
@@ -821,18 +883,55 @@ command from Normal mode (type `:` then paste).
 2. Press `<Esc>` to close.
 3. Press `<leader>xt` — Trouble panel opens showing todo comments. Entry from step 1 appears.
 
-- [ ] fzf-lua picker and Trouble panel both list todo comments
+- [X] fzf-lua picker and Trouble panel both list todo comments — pass (both list todos; no errors after installing `rg` + `fzf`)
+
+> **Blocked on the test machine — two external binaries missing (not config defects).** The
+> replacement test machine lacked both tools these maps shell out to:
+> - `<leader>xt` (`:TodoTrouble`) needs **ripgrep** (`rg`) to search for todo comments — without
+>   it trouble throws `.../trouble/view/section.lua:109: Vim:rg was not found on your path`.
+> - `<leader>xT` (`:TodoFzfLua`) additionally needs the **`fzf` binary** — fzf-lua is a wrapper
+>   around `fzf` (no pure-Lua fallback), so without it it errors `'fzf' not installed`.
+>
+> **Fix:** install both, then re-run 6.5:
+> ```bash
+> sudo apt install ripgrep fzf   # Debian/Ubuntu; or brew/dnf equivalents
+> rg --version && fzf --version  # confirm both on PATH
+> ```
+> Neither is a plugin/config bug. Both added to *One-Time Test Machine Setup* above.
 
 #### 6.6 — vim-unimpaired tag maps intact
 
-1. Ensure a `tags` file exists (or run `ctags -R`). Press `]t` / `[t` — jumps between tags.
-2. Confirm `]t` / `[t` do tag navigation, NOT todo-comment navigation.
+`]t` / `[t` are vim-unimpaired's `:tnext` / `:tprevious` (tag-match navigation) — this step
+confirms todo-comments/trouble did **not** hijack them. They cycle the *match list* of a tag that
+has multiple definitions, so the test needs a `tags` file and a multi-match tag (`setup` has 8+
+definitions across `lua/config/`).
 
-- [ ] `]t` / `[t` do tag navigation, not todo navigation
+1. **Generate the tag index** (terminal, repo root):
+
+   ```bash
+   cd ~/.config/nvim
+   ctags -R          # creates ./tags (gitignored)
+   wc -l tags        # sanity: a few hundred+ lines
+   ```
+
+2. **Open Neovim from inside the repo** so `./tags` is found: `cd ~/.config/nvim && nvim lua/keymaps.lua`.
+3. Confirm the tags file is loaded: `:echo tagfiles()` → non-empty (shows the `./tags` path). If
+   empty, check `:set tags?` includes `./tags,tags` and that nvim was launched from the repo root.
+4. **Prove `]t`/`[t` are tag maps, not todo** (the point of this step):
+   - `:verbose nmap ]t` → RHS runs `:tnext`, "Last set from …/vim-unimpaired/plugin/unimpaired.vim".
+   - `:verbose nmap [t` → `:tprevious`, same source. Neither mentions todo-comments/trouble.
+5. **Watch them cycle between matches:**
+   - `:echo len(taglist('setup'))` → a number ≥ 2 (multiple matches exist).
+   - `:tag /setup` → jumps to match **1 of N** (count shown on the command line).
+   - `]t` → `:tnext` → match **2 of N** (a different file's `setup`); `]t` again → 3, …; `[t` → back one.
+   - `E428: Cannot go beyond last matching tag` / `E425: Cannot go before first matching tag` at the
+     list ends is **normal** — still tag navigation, not a mapping failure.
+
+- [X] `]t` / `[t` do tag navigation (vim-unimpaired `:tnext`/`:tprevious`), not todo navigation
 
 ### Raise PR & merge
 
-- [ ] All validation steps above pass
+- [X] All validation steps above pass — 6.1–6.6 all green (6.2 after the trouble.nvim `branch=main` fix; 6.5 after installing `rg`+`fzf`; usage documented in `code-intelligence.adoc`)
 - [ ] Raise PR: `feat/06-add-diagnostics-todo-panel` → `main`
 - [ ] Review and approve PR
 - [ ] Merge PR

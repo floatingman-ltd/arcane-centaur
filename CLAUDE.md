@@ -22,6 +22,8 @@ Lazy-loading is filetype-driven: plugins use lazy.nvim's `ft = { ... }` field so
 - **Formatting**: `lua/plugins/conform.lua` does format-on-save; add filetypes to its `formatters_by_ft`. F# uses `lsp_format = "prefer"`.
 - **Terminal capabilities**: branch on `lua/config/terminal.lua`'s flags (`has_nerd_font`, `has_undercurl`, `name`) rather than hardcoding terminal-specific behavior.
 - **Colorscheme**: TokyoNight; change the `style` variable at the top of `lua/plugins/colorscheme.lua`.
+- **Diagnostics panel**: `folke/trouble.nvim` v3 (`lua/plugins/trouble.lua`) provides `<leader>x` maps for project/buffer diagnostics, symbols, LSP refs, quickfix, and loclist. Native `[d`/`]d`/`<leader>e` are preserved.
+- **TODO annotations**: `folke/todo-comments.nvim` (`lua/plugins/todo-comments.lua`) highlights `TODO`/`FIXME`/`HACK`/`NOTE`/`WARN`; list via `<leader>xT` (fzf-lua) or `<leader>xt` (trouble). `]t`/`[t` remain vim-unimpaired tag navigation.
 
 ## Language support
 

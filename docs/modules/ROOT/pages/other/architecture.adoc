@@ -164,6 +164,8 @@ All plugins are managed by https://github.com/folke/lazy.nvim[lazy.nvim]. Specs 
 |https://github.com/nvim-tree/nvim-tree.lua[nvim-tree.lua] |File explorer sidebar
 |https://github.com/nvim-lualine/lualine.nvim[lualine.nvim] |Status line (tokyonight theme, globalstatus, gitsigns diff + diagnostics)
 |https://github.com/nvim-tree/nvim-web-devicons[nvim-web-devicons] |File type icons (requires Nerd Font)
+|https://github.com/folke/trouble.nvim[trouble.nvim] v3 |Structured panel for diagnostics, symbols, LSP references, quickfix, and loclist (`<leader>x` group)
+|https://github.com/folke/todo-comments.nvim[todo-comments.nvim] |Highlight and list `TODO`/`FIXME`/`HACK`/`NOTE`/`WARN` annotations; integrates with trouble and fzf-lua
 |===
 
 === Editor Enhancement
