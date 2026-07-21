@@ -395,7 +395,7 @@ To pin a specific version instead of auto-resolving the newest, set
 [width="100%",cols="34%,33%,33%",options="header",]
 |===
 |Dependency |Purpose |Install hint
-|*.NET SDK ≥ 8* |C# and F# compiler, `dotnet fsi` REPL |https://dotnet.microsoft.com/download
+|*.NET SDK ≥ 8* (net8.0 or net10.0 — both LTS) |C# and F# compiler, `dotnet fsi` REPL. The **runtime must match the project's `<TargetFramework>`** to run/debug. |https://dotnet.microsoft.com/download
 |*Neovim ≥ 0.12* |Required by roslyn.nvim |See xref:getting-started.adoc[Getting Started]
 |*Roslyn LSP* |C# language server (roslyn.nvim) |<<setup,Installing the Roslyn Language Server>>
 |*netcoredbg* |C#/F# debug adapter (nvim-dap) |<<debugging,Debugging § Prerequisites>>
@@ -413,4 +413,15 @@ sudo dpkg -i packages-microsoft-prod.deb
 sudo apt update && sudo apt install -y dotnet-sdk-8.0
 ----
 
-Or download directly from https://dotnet.microsoft.com/download.
+Or download directly from https://dotnet.microsoft.com/download. `net10.0` (LTS to 2028) works
+equally well — swap the package for `dotnet-sdk-10.0`.
+
+[NOTE]
+====
+Debugging and running a project needs the **runtime that matches its `<TargetFramework>`**, not
+just any SDK. A net10 SDK builds a `net8.0` project, but running/debugging it also needs the
+net8.0 *runtime* (`dotnet --list-runtimes` should show `Microsoft.NETCore.App 8.0.x`; install with
+`sudo apt install dotnet-runtime-8.0`). The whole toolchain here (roslyn.nvim, fsautocomplete,
+csharprepl, easy-dotnet, netcoredbg) is SDK-version-agnostic — pick net8.0 or net10.0 and keep the
+project target and installed runtime in sync.
+====

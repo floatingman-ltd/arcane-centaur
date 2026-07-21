@@ -22,7 +22,7 @@ Complete once before any testing begins.
 - [X] Confirm Neovim ≥ 0.12 is installed: `nvim --version`
 - [X] Confirm Git is installed: `git --version`
 - [X] Confirm Node.js + npm are installed (required by markdown-preview.nvim build): `node --version && npm --version`
-- [X] Confirm the `dotnet` SDK is installed: `dotnet --version` (list all with `dotnet --list-sdks`). **The sample F#/C# projects target `net8.0`** — either install the `net8.0` runtime/SDK, or bump `<TargetFramework>` in `testdocs/fsharp-project`/`testdocs/csharp-project` to your installed version; a mismatch means the F#/C# LSP can't resolve the project (no completions).
+- [X] Confirm the `dotnet` SDK is installed: `dotnet --version` (SDKs: `dotnet --list-sdks`; runtimes: `dotnet --list-runtimes`). **The sample F#/C# projects target `net8.0`**, so you need the **net8.0 runtime** (`Microsoft.NETCore.App 8.0.x`) present to build/run/**debug** them (Change 07) — either install the `net8.0` runtime/SDK (`sudo apt install dotnet-runtime-8.0`), or bump `<TargetFramework>` in `testdocs/fsharp-project`/`testdocs/csharp-project` to your installed version (e.g. `net10.0`, also LTS). A mismatch means the LSP can't resolve the project (no completions) **and** run/debug fails.
 - [X] Install netcoredbg (required for Change 07 debugging tests) — **not** a NuGet tool; install from GitHub releases:
   ```bash
   NCDBG_VER=$(curl -s https://api.github.com/repos/Samsung/netcoredbg/releases/latest \
@@ -957,9 +957,16 @@ entry, so a debug session only starts from a `.cs`/`.fsharp` buffer (where easy-
 - **netcoredbg on `$PATH`** — `netcoredbg --version` responds. Installed from **GitHub releases**,
   **not** `dotnet tool install` (see *One-Time Test Machine Setup* and `languages/dotnet.adoc`
   § Debugging § Prerequisites).
-- **.NET SDK ≥ 8** — `dotnet --list-sdks` lists an `8.0.x` SDK. The fixtures target `net8.0`; a
-  mismatch means Roslyn/easy-dotnet can't resolve the project. Either install the `net8.0` SDK or
-  bump `<TargetFramework>` in the fixtures to your installed version.
+- **.NET SDK + matching runtime** — `dotnet --list-sdks` lists a usable SDK **and**
+  `dotnet --list-runtimes` shows a runtime matching the fixtures' target. The fixtures target
+  **`net8.0`**, so you need the **net8.0 runtime** (`Microsoft.NETCore.App 8.0.x`) present to build,
+  run, **and debug** them — a target/runtime mismatch means Roslyn/easy-dotnet can't resolve the
+  project *and* run/debug (§7.3/§7.4) fails, not just completions. On a net10-only machine either
+  add the net8.0 runtime (`sudo apt install dotnet-runtime-8.0`) or bump the fixtures' TFM (below).
+  - **net10.0 is also fully supported** (LTS to 2028; net8 is EOL ~Nov 2026). The toolchain is
+    SDK-agnostic, and netcoredbg on net10 is confirmed empirically at §7.3. To use it, bump
+    `<TargetFramework>` from `net8.0` → `net10.0` in all four fixture projects
+    (`testdocs/{c,f}sharp-project/*.*proj`) so it matches your installed SDK/runtime.
 - **Roslyn LSP on `$PATH`** — `Microsoft.CodeAnalysis.LanguageServer --version` responds (for
   7.2 / 7.6).
 - **`fzf` binary** — `fzf --version` responds. easy-dotnet's picker is `fzf` (`picker = "fzf"`), so
