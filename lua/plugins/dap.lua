@@ -29,7 +29,32 @@ return {
       local dap = require("dap")
       local dapui = require("dapui")
 
-      dapui.setup()
+      -- Put the dap-ui sidebar on the RIGHT. The default sidebar position is "left",
+      -- which collides with nvim-tree (also left) — dap-ui then swallows the tree window
+      -- into its frame. On the right it coexists: nvim-tree (left) | editor | dap-ui (right),
+      -- console/repl along the bottom.
+      dapui.setup({
+        layouts = {
+          {
+            position = "right",
+            size = 40,
+            elements = {
+              { id = "scopes", size = 0.25 },
+              { id = "breakpoints", size = 0.25 },
+              { id = "stacks", size = 0.25 },
+              { id = "watches", size = 0.25 },
+            },
+          },
+          {
+            position = "bottom",
+            size = 10,
+            elements = {
+              { id = "repl", size = 0.5 },
+              { id = "console", size = 0.5 },
+            },
+          },
+        },
+      })
 
       dap.listeners.after.event_initialized["dapui_config"] = function() dapui.open() end
       dap.listeners.before.event_terminated["dapui_config"] = function() dapui.close() end
