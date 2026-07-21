@@ -14,17 +14,17 @@
 
 ## 3. Build and clean
 
-- [ ] 3.1 Run `:Lazy update` for avante.nvim, then run `make` (or `:AvanteBuild`).
-- [ ] 3.2 Run `:Lazy clean` and confirm `dressing.nvim` is removed.
+- [x] 3.1 Run `:Lazy update` for avante.nvim, then run `make` (or `:AvanteBuild`).
+- [x] 3.2 Run `:Lazy clean` and confirm `dressing.nvim` is removed.
 
 ## 4. Validation
 
-- [ ] 4.1 Confirm avante loads at new version with no errors.
-- [ ] 4.2 `<leader>aa` opens avante with current provider.
-- [ ] 4.3 `<leader>ao` switches to ollama and opens (clean error if service offline).
-- [ ] 4.4 `<leader>ac` is unmapped (claude provider removed) — only `<leader>aa`/`<leader>ao` exist; no API key needed. (TEST_PLAN §5.4)
-- [ ] 4.5 `:DiffviewOpen` still works (plenary intact).
-- [ ] 4.6 `vim.ui.select` / `vim.ui.input` still function via native fallback.
+- [x] 4.1 Confirm avante loads at new version with no errors.
+- [x] 4.2 `<leader>aa` opens avante with current provider.
+- [x] 4.3 `<leader>ao` switches to ollama and opens (clean error if service offline).
+- [x] 4.4 `<leader>ac` is unmapped (claude provider removed) — only `<leader>aa`/`<leader>ao` exist; no API key needed. (TEST_PLAN §5.4)
+- [x] 4.5 `:DiffviewOpen` still works (plenary intact).
+- [x] 4.6 `vim.ui.select` / `vim.ui.input` still function via native fallback.
 - [x] 4.7 Lua syntax check passes.
 
 ## 5. Documentation

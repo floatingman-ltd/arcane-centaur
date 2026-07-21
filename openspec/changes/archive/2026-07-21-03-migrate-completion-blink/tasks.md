@@ -14,12 +14,12 @@
 
 ## 3. Validation
 
-- [ ] 3.1 `:Lazy sync` — confirm blink.cmp installs and builds its fuzzy matcher with no errors, and the six removed cmp plugins are gone from `:Lazy`.
-- [ ] 3.2 Confirm LSP, buffer, and path completion work in a Lua and an F# buffer.
-- [ ] 3.3 Confirm `<CR>` does NOT auto-insert the first suggestion (nothing preselected); `<C-n>`/`<C-p>` navigate; `<C-e>` hides the menu.
-- [ ] 3.4 Confirm cmdline completion: `:` completes paths and Ex commands; `/` completes buffer words.
-- [ ] 3.5 **Conjure bridge** — open a `.clj` (or `.lisp`/`.janet`) buffer with a REPL connected and confirm Conjure symbol completions appear in the blink menu. If absent, apply the load-order mitigation in `design.md`.
-- [ ] 3.6 **Spell bridge** — confirm spell-correction completions appear in a markdown buffer with `:set spell`, and do NOT appear in a code buffer.
+- [x] 3.1 `:Lazy sync` — confirm blink.cmp installs and builds its fuzzy matcher with no errors, and the six removed cmp plugins are gone from `:Lazy`.
+- [x] 3.2 Confirm LSP, buffer, and path completion work in a Lua and an F# buffer.
+- [x] 3.3 Confirm `<CR>` does NOT auto-insert the first suggestion (nothing preselected); `<C-n>`/`<C-p>` navigate; `<C-e>` hides the menu.
+- [x] 3.4 Confirm cmdline completion: `:` completes paths and Ex commands; `/` completes buffer words.
+- [x] 3.5 ~~**Conjure bridge** — open a `.clj` (or `.lisp`/`.janet`) buffer with a REPL connected and confirm Conjure symbol completions appear in the blink menu.~~ — N/A (deferred): the bridge shipped in PR #135, but the cross-feature test was consciously deferred (no Clojure project in scope; mirrors TEST_PLAN §3.5). Revisit if Clojure work resumes; load-order mitigation is in `design.md`.
+- [x] 3.6 **Spell bridge** — confirm spell-correction completions appear in a markdown buffer with `:set spell`, and do NOT appear in a code buffer.
 - [x] 3.7 Run Lua syntax check: `find . -name '*.lua' -print0 | xargs -0 luac -p`.
 
 ## 4. Documentation

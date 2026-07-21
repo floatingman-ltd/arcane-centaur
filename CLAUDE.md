@@ -51,7 +51,7 @@ The OpenSpec and project workflows are also available as Claude Code skills in *
 
 **AsciiDoc under `docs/modules/ROOT/pages/` is the source of truth** (Antora site). The only Markdown in the repo is the root `readme.md` (metadata + link to the hosted site). Pages are organized by area: `languages/`, `editor/`, `ai/`, `content/`, `tooling/`, `learning/`. Each guide typically has a matching `*-cheatsheet.adoc`. The nav is `docs/modules/ROOT/nav.adoc` — add an `xref:` entry there when you add a page.
 
-AsciiDoc filetype in-editor is **`asciidoctor`** (not `asciidoc`) — registered by `lua/plugins/asciidoc.lua` via `vim.filetype.add`. All `after/ftplugin/` and filetype-keyed config must use `asciidoctor`. Syntax/folding: `habamax/vim-asciidoctor`. In-buffer preview toggle (opt-in, off by default): `OXY2DEV/markview.nvim` via `<localleader>mv`. Docker/Antora preview: `after/ftplugin/asciidoctor.lua`.
+AsciiDoc filetype in-editor is **`asciidoctor`** (not `asciidoc`) — registered by `lua/plugins/asciidoc.lua` via `vim.filetype.add`. All `after/ftplugin/` and filetype-keyed config must use `asciidoctor`. Syntax/folding: `habamax/vim-asciidoctor`. In-buffer `markview.nvim` rendering was **deferred** (it needs `cathaysia/tree-sitter-asciidoc`, which is absent from nvim-treesitter master) — there is no `markview`/`<localleader>mv` toggle; re-enable when the grammar is available. Docker/Antora preview: `after/ftplugin/asciidoctor.lua`.
 
 **User-visible changes must update the matching docs** (new/changed plugin → the relevant `languages|editor|ai|content|tooling` guide + cheatsheet; new keybinding → the relevant cheatsheet; new language → a new guide + cheatsheet + nav entries).
 
