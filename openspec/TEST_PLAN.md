@@ -1090,18 +1090,37 @@ terminal grabs the F-keys:
 #### 7.4 — easy-dotnet test / run / build maps
 
 Maps are `<localleader>` (`,`), in `after/ftplugin/cs.lua` and `after/ftplugin/fsharp.lua`:
-`,tt` = `require("easy-dotnet").test()`, `,tr` = `run()`, `,tb` = `build()` (each opens an fzf
-picker when there's more than one project; `:Dotnet test|run|build` are equivalent).
+`,tt` = `require("easy-dotnet").test()`, `,tr` = `run()`, `,tb` = `build()` (`:Dotnet test|run|build`
+are equivalent). Output shows in a managed terminal — `lua/plugins/dotnet.lua` sets
+`managed_terminal.auto_hide = false` so it stays open on exit (dismiss with `q`); the default
+(`true`) hides it the instant a run exits 0, so output would flash and vanish.
 
-1. Open `testdocs/csharp-project/Program.cs`:
-   - `,tr` → the project **runs** (its `Hello …` output appears).
+**easy-dotnet is cwd-scoped, not buffer-scoped** — it discovers projects from `vim.fn.getcwd()`
+(and caches one active project, shown in lualine), NOT from the current buffer. To target a specific
+project, **open nvim from that project's directory** (or `:lcd %:p:h`).
+
+1. C# — `cd testdocs/csharp-project && nvim Program.cs`:
+   - `,tr` → the project **runs** (its `Hello …` output appears; the terminal stays open, `q` closes).
    - `,tb` → the project **builds** (build-succeeded message).
    - `,tt` → the **test runner** fires. The fixture is a console app with no tests, so a clean
      "no tests"/build-only result is the pass — the point is the runner launches, not a green suite.
-2. Open `testdocs/fsharp-project/Program.fs`. Confirm `,tt`, `,tr`, `,tb` are active and fire in the
-   F# buffer too (`:verbose nmap ,tr` → RHS calls `require("easy-dotnet").run`, buffer-local).
+2. F# — `cd testdocs/fsharp-project && nvim Program.fs`:
+   - `,tr` / `,tb` / `,tt` run / build / test the F# project.
 
-- [ ] Test, run, and build maps work in both C# and F# buffers
+- [X] Test, run, and build maps work in both C# and F# buffers — **pass; see the two constraints below**
+
+> **Constraint 1 — F# projects require a solution file.** easy-dotnet's runnable-project discovery
+> is C#-oriented (its server's `compat run` argument is documented as a `.csproj`). A standalone
+> `.fsproj` is **not** discovered — from an F#-only cwd, `,tr` reports "No runnable projects found"
+> even though `dotnet run` works and `OutputType=Exe`. **Fix:** the F# fixture ships
+> `testdocs/fsharp-project/HelloFs.sln` (classic format — portable to net8; easy-dotnet also accepts
+> `.slnx`). Real F# repos have a solution anyway. C# projects are discovered standalone (no `.sln`
+> needed), which is why the C# fixture has none.
+>
+> **Constraint 2 — cwd-scoped selection.** Because discovery keys off `getcwd()`, opening both
+> fixtures from one nvim cwd (e.g. `~/.config/nvim`) makes `,tr` always resolve the first project
+> found (the C# one) regardless of the active buffer. Open nvim from the target project's dir (or
+> `:lcd` into it). `:Dotnet reset` clears the on-disk cache but does not change cwd resolution.
 
 #### 7.5 — Haskell DAP config discovery
 

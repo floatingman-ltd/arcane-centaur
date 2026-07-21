@@ -272,6 +272,22 @@ the other dependencies (dap, fzf-lua, the `c_sharp` parser).
 |`,tb` |Build selected project
 |===
 
+Run/test output opens in a managed terminal that **stays open on exit** (we set
+`managed_terminal.auto_hide = false`; the default closes it the moment a run exits 0). Dismiss it
+with `q`.
+
+[NOTE]
+====
+easy-dotnet resolves the target project from Neovim's **current working directory**
+(`vim.fn.getcwd()`), not the current buffer, and it caches one active project (shown in lualine).
+Open Neovim **from the project's directory** (or `:lcd %:p:h`) so `,tr`/`,tt`/`,tb` act on the
+project you mean.
+
+**F# projects need a solution file.** easy-dotnet's runnable-project discovery is C#-oriented, so a
+standalone `.fsproj` isn't found ("No runnable projects found") even though `dotnet run` works — add
+a `.sln` (or `.slnx`) alongside it. C# `.csproj` projects are discovered without one.
+====
+
 === Easy-Dotnet Commands
 
 [width="100%",cols="50%,50%",options="header",]
