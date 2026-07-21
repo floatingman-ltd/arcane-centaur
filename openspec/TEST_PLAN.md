@@ -901,10 +901,33 @@ alternate shares its primary's colour):
 
 #### 6.6 — vim-unimpaired tag maps intact
 
-1. Ensure a `tags` file exists (or run `ctags -R`). Press `]t` / `[t` — jumps between tags.
-2. Confirm `]t` / `[t` do tag navigation, NOT todo-comment navigation.
+`]t` / `[t` are vim-unimpaired's `:tnext` / `:tprevious` (tag-match navigation) — this step
+confirms todo-comments/trouble did **not** hijack them. They cycle the *match list* of a tag that
+has multiple definitions, so the test needs a `tags` file and a multi-match tag (`setup` has 8+
+definitions across `lua/config/`).
 
-- [ ] `]t` / `[t` do tag navigation, not todo navigation
+1. **Generate the tag index** (terminal, repo root):
+
+   ```bash
+   cd ~/.config/nvim
+   ctags -R          # creates ./tags (gitignored)
+   wc -l tags        # sanity: a few hundred+ lines
+   ```
+
+2. **Open Neovim from inside the repo** so `./tags` is found: `cd ~/.config/nvim && nvim lua/keymaps.lua`.
+3. Confirm the tags file is loaded: `:echo tagfiles()` → non-empty (shows the `./tags` path). If
+   empty, check `:set tags?` includes `./tags,tags` and that nvim was launched from the repo root.
+4. **Prove `]t`/`[t` are tag maps, not todo** (the point of this step):
+   - `:verbose nmap ]t` → RHS runs `:tnext`, "Last set from …/vim-unimpaired/plugin/unimpaired.vim".
+   - `:verbose nmap [t` → `:tprevious`, same source. Neither mentions todo-comments/trouble.
+5. **Watch them cycle between matches:**
+   - `:echo len(taglist('setup'))` → a number ≥ 2 (multiple matches exist).
+   - `:tag /setup` → jumps to match **1 of N** (count shown on the command line).
+   - `]t` → `:tnext` → match **2 of N** (a different file's `setup`); `]t` again → 3, …; `[t` → back one.
+   - `E428: Cannot go beyond last matching tag` / `E425: Cannot go before first matching tag` at the
+     list ends is **normal** — still tag navigation, not a mapping failure.
+
+- [ ] `]t` / `[t` do tag navigation (vim-unimpaired `:tnext`/`:tprevious`), not todo navigation
 
 ### Raise PR & merge
 
