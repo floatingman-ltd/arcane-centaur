@@ -55,6 +55,7 @@ Complete once before any testing begins.
 - [X] Confirm a C compiler is available (nvim-treesitter compiles `fsharp`/`c_sharp` parsers from source): `cc --version` (install `build-essential` on Debian/Ubuntu if missing)
 - [X] Install **lua-language-server** (Lua LSP completions, Change 03 §3.2) — not in apt/snap on Ubuntu 24.04; download from https://github.com/LuaLS/lua-language-server/releases, extract, and put `bin/lua-language-server` on PATH. Verify: `lua-language-server --version`
 - [X] Install **fsautocomplete** (F# LSP completions, Change 03 §3.2): `dotnet tool install -g fsautocomplete` (needs the dotnet SDK above; ensure `~/.dotnet/tools` is on PATH). Verify: `fsautocomplete --version`
+- [X] Install the **`EasyDotnet` server tool** (required by easy-dotnet.nvim for Change 07 debug/test/run/build — the plugin is a thin client over this server): `dotnet tool install -g EasyDotnet` (needs `~/.dotnet/tools` on PATH). Verify: `dotnet-easydotnet -v`; in-editor `:checkhealth easy-dotnet`.
 - [X] Install **ripgrep** (`rg`) — required by todo-comments.nvim's search commands for Change 06 §6.5 (`<leader>xt` / `<leader>xT`), and used by fzf-lua generally: `sudo apt install ripgrep` (Debian/Ubuntu; or `brew install ripgrep` / `sudo dnf install ripgrep`). Verify: `rg --version`
 - [X] Install the **`fzf`** binary — fzf-lua wraps the `fzf` fuzzy finder (no pure-Lua fallback); needed by `<leader>xT` (`:TodoFzfLua`) in Change 06 §6.5 and any fzf-lua picker: `sudo apt install fzf` (Debian/Ubuntu; or `brew install fzf` / `sudo dnf install fzf`). Verify: `fzf --version`
 - [X] Install **universal-ctags** (`ctags`) — a **soft/optional dependency** (documented in `getting-started.adoc` §System Dependencies): the config never invokes it, but it generates the `tags` file that tag navigation reads — needed here to exercise Change 06 §6.6 (`]t`/`[t`). `sudo apt install universal-ctags` (Debian/Ubuntu; or `brew install universal-ctags`). Verify: `ctags --version`
@@ -972,6 +973,10 @@ entry, so a debug session only starts from a `.cs`/`.fsharp` buffer (where easy-
 - **`fzf` binary** — `fzf --version` responds. easy-dotnet's picker is `fzf` (`picker = "fzf"`), so
   `<F5>`, `,tt`, `,tr`, `,tb` all open an fzf picker.
 - **`csharprepl`** (for 7.6 C# REPL) — `dotnet tool install -g csharprepl`; `.NET SDK` gives F# `dotnet fsi`.
+- **`EasyDotnet` server tool** — `dotnet-easydotnet -v` responds. easy-dotnet.nvim is a thin client
+  over this separate server, which powers **all** its features (debug, test, run, build); without it
+  every `:Dotnet …` action errors `'dotnet-easydotnet' is not executable`. Install:
+  `dotnet tool install -g EasyDotnet` (needs `~/.dotnet/tools` on PATH). `:checkhealth easy-dotnet` confirms it.
 - **Test-project fixtures** (already in the repo — no setup): `testdocs/csharp-project/`
   (`HelloCs.csproj`, `Program.cs`) and `testdocs/fsharp-project/` (`HelloFs.fsproj`, `Program.fs`).
   Use these — a runnable project resolves reliably; standalone `.cs`/`.fsx` files are the finicky case.
@@ -1039,28 +1044,48 @@ server — roslyn.nvim owns the LSP. This step proves there is exactly one.
 
 #### 7.3 — Breakpoint and step debugging
 
-The netcoredbg adapter is registered by **easy-dotnet**, so start the session from inside a
-`.cs`/`.fsharp` buffer (not an empty buffer). dap-ui auto-opens on session start
-(`event_initialized`) and auto-closes on terminate/exit (`lua/plugins/dap.lua`). Maps:
-`<F9>` breakpoint · `<F5>` continue/start · `<F10>`/`<F11>`/`<F12>` step over/into/out · `<S-F5>`
-terminate (alternates: `<leader>bb`/`bc`/`bu`/`br`).
+The netcoredbg adapter is **auto-registered by easy-dotnet** (via the EasyDotnet server tool — see
+Prerequisites), so start the session from inside a `.cs`/`.fsharp` buffer. dap-ui auto-opens on
+session start (`event_initialized`) and auto-closes on terminate/exit (`lua/plugins/dap.lua`). Every
+action has a function-key **and** a terminal-independent `<leader>b` binding — use the latter when a
+terminal grabs the F-keys:
+`<F9>`/`bb` breakpoint · `<F5>`/`bc` start · `<F10>`/`bv` over · `<F11>`/`bi` into · `<F12>`/`bo` out
+· `<S-F5>`/`bt` terminate · `bu` toggle UI · `br` REPL.
 
-1. Open `testdocs/csharp-project/Program.cs`. Put the cursor on an **executable** line inside `Main`
-   (e.g. a `Console.WriteLine(...)` / `var … =` line — not a blank line or a brace) and press
-   `<F9>` → a red breakpoint sign appears in the sign column.
-2. Press `<F5>` (Debug: continue / start) → easy-dotnet's **fzf project picker** appears. Select
-   `HelloCs` (the `.csproj`).
-3. The **nvim-dap-ui** panels open automatically (Variables, Call Stack, Breakpoints, Watches, plus
-   a REPL/console). Execution runs and **pauses at the breakpoint** (the line is highlighted).
-4. Step: `<F10>` (over), `<F11>` (into), `<F12>` (out) — the highlighted current line follows each
-   step and the Variables / Call-stack panes update.
-5. Press `<S-F5>` (terminate) → the session ends and the dap-ui panels close.
-   - If your terminal intercepts the function keys, use `<leader>bb` (breakpoint) / `<leader>bc`
-     (continue/start) / `<leader>bu` (toggle UI) / `<leader>br` (open REPL).
-   - `<F5>` erroring with an adapter/`netcoredbg` "not found" message ⇒ the binary isn't on PATH
-     (prereqs) or you're not in a `.cs`/`.fsharp` buffer so easy-dotnet hasn't registered it.
+1. Open `testdocs/csharp-project/Program.cs`. Put the cursor on an **executable** line in `Main`
+   (e.g. line 29, `Console.WriteLine(Greeter.Greet("C#"));`) and press `<F9>` → a breakpoint sign
+   (nvim-dap's default is a plain `B`) appears in the sign column.
+2. Start the session — either works:
+   - `<F5>` (or `<leader>bc`): a brief **"Run Aborted"** flashes in `:messages` — **expected**
+     (easy-dotnet's dap config returns `dap.ABORT` and hands off to its own `:Dotnet debug profile`),
+     then the fzf picker appears → select `HelloCs`.
+   - `:Dotnet debug default`: launches the default project directly (no launch profile needed).
+3. The **nvim-dap-ui** panels open automatically (Variables, Call Stack, Breakpoints, Watches, REPL).
+   Execution runs and **pauses at the breakpoint**.
+4. Step — function keys **or** the `<leader>b` mirrors if your terminal grabs the F-keys:
+   `<F10>`/`<leader>bv` over · `<F11>`/`<leader>bi` into · `<F12>`/`<leader>bo` out — the current
+   line follows each step and the Variables/Call-stack panes update.
+5. `<S-F5>` (or `<leader>bt`) terminates → the session ends and dap-ui closes.
+   - `<F5>` erroring with an adapter/`netcoredbg` "not found" ⇒ the binary isn't on PATH (prereqs) or
+     you're not in a `.cs`/`.fsharp` buffer, so easy-dotnet hasn't registered the adapter.
 
-- [ ] Full debug cycle (set breakpoint → start → pause → step → stop) works
+- [X] Full debug cycle (set breakpoint → start → pause → step → stop) works — **pass after the fixes below**
+
+> **Three defects found & fixed to get here (all committed on this branch):**
+> 1. **Missing prerequisite — the `EasyDotnet` server tool.** easy-dotnet.nvim is a thin client over
+>    a separate `dotnet-easydotnet` server; without it every `:Dotnet …` action errors
+>    `'dotnet-easydotnet' is not executable`. Fix: `dotnet tool install -g EasyDotnet` (added to
+>    Prerequisites + One-Time Setup + `dotnet.adoc`).
+> 2. **Invalid fixture XML.** `HelloCs.csproj`/`HelloFs.fsproj` had an XML comment containing `--`
+>    (from `dotnet --list-sdks`), which MSBuild rejects (MSB4025) → the server reported "Failed to
+>    evaluate project." Fix: reworded the comments; both now `dotnet build` clean.
+> 3. **`<F11>` (step into) eaten by the terminal.** Many GUI terminals map `<F11>` to fullscreen, so
+>    step-into never reached Neovim (F10 worked). `dap.lua` had no non-F-key step maps. Fix: added
+>    `<leader>bi`/`bv`/`bo`/`bt` mirrors — **F-keys kept** (they still work on server/SSH terminals).
+>
+> Also: the `<F5>` "Run Aborted" flash is **normal** (easy-dotnet's `dap.ABORT` handoff), not a
+> failure. Both `<F5>` and `:Dotnet debug default` start a session on the bare fixture (no
+> `launchSettings.json` needed).
 
 #### 7.4 — easy-dotnet test / run / build maps
 

@@ -246,6 +246,22 @@ https://github.com/GustavEikaas/easy-dotnet.nvim[easy-dotnet.nvim] provides a
 .NET test runner, project picker, and solution management using fzf-lua. It does
 NOT manage the Roslyn LSP — roslyn.nvim remains the sole C# language server.
 
+[IMPORTANT]
+====
+easy-dotnet.nvim is a thin client over a separate **`EasyDotnet` server tool**, which powers *all*
+its features (debug, test, run, build). Install it once:
+
+[source,sh]
+----
+dotnet tool install -g EasyDotnet     # provides the `dotnet-easydotnet` executable
+dotnet-easydotnet -v                  # verify (needs ~/.dotnet/tools on PATH)
+----
+
+Without it, every `:Dotnet …` action (and `<F5>` debug) errors
+`'dotnet-easydotnet' is not executable`. Run `:checkhealth easy-dotnet` to confirm the server and
+the other dependencies (dap, fzf-lua, the `c_sharp` parser).
+====
+
 === Test / Run / Build Keymaps (C# and F# buffers)
 
 [cols=",",options="header",]
