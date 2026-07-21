@@ -75,6 +75,18 @@ vim.api.nvim_create_autocmd("TermOpen", {
   desc = "Disable spell-checking in terminal buffers",
 })
 
+-- The quickfix / location-list window (filetype "qf") inherits the global
+-- `spell = true`, so LSP references (`gr`), diagnostics, `:grep`, and `:make`
+-- lists spell-underline code symbols and file paths. Turn spell off there.
+vim.api.nvim_create_autocmd("FileType", {
+  group = vim.api.nvim_create_augroup("quickfix_settings", { clear = true }),
+  pattern = "qf",
+  callback = function()
+    vim.opt_local.spell = false
+  end,
+  desc = "Disable spell-checking in the quickfix/location-list window",
+})
+
 -- Terminal toggle
 local term_buf = -1
 local function toggle_terminal()
