@@ -56,6 +56,7 @@ Complete once before any testing begins.
 - [X] Install **lua-language-server** (Lua LSP completions, Change 03 §3.2) — not in apt/snap on Ubuntu 24.04; download from https://github.com/LuaLS/lua-language-server/releases, extract, and put `bin/lua-language-server` on PATH. Verify: `lua-language-server --version`
 - [X] Install **fsautocomplete** (F# LSP completions, Change 03 §3.2): `dotnet tool install -g fsautocomplete` (needs the dotnet SDK above; ensure `~/.dotnet/tools` is on PATH). Verify: `fsautocomplete --version`
 - [ ] Install **ripgrep** (`rg`) — required by todo-comments.nvim's search commands for Change 06 §6.5 (`<leader>xt` / `<leader>xT`), and used by fzf-lua generally: `sudo apt install ripgrep` (Debian/Ubuntu; or `brew install ripgrep` / `sudo dnf install ripgrep`). Verify: `rg --version`
+- [ ] Install the **`fzf`** binary — fzf-lua wraps the `fzf` fuzzy finder (no pure-Lua fallback); needed by `<leader>xT` (`:TodoFzfLua`) in Change 06 §6.5 and any fzf-lua picker: `sudo apt install fzf` (Debian/Ubuntu; or `brew install fzf` / `sudo dnf install fzf`). Verify: `fzf --version`
 - [X] Confirm `claude` CLI is installed and authenticated (required for Change 08): `claude --version`
 - [X] Clone the repo: `git clone git@github.com:floatingman-ltd/arcane-centaur.git ~/.config/nvim`
 - [X] Confirm initial main state loads: `nvim` → `:Lazy sync` → no errors in `:messages`
@@ -847,7 +848,7 @@ setup) attaches automatically. Bindings: `<leader>e` = `vim.diagnostic.open_floa
    text (e.g. *"Expected expression"* / *"unexpected symbol"*).
 5. Undo the two edits (`u`) so the buffer is clean again.
 
-- [ ] `[d`, `]d`, and `<leader>e` all behave as before
+- [X] `[d`, `]d`, and `<leader>e` all behave as before
 
 #### 6.4 — TODO/FIXME highlighting
 
@@ -873,7 +874,7 @@ alternate shares its primary's colour):
    colour from the table. A bare `TODO` with **no colon** should **not** highlight.
 4. Undo the additions.
 
-- [ ] Default keyword families highlight (colour + sign) only when written as `KEYWORD:`
+- [X] Default keyword families highlight (colour + sign) only when written as `KEYWORD:`
 
 #### 6.5 — Todo list views
 
@@ -883,16 +884,19 @@ alternate shares its primary's colour):
 
 - [ ] fzf-lua picker and Trouble panel both list todo comments
 
-> **Blocked on the test machine — ripgrep (`rg`) not installed (not a config defect).** Both
-> `<leader>xt` (`:TodoTrouble`) and `<leader>xT` (`:TodoFzfLua`) search the project for todo
-> comments via **ripgrep**; without it trouble throws
-> `.../trouble/view/section.lua:109: Vim:rg was not found on your path`. **Fix:** install ripgrep,
-> then re-run 6.5:
+> **Blocked on the test machine — two external binaries missing (not config defects).** The
+> replacement test machine lacked both tools these maps shell out to:
+> - `<leader>xt` (`:TodoTrouble`) needs **ripgrep** (`rg`) to search for todo comments — without
+>   it trouble throws `.../trouble/view/section.lua:109: Vim:rg was not found on your path`.
+> - `<leader>xT` (`:TodoFzfLua`) additionally needs the **`fzf` binary** — fzf-lua is a wrapper
+>   around `fzf` (no pure-Lua fallback), so without it it errors `'fzf' not installed`.
+>
+> **Fix:** install both, then re-run 6.5:
 > ```bash
-> sudo apt install ripgrep      # Debian/Ubuntu; or: brew install ripgrep / sudo dnf install ripgrep
-> rg --version                  # confirm on PATH
+> sudo apt install ripgrep fzf   # Debian/Ubuntu; or brew/dnf equivalents
+> rg --version && fzf --version  # confirm both on PATH
 > ```
-> (Added to *One-Time Test Machine Setup* above — it was missing on the replacement test machine.)
+> Neither is a plugin/config bug. Both added to *One-Time Test Machine Setup* above.
 
 #### 6.6 — vim-unimpaired tag maps intact
 
