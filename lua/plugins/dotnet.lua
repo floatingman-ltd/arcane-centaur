@@ -66,6 +66,12 @@ return {
       lsp = {
         enabled = false,
       },
+      -- Keep the run/test output terminal open after the process exits (default
+      -- auto_hide=true closes it the instant a run finishes with exit code 0, so
+      -- you never see the output). Dismiss it manually with `q`.
+      managed_terminal = {
+        auto_hide = false,
+      },
     },
   },
 }
