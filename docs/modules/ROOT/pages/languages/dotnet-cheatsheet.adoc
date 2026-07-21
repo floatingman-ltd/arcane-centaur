@@ -54,22 +54,23 @@ LSP server: *Roslyn* for C# buffers · *fsautocomplete* for F# buffers.
 
 == Debugging (nvim-dap + netcoredbg)
 
-Prerequisite: `dotnet tool install -g netcoredbg`
+Prerequisites: netcoredbg (GitHub-release binary — *not* `dotnet tool`), the `EasyDotnet` server tool
+(`dotnet tool install -g EasyDotnet`), and `fzf`. Details in the .NET guide.
 
 [cols=",,",options="header",]
 |===
 |Keys |Mode |Action
-|`<F9>` |Normal |Toggle breakpoint
-|`<F5>` |Normal |Continue / start
-|`<S-F5>` |Normal |Terminate
-|`<F10>` |Normal |Step over
-|`<F11>` |Normal |Step into
-|`<F12>` |Normal |Step out
-|`++<++leader++>++bb` |Normal |Toggle breakpoint
-|`++<++leader++>++bc` |Normal |Continue
+|`<F9>` / `++<++leader++>++bb` |Normal |Toggle breakpoint
+|`<F5>` / `++<++leader++>++bc` |Normal |Continue / start
+|`<F10>` / `++<++leader++>++bv` |Normal |Step over
+|`<F11>` / `++<++leader++>++bi` |Normal |Step into
+|`<F12>` / `++<++leader++>++bo` |Normal |Step out
+|`<S-F5>` / `++<++leader++>++bt` |Normal |Terminate
 |`++<++leader++>++bu` |Normal |Toggle debug UI
 |`++<++leader++>++br` |Normal |Open REPL
 |===
+
+The `++<++leader++>++b` mirrors exist for terminals that grab the F-keys (e.g. `<F11>` fullscreen).
 
 '''''
 
