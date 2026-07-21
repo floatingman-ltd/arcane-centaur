@@ -1172,14 +1172,14 @@ and send code TO the REPL — they are not active inside the REPL terminal itsel
 ### Raise PR & merge
 
 - [X] All validation steps above pass — 7.1–7.4 and 7.6 green; **7.5 (Haskell DAP) DEFERRED** (no Haskell toolchain, out of scope). Several pre-existing defects found & fixed on this branch: Roslyn LSP cmd (§7.2), EasyDotnet server-tool prereq + fixture XML (§7.3), F# solution requirement (§7.4), and the iron REPL fsi/float/theme fixes (§7.6).
-- [ ] Raise PR: `feat/07-add-dotnet-debug-test` → `main` (confirm `lsp = { enabled = false }` in easy-dotnet opts — verified line 78)
-- [ ] Review and approve PR
-- [ ] Merge PR
+- [X] Raise PR: `feat/07-add-dotnet-debug-test` → `main` (confirm `lsp = { enabled = false }` in easy-dotnet opts — verified line 78)
+- [X] Review and approve PR
+- [X] Merge PR
 
 ### Post-merge
 
-- [ ] `git checkout main && git pull origin main`
-- [ ] Launch Neovim: `:Lazy sync` — confirm clean
+- [X] `git checkout main && git pull origin main`
+- [X] Launch Neovim: `:Lazy sync` — confirm clean
 
 ---
 
