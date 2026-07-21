@@ -55,9 +55,9 @@ Complete once before any testing begins.
 - [X] Confirm a C compiler is available (nvim-treesitter compiles `fsharp`/`c_sharp` parsers from source): `cc --version` (install `build-essential` on Debian/Ubuntu if missing)
 - [X] Install **lua-language-server** (Lua LSP completions, Change 03 §3.2) — not in apt/snap on Ubuntu 24.04; download from https://github.com/LuaLS/lua-language-server/releases, extract, and put `bin/lua-language-server` on PATH. Verify: `lua-language-server --version`
 - [X] Install **fsautocomplete** (F# LSP completions, Change 03 §3.2): `dotnet tool install -g fsautocomplete` (needs the dotnet SDK above; ensure `~/.dotnet/tools` is on PATH). Verify: `fsautocomplete --version`
-- [ ] Install **ripgrep** (`rg`) — required by todo-comments.nvim's search commands for Change 06 §6.5 (`<leader>xt` / `<leader>xT`), and used by fzf-lua generally: `sudo apt install ripgrep` (Debian/Ubuntu; or `brew install ripgrep` / `sudo dnf install ripgrep`). Verify: `rg --version`
-- [ ] Install the **`fzf`** binary — fzf-lua wraps the `fzf` fuzzy finder (no pure-Lua fallback); needed by `<leader>xT` (`:TodoFzfLua`) in Change 06 §6.5 and any fzf-lua picker: `sudo apt install fzf` (Debian/Ubuntu; or `brew install fzf` / `sudo dnf install fzf`). Verify: `fzf --version`
-- [ ] Install **universal-ctags** (`ctags`) — a **soft/optional dependency** (documented in `getting-started.adoc` §System Dependencies): the config never invokes it, but it generates the `tags` file that tag navigation reads — needed here to exercise Change 06 §6.6 (`]t`/`[t`). `sudo apt install universal-ctags` (Debian/Ubuntu; or `brew install universal-ctags`). Verify: `ctags --version`
+- [X] Install **ripgrep** (`rg`) — required by todo-comments.nvim's search commands for Change 06 §6.5 (`<leader>xt` / `<leader>xT`), and used by fzf-lua generally: `sudo apt install ripgrep` (Debian/Ubuntu; or `brew install ripgrep` / `sudo dnf install ripgrep`). Verify: `rg --version`
+- [X] Install the **`fzf`** binary — fzf-lua wraps the `fzf` fuzzy finder (no pure-Lua fallback); needed by `<leader>xT` (`:TodoFzfLua`) in Change 06 §6.5 and any fzf-lua picker: `sudo apt install fzf` (Debian/Ubuntu; or `brew install fzf` / `sudo dnf install fzf`). Verify: `fzf --version`
+- [X] Install **universal-ctags** (`ctags`) — a **soft/optional dependency** (documented in `getting-started.adoc` §System Dependencies): the config never invokes it, but it generates the `tags` file that tag navigation reads — needed here to exercise Change 06 §6.6 (`]t`/`[t`). `sudo apt install universal-ctags` (Debian/Ubuntu; or `brew install universal-ctags`). Verify: `ctags --version`
 - [X] Confirm `claude` CLI is installed and authenticated (required for Change 08): `claude --version`
 - [X] Clone the repo: `git clone git@github.com:floatingman-ltd/arcane-centaur.git ~/.config/nvim`
 - [X] Confirm initial main state loads: `nvim` → `:Lazy sync` → no errors in `:messages`
@@ -932,14 +932,14 @@ definitions across `lua/config/`).
 ### Raise PR & merge
 
 - [X] All validation steps above pass — 6.1–6.6 all green (6.2 after the trouble.nvim `branch=main` fix; 6.5 after installing `rg`+`fzf`; usage documented in `code-intelligence.adoc`)
-- [ ] Raise PR: `feat/06-add-diagnostics-todo-panel` → `main`
-- [ ] Review and approve PR
-- [ ] Merge PR
+- [X] Raise PR: `feat/06-add-diagnostics-todo-panel` → `main`
+- [X] Review and approve PR
+- [X] Merge PR
 
 ### Post-merge
 
-- [ ] `git checkout main && git pull origin main`
-- [ ] Launch Neovim: `:Lazy sync` — confirm clean
+- [X] `git checkout main && git pull origin main`
+- [X] Launch Neovim: `:Lazy sync` — confirm clean
 
 ---
 
