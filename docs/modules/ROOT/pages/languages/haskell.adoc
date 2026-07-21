@@ -77,6 +77,19 @@ live in `after/ftplugin/haskell.lua`.
 
 '''''
 
+== Debugging
+
+https://github.com/MrcJkb/haskell-tools.nvim[haskell-tools.nvim] auto-discovers
+DAP launch configurations once https://github.com/mfussenegger/nvim-dap[nvim-dap]
+is installed (added in change 07 for .NET debug support).
+
+Use the standard debug keymaps (`<F5>`, `<F9>`, `<F10>`/`<F11>`/`<F12>`) to start
+a session. No additional Haskell-specific debug adapter install is required for
+basic GHCi-based debugging; a full `haskell-debug-adapter` setup is optional and
+left for a future change.
+
+'''''
+
 [[prerequisites]]
 == Prerequisites
 

@@ -10,7 +10,7 @@
 
 - [ ] 2.1 Create `docs/modules/ROOT/pages/languages/setup.adoc` with a per-language/family section or table.
 - [ ] 2.2 Columns/fields per language: LSP server, REPL/runtime, formatter, debugger, treesitter parser — each with a one-line install command or link.
-- [ ] 2.3 Cover: **Lua** (lua-language-server, stylua); **.NET C#/F#** (dotnet SDK, Roslyn `Microsoft.CodeAnalysis.LanguageServer`, fsautocomplete, csharpier, csharprepl, netcoredbg); **Haskell** (ghcup, GHC, haskell-language-server); **Common Lisp** (sbcl, quicklisp, swank); **Clojure** (clojure CLI or lein + nREPL); **Scheme**; **Fennel**; **Janet** (janet, janet-lsp).
+- [ ] 2.3 Cover: **Lua** (lua-language-server, stylua); **.NET C#/F#** (dotnet SDK, Roslyn `Microsoft.CodeAnalysis.LanguageServer`, fsautocomplete, csharpier, csharprepl, netcoredbg [GitHub-release binary — NOT a `dotnet tool`], **EasyDotnet server tool** `dotnet tool install -g EasyDotnet` [required by easy-dotnet.nvim for run/test/debug]); **Haskell** (ghcup, GHC, haskell-language-server, **haskell-debug-adapter**); **Common Lisp** (sbcl, quicklisp, swank); **Clojure** (clojure CLI or lein + nREPL); **Scheme**; **Fennel**; **Janet** (janet, janet-lsp).
 - [ ] 2.4 State the C-compiler-for-treesitter-parsers requirement (or xref getting-started).
 - [ ] 2.5 Link each entry to that language's guide Prerequisites section.
 
@@ -19,6 +19,7 @@
 - [ ] 3.1 Ensure each of dotnet/lisp/haskell/janet/lua has a clearly-headed **Prerequisites** section with its language-specific tools only.
 - [ ] 3.2 Remove any duplicated base/system tools from guides (replace with an xref to getting-started).
 - [ ] 3.3 Confirm the matrix links resolve to these sections.
+- [ ] 3.4 Document **Haskell debugging** setup (TEST_PLAN §7.5 is **deferred** pending it): note that `haskell-debug-adapter` **plus an open cabal/stack project** are required for `require("dap").configurations.haskell` to populate (haskell-tools.nvim registers the config only then). Add to the Haskell guide Prerequisites + the setup matrix, and cross-reference §7.5.
 
 ## 4. Nav + build verification
 

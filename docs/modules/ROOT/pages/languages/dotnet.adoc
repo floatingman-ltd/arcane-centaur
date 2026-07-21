@@ -166,6 +166,142 @@ Format-on-save is enabled via `conform.nvim` using the fsautocomplete formatter.
 ---
 
 [[workflow]]
+[[debugging]]
+== Debugging (nvim-dap + netcoredbg)
+
+Breakpoint debugging for C# and F# is provided by https://github.com/mfussenegger/nvim-dap[nvim-dap] +
+https://github.com/rcarriga/nvim-dap-ui[nvim-dap-ui] with the https://github.com/Samsung/netcoredbg[netcoredbg]
+adapter, which easy-dotnet auto-registers with nvim-dap once both are loaded (there is no
+hand-written `dap.adapters` entry — a session therefore only starts from a `.cs`/`.fsharp` buffer,
+where easy-dotnet is loaded).
+
+=== Prerequisites
+
+`netcoredbg` is *not* a NuGet / `dotnet tool` package (there is no `dotnet tool install -g netcoredbg`).
+Download the prebuilt binary from the
+https://github.com/Samsung/netcoredbg/releases[Samsung/netcoredbg releases] and put it on your `$PATH`.
+
+*Linux / WSL2 (x64):*
+
+[source,sh]
+----
+# Resolve the latest release tag, download the linux-amd64 build, and extract it
+NCDBG_VER=$(curl -s https://api.github.com/repos/Samsung/netcoredbg/releases/latest \
+  | grep '"tag_name"' | cut -d'"' -f4)
+curl -L "https://github.com/Samsung/netcoredbg/releases/download/${NCDBG_VER}/netcoredbg-linux-amd64.tar.gz" \
+  -o /tmp/netcoredbg.tar.gz
+mkdir -p ~/.local/share/netcoredbg
+tar -xzf /tmp/netcoredbg.tar.gz -C ~/.local/share/netcoredbg/
+
+# Add to your shell rc (~/.bashrc or ~/.zshrc), then reload:
+echo 'export PATH="$PATH:$HOME/.local/share/netcoredbg"' >> ~/.bashrc
+source ~/.bashrc
+----
+
+Verify it is on your `$PATH`:
+
+[source,sh]
+----
+netcoredbg --version
+----
+
+[NOTE]
+====
+If `netcoredbg --version` is not found afterward, the tarball extracted into a nested
+`netcoredbg/` subdirectory — point `PATH` at `~/.local/share/netcoredbg/netcoredbg` instead.
+====
+
+=== Debug Keymaps
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`<F9>` / `++<++leader++>++bb` |Normal |Toggle breakpoint
+|`<F5>` / `++<++leader++>++bc` |Normal |Continue / start debug session
+|`<F10>` / `++<++leader++>++bv` |Normal |Step over
+|`<F11>` / `++<++leader++>++bi` |Normal |Step into
+|`<F12>` / `++<++leader++>++bo` |Normal |Step out
+|`<S-F5>` / `++<++leader++>++bt` |Normal |Terminate debug session
+|`++<++leader++>++bu` |Normal |Toggle debug UI
+|`++<++leader++>++br` |Normal |Open debug REPL
+|===
+
+[NOTE]
+====
+Every action has both a function-key and a `++<++leader++>++b` binding. The F-keys are the
+universal debugger idiom and work on server/SSH terminals; the `++<++leader++>++b` mirrors are for
+GUI terminal emulators that intercept function keys before Neovim sees them (commonly `<F11>` for
+fullscreen, `<F10>` for a menu). Both are always active — use whichever your terminal passes through.
+====
+
+The debug UI opens automatically when a session starts and closes on exit.
+Launch configurations are auto-discovered by easy-dotnet from the project structure
+(no hand-authored `launch.json` required).
+
+'''''
+
+== Testing (easy-dotnet)
+
+https://github.com/GustavEikaas/easy-dotnet.nvim[easy-dotnet.nvim] provides a
+.NET test runner, project picker, and solution management using fzf-lua. It does
+NOT manage the Roslyn LSP — roslyn.nvim remains the sole C# language server.
+
+[IMPORTANT]
+====
+easy-dotnet.nvim is a thin client over a separate **`EasyDotnet` server tool**, which powers *all*
+its features (debug, test, run, build). Install it once:
+
+[source,sh]
+----
+dotnet tool install -g EasyDotnet     # provides the `dotnet-easydotnet` executable
+dotnet-easydotnet -v                  # verify (needs ~/.dotnet/tools on PATH)
+----
+
+Without it, every `:Dotnet …` action (and `<F5>` debug) errors
+`'dotnet-easydotnet' is not executable`. Run `:checkhealth easy-dotnet` to confirm the server and
+the other dependencies (dap, fzf-lua, the `c_sharp` parser).
+====
+
+=== Test / Run / Build Keymaps (C# and F# buffers)
+
+[cols=",",options="header",]
+|===
+|Keys |Action
+|`,tt` |Run tests for selected project
+|`,tr` |Run selected project
+|`,tb` |Build selected project
+|===
+
+Run/test output opens in a managed terminal that **stays open on exit** (we set
+`managed_terminal.auto_hide = false`; the default closes it the moment a run exits 0). Dismiss it
+with `q`.
+
+[NOTE]
+====
+easy-dotnet resolves the target project from Neovim's **current working directory**
+(`vim.fn.getcwd()`), not the current buffer, and it caches one active project (shown in lualine).
+Open Neovim **from the project's directory** (or `:lcd %:p:h`) so `,tr`/`,tt`/`,tb` act on the
+project you mean.
+
+**F# projects need a solution file.** easy-dotnet's runnable-project discovery is C#-oriented, so a
+standalone `.fsproj` isn't found ("No runnable projects found") even though `dotnet run` works — add
+a `.sln` (or `.slnx`) alongside it. C# `.csproj` projects are discovered without one.
+====
+
+=== Easy-Dotnet Commands
+
+[width="100%",cols="50%,50%",options="header",]
+|===
+|Command |Action
+|`:Dotnet run` |Run project (picker)
+|`:Dotnet test` |Test project (picker)
+|`:Dotnet build` |Build project (picker)
+|`:Dotnet restore` |Restore packages
+|`:Dotnet clean` |Clean project
+|===
+
+'''''
+
 == Typical Workflow
 
 ....
@@ -297,8 +433,11 @@ To pin a specific version instead of auto-resolving the newest, set
 [width="100%",cols="34%,33%,33%",options="header",]
 |===
 |Dependency |Purpose |Install hint
-|*.NET SDK ≥ 8* |C# and F# compiler, `dotnet fsi` REPL |https://dotnet.microsoft.com/download
+|*.NET SDK ≥ 8* (net8.0 or net10.0 — both LTS) |C# and F# compiler, `dotnet fsi` REPL. The **runtime must match the project's `<TargetFramework>`** to run/debug. |https://dotnet.microsoft.com/download
 |*Neovim ≥ 0.12* |Required by roslyn.nvim |See xref:getting-started.adoc[Getting Started]
+|*Roslyn LSP* |C# language server (roslyn.nvim) |<<setup,Installing the Roslyn Language Server>>
+|*netcoredbg* |C#/F# debug adapter (nvim-dap) |<<debugging,Debugging § Prerequisites>>
+|*`fzf`* |easy-dotnet project/test picker |`sudo apt install fzf` (or brew/dnf)
 |===
 
 === Installing .NET SDK
@@ -312,4 +451,15 @@ sudo dpkg -i packages-microsoft-prod.deb
 sudo apt update && sudo apt install -y dotnet-sdk-8.0
 ----
 
-Or download directly from https://dotnet.microsoft.com/download.
+Or download directly from https://dotnet.microsoft.com/download. `net10.0` (LTS to 2028) works
+equally well — swap the package for `dotnet-sdk-10.0`.
+
+[NOTE]
+====
+Debugging and running a project needs the **runtime that matches its `<TargetFramework>`**, not
+just any SDK. A net10 SDK builds a `net8.0` project, but running/debugging it also needs the
+net8.0 *runtime* (`dotnet --list-runtimes` should show `Microsoft.NETCore.App 8.0.x`; install with
+`sudo apt install dotnet-runtime-8.0`). The whole toolchain here (roslyn.nvim, fsautocomplete,
+csharprepl, easy-dotnet, netcoredbg) is SDK-version-agnostic — pick net8.0 or net10.0 and keep the
+project target and installed runtime in sync.
+====

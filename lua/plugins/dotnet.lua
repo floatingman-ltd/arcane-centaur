@@ -20,13 +20,24 @@ return {
           scratch_repl = true,
           repl_definition = {
             fsharp = {
-              command = { "dotnet", "fsi", "--stdin" },
+              -- Plain `dotnet fsi` — interactive F# Interactive. (`--stdin` is NOT a valid
+              -- fsi option; it errored FS0243 and the REPL exited immediately on open.)
+              -- Reminder: F# Interactive evaluates a submission only after `;;`.
+              command = { "dotnet", "fsi" },
             },
             cs = {
-              command = { "csharprepl" },
+              -- `--useTerminalPaletteTheme`: csharprepl defaults to the truecolor
+              -- VisualStudio_Dark syntax theme, which renders low-contrast/invisible in
+              -- terminals that don't match it (the "blank REPL" symptom). This flag makes
+              -- it use the terminal's own 16-colour palette, so output is visible.
+              command = { "csharprepl", "--useTerminalPaletteTheme" },
             },
           },
-          repl_open_cmd = require("iron.view").bottom(40),
+          -- Bottom *split* (not a float). `iron.view.bottom()` opens a floating window,
+          -- which overlays the code, isn't reached by window motions (needs :IronFocus),
+          -- and generally confuses REPL interaction. A split behaves like a normal window
+          -- (reach it with <C-j>/<C-w>j, no overlay).
+          repl_open_cmd = require("iron.view").split.botright(15),
         },
         keymaps = {
           send_motion    = "<localleader>sc",
@@ -52,5 +63,26 @@ return {
     "seblyng/roslyn.nvim",
     ft = { "cs" },
     opts = {},
+  },
+
+  -- easy-dotnet: solution management, test runner, and DAP auto-registration.
+  -- lsp.enabled=false: roslyn.nvim is the sole C# LSP; easy-dotnet must not add a second server.
+  -- auto_register_dap=true (default): registers netcoredbg once nvim-dap is present.
+  {
+    "GustavEikaas/easy-dotnet.nvim",
+    ft = { "cs", "fsharp" },
+    dependencies = { "nvim-lua/plenary.nvim", "ibhagwan/fzf-lua" },
+    opts = {
+      picker = "fzf",
+      lsp = {
+        enabled = false,
+      },
+      -- Keep the run/test output terminal open after the process exits (default
+      -- auto_hide=true closes it the instant a run finishes with exit code 0, so
+      -- you never see the output). Dismiss it manually with `q`.
+      managed_terminal = {
+        auto_hide = false,
+      },
+    },
   },
 }

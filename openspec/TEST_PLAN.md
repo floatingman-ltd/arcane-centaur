@@ -22,7 +22,7 @@ Complete once before any testing begins.
 - [X] Confirm Neovim ≥ 0.12 is installed: `nvim --version`
 - [X] Confirm Git is installed: `git --version`
 - [X] Confirm Node.js + npm are installed (required by markdown-preview.nvim build): `node --version && npm --version`
-- [X] Confirm the `dotnet` SDK is installed: `dotnet --version` (list all with `dotnet --list-sdks`). **The sample F#/C# projects target `net8.0`** — either install the `net8.0` runtime/SDK, or bump `<TargetFramework>` in `testdocs/fsharp-project`/`testdocs/csharp-project` to your installed version; a mismatch means the F#/C# LSP can't resolve the project (no completions).
+- [X] Confirm the `dotnet` SDK is installed: `dotnet --version` (SDKs: `dotnet --list-sdks`; runtimes: `dotnet --list-runtimes`). **The sample F#/C# projects target `net8.0`**, so you need the **net8.0 runtime** (`Microsoft.NETCore.App 8.0.x`) present to build/run/**debug** them (Change 07) — either install the `net8.0` runtime/SDK (`sudo apt install dotnet-runtime-8.0`), or bump `<TargetFramework>` in `testdocs/fsharp-project`/`testdocs/csharp-project` to your installed version (e.g. `net10.0`, also LTS). A mismatch means the LSP can't resolve the project (no completions) **and** run/debug fails.
 - [X] Install netcoredbg (required for Change 07 debugging tests) — **not** a NuGet tool; install from GitHub releases:
   ```bash
   NCDBG_VER=$(curl -s https://api.github.com/repos/Samsung/netcoredbg/releases/latest \
@@ -55,6 +55,7 @@ Complete once before any testing begins.
 - [X] Confirm a C compiler is available (nvim-treesitter compiles `fsharp`/`c_sharp` parsers from source): `cc --version` (install `build-essential` on Debian/Ubuntu if missing)
 - [X] Install **lua-language-server** (Lua LSP completions, Change 03 §3.2) — not in apt/snap on Ubuntu 24.04; download from https://github.com/LuaLS/lua-language-server/releases, extract, and put `bin/lua-language-server` on PATH. Verify: `lua-language-server --version`
 - [X] Install **fsautocomplete** (F# LSP completions, Change 03 §3.2): `dotnet tool install -g fsautocomplete` (needs the dotnet SDK above; ensure `~/.dotnet/tools` is on PATH). Verify: `fsautocomplete --version`
+- [X] Install the **`EasyDotnet` server tool** (required by easy-dotnet.nvim for Change 07 debug/test/run/build — the plugin is a thin client over this server): `dotnet tool install -g EasyDotnet` (needs `~/.dotnet/tools` on PATH). Verify: `dotnet-easydotnet -v`; in-editor `:checkhealth easy-dotnet`.
 - [X] Install **ripgrep** (`rg`) — required by todo-comments.nvim's search commands for Change 06 §6.5 (`<leader>xt` / `<leader>xT`), and used by fzf-lua generally: `sudo apt install ripgrep` (Debian/Ubuntu; or `brew install ripgrep` / `sudo dnf install ripgrep`). Verify: `rg --version`
 - [X] Install the **`fzf`** binary — fzf-lua wraps the `fzf` fuzzy finder (no pure-Lua fallback); needed by `<leader>xT` (`:TodoFzfLua`) in Change 06 §6.5 and any fzf-lua picker: `sudo apt install fzf` (Debian/Ubuntu; or `brew install fzf` / `sudo dnf install fzf`). Verify: `fzf --version`
 - [X] Install **universal-ctags** (`ctags`) — a **soft/optional dependency** (documented in `getting-started.adoc` §System Dependencies): the config never invokes it, but it generates the `tags` file that tag navigation reads — needed here to exercise Change 06 §6.6 (`]t`/`[t`). `sudo apt install universal-ctags` (Debian/Ubuntu; or `brew install universal-ctags`). Verify: `ctags --version`
@@ -947,71 +948,231 @@ definitions across `lua/config/`).
 
 **Branch:** `feat/07-add-dotnet-debug-test`
 
-**Prerequisites** (confirm before switching branch):
-- `netcoredbg --version` responds (installed in one-time setup above)
-- A runnable .NET solution is available on the test machine
-- A Haskell project is available (for DAP discovery check — optional)
+Adds breakpoint debugging (`nvim-dap` + `nvim-dap-ui`, netcoredbg adapter) and a .NET test runner
+(`easy-dotnet.nvim`) for C# and F#, **without** adding a second C# language server — roslyn.nvim
+stays the sole LSP (`easy-dotnet` has `lsp = { enabled = false }`). The netcoredbg adapter is
+**auto-registered by easy-dotnet** once nvim-dap is loaded — there is no hand-written `dap.adapters`
+entry, so a debug session only starts from a `.cs`/`.fsharp` buffer (where easy-dotnet loads).
+
+**Prerequisites** (confirm before validating):
+- **netcoredbg on `$PATH`** — `netcoredbg --version` responds. Installed from **GitHub releases**,
+  **not** `dotnet tool install` (see *One-Time Test Machine Setup* and `languages/dotnet.adoc`
+  § Debugging § Prerequisites).
+- **.NET SDK + matching runtime** — `dotnet --list-sdks` lists a usable SDK **and**
+  `dotnet --list-runtimes` shows a runtime matching the fixtures' target. The fixtures target
+  **`net8.0`**, so you need the **net8.0 runtime** (`Microsoft.NETCore.App 8.0.x`) present to build,
+  run, **and debug** them — a target/runtime mismatch means Roslyn/easy-dotnet can't resolve the
+  project *and* run/debug (§7.3/§7.4) fails, not just completions. On a net10-only machine either
+  add the net8.0 runtime (`sudo apt install dotnet-runtime-8.0`) or bump the fixtures' TFM (below).
+  - **net10.0 is also fully supported** (LTS to 2028; net8 is EOL ~Nov 2026). The toolchain is
+    SDK-agnostic, and netcoredbg on net10 is confirmed empirically at §7.3. To use it, bump
+    `<TargetFramework>` from `net8.0` → `net10.0` in all four fixture projects
+    (`testdocs/{c,f}sharp-project/*.*proj`) so it matches your installed SDK/runtime.
+- **Roslyn LSP on `$PATH`** — `Microsoft.CodeAnalysis.LanguageServer --version` responds (for
+  7.2 / 7.6).
+- **`fzf` binary** — `fzf --version` responds. easy-dotnet's picker is `fzf` (`picker = "fzf"`), so
+  `<F5>`, `,tt`, `,tr`, `,tb` all open an fzf picker.
+- **`csharprepl`** (for 7.6 C# REPL) — `dotnet tool install -g csharprepl`; `.NET SDK` gives F# `dotnet fsi`.
+- **`EasyDotnet` server tool** — `dotnet-easydotnet -v` responds. easy-dotnet.nvim is a thin client
+  over this separate server, which powers **all** its features (debug, test, run, build); without it
+  every `:Dotnet …` action errors `'dotnet-easydotnet' is not executable`. Install:
+  `dotnet tool install -g EasyDotnet` (needs `~/.dotnet/tools` on PATH). `:checkhealth easy-dotnet` confirms it.
+- **Test-project fixtures** (already in the repo — no setup): `testdocs/csharp-project/`
+  (`HelloCs.csproj`, `Program.cs`) and `testdocs/fsharp-project/` (`HelloFs.fsproj`, `Program.fs`).
+  Use these — a runnable project resolves reliably; standalone `.cs`/`.fsx` files are the finicky case.
+- **A Haskell project** (optional, 7.5) — any `.hs`; `testdocs/hello.hs` suffices for the discovery check.
 
 ### Prepare
 
-1. `git fetch origin && git checkout feat/07-add-dotnet-debug-test`
-2. Launch Neovim: `:Lazy sync` — wait for completion
+> Run the **Per-Branch Sync & Sanity Check** first. If this branch was rebased/force-pushed on a
+> machine that already had it, `git reset --hard origin/feat/07-add-dotnet-debug-test` (do **not**
+> `git pull`).
 
-- [ ] Branch checked out; nvim-dap, nvim-dap-ui, nvim-nio, easy-dotnet all listed in `:Lazy`
+1. `git fetch origin && git checkout feat/07-add-dotnet-debug-test`
+2. Launch Neovim: `:Lazy sync` — wait for completion.
+3. Open a C# file once — `:e testdocs/csharp-project/Program.cs` — so the `ft = { "cs", "fsharp" }`
+   plugins (roslyn.nvim, easy-dotnet) load.
+
+- [X] Branch checked out, `:Lazy sync` clean; `nvim-dap`, `nvim-dap-ui`, `nvim-nio`, `easy-dotnet.nvim` listed in `:Lazy`
 
 ### Validate
 
 #### 7.1 — Plugins installed
 
-1. Open `:Lazy`. Confirm `nvim-dap`, `nvim-dap-ui`, `nvim-nio`, and `easy-dotnet.nvim` are all installed with no errors.
+1. Open `:Lazy`. Confirm each is installed with **no error icon**: `nvim-dap`, `nvim-dap-ui`,
+   `nvim-nio`, `easy-dotnet.nvim`.
+   - `nvim-dap` loads on its `keys` (e.g. `<F5>`); `nvim-dap-ui`/`nvim-nio` are dap dependencies.
+     They may show as **installed but not loaded** until you first press a debug key — that is the
+     pass here, not a failure. `easy-dotnet.nvim` loads on `ft = { cs, fsharp }`.
+2. Run `:messages` — no plugin load errors.
 
-- [ ] All four plugins installed cleanly
+- [X] All four plugins installed cleanly (loaded lazily is fine)
 
 #### 7.2 — Exactly one Roslyn LSP client
 
-1. Open a `.cs` file from a .NET solution. Wait for roslyn.nvim to attach.
-2. Run `:lua =vim.lsp.get_clients({ name = "roslyn" })` — expect exactly one table entry.
-   If two entries appear, easy-dotnet has started a second Roslyn server — configuration error.
+easy-dotnet is configured with `lsp = { enabled = false }`, so it must **not** start a second C#
+server — roslyn.nvim owns the LSP. This step proves there is exactly one.
 
-- [ ] Exactly one Roslyn client returned
+1. Open `testdocs/csharp-project/Program.cs`. Wait for roslyn.nvim to attach — first attach on a
+   project can take **10–30 s** while it loads the solution (watch for the LSP progress message).
+2. Run `:lua =vim.lsp.get_clients({ name = "roslyn" })` — expect **exactly one** table entry.
+   - **Empty** list → Roslyn didn't attach: confirm the server is on PATH
+     (`:lua =vim.fn.exepath('Microsoft.CodeAnalysis.LanguageServer')` is non-empty) and check `:LspLog`.
+   - **Two** entries → easy-dotnet started its own Roslyn (the `lsp.enabled = false` opt regressed) —
+     a configuration error. Do not proceed; note it.
+
+- [X] Exactly one Roslyn client returned — **pass after the roslyn cmd fix below**
+
+> **Defect found & fixed — Roslyn server exited 1 on attach (`Client roslyn quit with exit code 1`).**
+> `:LspLog` showed the server rejecting its own launch:
+> ```
+> "Microsoft.CodeAnalysis.LanguageServer" "stderr" "Option '--logLevel' is required."
+> "Microsoft.CodeAnalysis.LanguageServer" "stderr" "Option '--extensionLogDirectory' is required."
+> ```
+> **Root cause:** roslyn.nvim (`main`) builds its cmd as `{ get_roslyn_lsp_path(), "--stdio" }`, which
+> targets a `roslyn-language-server` **wrapper** that supplies those args internally. Against the raw
+> `Microsoft.CodeAnalysis.LanguageServer` this repo installs, the two **REQUIRED** args
+> (`--logLevel`, `--extensionLogDirectory`) are missing, so the server exits 1. (The raw server *does*
+> support `--stdio` — that flag was not the problem.) This surfaced now because C# LSP attach is
+> validated end-to-end here for the first time.
+> **Fix (this branch):** `lua/config/lsp.lua` overrides the `roslyn` `cmd` with the full invocation
+> (`--stdio --logLevel Information --extensionLogDirectory <nvim-log>/roslyn`). roslyn.nvim only ever
+> sets `capabilities` (config.lua), never `cmd`, so the override holds. Verified: the server emits
+> `[Program] Language server initialized` over stdio and exactly one client attaches.
+> **Re-test:** restart Neovim → open `testdocs/csharp-project/Program.cs` → wait for attach →
+> `:lua =vim.lsp.get_clients({ name = "roslyn" })` returns exactly one client.
 
 #### 7.3 — Breakpoint and step debugging
 
-1. Open a `.cs` file in a runnable .NET project. Press `<F9>` on a line — breakpoint sign appears.
-2. Press `<F5>` — easy-dotnet project picker appears; select the project.
-3. nvim-dap-ui panel opens automatically. Execution pauses at the breakpoint.
-4. Press `<F10>` (step over), `<F11>` (step into), `<F12>` (step out) — cursor follows.
-5. Press `<S-F5>` — session terminates and dap-ui closes.
+The netcoredbg adapter is **auto-registered by easy-dotnet** (via the EasyDotnet server tool — see
+Prerequisites), so start the session from inside a `.cs`/`.fsharp` buffer. dap-ui auto-opens on
+session start (`event_initialized`) and auto-closes on terminate/exit (`lua/plugins/dap.lua`). Every
+action has a function-key **and** a terminal-independent `<leader>b` binding — use the latter when a
+terminal grabs the F-keys:
+`<F9>`/`bb` breakpoint · `<F5>`/`bc` start · `<F10>`/`bv` over · `<F11>`/`bi` into · `<F12>`/`bo` out
+· `<S-F5>`/`bt` terminate · `bu` toggle UI · `br` REPL.
 
-- [ ] Full debug cycle (set breakpoint → start → pause → step → stop) works
+1. Open `testdocs/csharp-project/Program.cs`. Put the cursor on an **executable** line in `Main`
+   (e.g. line 29, `Console.WriteLine(Greeter.Greet("C#"));`) and press `<F9>` → a breakpoint sign
+   (nvim-dap's default is a plain `B`) appears in the sign column.
+2. Start the session — either works:
+   - `<F5>` (or `<leader>bc`): a brief **"Run Aborted"** flashes in `:messages` — **expected**
+     (easy-dotnet's dap config returns `dap.ABORT` and hands off to its own `:Dotnet debug profile`),
+     then the fzf picker appears → select `HelloCs`.
+   - `:Dotnet debug default`: launches the default project directly (no launch profile needed).
+3. The **nvim-dap-ui** panels open automatically (Variables, Call Stack, Breakpoints, Watches, REPL).
+   Execution runs and **pauses at the breakpoint**.
+4. Step — function keys **or** the `<leader>b` mirrors if your terminal grabs the F-keys:
+   `<F10>`/`<leader>bv` over · `<F11>`/`<leader>bi` into · `<F12>`/`<leader>bo` out — the current
+   line follows each step and the Variables/Call-stack panes update.
+5. `<S-F5>` (or `<leader>bt`) terminates → the session ends and dap-ui closes.
+   - `<F5>` erroring with an adapter/`netcoredbg` "not found" ⇒ the binary isn't on PATH (prereqs) or
+     you're not in a `.cs`/`.fsharp` buffer, so easy-dotnet hasn't registered the adapter.
 
-#### 7.4 — easy-dotnet test and run maps
+- [X] Full debug cycle (set breakpoint → start → pause → step → stop) works — **pass after the fixes below**
 
-1. Open a `.cs` file. Press `,tt` — test runner opens and runs tests.
-2. Press `,tr` — project runner fires (picker appears if multiple projects).
-3. Open `testdocs/hello.fsx`. Confirm `,tt` and `,tr` are active in F# buffers too.
+> **Three defects found & fixed to get here (all committed on this branch):**
+> 1. **Missing prerequisite — the `EasyDotnet` server tool.** easy-dotnet.nvim is a thin client over
+>    a separate `dotnet-easydotnet` server; without it every `:Dotnet …` action errors
+>    `'dotnet-easydotnet' is not executable`. Fix: `dotnet tool install -g EasyDotnet` (added to
+>    Prerequisites + One-Time Setup + `dotnet.adoc`).
+> 2. **Invalid fixture XML.** `HelloCs.csproj`/`HelloFs.fsproj` had an XML comment containing `--`
+>    (from `dotnet --list-sdks`), which MSBuild rejects (MSB4025) → the server reported "Failed to
+>    evaluate project." Fix: reworded the comments; both now `dotnet build` clean.
+> 3. **`<F11>` (step into) eaten by the terminal.** Many GUI terminals map `<F11>` to fullscreen, so
+>    step-into never reached Neovim (F10 worked). `dap.lua` had no non-F-key step maps. Fix: added
+>    `<leader>bi`/`bv`/`bo`/`bt` mirrors — **F-keys kept** (they still work on server/SSH terminals).
+>
+> Also: the `<F5>` "Run Aborted" flash is **normal** (easy-dotnet's `dap.ABORT` handoff), not a
+> failure. Both `<F5>` and `:Dotnet debug default` start a session on the bare fixture (no
+> `launchSettings.json` needed).
 
-- [ ] Test and run maps work in both C# and F# buffers
+#### 7.4 — easy-dotnet test / run / build maps
 
-#### 7.5 — Haskell DAP config discovery
+Maps are `<localleader>` (`,`), in `after/ftplugin/cs.lua` and `after/ftplugin/fsharp.lua`:
+`,tt` = `require("easy-dotnet").test()`, `,tr` = `run()`, `,tb` = `build()` (`:Dotnet test|run|build`
+are equivalent). Output shows in a managed terminal — `lua/plugins/dotnet.lua` sets
+`managed_terminal.auto_hide = false` so it stays open on exit (dismiss with `q`); the default
+(`true`) hides it the instant a run exits 0, so output would flash and vanish.
 
-1. Open `testdocs/hello.hs` (or any `.hs` file).
+**easy-dotnet is cwd-scoped, not buffer-scoped** — it discovers projects from `vim.fn.getcwd()`
+(and caches one active project, shown in lualine), NOT from the current buffer. To target a specific
+project, **open nvim from that project's directory** (or `:lcd %:p:h`).
+
+1. C# — `cd testdocs/csharp-project && nvim Program.cs`:
+   - `,tr` → the project **runs** (its `Hello …` output appears; the terminal stays open, `q` closes).
+   - `,tb` → the project **builds** (build-succeeded message).
+   - `,tt` → the **test runner** fires. The fixture is a console app with no tests, so a clean
+     "no tests"/build-only result is the pass — the point is the runner launches, not a green suite.
+2. F# — `cd testdocs/fsharp-project && nvim Program.fs`:
+   - `,tr` / `,tb` / `,tt` run / build / test the F# project.
+
+- [X] Test, run, and build maps work in both C# and F# buffers — **pass; see the two constraints below**
+
+> **Constraint 1 — F# projects require a solution file.** easy-dotnet's runnable-project discovery
+> is C#-oriented (its server's `compat run` argument is documented as a `.csproj`). A standalone
+> `.fsproj` is **not** discovered — from an F#-only cwd, `,tr` reports "No runnable projects found"
+> even though `dotnet run` works and `OutputType=Exe`. **Fix:** the F# fixture ships
+> `testdocs/fsharp-project/HelloFs.sln` (classic format — portable to net8; easy-dotnet also accepts
+> `.slnx`). Real F# repos have a solution anyway. C# projects are discovered standalone (no `.sln`
+> needed), which is why the C# fixture has none.
+>
+> **Constraint 2 — cwd-scoped selection.** Because discovery keys off `getcwd()`, opening both
+> fixtures from one nvim cwd (e.g. `~/.config/nvim`) makes `,tr` always resolve the first project
+> found (the C# one) regardless of the active buffer. Open nvim from the target project's dir (or
+> `:lcd` into it). `:Dotnet reset` clears the on-disk cache but does not change cwd resolution.
+
+#### 7.5 — Haskell DAP config discovery — DEFERRED
+
+`mrcjkb/haskell-tools.nvim` auto-registers a Haskell DAP config only when the Haskell toolchain is
+present and a **cabal/stack project** is open. On the current test machine the whole toolchain is
+absent — `ghc`, `cabal`/`stack`, `haskell-language-server`, and `haskell-debug-adapter` are all
+uninstalled — and `testdocs/hello.hs` is a standalone file, not a project. So this cannot be
+verified here. Change 07 does not install the Haskell toolchain (out of scope per design.md).
+
+**To exercise later:** install `ghcup` → GHC + `cabal` (or `stack`) + `haskell-language-server`,
+plus `haskell-debug-adapter`; open a real cabal/stack project; then:
+
+1. Open a `.hs` file in that project (loads haskell-tools). Press `<F9>` so `nvim-dap` loads.
 2. Run `:lua =require("dap").configurations.haskell`.
-3. Non-nil table = haskell-tools registered a config (pass). `nil` = note for follow-up (not blocking).
+3. **Non-nil** table = haskell-tools registered a config (pass). **`nil`** = follow-up.
 
-- [ ] Result noted (non-nil = pass; nil = follow-up required)
+- [ ] **DEFERRED** — cannot verify without the Haskell toolchain (ghc/cabal/HLS + `haskell-debug-adapter`) and a cabal/stack project. Toolchain-setup docs tracked as a TODO under the `document-setup-prerequisites` change; revisit §7.5 once installed.
 
 #### 7.6 — Existing .NET maps unaffected
 
-1. Open a `.cs` file. Connect the iron.nvim REPL (`<localleader>si`). Press `<localleader>sl` — line sent to REPL.
-2. Confirm `gd`, `K`, and `gr` all work via the Roslyn LSP.
+Confirms dap/easy-dotnet did not disturb the iron REPL or Roslyn LSP maps. **The iron
+`<localleader>s*` maps are bound in the code buffer** (via the ftplugin's `maplocalleader = ","`)
+and send code TO the REPL — they are not active inside the REPL terminal itself.
 
-- [ ] iron REPL and LSP navigation intact
+1. **iron REPL** — in `testdocs/csharp-project/Program.cs`, cursor on a line, `<localleader>sl`
+   (send line) opens a **bottom split** REPL and sends the line. Move into it with `<C-j>` or
+   `:IronFocus`, then `i` to type. `csharprepl` (C#) is a TUI — drive it by typing directly;
+   `dotnet fsi` (F#, in `Program.fs`) evaluates a submission only after `;;` (e.g. `1 + 1 ;;`).
+   Quit with `exit` inside the REPL, `<localleader>sq` from the code buffer, or `:IronHide`.
+2. **Roslyn LSP nav** — in the C# buffer, `gd` (definition), `K` (hover), and `gr` (references,
+   opens the quickfix list) all work via the single Roslyn client from 7.2.
+
+- [X] iron REPL and LSP navigation intact — LSP nav works; iron REPL works after the fixes below
+
+> **Pre-existing iron REPL defects fixed here (none caused by change 07 — it never touched iron):**
+> - **F# REPL was broken.** The command was `dotnet fsi --stdin`; `--stdin` is not a valid fsi
+>   option (`error FS0243`), so the REPL exited the instant it opened. Fixed → `dotnet fsi`.
+> - **REPL opened as a floating window** (`iron.view.bottom(40)`) — overlaid the code and couldn't be
+>   reached by window motions (only `:IronFocus`). Fixed → bottom split (`iron.view.split.botright(15)`),
+>   reachable with `<C-j>`.
+> - **csharprepl rendered invisible** (its truecolor VisualStudio_Dark theme). Fixed → launch with
+>   `--useTerminalPaletteTheme` so it uses the terminal's palette.
+>
+> **Known limitation (not fixed):** csharprepl is a full-screen TUI (PrettyPrompt) that does not
+> reliably submit on iron's injected `<CR>`, so `<localleader>sl` *sends* but does not auto-run the
+> C# line — type in it directly (`:IronFocus`). F# `dotnet fsi` runs fine via `,sl` + a trailing
+> `;;`. A plainer C# REPL would send-to-repl better — candidate for a future iron-REPL cleanup.
 
 ### Raise PR & merge
 
-- [ ] All validation steps above pass
-- [ ] Raise PR: `feat/07-add-dotnet-debug-test` → `main` (confirm `lsp = { enabled = false }` in easy-dotnet opts)
+- [X] All validation steps above pass — 7.1–7.4 and 7.6 green; **7.5 (Haskell DAP) DEFERRED** (no Haskell toolchain, out of scope). Several pre-existing defects found & fixed on this branch: Roslyn LSP cmd (§7.2), EasyDotnet server-tool prereq + fixture XML (§7.3), F# solution requirement (§7.4), and the iron REPL fsi/float/theme fixes (§7.6).
+- [ ] Raise PR: `feat/07-add-dotnet-debug-test` → `main` (confirm `lsp = { enabled = false }` in easy-dotnet opts — verified line 78)
 - [ ] Review and approve PR
 - [ ] Merge PR
 

@@ -10,6 +10,7 @@ return {
         { "<leader>gc", group = "Claude" },
         { "<leader>os", group = "OpenSpec" },
         { "<leader>x",  group = "Trouble" },
+        { "<leader>b",  group = "Debug" },
       })
     end,
   },

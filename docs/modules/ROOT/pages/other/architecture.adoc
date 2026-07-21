@@ -206,13 +206,25 @@ All plugins are managed by https://github.com/folke/lazy.nvim[lazy.nvim]. Specs 
 |===
 |https://github.com/seblyng/roslyn.nvim[roslyn.nvim] |Roslyn LSP for C++#++ (OmniSharp successor)
 |https://github.com/Vigemus/iron.nvim[iron.nvim] |REPL management (used for F++#++ `dotnet fsi`)
+|https://github.com/GustavEikaas/easy-dotnet.nvim[easy-dotnet.nvim] |Solution management, test runner, DAP auto-registration (LSP disabled — roslyn.nvim owns C# LSP)
 |===
+
+=== Debugging
+
+[cols="1,3"]
+|===
+|https://github.com/mfussenegger/nvim-dap[nvim-dap] |Debug Adapter Protocol client; function-key + `<leader>b` keymaps
+|https://github.com/rcarriga/nvim-dap-ui[nvim-dap-ui] |Debug UI (auto-opens on session start); requires `nvim-neotest/nvim-nio`
+|===
+
+netcoredbg is auto-registered as the C# / F# DAP adapter by easy-dotnet.
+haskell-tools.nvim auto-discovers Haskell DAP configurations once nvim-dap is present.
 
 === Languages — Haskell
 
 [cols="1,3"]
 |===
-|https://github.com/mrcjkb/haskell-tools.nvim[haskell-tools.nvim] |Haskell LSP, GHCi REPL, Hoogle search
+|https://github.com/mrcjkb/haskell-tools.nvim[haskell-tools.nvim] |Haskell LSP, GHCi REPL, Hoogle search; DAP configs auto-discovered when nvim-dap is installed
 |===
 
 === AI & Automation

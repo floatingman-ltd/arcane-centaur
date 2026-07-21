@@ -45,7 +45,24 @@ vim.lsp.enable("janet_lsp")
 
 -- C# LSP (roslyn.nvim manages the server; we attach shared keymaps here)
 -- Requires the Roslyn server binary on $PATH — see docs/guides/dotnet.md.
-vim.lsp.config("roslyn", { on_attach = on_attach, capabilities = capabilities })
+--
+-- cmd override: roslyn.nvim's default cmd is `{ <server>, "--stdio" }`, which targets a
+-- `roslyn-language-server` wrapper. Against the raw Microsoft.CodeAnalysis.LanguageServer we
+-- install, that omits the server's REQUIRED `--logLevel` / `--extensionLogDirectory` args, so it
+-- exits 1 ("Option '--logLevel' is required."). Supply the full invocation here (the server does
+-- support `--stdio`). roslyn.nvim never sets cmd itself, so this override holds.
+local roslyn_log_dir = vim.fs.joinpath(vim.fn.stdpath("log"), "roslyn")
+vim.fn.mkdir(roslyn_log_dir, "p")
+vim.lsp.config("roslyn", {
+  on_attach = on_attach,
+  capabilities = capabilities,
+  cmd = {
+    "Microsoft.CodeAnalysis.LanguageServer",
+    "--stdio",
+    "--logLevel", "Information",
+    "--extensionLogDirectory", roslyn_log_dir,
+  },
+})
 
 -- Lua LSP (requires: lua-language-server on $PATH)
 vim.lsp.config("lua_ls", { on_attach = on_attach, capabilities = capabilities })

@@ -49,3 +49,37 @@ LSP server: *Roslyn* for C# buffers · *fsautocomplete* for F# buffers.
 |Command |Action
 |`:Roslyn target` |Switch solution target (when multiple `.sln` files exist)
 |===
+
+'''''
+
+== Debugging (nvim-dap + netcoredbg)
+
+Prerequisites: netcoredbg (GitHub-release binary — *not* `dotnet tool`), the `EasyDotnet` server tool
+(`dotnet tool install -g EasyDotnet`), and `fzf`. Details in the .NET guide.
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`<F9>` / `++<++leader++>++bb` |Normal |Toggle breakpoint
+|`<F5>` / `++<++leader++>++bc` |Normal |Continue / start
+|`<F10>` / `++<++leader++>++bv` |Normal |Step over
+|`<F11>` / `++<++leader++>++bi` |Normal |Step into
+|`<F12>` / `++<++leader++>++bo` |Normal |Step out
+|`<S-F5>` / `++<++leader++>++bt` |Normal |Terminate
+|`++<++leader++>++bu` |Normal |Toggle debug UI
+|`++<++leader++>++br` |Normal |Open REPL
+|===
+
+The `++<++leader++>++b` mirrors exist for terminals that grab the F-keys (e.g. `<F11>` fullscreen).
+
+'''''
+
+== Testing & Running (easy-dotnet)
+
+[cols=",",options="header",]
+|===
+|Keys |Action
+|`,tt` |Test project (picker)
+|`,tr` |Run project (picker)
+|`,tb` |Build project (picker)
+|===
