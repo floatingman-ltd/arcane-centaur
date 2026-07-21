@@ -1122,17 +1122,22 @@ project, **open nvim from that project's directory** (or `:lcd %:p:h`).
 > found (the C# one) regardless of the active buffer. Open nvim from the target project's dir (or
 > `:lcd` into it). `:Dotnet reset` clears the on-disk cache but does not change cwd resolution.
 
-#### 7.5 — Haskell DAP config discovery
+#### 7.5 — Haskell DAP config discovery — DEFERRED
 
-With `nvim-dap` present, `mrcjkb/haskell-tools.nvim` auto-registers a DAP config (verify only — no
-`haskell-debug-adapter` is installed; a full install is out of scope per the change's design.md).
+`mrcjkb/haskell-tools.nvim` auto-registers a Haskell DAP config only when the Haskell toolchain is
+present and a **cabal/stack project** is open. On the current test machine the whole toolchain is
+absent — `ghc`, `cabal`/`stack`, `haskell-language-server`, and `haskell-debug-adapter` are all
+uninstalled — and `testdocs/hello.hs` is a standalone file, not a project. So this cannot be
+verified here. Change 07 does not install the Haskell toolchain (out of scope per design.md).
 
-1. Open `testdocs/hello.hs` (loads haskell-tools). Press `<F9>` once so `nvim-dap` also loads.
+**To exercise later:** install `ghcup` → GHC + `cabal` (or `stack`) + `haskell-language-server`,
+plus `haskell-debug-adapter`; open a real cabal/stack project; then:
+
+1. Open a `.hs` file in that project (loads haskell-tools). Press `<F9>` so `nvim-dap` loads.
 2. Run `:lua =require("dap").configurations.haskell`.
-3. **Non-nil** table = haskell-tools registered a config (**pass**). **`nil`** = note for a future
-   change (**not blocking**).
+3. **Non-nil** table = haskell-tools registered a config (pass). **`nil`** = follow-up.
 
-- [ ] Result noted (non-nil = pass; nil = follow-up required)
+- [ ] **DEFERRED** — cannot verify without the Haskell toolchain (ghc/cabal/HLS + `haskell-debug-adapter`) and a cabal/stack project. Toolchain-setup docs tracked as a TODO under the `document-setup-prerequisites` change; revisit §7.5 once installed.
 
 #### 7.6 — Existing .NET maps unaffected
 
