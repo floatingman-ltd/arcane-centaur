@@ -22,12 +22,12 @@
 
 ## 5. Validation
 
-- [ ] 5.1 `:Lazy sync` — nvim-dap, nvim-dap-ui, nvim-nio, easy-dotnet install cleanly.
-- [ ] 5.2 Open a `.cs` file: `:lua =vim.lsp.get_clients({ name = "roslyn" })` shows exactly one client.
-- [ ] 5.3 In a runnable .NET project: `<F9>` set breakpoint, `<F5>` start; confirm dap-ui opens and breakpoint is hit; `<F10>`/`<F11>`/`<F12>` step.
-- [ ] 5.4 `<localleader>tt` runs tests; `<localleader>tr` runs the project — both in `.cs` and `.fsharp`.
-- [ ] 5.5 Open a Haskell project: confirm haskell-tools DAP config is discoverable.
-- [ ] 5.6 Confirm iron REPL maps and LSP maps (`gd`, `K`, `gr`) still work.
+- [x] 5.1 `:Lazy sync` — nvim-dap, nvim-dap-ui, nvim-nio, easy-dotnet install cleanly. (TEST_PLAN §7.1)
+- [x] 5.2 Open a `.cs` file: `:lua =vim.lsp.get_clients({ name = "roslyn" })` shows exactly one client. (TEST_PLAN §7.2 — pass after roslyn cmd fix)
+- [x] 5.3 In a runnable .NET project: `<F9>` set breakpoint, `<F5>` start; confirm dap-ui opens and breakpoint is hit; `<F10>`/`<F11>`/`<F12>` step. (TEST_PLAN §7.3)
+- [x] 5.4 `<localleader>tt` runs tests; `<localleader>tr` runs the project — both in `.cs` and `.fsharp`. (TEST_PLAN §7.4)
+- [ ] 5.5 Open a Haskell project: confirm haskell-tools DAP config is discoverable. **DEFERRED** — no Haskell toolchain (ghc/cabal/HLS + `haskell-debug-adapter`); revisit under `document-setup-prerequisites`. (TEST_PLAN §7.5)
+- [x] 5.6 Confirm iron REPL maps and LSP maps (`gd`, `K`, `gr`) still work. (TEST_PLAN §7.6)
 - [x] 5.7 `find . -name '*.lua' -print0 | xargs -0 luac -p` — passes clean.
 
 ## 6. Documentation
