@@ -8,10 +8,10 @@
 
 `lua/plugins/which-key.lua` already registers `{ "<leader>gc", group = "Claude" }`. Avante owns `<leader>aa`/`<leader>ao`/`<leader>ac`. The in-progress `upgrade-avante-drop-dressing` change states snacks adoption is deferred/out of scope.
 
-claudecode.nvim (coder/claudecode.nvim) facts to confirm against the README at implementation time:
-- Terminal provider options (default `snacks`, with `native`/`external` alternatives); `native` uses Neovim's built-in terminal.
-- The command/keymap names (`:ClaudeCode`, `:ClaudeCodeFocus`, `:ClaudeCodeSend`, `:ClaudeCodeAdd`/`:ClaudeCodeTreeAdd`, `:ClaudeCodeDiffAccept`, `:ClaudeCodeDiffDeny`) — may differ by version (beta).
-- Neovim ≥ 0.10 required (config targets 0.12 — satisfied).
+claudecode.nvim (coder/claudecode.nvim) facts — **verified against the upstream README 2026-07-22**:
+- Terminal provider: default is **`auto`** (prefers snacks.nvim when installed, else falls back), with `snacks`/`native`/`external`/`none`/custom alternatives. `native` uses Neovim's built-in terminal and needs no snacks. We set `provider = "native"` **explicitly** to guarantee a snacks-free install — relying on `auto` would pull snacks in if it happened to be present.
+- Command names confirmed present: `:ClaudeCode`, `:ClaudeCodeFocus`, `:ClaudeCodeSend`, `:ClaudeCodeAdd`, `:ClaudeCodeTreeAdd`, `:ClaudeCodeDiffAccept`, `:ClaudeCodeDiffDeny` (upstream also ships `:ClaudeCodeSelectModel`, `:ClaudeCodeStatus`, `:ClaudeCodeStart`/`Stop`/`Open`/`Close`, `:ClaudeCodeSendText`, `:ClaudeCodeCloseAllDiffs`). Still v0.x — re-confirm against the installed version at implementation time.
+- Neovim floor: the README's Requirements section and badge both state **≥ 0.8.0** (one optional feature — unified-diff layout — wants ≥ 0.9.0). This corrects an earlier unverified "≥ 0.10" assumption in this doc. Either way it is trivially satisfied — this config's own baseline is **≥ 0.12** (`CLAUDE.md`) and we run **0.12.x**, so the plugin imposes no additional constraint and all version-gated features are available.
 
 ## Goals / Non-Goals
 
@@ -59,6 +59,13 @@ All claudecode maps use the `<leader>gc` "Claude" prefix, which already exists a
 
 ### claude_cli.lua stays
 The one-shot `:ClaudeSuggest`/`:ClaudeExplain` flow is a distinct, lighter capability (no server, no session). It is retained verbatim; `claude-cli-integration`'s spec scenarios must still pass. claudecode is additive.
+
+### ToS / auth posture — no API key required; NOT the avante case (verified 2026-07-22)
+claudecode.nvim is **not** a Claude API client. It never calls `api.anthropic.com` and never handles an API key or OAuth token. Per the upstream README it "creates a WebSocket server that Claude Code CLI connects to, implementing the same protocol as the official VS Code extension": the plugin writes a lock file to `~/.claude/ide/[port].lock` (or `$CLAUDE_CONFIG_DIR/ide/[port].lock`) and the official `claude` CLI discovers and connects to it (auto-discovery, or the user runs `/ide`). **All model calls and all authentication are performed by the official `claude` CLI**, using Claude Code's own auth; the plugin is purely an editor-context / diff layer exposing MCP tools the CLI calls.
+
+This is the **same auth posture as the existing `claude_cli.lua`** (`:ClaudeSuggest`/`:ClaudeExplain` shell out to `claude -p`, on Claude Code auth, **no `ANTHROPIC_API_KEY`**), which `CLAUDE.md` already accepts. It is therefore **not** the situation that got avante's Anthropic provider disabled. That risk was a *third-party HTTP client* authenticating to the Anthropic API *as the user* with a subscription OAuth token; the sanctioned fix there was to supply a real API key. Here, no third-party code touches credentials or the API at all — the first-party CLI does, exactly as it is designed to. So **no API key is required to ship this change**, and doing so does not reintroduce the avante ToS concern.
+
+**Residual caveat:** claudecode.nvim is an *unofficial* implementation of the IDE/MCP WebSocket protocol (the fully first-party equivalents are Anthropic's own VS Code / JetBrains extensions). Because the CLI performs the auth and the calls, this is materially different from credential misuse — but if zero ambiguity is ever required, the official extension is the sanctioned alternative. This is an engineering assessment, **not legal advice**; the governing terms are Anthropic's Consumer ToS plus the Claude Code usage terms.
 
 ## Risks / Trade-offs
 

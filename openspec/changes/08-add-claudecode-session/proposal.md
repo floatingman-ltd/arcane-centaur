@@ -6,7 +6,7 @@ Claude integration today is two one-shot commands in `lua/config/claude_cli.lua`
 
 Cross-validation of the *actual* config and the in-progress best-of-breed changes shaped three decisions:
 
-1. **Stay snacks-free.** claudecode's *default* terminal provider is snacks.nvim, but the in-progress `upgrade-avante-drop-dressing` change deliberately **defers adopting snacks**. To remain consistent, claudecode is configured with the **native** terminal provider (Neovim's built-in terminal), which needs no snacks. The WebSocket/MCP/diff features do not require snacks regardless.
+1. **Stay snacks-free.** claudecode's default terminal provider is `auto`, which *prefers* snacks.nvim when it is installed, but the in-progress `upgrade-avante-drop-dressing` change deliberately **defers adopting snacks**. To remain consistent, claudecode is configured with the **native** terminal provider (Neovim's built-in terminal), which needs no snacks. The WebSocket/MCP/diff features do not require snacks regardless.
 2. **Coexist with `claude_cli.lua`, don't replace it.** `claude-cli-integration` is a captured OpenSpec capability with its own spec; `<leader>gcs`/`<leader>gce` stay. The two are complementary (quick one-shot vs. persistent session). claudecode's maps nest under the existing `<leader>gc` "Claude" which-key group.
 3. **Avoid the `<leader>a` namespace.** claudecode's upstream default prefix is `<leader>a`, which is **avante** in this config. Its maps are placed under `<leader>gc` instead.
 
