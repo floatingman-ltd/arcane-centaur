@@ -1187,72 +1187,184 @@ and send code TO the REPL — they are not active inside the REPL terminal itsel
 
 **Branch:** `feat/08-add-claudecode-session`
 
-**Prerequisites** (confirm before switching branch):
-- `claude --version` responds and is authenticated
-- Run `claude` in a terminal — CLI launches without error
+Adds `coder/claudecode.nvim` — a persistent, **editor-aware** Claude Code session over the same
+WebSocket **MCP** protocol the official VS Code / JetBrains extensions use. Mechanically: the plugin
+starts a **local WebSocket server** inside Neovim and writes a lock file to
+`~/.claude/ide/[port].lock` (or `$CLAUDE_CONFIG_DIR/ide/[port].lock`); a `claude` CLI launched in a
+**native terminal split** discovers that lock file and connects (or you connect manually with
+`/ide`). **All model calls and all authentication are performed by the `claude` CLI itself** (Claude
+Code auth — **no `ANTHROPIC_API_KEY`**); the plugin never touches the Anthropic API or any
+credential. It is the same auth posture as `claude_cli.lua` and is *not* the avante Anthropic-provider
+case (see `openspec/changes/08-add-claudecode-session/design.md` § ToS / auth posture).
+
+Configured with `terminal = { provider = "native" }` so it needs **no snacks.nvim** — claudecode's
+*default* provider is `auto`, which would pull snacks in if it were installed, so the explicit
+`native` is what keeps this snacks-free. The change is **additive**: the one-shot
+`:ClaudeSuggest`/`:ClaudeExplain` (`<leader>gcs`/`gce`) and avante (`<leader>aa`/`ao`) are untouched.
+
+Keymaps — all nest under the **existing** `<leader>gc` "Claude" which-key group (no new group):
+`gcc` toggle session · `gcf` focus session · `gcb` add buffer to context · `gcv` send selection
+(visual) · `gca` accept diff · `gcr` reject diff.
+
+**Prerequisites** (confirm before validating):
+- **`claude` CLI on `$PATH` and authenticated** — `claude --version` responds, and running `claude`
+  in a plain terminal reaches an interactive prompt (not a login wall). This is the *same* binary
+  `claude_cli.lua` already requires. Confirmed once in *One-Time Test Machine Setup* (line 62).
+- **No API key, no extra install** — claudecode.nvim adds **no** runtime dependency beyond the plugin
+  itself and the `claude` binary. `ANTHROPIC_API_KEY` is **not** used or needed.
+- **snacks.nvim must be absent** — the config deliberately avoids it (native provider). Nothing on
+  any current branch installs snacks; §8.1 asserts this. If a *future* change adopts snacks, revisit
+  the provider choice — it does not affect these tests.
+- **A throwaway edit target** — `lua/plugins/claudecode.lua` itself is a fine low-stakes file for the
+  diff tests (§8.3/§8.4); nothing to create. Restore it afterward with
+  `git checkout -- lua/plugins/claudecode.lua` so the branch stays clean.
+- **Lock-file visibility (diagnostic)** — after starting a session, `ls ~/.claude/ide/` should list a
+  `NNNNN.lock`; useful when diagnosing a failed connect (§8.2). `$CLAUDE_CONFIG_DIR`, if set,
+  relocates that directory.
 
 ### Prepare
 
-1. `git fetch origin && git checkout feat/08-add-claudecode-session`
-2. Launch Neovim: `:Lazy sync` — wait for completion
+> Run the **Per-Branch Sync & Sanity Check** first. If this branch was rebased/force-pushed on a
+> machine that already had it, `git reset --hard origin/feat/08-add-claudecode-session` (do **not**
+> `git pull`) — this branch **was** force-pushed after being rebuilt off main.
 
-- [ ] Branch checked out; claudecode.nvim listed in `:Lazy`; snacks.nvim absent
+1. `git fetch origin && git checkout feat/08-add-claudecode-session`
+2. Launch Neovim: `:Lazy sync` — wait for completion.
+3. `claudecode.nvim` is lazy-loaded on its `cmd`/`keys`, so it may not load until you first press a
+   `<leader>gc*` session map — that is expected.
+
+- [ ] Branch checked out, `:Lazy sync` clean; `claudecode.nvim` listed in `:Lazy`; **`snacks.nvim` absent**
 
 ### Validate
 
-#### 8.1 — Plugin installed; snacks absent
+#### 8.1 — Plugin installed; snacks.nvim absent
 
-1. Open `:Lazy`. Search for `claudecode.nvim` — confirm installed.
-2. Search for `snacks.nvim` — it should NOT appear.
+claudecode loads lazily (on `cmd`/`keys`), so **installed-but-not-loaded is the pass** here, not a
+failure. The load-bearing assertion is that **snacks.nvim is not present** — the native provider
+means it is never pulled in as a dependency.
 
-- [ ] claudecode.nvim installed; snacks.nvim absent
+1. Open `:Lazy`. Find `claudecode.nvim` — installed, **no error icon**. It may show *not loaded*
+   (lazy on `cmd`/`keys`) until first use — that is the pass.
+2. In `:Lazy`, search `snacks` — there must be **no `snacks.nvim`** entry. Cross-check in Neovim:
+   `:lua =pcall(require, "snacks")` → expect **`false`** (module not installed).
+3. `:messages` — no plugin load errors.
 
-#### 8.2 — Session terminal opens and connects
+- [ ] `claudecode.nvim` installed cleanly (lazy is fine); `snacks.nvim` absent (`pcall(require,"snacks")` → `false`)
 
-1. Press `<leader>gcc` — native terminal split opens running the `claude` CLI.
-2. Wait for the Claude Code prompt. If MCP does not connect automatically, type `/ide` and press Enter.
-3. No errors about missing providers or snacks.
+> **If snacks IS present:** either the `provider = "native"` opt regressed (check
+> `lua/plugins/claudecode.lua`) or another plugin/branch introduced snacks independently — inspect
+> `:Lazy` → `snacks.nvim` → its "Required by" list. Do not proceed until resolved.
 
-- [ ] Native terminal opens, `claude` CLI runs, MCP connects
+#### 8.2 — Session terminal opens and the CLI connects
 
-#### 8.3 — Send selection and add buffer
+`<leader>gcc` runs `:ClaudeCode`: it starts the local WebSocket server, writes the
+`~/.claude/ide/[port].lock` file, and opens a **native terminal split** running the `claude` CLI. The
+CLI auto-discovers the lock file and connects over MCP; if it does not, `/ide` connects manually.
 
-1. Return to the editor (`<C-\><C-n>` then move to an editor window).
-2. Open `lua/plugins/claudecode.lua`. Select two or three lines in visual mode (`V`).
-3. Press `<leader>gcv` — selected lines appear in the Claude session.
-4. Press `<leader>gcb` — current buffer file path added to Claude's context.
+1. From a normal (non-terminal) buffer, press `<leader>gcc`. A **terminal split** opens running the
+   `claude` CLI — wait for the interactive prompt.
+2. Confirm the server is up: `:!ls ~/.claude/ide/` (or a shell) lists a `NNNNN.lock` file.
+3. Confirm the IDE/MCP connection: Claude Code shows a **connected / IDE** indicator. If it does not
+   auto-connect, type `/ide` + Enter in the CLI and select the Neovim workspace.
+4. `:ClaudeCodeStatus` reports the server running / a client connected. `:messages` — **no** errors
+   about missing providers, snacks, or the WebSocket server.
 
-- [ ] Selection send and buffer add both reach the session
+- [ ] Native terminal opens, `claude` CLI runs **authenticated**, lock file present, MCP shows connected
+
+> **Failure modes:**
+> - Terminal opens but the CLI shows a **login prompt** → not authenticated (prereqs): run `claude` in
+>   a plain terminal, complete login, retry.
+> - CLI runs but never connects / `/ide` lists nothing → server didn't start or the lock dir differs.
+>   Check `$CLAUDE_CONFIG_DIR`, `:ClaudeCodeStatus`, and `:messages`; `:ClaudeCodeStop` then
+>   `<leader>gcc` to restart.
+> - `:ClaudeCode` errors "not an editor command" → the plugin didn't load; re-check §8.1.
+
+#### 8.3 — Share context: send selection and add buffer
+
+With a session connected (§8.2), the plugin pushes **editor context** to the CLI over MCP — a visual
+selection via `:ClaudeCodeSend`, and the whole current file via `:ClaudeCodeAdd %`.
+
+1. Leave terminal-insert with `<C-\><C-n>`, then move to an editor window (`<C-w>w`) and open
+   `lua/plugins/claudecode.lua`.
+2. Visually select 2–3 lines (`V` + motion) and press `<leader>gcv` (`:ClaudeCodeSend`).
+   **Expect:** the session receives the selection as an `@`-reference / context block naming the file
+   and line range.
+3. Back in normal mode, press `<leader>gcb` (`:ClaudeCodeAdd %`).
+   **Expect:** Claude acknowledges the **current file** added to its context (an `@file` reference).
+4. In the session, ask *"what did I just share?"* — Claude should reference the selection and the file.
+
+- [ ] Selection (`<leader>gcv`) and buffer-add (`<leader>gcb`) both reach the session as context
+
+> **Failure modes:** nothing arrives → the session isn't connected (redo §8.2). `<leader>gcv` invoked
+> **outside** an active visual selection sends nothing — it must be pressed from Visual mode (or with a
+> range).
 
 #### 8.4 — Diff accept and reject
 
-1. In the Claude session, ask Claude to add a comment to `lua/plugins/claudecode.lua`.
-2. Neovim opens a diff view. Press `<leader>gca` — change is accepted and written.
-3. Undo (`u`). Ask for another edit. Press `<leader>gcr` — diff rejected, file unchanged.
+When Claude proposes a file edit, claudecode opens a **native diff** view; `<leader>gca`
+(`:ClaudeCodeDiffAccept`) applies+writes it, `<leader>gcr` (`:ClaudeCodeDiffDeny`) discards it.
 
-- [ ] Accept diff and reject diff both work correctly
+1. In the session, ask: *"Add a one-line comment at the very top of lua/plugins/claudecode.lua."*
+   Claude proposes an edit → a **diff view** opens in Neovim.
+2. Press `<leader>gca` → the change is **applied and written**, the diff closes. Verify the comment is
+   in the file (`:e!` to reload, or look at line 1).
+3. Restore the file (`u` to undo, or `:!git checkout -- lua/plugins/claudecode.lua`). Ask for another
+   trivial edit; when the diff opens, press `<leader>gcr` → the proposal is **rejected**, the diff
+   closes, and the file is **unchanged**.
 
-#### 8.5 — One-shot claude_cli maps still work
+- [ ] Accept (`<leader>gca`) writes the change; reject (`<leader>gcr`) leaves the file unchanged
 
-1. Press `<leader>gcs` — floating window appears with a shell command suggestion.
-2. Select a function in visual mode. Press `<leader>gce` — floating window with code explanation.
-3. Press `q` or `<Esc>` to close each.
+> **Failure modes:** no diff opens → Claude answered in prose; ask it explicitly to *edit the file*.
+> Maps do nothing → make sure focus is in the diff buffer/window. A stuck diff → `:ClaudeCodeCloseAllDiffs`.
+> **Cleanup:** finish with `git checkout -- lua/plugins/claudecode.lua` so the diff experiments don't
+> dirty the branch.
 
-- [ ] `<leader>gcs` and `<leader>gce` (claude_cli) still work alongside the session
+#### 8.5 — One-shot `claude_cli` maps still work (regression)
 
-#### 8.6 — Avante maps unaffected
+claudecode is additive — the pre-existing one-shot commands must be untouched. `:ClaudeSuggest`
+(`<leader>gcs`) and `:ClaudeExplain` (`<leader>gce`) shell out to `claude -p <prompt>` **asynchronously**
+and show the reply in a **floating scratch window** (dismiss with `q` or `<Esc>`). They reuse the same
+`claude` auth but are independent of the session server — they work whether or not a session is open.
 
-1. Press `<leader>aa` — Avante opens normally.
-2. Press `<leader>ao` — switches to Ollama (or clean error if offline).
-3. Press `<leader>ac` — switches to Claude API provider.
-4. Confirm no `<leader>gc*` map bleeds into the `<leader>a*` namespace.
+1. In any buffer, press `<leader>gcs`. A **`Claude: running 'claude' CLI …`** notification appears;
+   when the call returns, a float titled **`claude suggest`** shows a shell-command suggestion.
+   Dismiss with `q` / `<Esc>`.
+2. Visually select a few lines of code and press `<leader>gce`. A float titled **`claude explain`**
+   shows an explanation of the selection. Dismiss with `q` / `<Esc>`.
+   - With **no** selection, both commands fall back to sending the **whole buffer**.
 
-- [ ] All three Avante maps unaffected; no namespace collision
+- [ ] `<leader>gcs` (float "claude suggest") and `<leader>gce` (float "claude explain") both render Claude's reply
+
+> **Failure modes:** a `claude_cli: 'claude' CLI not found on $PATH` notify → binary off PATH. A long
+> hang with no float → the CLI is blocked on auth (prereqs).
+
+#### 8.6 — Avante + `<leader>a` namespace unaffected (regression)
+
+claudecode's **upstream default prefix is `<leader>a`** — which is **avante** in this config — so its
+maps were deliberately relocated under `<leader>gc`. This step confirms there is no bleed between the
+two namespaces.
+
+> **Note — there is no `<leader>ac`.** avante here is **Ollama-only**; the Claude/Anthropic provider is
+> intentionally disabled (subscription-OAuth ToS), so only `<leader>aa` and `<leader>ao` exist. (An
+> earlier draft of this step listed `<leader>ac` "Claude API provider" — that map is not configured.)
+
+1. Press `<leader>aa` — **avante** opens with the current provider (Ollama). If Ollama isn't running,
+   a clean connection error is acceptable — the point is the map fires *avante*, not claudecode.
+2. Press `<leader>ao` — avante re-selects the Ollama provider and opens.
+3. which-key disjointness: press `<leader>a` and confirm the popup shows **only** avante entries
+   (`aa`, `ao`) — no `gc*`/claudecode entries. Then press `<leader>gc` and confirm the **"Claude"**
+   group lists both the one-shot maps (`gcs`, `gce`) and the session maps (`gcc`, `gcf`, `gcb`, `gcv`,
+   `gca`, `gcr`).
+
+- [ ] `<leader>aa`/`<leader>ao` fire avante unchanged; `<leader>a` and `<leader>gc` popups are disjoint (no cross-bleed)
+
+> **Failure mode:** a `gc*` entry appears under `<leader>a` (or an `a*` entry under `<leader>gc`) → a
+> `keys`/prefix regression in `lua/plugins/claudecode.lua`.
 
 ### Raise PR & merge
 
-- [ ] All validation steps above pass
-- [ ] Raise PR: `feat/08-add-claudecode-session` → `main` (confirm snacks.nvim is NOT in dependencies)
+- [ ] All validation steps above pass (8.1–8.6)
+- [ ] Raise PR: `feat/08-add-claudecode-session` → `main` (confirm `snacks.nvim` is **NOT** in dependencies)
 - [ ] Review and approve PR
 - [ ] Merge PR
 
