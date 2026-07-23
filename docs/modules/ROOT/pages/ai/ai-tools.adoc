@@ -72,6 +72,28 @@ https://claude.com/claude-code[claude.com/claude-code] and sign in once
 (`claude` then follow the login prompt). No `ANTHROPIC_API_KEY` is
 required for these commands — they use Claude Code's built-in auth.
 
+[WARNING]
+====
+A stray `ANTHROPIC_API_KEY` in your environment *breaks* these commands. If the
+variable (or another auth source) is set, the `claude` CLI uses it *instead of*
+your Claude Code login, and the non-interactive `claude -p` path fails —
+`:ClaudeSuggest` / `:ClaudeExplain` report:
+
+`claude CLI failed (exit 1): ⚠ claude.ai connectors are disabled because ANTHROPIC_API_KEY … takes precedence over your claude.ai login`
+
+The key is commonly exported from a shell init file such as `~/.zshenv`, which is
+sourced by *every* shell — so Neovim inherits it and hands it to `claude -p`.
+
+*Fix:* remove the export (e.g. from `~/.zshenv`) or `unset ANTHROPIC_API_KEY`. No
+reboot is needed — `.zshenv` is re-read per shell. Confirm from a *fresh* terminal
+(not a subshell; if using tmux, a new server or `tmux setenv -gu ANTHROPIC_API_KEY`):
+`printenv ANTHROPIC_API_KEY` prints nothing, then a freshly launched Neovim runs the
+commands without error.
+
+Only the one-shot `claude -p` path is affected; the interactive *Claude Code Session*
+(below) tolerates the variable.
+====
+
 ''''''
 
 == Claude Code Session (claudecode.nvim)
