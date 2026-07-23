@@ -39,6 +39,7 @@ Lazy-loading is filetype-driven: plugins use lazy.nvim's `ft = { ... }` field so
 ## AI assistance
 
 - **`lua/config/claude_cli.lua`** — `:ClaudeSuggest` / `:ClaudeExplain` (`<leader>gcs` / `<leader>gce`). These shell out to the `claude` CLI via `claude -p <prompt>` (`vim.system`) and show the result in a floating scratch window — they rely on Claude Code's own auth and the `claude` binary being on `$PATH`, **not** on `ANTHROPIC_API_KEY`.
+- **`lua/plugins/claudecode.lua`** — `coder/claudecode.nvim`: persistent, editor-aware Claude Code session via WebSocket MCP (`<leader>gcc` toggle, `gcf` focus, `gcb` add buffer, `gcv` send selection, `gca`/`gcr` accept/reject diff). Uses native terminal provider (no snacks). Coexists with `claude_cli`; both use the same `claude` binary (Claude Code auth, not `ANTHROPIC_API_KEY`).
 - **`lua/plugins/avante.lua`** — Avante.nvim chat, **Ollama-only** (offline, small `qwen2.5:0.5b` model): `<leader>aa` open with current provider, `<leader>ao` (re)select ollama and open. The Claude/Anthropic provider is intentionally disabled (subscription-OAuth ToS risk); re-enable via an API key per the avante guide if needed.
 
 GitHub Copilot and OpenCode have been removed in favour of Claude; the OpenSpec/feature workflows now live as Claude Code skills in `.claude/skills/` (see below).

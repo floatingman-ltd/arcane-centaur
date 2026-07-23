@@ -232,6 +232,7 @@ haskell-tools.nvim auto-discovers Haskell DAP configurations once nvim-dap is pr
 [cols="1,3"]
 |===
 |https://github.com/yetone/avante.nvim[avante.nvim] v0.1.* |AI chat panel, Ollama-only backend (Claude disabled — Anthropic subscription-OAuth ToS). dressing.nvim removed (archived upstream); vim.ui falls back to native.
+|https://github.com/coder/claudecode.nvim[claudecode.nvim] |Persistent Claude Code session via WebSocket MCP (`<leader>gc` group). Native terminal provider (no snacks). Coexists with one-shot `claude_cli` commands.
 |https://github.com/MunifTanjim/nui.nvim[nui.nvim] |UI component library (required by avante)
 |https://github.com/nvim-lua/plenary.nvim[plenary.nvim] |Lua utility library (required by avante + diffview)
 |===
