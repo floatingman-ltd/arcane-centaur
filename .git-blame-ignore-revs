@@ -1,0 +1,5 @@
+# Commits listed here are ignored by `git blame` (GitHub honors this file automatically;
+# locally run `git config blame.ignoreRevsFile .git-blame-ignore-revs`).
+
+# style(lua): format entire tree with stylua (2-space via .stylua.toml)
+a4e4c13e3fa7f7487a8797d7cd9b69d23739d178

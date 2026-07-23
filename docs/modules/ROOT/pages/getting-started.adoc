@@ -304,6 +304,21 @@ sudo apt install universal-ctags   # Debian/Ubuntu; or: brew install universal-c
 ctags -R
 ----
 
+=== Git Blame Configuration (optional)
+
+The repo carries a `.git-blame-ignore-revs` file listing mechanical reformat commits (e.g. the
+tree-wide stylua normalization) so `git blame` attributes reformatted lines to their real
+authoring commit instead of the formatter run. GitHub honors this file automatically; locally,
+opt in once per clone:
+
+[source,sh]
+----
+git config blame.ignoreRevsFile .git-blame-ignore-revs
+----
+
+Without this, `git blame` (and editor blame integrations) will show the reformat commit for
+every line it touched.
+
 ---
 
 == Troubleshooting

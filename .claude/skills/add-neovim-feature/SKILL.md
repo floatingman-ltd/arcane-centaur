@@ -28,6 +28,8 @@ Key rules to internalise:
 - Global keymaps live in `lua/keymaps.lua` using `<leader>` (Space)
 - Terminal flags come from `require("config.terminal")` — never hardcode terminal behaviour
 - All Lua changes must pass: `find . -name '*.lua' -not -path '*/lazy/*' -print0 | xargs -0 luac -p`
+- All Lua must be stylua-formatted (`.stylua.toml`, 2-space). A `PostToolUse` hook auto-formats
+  files written via Edit/Write; Step 4 re-verifies with `stylua --check`.
 
 ---
 
@@ -111,16 +113,19 @@ Rules:
 - Use `buffer = true` for all ftplugin keymaps.
 - Do not shadow existing global mappings; check with `:verbose map <key>`.
 
-### 2c. Lua syntax check
+### 2c. Lua syntax and format check
 
 After every file write:
 
 ```bash
 find . -name '*.lua' -not -path '*/lazy/*' -not -path '*/.serena/*' \
   -print0 | xargs -0 luac -p && echo "Lua OK"
+stylua --check . && echo "stylua OK"
 ```
 
-Stop and fix any errors before continuing.
+Stop and fix any errors before continuing. If `stylua --check` reports a diff, run
+`stylua <file>` — the `PostToolUse` hook should already have caught this on Edit/Write, but
+confirm rather than assume.
 
 ---
 
@@ -250,6 +255,9 @@ Run all checks in sequence:
 # 1. Lua syntax
 find . -name '*.lua' -not -path '*/lazy/*' -not -path '*/.serena/*' \
   -print0 | xargs -0 luac -p && echo "Lua OK"
+
+# 2. stylua formatting
+stylua --check . && echo "stylua OK"
 ```
 
 Then manually confirm in Neovim:
@@ -278,8 +286,8 @@ Then manually confirm in Neovim:
 ### Validation
 - docs/modules/ROOT/pages/guides/validation.adoc — section <N> added (<M> test steps)
 
-### Lua syntax
-All .lua files pass luac -p ✓
+### Lua syntax and format
+All .lua files pass luac -p ✓ and stylua --check . ✓
 ```
 
 ---
@@ -291,6 +299,8 @@ All .lua files pass luac -p ✓
 - **Use `buffer = true`** for every keymap defined inside `after/ftplugin/`.
 - **Always include `desc`** in every `vim.keymap.set` call.
 - **Run `luac -p`** after every Lua file write, not just at the end.
+- **Run `stylua --check .`** before declaring the feature done — the `PostToolUse` hook formats
+  on Edit/Write, but verify rather than assume it fired.
 - **Pause after Step 1** and again after Step 2 if the implementation differs significantly from the plan — don't accumulate surprises.
 - If a prerequisite (external binary, Docker image, env var) is needed, document it in **both** the guide and the validation precondition.
 - If the feature is terminal-conditional (console vs GUI), add validation steps for **both** code paths.
