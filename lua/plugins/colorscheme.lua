@@ -6,10 +6,10 @@ local style = "moon"
 -- background with black text. cterm values use the 16-colour palette
 -- (7 = light grey, 0 = black); gui values are a fallback (termguicolors is off
 -- in the console). Change these two to retune the console look.
-local console_bg_cterm = 7          -- background: light grey
-local console_fg_cterm = 0          -- foreground (text): black
-local console_bg_gui   = "#808080"  -- gui fallback background: grey
-local console_fg_gui   = "#000000"  -- gui fallback foreground: black
+local console_bg_cterm = 7 -- background: light grey
+local console_fg_cterm = 0 -- foreground (text): black
+local console_bg_gui = "#808080" -- gui fallback background: grey
+local console_fg_gui = "#000000" -- gui fallback foreground: black
 
 return {
   "folke/tokyonight.nvim",
@@ -28,7 +28,11 @@ return {
       -- Uniform grey background + black text for the Visual selection (reverse
       -- looked inconsistent — it inverts each cell's syntax colours).
       local sel = ("cterm=NONE gui=NONE ctermbg=%d ctermfg=%d guibg=%s guifg=%s"):format(
-        console_bg_cterm, console_fg_cterm, console_bg_gui, console_fg_gui)
+        console_bg_cterm,
+        console_fg_cterm,
+        console_bg_gui,
+        console_fg_gui
+      )
       vim.cmd("highlight Visual " .. sel)
       -- Leave `guicursor` at Neovim's default (per-mode block/bar). NOTE: on the
       -- bare Linux VT console the block cursor inverts each cell, so over a
@@ -52,7 +56,7 @@ return {
         -- transparency; use dark panels and manage background via the
         -- terminal profile
         sidebars = "dark",
-        floats   = "dark",
+        floats = "dark",
       },
       -- Transparency is controlled by the terminal profile, not by Neovim
       transparent = false,
@@ -61,9 +65,14 @@ return {
           -- The terminal does not render undercurl; fall back to underline
           -- for spell and diagnostic highlight groups so they remain visible
           for _, name in ipairs({
-            "SpellBad", "SpellCap", "SpellLocal", "SpellRare",
-            "DiagnosticUnderlineError", "DiagnosticUnderlineWarn",
-            "DiagnosticUnderlineInfo", "DiagnosticUnderlineHint",
+            "SpellBad",
+            "SpellCap",
+            "SpellLocal",
+            "SpellRare",
+            "DiagnosticUnderlineError",
+            "DiagnosticUnderlineWarn",
+            "DiagnosticUnderlineInfo",
+            "DiagnosticUnderlineHint",
           }) do
             if hl[name] then
               hl[name].undercurl = false

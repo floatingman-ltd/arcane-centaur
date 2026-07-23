@@ -5,8 +5,8 @@ return {
     init = function()
       vim.filetype.add({
         extension = {
-          adoc       = "asciidoctor",
-          asciidoc   = "asciidoctor",
+          adoc = "asciidoctor",
+          asciidoc = "asciidoctor",
           asciidoctor = "asciidoctor",
         },
       })

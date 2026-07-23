@@ -35,12 +35,12 @@ local function open_split(title, lines)
 
   vim.api.nvim_buf_set_lines(buf, 0, -1, false, content)
   vim.bo[buf].modifiable = false
-  vim.bo[buf].buftype    = "nofile"
-  vim.bo[buf].buflisted  = false
+  vim.bo[buf].buftype = "nofile"
+  vim.bo[buf].buflisted = false
 
   -- Close with q or <Esc>.
   local close_opts = { buffer = buf, noremap = true, silent = true }
-  vim.keymap.set("n", "q",     "<cmd>close<CR>", close_opts)
+  vim.keymap.set("n", "q", "<cmd>close<CR>", close_opts)
   vim.keymap.set("n", "<Esc>", "<cmd>close<CR>", close_opts)
 end
 
@@ -59,10 +59,7 @@ local function run_and_show(cmd, title)
     table.remove(lines)
   end
   if exit_code ~= 0 then
-    vim.notify(
-      table.concat(cmd, " ") .. " failed (exit " .. exit_code .. ")",
-      vim.log.levels.ERROR
-    )
+    vim.notify(table.concat(cmd, " ") .. " failed (exit " .. exit_code .. ")", vim.log.levels.ERROR)
     table.insert(lines, 1, "ERROR: exit code " .. exit_code)
   end
   open_split(title, lines)
@@ -89,10 +86,10 @@ function M.setup()
     local name = vim.trim(args.args)
     local cmd, title
     if name ~= "" then
-      cmd   = { "openspec", "status", "--change", name }
+      cmd = { "openspec", "status", "--change", name }
       title = "openspec status --change " .. name
     else
-      cmd   = { "openspec", "status" }
+      cmd = { "openspec", "status" }
       title = "openspec status"
     end
     run_and_show(cmd, title)

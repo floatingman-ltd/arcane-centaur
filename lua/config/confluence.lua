@@ -37,9 +37,7 @@ local M = {}
 
 --- Find the git repository root from the given path.
 local function find_git_root(dir)
-  local result = vim.fn.systemlist(
-    "git -C " .. vim.fn.shellescape(dir) .. " rev-parse --show-toplevel 2>/dev/null"
-  )
+  local result = vim.fn.systemlist("git -C " .. vim.fn.shellescape(dir) .. " rev-parse --show-toplevel 2>/dev/null")
   if vim.v.shell_error ~= 0 or #result == 0 then
     return nil
   end
@@ -67,7 +65,7 @@ local function find_page_entry(page_map_path, rel_path)
     if mapped_path then
       -- Support entries with or without the leading "docs/" prefix.
       local norm_mapped = mapped_path:gsub("^docs/", "")
-      local norm_file   = rel_path:gsub("^docs/", "")
+      local norm_file = rel_path:gsub("^docs/", "")
       if norm_mapped == norm_file then
         -- Split the pipe-delimited row into trimmed columns.
         -- Because the row starts with "|", the first non-empty token is the
@@ -142,7 +140,7 @@ end
 -- e.g. https://acme.atlassian.net/wiki/spaces/TEAM/pages/123456/Title
 -- returns "https://acme.atlassian.net", "123456"
 local function parse_confluence_url(url)
-  local base    = url:match("(https?://[^/]+)")
+  local base = url:match("(https?://[^/]+)")
   local page_id = url:match("/pages/(%d+)")
   return base, page_id
 end
@@ -157,13 +155,19 @@ end
 --- state file.  Returns nil if the file doesn't exist or has no entry.
 local function state_read(git_root, rel_path)
   local f = io.open(state_path(git_root), "r")
-  if not f then return nil end
+  if not f then
+    return nil
+  end
   local content = f:read("*a")
   f:close()
   local ok, data = pcall(vim.json.decode, content)
-  if not ok or type(data) ~= "table" then return nil end
+  if not ok or type(data) ~= "table" then
+    return nil
+  end
   local entry = data[rel_path]
-  if type(entry) ~= "table" then return nil end
+  if type(entry) ~= "table" then
+    return nil
+  end
   return entry.version
 end
 
@@ -177,7 +181,9 @@ local function state_write(git_root, rel_path, version)
     local content = f:read("*a")
     f:close()
     local ok, data = pcall(vim.json.decode, content)
-    if ok and type(data) == "table" then existing = data end
+    if ok and type(data) == "table" then
+      existing = data
+    end
   end
   existing[rel_path] = { version = version, at = os.date("!%Y-%m-%dT%H:%M:%SZ") }
   f = io.open(path, "w")
@@ -197,10 +203,10 @@ end
 --   4. curl PUT  — update the page with the new HTML body
 --   5. state_write — record the new version in .confluence-state.json
 function M.publish()
-  local file     = vim.fn.expand("%:p")
-  local dir      = vim.fn.expand("%:p:h")
+  local file = vim.fn.expand("%:p")
+  local dir = vim.fn.expand("%:p:h")
   local filename = vim.fn.expand("%:t")
-  local tmpfile  = vim.fn.tempname()
+  local tmpfile = vim.fn.tempname()
 
   if file == "" then
     vim.notify("Confluence: buffer has no file", vim.log.levels.WARN)
@@ -239,10 +245,7 @@ function M.publish()
   end
 
   if not entry.url then
-    vim.notify(
-      "Confluence: no Confluence URL found in page map for this file",
-      vim.log.levels.ERROR
-    )
+    vim.notify("Confluence: no Confluence URL found in page map for this file", vim.log.levels.ERROR)
     return
   end
 
@@ -258,15 +261,13 @@ function M.publish()
 
   -- Step 1: fetch the current page version and title.
   vim.system(
-    { "curl", "-s", "-w", "\n%{http_code}", "-u", email .. ":" .. token,
-      "-H", "Accept: application/json", get_url },
+    { "curl", "-s", "-w", "\n%{http_code}", "-u", email .. ":" .. token, "-H", "Accept: application/json", get_url },
     { text = true },
     function(get_obj)
       if get_obj.code ~= 0 then
         vim.schedule(function()
           vim.notify(
-            "Confluence: GET " .. get_url .. " failed (exit " .. get_obj.code .. "): "
-              .. (get_obj.stderr or ""),
+            "Confluence: GET " .. get_url .. " failed (exit " .. get_obj.code .. "): " .. (get_obj.stderr or ""),
             vim.log.levels.ERROR
           )
         end)
@@ -279,8 +280,7 @@ function M.publish()
       if http_code < 200 or http_code >= 300 then
         vim.schedule(function()
           vim.notify(
-            "Confluence: GET " .. get_url .. " returned HTTP " .. http_code .. ":\n"
-              .. (body or raw),
+            "Confluence: GET " .. get_url .. " returned HTTP " .. http_code .. ":\n" .. (body or raw),
             vim.log.levels.ERROR
           )
         end)
@@ -290,20 +290,17 @@ function M.publish()
       local ok, data = pcall(vim.json.decode, body or raw)
       if not ok or not (data.version and data.version.number) then
         vim.schedule(function()
-          vim.notify(
-            "Confluence: unexpected API response: " .. (get_obj.stdout or ""),
-            vim.log.levels.ERROR
-          )
+          vim.notify("Confluence: unexpected API response: " .. (get_obj.stdout or ""), vim.log.levels.ERROR)
         end)
         return
       end
 
       local version = data.version.number
-      local title   = data.title or entry.title or filename
+      local title = data.title or entry.title or filename
 
       -- Inner function: run pandoc then PUT.
       local function do_publish()
-        local filter     = find_filter(git_root)
+        local filter = find_filter(git_root)
         local pandoc_cmd = { "pandoc", "--from", "markdown", "--to", "html5", "--wrap=none" }
         if filter then
           table.insert(pandoc_cmd, "--lua-filter")
@@ -314,132 +311,125 @@ function M.publish()
         local pandoc_env = nil
         if filter then
           pandoc_env = {
-            CONFLUENCE_PAGE_MAP   = page_map_path,
-            CONFLUENCE_SELF_URL   = entry.url,
-            CONFLUENCE_DOCS_DIR   = git_root .. "/docs",
-            CONFLUENCE_FILE_PATH  = file,
-            PLANTUML_SERVER       = os.getenv("PLANTUML_SERVER") or "http://localhost:8080",
+            CONFLUENCE_PAGE_MAP = page_map_path,
+            CONFLUENCE_SELF_URL = entry.url,
+            CONFLUENCE_DOCS_DIR = git_root .. "/docs",
+            CONFLUENCE_FILE_PATH = file,
+            PLANTUML_SERVER = os.getenv("PLANTUML_SERVER") or "http://localhost:8080",
           }
         end
 
         -- Step 3: pandoc conversion.
-        vim.system(
-          pandoc_cmd,
-          { text = true, env = pandoc_env },
-          function(pandoc_obj)
-            if pandoc_obj.code ~= 0 then
+        vim.system(pandoc_cmd, { text = true, env = pandoc_env }, function(pandoc_obj)
+          if pandoc_obj.code ~= 0 then
+            vim.schedule(function()
+              vim.notify(
+                "Confluence: pandoc failed (exit " .. pandoc_obj.code .. "): " .. (pandoc_obj.stderr or ""),
+                vim.log.levels.ERROR
+              )
+            end)
+            return
+          end
+
+          local html = pandoc_obj.stdout
+
+          local payload = vim.json.encode({
+            id = page_id,
+            type = "page",
+            title = title,
+            version = { number = version + 1 },
+            body = { storage = { value = html, representation = "storage" } },
+          })
+
+          local pf = io.open(tmpfile, "w")
+          if not pf then
+            vim.schedule(function()
+              vim.notify("Confluence: cannot write temp file " .. tmpfile, vim.log.levels.ERROR)
+            end)
+            return
+          end
+          pf:write(payload)
+          pf:close()
+
+          local put_url = base_url .. "/wiki/rest/api/content/" .. page_id
+
+          -- Step 4: PUT the updated page.
+          vim.system({
+            "curl",
+            "-s",
+            "-w",
+            "\n%{http_code}",
+            "-X",
+            "PUT",
+            "-u",
+            email .. ":" .. token,
+            "-H",
+            "Content-Type: application/json",
+            "-d",
+            "@" .. tmpfile,
+            put_url,
+          }, { text = true }, function(put_obj)
+            os.remove(tmpfile)
+
+            if put_obj.code ~= 0 then
               vim.schedule(function()
                 vim.notify(
-                  "Confluence: pandoc failed (exit " .. pandoc_obj.code .. "): "
-                    .. (pandoc_obj.stderr or ""),
+                  "Confluence: PUT " .. put_url .. " failed (exit " .. put_obj.code .. "): " .. (put_obj.stderr or ""),
                   vim.log.levels.ERROR
                 )
               end)
               return
             end
 
-            local html = pandoc_obj.stdout
-
-            local payload = vim.json.encode({
-              id      = page_id,
-              type    = "page",
-              title   = title,
-              version = { number = version + 1 },
-              body    = { storage = { value = html, representation = "storage" } },
-            })
-
-            local pf = io.open(tmpfile, "w")
-            if not pf then
+            local raw2 = put_obj.stdout or ""
+            local body2, http_code_str2 = raw2:match("^(.*)\n(%d%d%d)$")
+            local http_code2 = tonumber(http_code_str2) or 0
+            if http_code2 < 200 or http_code2 >= 300 then
               vim.schedule(function()
-                vim.notify("Confluence: cannot write temp file " .. tmpfile, vim.log.levels.ERROR)
+                vim.notify(
+                  "Confluence: PUT " .. put_url .. " returned HTTP " .. http_code2 .. ":\n" .. (body2 or raw2),
+                  vim.log.levels.ERROR
+                )
               end)
               return
             end
-            pf:write(payload)
-            pf:close()
 
-            local put_url = base_url .. "/wiki/rest/api/content/" .. page_id
+            local ok2, resp = pcall(vim.json.decode, body2 or raw2)
+            local page_url = put_url
+            if ok2 and resp._links and resp._links.base and resp._links.webui then
+              page_url = resp._links.base .. resp._links.webui
+            end
 
-            -- Step 4: PUT the updated page.
-            vim.system(
-              { "curl", "-s", "-w", "\n%{http_code}", "-X", "PUT",
-                "-u", email .. ":" .. token,
-                "-H", "Content-Type: application/json",
-                "-d", "@" .. tmpfile,
-                put_url },
-              { text = true },
-              function(put_obj)
-                os.remove(tmpfile)
-
-                if put_obj.code ~= 0 then
-                  vim.schedule(function()
-                    vim.notify(
-                      "Confluence: PUT " .. put_url .. " failed (exit " .. put_obj.code .. "): "
-                        .. (put_obj.stderr or ""),
-                      vim.log.levels.ERROR
-                    )
-                  end)
-                  return
-                end
-
-                local raw2 = put_obj.stdout or ""
-                local body2, http_code_str2 = raw2:match("^(.*)\n(%d%d%d)$")
-                local http_code2 = tonumber(http_code_str2) or 0
-                if http_code2 < 200 or http_code2 >= 300 then
-                  vim.schedule(function()
-                    vim.notify(
-                      "Confluence: PUT " .. put_url .. " returned HTTP " .. http_code2 .. ":\n"
-                        .. (body2 or raw2),
-                      vim.log.levels.ERROR
-                    )
-                  end)
-                  return
-                end
-
-                local ok2, resp = pcall(vim.json.decode, body2 or raw2)
-                local page_url  = put_url
-                if ok2 and resp._links and resp._links.base and resp._links.webui then
-                  page_url = resp._links.base .. resp._links.webui
-                end
-
-                -- Step 5: record the new version.
-                vim.schedule(function()
-                  state_write(git_root, rel_path, version + 1)
-                  vim.notify(
-                    "Confluence: " .. filename .. " published successfully.\n" .. page_url,
-                    vim.log.levels.INFO
-                  )
-                end)
-              end
-            )
-          end
-        )
+            -- Step 5: record the new version.
+            vim.schedule(function()
+              state_write(git_root, rel_path, version + 1)
+              vim.notify("Confluence: " .. filename .. " published successfully.\n" .. page_url, vim.log.levels.INFO)
+            end)
+          end)
+        end)
       end -- do_publish
 
       -- Step 2: conflict check — was the page edited on Confluence after our last publish?
       local last_version = state_read(git_root, rel_path)
       if last_version and version > last_version then
         vim.schedule(function()
-          vim.ui.select(
-            { "Overwrite (publish anyway)", "Cancel — I'll pull first" },
-            {
-              prompt = string.format(
-                "Confluence conflict: page is at v%d but last publish recorded v%d.\n"
-                  .. "Someone may have edited the page directly on Confluence.",
-                version, last_version
-              ),
-            },
-            function(choice)
-              if choice == "Overwrite (publish anyway)" then
-                do_publish()
-              else
-                vim.notify(
-                  "Confluence: publish cancelled. Use :MdFromConfluence to pull changes first.",
-                  vim.log.levels.WARN
-                )
-              end
+          vim.ui.select({ "Overwrite (publish anyway)", "Cancel — I'll pull first" }, {
+            prompt = string.format(
+              "Confluence conflict: page is at v%d but last publish recorded v%d.\n"
+                .. "Someone may have edited the page directly on Confluence.",
+              version,
+              last_version
+            ),
+          }, function(choice)
+            if choice == "Overwrite (publish anyway)" then
+              do_publish()
+            else
+              vim.notify(
+                "Confluence: publish cancelled. Use :MdFromConfluence to pull changes first.",
+                vim.log.levels.WARN
+              )
             end
-          )
+          end)
         end)
       else
         do_publish()
@@ -457,8 +447,8 @@ end
 --   • backs up the existing file to <file>.bak before overwriting
 --   • records the pulled version in .confluence-state.json
 function M.pull()
-  local file     = vim.fn.expand("%:p")
-  local dir      = vim.fn.expand("%:p:h")
+  local file = vim.fn.expand("%:p")
+  local dir = vim.fn.expand("%:p:h")
   local filename = vim.fn.expand("%:t")
 
   if file == "" or not file:match("%.md$") then
@@ -495,42 +485,37 @@ function M.pull()
 
   vim.notify("Confluence: pulling " .. filename .. "…", vim.log.levels.INFO)
 
-  vim.system(
-    { script, "--pull", file },
-    {
-      text = true,
-      env  = {
-        CONFLUENCE_EMAIL     = email,
-        CONFLUENCE_API_TOKEN = token,
-        PLANTUML_SERVER      = os.getenv("PLANTUML_SERVER") or "http://localhost:8080",
-      },
+  vim.system({ script, "--pull", file }, {
+    text = true,
+    env = {
+      CONFLUENCE_EMAIL = email,
+      CONFLUENCE_API_TOKEN = token,
+      PLANTUML_SERVER = os.getenv("PLANTUML_SERVER") or "http://localhost:8080",
     },
-    function(result)
-      vim.schedule(function()
-        if result.code ~= 0 then
-          vim.notify(
-            "Confluence: pull failed:\n" .. (result.stderr or result.stdout or "unknown error"),
-            vim.log.levels.ERROR
-          )
-          return
-        end
-        vim.cmd("e!")
+  }, function(result)
+    vim.schedule(function()
+      if result.code ~= 0 then
         vim.notify(
-          "Confluence: " .. filename .. " updated from Confluence.\n"
-            .. "Original backed up as " .. filename .. ".bak",
-          vim.log.levels.INFO
+          "Confluence: pull failed:\n" .. (result.stderr or result.stdout or "unknown error"),
+          vim.log.levels.ERROR
         )
-      end)
-    end
-  )
+        return
+      end
+      vim.cmd("e!")
+      vim.notify(
+        "Confluence: " .. filename .. " updated from Confluence.\n" .. "Original backed up as " .. filename .. ".bak",
+        vim.log.levels.INFO
+      )
+    end)
+  end)
 end
 
 --- Fetch all comments for the current page and write them to <file>.comments.md.
 --
 -- Delegates to confluence_publish.sh --comments.
 function M.fetch_comments()
-  local file     = vim.fn.expand("%:p")
-  local dir      = vim.fn.expand("%:p:h")
+  local file = vim.fn.expand("%:p")
+  local dir = vim.fn.expand("%:p:h")
   local filename = vim.fn.expand("%:t")
 
   if file == "" or not file:match("%.md$") then
@@ -567,32 +552,25 @@ function M.fetch_comments()
 
   vim.notify("Confluence: fetching comments for " .. filename .. "…", vim.log.levels.INFO)
 
-  vim.system(
-    { script, "--comments", file },
-    {
-      text = true,
-      env  = {
-        CONFLUENCE_EMAIL     = email,
-        CONFLUENCE_API_TOKEN = token,
-      },
+  vim.system({ script, "--comments", file }, {
+    text = true,
+    env = {
+      CONFLUENCE_EMAIL = email,
+      CONFLUENCE_API_TOKEN = token,
     },
-    function(result)
-      vim.schedule(function()
-        if result.code ~= 0 then
-          vim.notify(
-            "Confluence: comment fetch failed:\n" .. (result.stderr or result.stdout or ""),
-            vim.log.levels.ERROR
-          )
-          return
-        end
-        local comments_file = filename:gsub("%.md$", ".comments.md")
+  }, function(result)
+    vim.schedule(function()
+      if result.code ~= 0 then
         vim.notify(
-          "Confluence: comments saved to " .. comments_file,
-          vim.log.levels.INFO
+          "Confluence: comment fetch failed:\n" .. (result.stderr or result.stdout or ""),
+          vim.log.levels.ERROR
         )
-      end)
-    end
-  )
+        return
+      end
+      local comments_file = filename:gsub("%.md$", ".comments.md")
+      vim.notify("Confluence: comments saved to " .. comments_file, vim.log.levels.INFO)
+    end)
+  end)
 end
 
 --- Register user commands. Safe to call multiple times.

@@ -9,13 +9,13 @@ return {
     opts = {
       keymap = {
         preset = "none",
-        ["<C-b>"]     = { "scroll_documentation_up",   "fallback" },
-        ["<C-f>"]     = { "scroll_documentation_down", "fallback" },
-        ["<M-Space>"] = { "show",         "fallback" },
-        ["<C-e>"]     = { "hide",         "fallback" },
-        ["<CR>"]      = { "accept",       "fallback" },
-        ["<C-n>"]     = { "select_next",  "fallback" },
-        ["<C-p>"]     = { "select_prev",  "fallback" },
+        ["<C-b>"] = { "scroll_documentation_up", "fallback" },
+        ["<C-f>"] = { "scroll_documentation_down", "fallback" },
+        ["<M-Space>"] = { "show", "fallback" },
+        ["<C-e>"] = { "hide", "fallback" },
+        ["<CR>"] = { "accept", "fallback" },
+        ["<C-n>"] = { "select_next", "fallback" },
+        ["<C-p>"] = { "select_prev", "fallback" },
       },
       completion = {
         list = {
@@ -25,11 +25,11 @@ return {
       sources = {
         default = { "lsp", "buffer", "path", "snippets", "spell" },
         per_filetype = {
-          lisp    = { "lsp", "buffer", "path", "snippets", "spell", "conjure" },
+          lisp = { "lsp", "buffer", "path", "snippets", "spell", "conjure" },
           clojure = { "lsp", "buffer", "path", "snippets", "spell", "conjure" },
-          scheme  = { "lsp", "buffer", "path", "snippets", "spell", "conjure" },
-          fennel  = { "lsp", "buffer", "path", "snippets", "spell", "conjure" },
-          janet   = { "lsp", "buffer", "path", "snippets", "spell", "conjure" },
+          scheme = { "lsp", "buffer", "path", "snippets", "spell", "conjure" },
+          fennel = { "lsp", "buffer", "path", "snippets", "spell", "conjure" },
+          janet = { "lsp", "buffer", "path", "snippets", "spell", "conjure" },
         },
         providers = {
           -- cmp-spell bridged via blink.compat; enabled only when spell is on,
@@ -38,7 +38,9 @@ return {
             name = "spell",
             module = "blink.compat.source",
             score_offset = -3,
-            enabled = function() return vim.opt.spell:get() end,
+            enabled = function()
+              return vim.opt.spell:get()
+            end,
             min_keyword_length = 3,
             opts = { keep_all_entries = false },
           },
@@ -59,8 +61,12 @@ return {
         completion = { menu = { auto_show = true } },
         sources = function()
           local t = vim.fn.getcmdtype()
-          if t == "/" or t == "?" then return { "buffer" } end
-          if t == ":" then return { "cmdline", "path" } end
+          if t == "/" or t == "?" then
+            return { "buffer" }
+          end
+          if t == ":" then
+            return { "cmdline", "path" }
+          end
           return {}
         end,
       },

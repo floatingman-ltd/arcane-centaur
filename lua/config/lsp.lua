@@ -21,14 +21,28 @@ end
 
 local on_attach = function(_, bufnr)
   local opts = { noremap = true, silent = true, buffer = bufnr }
-  vim.keymap.set("n", "gd",        vim.lsp.buf.definition,                          vim.tbl_extend("force", opts, { desc = "LSP: go to definition" }))
-  vim.keymap.set("n", "K",         vim.lsp.buf.hover,                               vim.tbl_extend("force", opts, { desc = "LSP: hover docs" }))
-  vim.keymap.set("n", "gr",        vim.lsp.buf.references,                          vim.tbl_extend("force", opts, { desc = "LSP: references" }))
-  vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename,                             vim.tbl_extend("force", opts, { desc = "LSP: rename symbol" }))
-  vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action,                        vim.tbl_extend("force", opts, { desc = "LSP: code action" }))
-  vim.keymap.set("n", "<leader>e",  vim.diagnostic.open_float,                      vim.tbl_extend("force", opts, { desc = "LSP: show diagnostics" }))
-  vim.keymap.set("n", "[d",         function() vim.diagnostic.jump({ count = -1 }) end, vim.tbl_extend("force", opts, { desc = "LSP: previous diagnostic" }))
-  vim.keymap.set("n", "]d",         function() vim.diagnostic.jump({ count = 1 })  end, vim.tbl_extend("force", opts, { desc = "LSP: next diagnostic" }))
+  vim.keymap.set("n", "gd", vim.lsp.buf.definition, vim.tbl_extend("force", opts, { desc = "LSP: go to definition" }))
+  vim.keymap.set("n", "K", vim.lsp.buf.hover, vim.tbl_extend("force", opts, { desc = "LSP: hover docs" }))
+  vim.keymap.set("n", "gr", vim.lsp.buf.references, vim.tbl_extend("force", opts, { desc = "LSP: references" }))
+  vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, vim.tbl_extend("force", opts, { desc = "LSP: rename symbol" }))
+  vim.keymap.set(
+    "n",
+    "<leader>ca",
+    vim.lsp.buf.code_action,
+    vim.tbl_extend("force", opts, { desc = "LSP: code action" })
+  )
+  vim.keymap.set(
+    "n",
+    "<leader>e",
+    vim.diagnostic.open_float,
+    vim.tbl_extend("force", opts, { desc = "LSP: show diagnostics" })
+  )
+  vim.keymap.set("n", "[d", function()
+    vim.diagnostic.jump({ count = -1 })
+  end, vim.tbl_extend("force", opts, { desc = "LSP: previous diagnostic" }))
+  vim.keymap.set("n", "]d", function()
+    vim.diagnostic.jump({ count = 1 })
+  end, vim.tbl_extend("force", opts, { desc = "LSP: next diagnostic" }))
 end
 
 -- F# LSP (requires: dotnet tool install -g fsautocomplete)
@@ -59,8 +73,10 @@ vim.lsp.config("roslyn", {
   cmd = {
     "Microsoft.CodeAnalysis.LanguageServer",
     "--stdio",
-    "--logLevel", "Information",
-    "--extensionLogDirectory", roslyn_log_dir,
+    "--logLevel",
+    "Information",
+    "--extensionLogDirectory",
+    roslyn_log_dir,
   },
 })
 

@@ -30,9 +30,7 @@ local M = {}
 
 --- Find the git repository root from the given path.
 local function find_git_root(dir)
-  local result = vim.fn.systemlist(
-    "git -C " .. vim.fn.shellescape(dir) .. " rev-parse --show-toplevel 2>/dev/null"
-  )
+  local result = vim.fn.systemlist("git -C " .. vim.fn.shellescape(dir) .. " rev-parse --show-toplevel 2>/dev/null")
   if vim.v.shell_error ~= 0 or #result == 0 then
     return nil
   end
@@ -54,7 +52,7 @@ local function find_project_key(map_path, rel_path)
     return nil, "cannot open project map: " .. map_path
   end
 
-  local best_key    = nil
+  local best_key = nil
   local best_prefix = ""
 
   for line in f:lines() do
@@ -63,15 +61,14 @@ local function find_project_key(map_path, rel_path)
     if path_col then
       -- Strip backtick fencing if present.
       local prefix = path_col:match("^`(.*)`$") or path_col
-      prefix = prefix:match("^%s*(.-)%s*$")  -- trim whitespace
+      prefix = prefix:match("^%s*(.-)%s*$") -- trim whitespace
 
       if prefix ~= "" and prefix ~= "Path Prefix" then
         -- Normalise trailing slash for directory prefixes.
         local norm_prefix = prefix:gsub("/$", "")
-        local norm_rel    = rel_path:gsub("/$", "")
+        local norm_rel = rel_path:gsub("/$", "")
 
-        local matches = (norm_rel == norm_prefix)
-          or (norm_rel:sub(1, #norm_prefix + 1) == norm_prefix .. "/")
+        local matches = (norm_rel == norm_prefix) or (norm_rel:sub(1, #norm_prefix + 1) == norm_prefix .. "/")
 
         if matches and #norm_prefix > #best_prefix then
           -- Extract the second column as the project key.
@@ -81,7 +78,7 @@ local function find_project_key(map_path, rel_path)
           end
           local key = cols[2]
           if key and key ~= "" then
-            best_key    = key
+            best_key = key
             best_prefix = norm_prefix
           end
         end
@@ -101,14 +98,14 @@ end
 -- Returns nil if no prior selection is available.
 -- Handles characterwise (v), linewise (V), and blockwise (^V) selections.
 local function get_visual_selection()
-  local start_pos  = vim.fn.getpos("'<")
-  local end_pos    = vim.fn.getpos("'>")
-  local mode       = vim.fn.visualmode()
+  local start_pos = vim.fn.getpos("'<")
+  local end_pos = vim.fn.getpos("'>")
+  local mode = vim.fn.visualmode()
 
   local start_line = start_pos[2]
-  local start_col  = start_pos[3]
-  local end_line   = end_pos[2]
-  local end_col    = end_pos[3]
+  local start_col = start_pos[3]
+  local end_line = end_pos[2]
+  local end_col = end_pos[3]
 
   if start_line == 0 and end_line == 0 then
     return nil
@@ -120,7 +117,7 @@ local function get_visual_selection()
 
   if is_after(start_line, start_col, end_line, end_col) then
     start_line, end_line = end_line, start_line
-    start_col, end_col   = end_col, start_col
+    start_col, end_col = end_col, start_col
   end
 
   local lines = vim.fn.getline(start_line, end_line)
@@ -133,7 +130,7 @@ local function get_visual_selection()
   end
 
   if mode == "\22" then
-    local left  = math.min(start_col, end_col)
+    local left = math.min(start_col, end_col)
     local right = math.max(start_col, end_col)
     for i, line in ipairs(lines) do
       lines[i] = line:sub(left, right)
@@ -146,8 +143,8 @@ local function get_visual_selection()
     return lines[1]
   end
 
-  lines[1]       = lines[1]:sub(start_col)
-  lines[#lines]  = lines[#lines]:sub(1, end_col)
+  lines[1] = lines[1]:sub(start_col)
+  lines[#lines] = lines[#lines]:sub(1, end_col)
   return table.concat(lines, "\n")
 end
 
@@ -159,7 +156,7 @@ local function adf_doc(text)
     local trimmed = para:match("^%s*(.-)%s*$")
     if trimmed ~= "" then
       table.insert(content, {
-        type    = "paragraph",
+        type = "paragraph",
         content = {
           { type = "text", text = trimmed },
         },
@@ -178,21 +175,20 @@ end
 -- @param pre_desc    string|nil — pre-populated description (from visual selection)
 function M.create_issue(issue_type, pre_desc)
   local file = vim.fn.expand("%:p")
-  local dir  = vim.fn.expand("%:p:h")
+  local dir = vim.fn.expand("%:p:h")
 
   if file == "" then
     vim.notify("Jira: buffer has no file", vim.log.levels.WARN)
     return
   end
 
-  local email     = os.getenv("JIRA_EMAIL")
-  local token     = os.getenv("JIRA_API_TOKEN")
-  local base_url  = os.getenv("JIRA_BASE_URL")
+  local email = os.getenv("JIRA_EMAIL")
+  local token = os.getenv("JIRA_API_TOKEN")
+  local base_url = os.getenv("JIRA_BASE_URL")
 
   if not email or email == "" or not token or token == "" then
     vim.notify(
-      "Jira: JIRA_EMAIL and JIRA_API_TOKEN must be set.\n"
-        .. "See docs/guides/jira.md for setup instructions.",
+      "Jira: JIRA_EMAIL and JIRA_API_TOKEN must be set.\n" .. "See docs/guides/jira.md for setup instructions.",
       vim.log.levels.ERROR
     )
     return
@@ -216,8 +212,8 @@ function M.create_issue(issue_type, pre_desc)
     return
   end
 
-  local rel_path    = file:sub(#git_root + 2)
-  local map_path    = git_root .. "/docs/jira-project-map.md"
+  local rel_path = file:sub(#git_root + 2)
+  local map_path = git_root .. "/docs/jira-project-map.md"
   local project_key, map_err = find_project_key(map_path, rel_path)
 
   if not project_key then
@@ -237,9 +233,9 @@ function M.create_issue(issue_type, pre_desc)
 
       local body = {
         fields = {
-          project     = { key = project_key },
-          summary     = summary,
-          issuetype   = { name = issue_type },
+          project = { key = project_key },
+          summary = summary,
+          issuetype = { name = issue_type },
         },
       }
 
@@ -260,58 +256,50 @@ function M.create_issue(issue_type, pre_desc)
       fh:write(json_body)
       fh:close()
 
-      vim.system(
-        {
-          "curl", "-s", "-w", "\n%{http_code}",
-          "-u", email .. ":" .. token,
-          "-H", "Content-Type: application/json",
-          "-H", "Accept: application/json",
-          "-X", "POST",
-          "-d", "@" .. tmp_file,
-          api_url,
-        },
-        { text = true },
-        function(obj)
-          -- Always clean up the temp file regardless of curl result.
-          os.remove(tmp_file)
-          vim.schedule(function()
-            if obj.code ~= 0 then
-              vim.notify(
-                "Jira: curl failed (exit " .. obj.code .. "): " .. (obj.stderr or ""),
-                vim.log.levels.ERROR
-              )
-              return
-            end
+      vim.system({
+        "curl",
+        "-s",
+        "-w",
+        "\n%{http_code}",
+        "-u",
+        email .. ":" .. token,
+        "-H",
+        "Content-Type: application/json",
+        "-H",
+        "Accept: application/json",
+        "-X",
+        "POST",
+        "-d",
+        "@" .. tmp_file,
+        api_url,
+      }, { text = true }, function(obj)
+        -- Always clean up the temp file regardless of curl result.
+        os.remove(tmp_file)
+        vim.schedule(function()
+          if obj.code ~= 0 then
+            vim.notify("Jira: curl failed (exit " .. obj.code .. "): " .. (obj.stderr or ""), vim.log.levels.ERROR)
+            return
+          end
 
-            local raw = obj.stdout or ""
-            local resp_body, http_code_str = raw:match("^(.*)\n(%d%d%d)$")
-            local http_code = tonumber(http_code_str) or 0
+          local raw = obj.stdout or ""
+          local resp_body, http_code_str = raw:match("^(.*)\n(%d%d%d)$")
+          local http_code = tonumber(http_code_str) or 0
 
-            if http_code < 200 or http_code >= 300 then
-              vim.notify(
-                "Jira: API returned HTTP " .. http_code .. ":\n" .. (resp_body or raw),
-                vim.log.levels.ERROR
-              )
-              return
-            end
+          if http_code < 200 or http_code >= 300 then
+            vim.notify("Jira: API returned HTTP " .. http_code .. ":\n" .. (resp_body or raw), vim.log.levels.ERROR)
+            return
+          end
 
-            local ok, data = pcall(vim.json.decode, resp_body or raw)
-            if not ok or not data.key then
-              vim.notify(
-                "Jira: unexpected API response: " .. (resp_body or raw),
-                vim.log.levels.ERROR
-              )
-              return
-            end
+          local ok, data = pcall(vim.json.decode, resp_body or raw)
+          if not ok or not data.key then
+            vim.notify("Jira: unexpected API response: " .. (resp_body or raw), vim.log.levels.ERROR)
+            return
+          end
 
-            local issue_url = base_url .. "/browse/" .. data.key
-            vim.notify(
-              "Jira: created " .. data.key .. " (" .. issue_type .. ")\n" .. issue_url,
-              vim.log.levels.INFO
-            )
-          end)
-        end
-      )
+          local issue_url = base_url .. "/browse/" .. data.key
+          vim.notify("Jira: created " .. data.key .. " (" .. issue_type .. ")\n" .. issue_url, vim.log.levels.INFO)
+        end)
+      end)
     end
 
     if pre_desc and pre_desc ~= "" then
