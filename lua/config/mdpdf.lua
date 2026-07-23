@@ -25,24 +25,32 @@ function M.convert()
     return
   end
 
-  local dir        = vim.fn.expand("%:p:h")
-  local name       = vim.fn.expand("%:t")
-  local stem       = vim.fn.expand("%:t:r")
+  local dir = vim.fn.expand("%:p:h")
+  local name = vim.fn.expand("%:t")
+  local stem = vim.fn.expand("%:t:r")
   local config_dir = vim.fn.stdpath("config")
-  local uid, gid   = uid_gid()
+  local uid, gid = uid_gid()
 
   local cmd = {
-    "docker", "run", "--rm", "--init",
+    "docker",
+    "run",
+    "--rm",
+    "--init",
     "--network=host",
-    "-v", dir .. ":/data",
-    "-v", config_dir .. "/docker/md2pdf:/filters:ro",
-    "-e", "HOME=/tmp",
-    "--user", uid .. ":" .. gid,
+    "-v",
+    dir .. ":/data",
+    "-v",
+    config_dir .. "/docker/md2pdf:/filters:ro",
+    "-e",
+    "HOME=/tmp",
+    "--user",
+    uid .. ":" .. gid,
     "pandoc/extra",
     name,
     "--lua-filter=/filters/plantuml-filter.lua",
     "--lua-filter=/filters/mermaid-filter.lua",
-    "-o", stem .. ".pdf",
+    "-o",
+    stem .. ".pdf",
   }
 
   vim.notify("MdToPdf: converting to PDF…", vim.log.levels.INFO)
@@ -59,11 +67,16 @@ end
 
 --- Register the MdToPdf user command (idempotent — safe to call from ftplugin).
 function M.setup()
-  if M._loaded then return end
+  if M._loaded then
+    return
+  end
   M._loaded = true
 
-  vim.api.nvim_create_user_command("MdToPdf", M.convert,
-    { desc = "Export Markdown to PDF, rendering PlantUML and Mermaid diagrams via Docker" })
+  vim.api.nvim_create_user_command(
+    "MdToPdf",
+    M.convert,
+    { desc = "Export Markdown to PDF, rendering PlantUML and Mermaid diagrams via Docker" }
+  )
 end
 
 return M

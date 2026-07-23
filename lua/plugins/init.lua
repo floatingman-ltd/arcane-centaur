@@ -4,7 +4,7 @@ return {
   "tpope/vim-repeat",
   "tpope/vim-unimpaired",
 
--- other
+  -- other
   -- "Shougo/neosnippet.vim",
   -- "Shougo/neosnippet-snippets",
   -- "mattn/emmet-vim",

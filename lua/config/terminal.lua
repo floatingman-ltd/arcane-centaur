@@ -16,8 +16,7 @@ local is_wsl = vim.env.WSL_DISTRO_NAME ~= nil
 --- Returns a short, lowercase identifier string.
 local function detect()
   -- Alacritty sets TERM_PROGRAM on macOS; on Linux it often sets TERM only
-  if vim.env.TERM_PROGRAM == "Alacritty"
-    or (vim.env.TERM or ""):find("alacritty") then
+  if vim.env.TERM_PROGRAM == "Alacritty" or (vim.env.TERM or ""):find("alacritty") then
     return "alacritty"
   end
 
@@ -37,9 +36,7 @@ local function detect()
   end
 
   -- Linux TTY console ($TERM=linux, no graphical display)
-  if vim.env.TERM == "linux"
-    and (vim.env.DISPLAY or "") == ""
-    and (vim.env.WAYLAND_DISPLAY or "") == "" then
+  if vim.env.TERM == "linux" and (vim.env.DISPLAY or "") == "" and (vim.env.WAYLAND_DISPLAY or "") == "" then
     return "tty"
   end
 
@@ -59,34 +56,32 @@ M.name = detect()
 --- select it in the terminal settings).
 local nerd_font_terminals = {
   alacritty = true,
-  wt        = true,
+  wt = true,
 }
 
 --- True when the terminal supports the undercurl SGR escape (curly
 --- underlines used by spell-check and diagnostics).
 local undercurl_terminals = {
   alacritty = true,
-  wt        = true,
+  wt = true,
 }
 
 M.has_nerd_font = nerd_font_terminals[M.name] or false
 M.has_undercurl = undercurl_terminals[M.name] or false
-M.is_vte        = M.name == "vte"
-M.is_wsl        = is_wsl
+M.is_vte = M.name == "vte"
+M.is_wsl = is_wsl
 
 --- True when no graphical display is available (physical TTY, SSH without X
 --- forwarding, headless server). Derived solely from the absence of both
 --- $DISPLAY and $WAYLAND_DISPLAY — no manual override flag is used.
-M.is_console = (vim.env.DISPLAY or "") == ""
-           and (vim.env.WAYLAND_DISPLAY or "") == ""
+M.is_console = (vim.env.DISPLAY or "") == "" and (vim.env.WAYLAND_DISPLAY or "") == ""
 
 --- True when the terminal can render 24-bit ("true") color. A real Linux TTY
 --- (TERM=linux) and many bare SSH terminals cannot; truecolor-first themes such
 --- as TokyoNight render poorly there (invisible Visual, odd cursor). When false,
 --- the config falls back to Neovim's default colorscheme. Detected from
 --- $COLORTERM, known-truecolor terminals, and VTE.
-M.has_truecolor =
-  ((vim.env.COLORTERM or "") == "truecolor" or (vim.env.COLORTERM or "") == "24bit")
+M.has_truecolor = ((vim.env.COLORTERM or "") == "truecolor" or (vim.env.COLORTERM or "") == "24bit")
   or nerd_font_terminals[M.name] == true
   or M.is_vte
 

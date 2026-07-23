@@ -17,7 +17,9 @@ local M = {}
 
 local function read_file(path)
   local f = io.open(path, "r")
-  if not f then return nil end
+  if not f then
+    return nil
+  end
   local content = f:read("*a")
   f:close()
   return content
@@ -39,9 +41,15 @@ local function assemble_local_context()
   local core = read_file(sheets_dir .. "/core.md") or ""
 
   local ft_sheets = {
-    lisp = "lisp.md", clojure = "lisp.md", scheme = "lisp.md", fennel = "lisp.md",
-    janet = "janet.md", fsharp = "fsharp.md", cs = "fsharp.md",
-    haskell = "haskell.md", markdown = "markdown.md",
+    lisp = "lisp.md",
+    clojure = "lisp.md",
+    scheme = "lisp.md",
+    fennel = "lisp.md",
+    janet = "janet.md",
+    fsharp = "fsharp.md",
+    cs = "fsharp.md",
+    haskell = "haskell.md",
+    markdown = "markdown.md",
   }
   local ft_sheet = ft_sheets[vim.bo.filetype]
   local sheet = core
@@ -65,10 +73,7 @@ local function run(title, prompt)
         local detail = (result.stderr ~= "" and result.stderr)
           or (result.stdout ~= "" and result.stdout)
           or "(no output)"
-        vim.notify(
-          "research: claude CLI failed (exit " .. result.code .. "):\n" .. detail,
-          vim.log.levels.ERROR
-        )
+        vim.notify("research: claude CLI failed (exit " .. result.code .. "):\n" .. detail, vim.log.levels.ERROR)
         return
       end
       local lines = vim.split(result.stdout or "", "\n", { plain = true })
@@ -89,7 +94,9 @@ local function ask(title, make_prompt)
     return
   end
   vim.ui.input({ prompt = "Research: " }, function(question)
-    if not question or question == "" then return end
+    if not question or question == "" then
+      return
+    end
     run(title, make_prompt(question))
   end)
 end
@@ -110,7 +117,9 @@ function M.setup()
   end, { desc = "Research question grounded in this Neovim configuration" })
 
   vim.api.nvim_create_user_command("ResearchAsk", function()
-    ask("Research", function(question) return question end)
+    ask("Research", function(question)
+      return question
+    end)
   end, { desc = "Ask a general-knowledge research question" })
 end
 

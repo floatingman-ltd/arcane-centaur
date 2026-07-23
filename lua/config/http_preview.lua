@@ -17,15 +17,15 @@ local M = { _servers = {} }
 
 local MIME = {
   html = "text/html; charset=utf-8",
-  htm  = "text/html; charset=utf-8",
-  css  = "text/css",
-  js   = "application/javascript",
+  htm = "text/html; charset=utf-8",
+  css = "text/css",
+  js = "application/javascript",
   json = "application/json",
-  svg  = "image/svg+xml",
-  png  = "image/png",
-  jpg  = "image/jpeg",
+  svg = "image/svg+xml",
+  png = "image/png",
+  jpg = "image/jpeg",
   jpeg = "image/jpeg",
-  gif  = "image/gif",
+  gif = "image/gif",
 }
 
 local function mime_for(path)
@@ -34,11 +34,16 @@ local function mime_for(path)
 end
 
 local function respond(client, status, ctype, body)
-  local header = ("HTTP/1.1 %s\r\nContent-Type: %s\r\nContent-Length: %d\r\nConnection: close\r\n\r\n")
-    :format(status, ctype, #body)
+  local header = ("HTTP/1.1 %s\r\nContent-Type: %s\r\nContent-Length: %d\r\nConnection: close\r\n\r\n"):format(
+    status,
+    ctype,
+    #body
+  )
   client:write(header .. body, function()
     client:shutdown(function()
-      if not client:is_closing() then client:close() end
+      if not client:is_closing() then
+        client:close()
+      end
     end)
   end)
 end
@@ -46,7 +51,9 @@ end
 local function serve_request(client, root)
   client:read_start(function(err, chunk)
     if err or not chunk then
-      if not client:is_closing() then client:close() end
+      if not client:is_closing() then
+        client:close()
+      end
       return
     end
     client:read_stop()
@@ -55,8 +62,12 @@ local function serve_request(client, root)
     if not path then
       return respond(client, "400 Bad Request", "text/plain", "bad request")
     end
-    path = path:gsub("%%(%x%x)", function(h) return string.char(tonumber(h, 16)) end)
-    if path == "/" then path = "/index.html" end
+    path = path:gsub("%%(%x%x)", function(h)
+      return string.char(tonumber(h, 16))
+    end)
+    if path == "/" then
+      path = "/index.html"
+    end
     if path:find("%.%.") then
       return respond(client, "403 Forbidden", "text/plain", "forbidden")
     end
@@ -78,20 +89,28 @@ function M.ensure(root, port)
     return true -- already serving this root on this port
   end
   if existing and existing.server then
-    pcall(function() existing.server:close() end)
+    pcall(function()
+      existing.server:close()
+    end)
   end
   M._servers[port] = nil
   local server = uv.new_tcp()
-  local ok = pcall(function() server:bind("127.0.0.1", port) end)
+  local ok = pcall(function()
+    server:bind("127.0.0.1", port)
+  end)
   if not ok then
-    pcall(function() server:close() end)
+    pcall(function()
+      server:close()
+    end)
     -- Port already bound (e.g. another Neovim instance already serving) — assume
     -- it serves the same preview dir and let the browser reach it.
     M._servers[port] = { server = nil, root = root }
     return true
   end
   server:listen(128, function(err)
-    if err then return end
+    if err then
+      return
+    end
     local client = uv.new_tcp()
     server:accept(client)
     serve_request(client, root)

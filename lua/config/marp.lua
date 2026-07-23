@@ -20,15 +20,21 @@ function M.convert(format)
     return
   end
 
-  local dir  = vim.fn.expand("%:p:h")
+  local dir = vim.fn.expand("%:p:h")
   local name = vim.fn.expand("%:t")
   local uid, gid = uid_gid()
 
   local cmd = {
-    "docker", "run", "--rm", "--init",
-    "-v", dir .. ":/home/marp/app",
-    "-e", "LANG=" .. (os.getenv("LANG") or "C.UTF-8"),
-    "-e", "MARP_USER=" .. uid .. ":" .. gid,
+    "docker",
+    "run",
+    "--rm",
+    "--init",
+    "-v",
+    dir .. ":/home/marp/app",
+    "-e",
+    "LANG=" .. (os.getenv("LANG") or "C.UTF-8"),
+    "-e",
+    "MARP_USER=" .. uid .. ":" .. gid,
     "marpteam/marp-cli",
     "--allow-local-files",
     name,
@@ -61,17 +67,21 @@ end
 
 --- Register MARP user commands (idempotent — safe to call from ftplugin).
 function M.setup()
-  if M._loaded then return end
+  if M._loaded then
+    return
+  end
   M._loaded = true
 
-  vim.api.nvim_create_user_command("MarpPreview", M.preview,
-    { desc = "Open file in MARP preview server" })
-  vim.api.nvim_create_user_command("MarpToPptx", function() M.convert("pptx") end,
-    { desc = "Convert to PPTX via Docker" })
-  vim.api.nvim_create_user_command("MarpToHtml", function() M.convert("html") end,
-    { desc = "Convert to HTML via Docker" })
-  vim.api.nvim_create_user_command("MarpToPdf", function() M.convert("pdf") end,
-    { desc = "Convert to PDF via Docker" })
+  vim.api.nvim_create_user_command("MarpPreview", M.preview, { desc = "Open file in MARP preview server" })
+  vim.api.nvim_create_user_command("MarpToPptx", function()
+    M.convert("pptx")
+  end, { desc = "Convert to PPTX via Docker" })
+  vim.api.nvim_create_user_command("MarpToHtml", function()
+    M.convert("html")
+  end, { desc = "Convert to HTML via Docker" })
+  vim.api.nvim_create_user_command("MarpToPdf", function()
+    M.convert("pdf")
+  end, { desc = "Convert to PDF via Docker" })
 end
 
 return M

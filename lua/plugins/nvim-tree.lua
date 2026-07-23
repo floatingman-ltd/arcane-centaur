@@ -6,7 +6,7 @@ return {
     { "nvim-tree/nvim-web-devicons", enabled = vim.g.have_nerd_font },
   },
   config = function()
-    require("nvim-tree").setup {
+    require("nvim-tree").setup({
       sort = {
         sorter = "case_sensitive",
       },
@@ -17,26 +17,26 @@ return {
         group_empty = true,
         icons = {
           glyphs = vim.g.have_nerd_font and {} or {
-            default  = "·",
-            symlink  = "→",
-            folder   = {
+            default = "·",
+            symlink = "→",
+            folder = {
               arrow_closed = "▸",
-              arrow_open   = "▾",
-              default      = "▸",
-              open         = "▾",
-              empty        = "▹",
-              empty_open   = "▿",
-              symlink      = "→",
+              arrow_open = "▾",
+              default = "▸",
+              open = "▾",
+              empty = "▹",
+              empty_open = "▿",
+              symlink = "→",
               symlink_open = "→",
             },
             git = {
-              unstaged  = "✗",
-              staged    = "✓",
-              unmerged  = "⌥",
-              renamed   = "➜",
+              unstaged = "✗",
+              staged = "✓",
+              unmerged = "⌥",
+              renamed = "➜",
               untracked = "★",
-              deleted   = "⊖",
-              ignored   = "◌",
+              deleted = "⊖",
+              ignored = "◌",
             },
           },
         },
@@ -44,7 +44,7 @@ return {
       filters = {
         dotfiles = true,
       },
-    }
+    })
 
     -- Close tree/terminal when quitting would leave them as the only windows.
     -- Prevents nvim-tree expanding to full-width after the last editor window closes.
@@ -60,11 +60,13 @@ return {
           end
         end
         -- If every remaining window is tree or terminal chrome, close them all
-        if #remaining == 0 then return end
+        if #remaining == 0 then
+          return
+        end
         for _, win in ipairs(remaining) do
           local buf = vim.api.nvim_win_get_buf(win)
           if vim.bo[buf].filetype ~= "NvimTree" and vim.bo[buf].buftype ~= "terminal" then
-            return  -- a real editor window will survive; do nothing
+            return -- a real editor window will survive; do nothing
           end
         end
         for _, win in ipairs(remaining) do

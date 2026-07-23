@@ -9,7 +9,7 @@ local function encode_puml()
   local content = table.concat(lines, "\n")
 
   local encoded = vim.fn.system(
-    "python3 -c \""
+    'python3 -c "'
       .. "import sys, zlib, base64; "
       .. "data = sys.stdin.buffer.read(); "
       .. "compressed = zlib.compress(data)[2:-4]; "
@@ -66,22 +66,24 @@ local function puml_preview_ascii()
   local col = math.ceil((editor_w - win_w) / 2)
 
   local buf = vim.api.nvim_create_buf(false, true)
-  vim.bo[buf].buftype  = "nofile"
+  vim.bo[buf].buftype = "nofile"
   vim.bo[buf].bufhidden = "wipe"
   vim.api.nvim_buf_set_lines(buf, 0, -1, false, vim.split(output, "\n", { plain = true }))
 
   local win = vim.api.nvim_open_win(buf, true, {
-    style    = "minimal",
+    style = "minimal",
     relative = "editor",
-    border   = "rounded",
-    width    = win_w,
-    height   = win_h,
-    row      = row,
-    col      = col,
+    border = "rounded",
+    width = win_w,
+    height = win_h,
+    row = row,
+    col = col,
   })
 
-  local close = function() vim.api.nvim_win_close(win, true) end
-  vim.keymap.set("n", "q",     close, { buffer = buf, silent = true })
+  local close = function()
+    vim.api.nvim_win_close(win, true)
+  end
+  vim.keymap.set("n", "q", close, { buffer = buf, silent = true })
   vim.keymap.set("n", "<Esc>", close, { buffer = buf, silent = true })
 end
 

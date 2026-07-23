@@ -6,28 +6,30 @@ local guides_dir = config_dir .. "/guides"
 
 -- Filetype → { sheet = "<filename>", guides = { "<slug>", ... } }
 local ft_map = {
-  lisp     = { sheet = "lisp.md",     guides = { "sbcl-swank", "clojure-nrepl" } },
-  clojure  = { sheet = "lisp.md",     guides = { "clojure-nrepl" } },
-  scheme   = { sheet = "lisp.md",     guides = {} },
-  fennel   = { sheet = "lisp.md",     guides = {} },
-  janet    = { sheet = "janet.md",    guides = {} },
-  fsharp   = { sheet = "fsharp.md",   guides = { "dotnet-fsi" } },
-  cs       = { sheet = "fsharp.md",   guides = { "dotnet-fsi" } },
-  haskell  = { sheet = "haskell.md",  guides = { "ghci-workflow" } },
+  lisp = { sheet = "lisp.md", guides = { "sbcl-swank", "clojure-nrepl" } },
+  clojure = { sheet = "lisp.md", guides = { "clojure-nrepl" } },
+  scheme = { sheet = "lisp.md", guides = {} },
+  fennel = { sheet = "lisp.md", guides = {} },
+  janet = { sheet = "janet.md", guides = {} },
+  fsharp = { sheet = "fsharp.md", guides = { "dotnet-fsi" } },
+  cs = { sheet = "fsharp.md", guides = { "dotnet-fsi" } },
+  haskell = { sheet = "haskell.md", guides = { "ghci-workflow" } },
   markdown = { sheet = "markdown.md", guides = {} },
 }
 
 -- Guide slug → file under guides_dir
 local guide_files = {
-  ["sbcl-swank"]    = "sbcl-swank.md",
+  ["sbcl-swank"] = "sbcl-swank.md",
   ["clojure-nrepl"] = "clojure-nrepl.md",
-  ["dotnet-fsi"]    = "dotnet-fsi.md",
+  ["dotnet-fsi"] = "dotnet-fsi.md",
   ["ghci-workflow"] = "ghci-workflow.md",
 }
 
 local function read_file(path)
   local f = io.open(path, "r")
-  if not f then return nil end
+  if not f then
+    return nil
+  end
   local content = f:read("*a")
   f:close()
   return content
@@ -57,11 +59,9 @@ end
 
 -- Guide picker for the current filetype (or all guides if no ft match).
 function M.pick_guide()
-  local ft    = vim.bo.filetype
+  local ft = vim.bo.filetype
   local entry = ft_map[ft]
-  local slugs = (entry and #entry.guides > 0)
-    and vim.list_extend({}, entry.guides)
-    or vim.tbl_keys(guide_files)
+  local slugs = (entry and #entry.guides > 0) and vim.list_extend({}, entry.guides) or vim.tbl_keys(guide_files)
 
   table.sort(slugs)
 
@@ -71,12 +71,14 @@ function M.pick_guide()
   end
 
   vim.ui.select(slugs, { prompt = "Open guide:" }, function(choice)
-    if choice then M.open_guide(choice) end
+    if choice then
+      M.open_guide(choice)
+    end
   end)
 end
 
 function M.open_cheatsheet()
-  local ft    = vim.bo.filetype
+  local ft = vim.bo.filetype
   local entry = ft_map[ft]
 
   local core = read_file(sheets_dir .. "/core.md")

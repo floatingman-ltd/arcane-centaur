@@ -43,7 +43,7 @@ local function get_context_text(args)
 
     if is_visual_mode then
       local start_pos = vim.fn.getpos("'<")
-      local end_pos   = vim.fn.getpos("'>")
+      local end_pos = vim.fn.getpos("'>")
       sl = start_pos[2]
       el = end_pos[2]
     end
@@ -76,8 +76,7 @@ end
 local function run_claude(subcommand, input)
   if vim.fn.executable("claude") ~= 1 then
     vim.notify(
-      "claude_cli: `claude` CLI not found on $PATH.\n"
-        .. "Install Claude Code: https://claude.com/claude-code",
+      "claude_cli: `claude` CLI not found on $PATH.\n" .. "Install Claude Code: https://claude.com/claude-code",
       vim.log.levels.ERROR
     )
     return
@@ -92,32 +91,25 @@ local function run_claude(subcommand, input)
 
   vim.notify("Claude: running `claude` CLI …", vim.log.levels.INFO)
 
-  vim.system(
-    { "claude", "-p", prompt },
-    {},
-    function(result)
-      vim.schedule(function()
-        if result.code ~= 0 then
-          local err = result.stderr or "(no stderr)"
-          vim.notify(
-            "claude CLI failed (exit " .. result.code .. "):\n" .. err,
-            vim.log.levels.ERROR
-          )
-          return
-        end
+  vim.system({ "claude", "-p", prompt }, {}, function(result)
+    vim.schedule(function()
+      if result.code ~= 0 then
+        local err = result.stderr or "(no stderr)"
+        vim.notify("claude CLI failed (exit " .. result.code .. "):\n" .. err, vim.log.levels.ERROR)
+        return
+      end
 
-        local output = result.stdout or ""
-        local lines = vim.split(output, "\n", { plain = true })
-        -- Strip trailing blank lines.
-        while #lines > 0 and lines[#lines] == "" do
-          table.remove(lines)
-        end
+      local output = result.stdout or ""
+      local lines = vim.split(output, "\n", { plain = true })
+      -- Strip trailing blank lines.
+      while #lines > 0 and lines[#lines] == "" do
+        table.remove(lines)
+      end
 
-        local title = "claude " .. subcommand
-        require("config.util").open_float(title, lines)
-      end)
-    end
-  )
+      local title = "claude " .. subcommand
+      require("config.util").open_float(title, lines)
+    end)
+  end)
 end
 
 --- Register :ClaudeSuggest and :ClaudeExplain commands.

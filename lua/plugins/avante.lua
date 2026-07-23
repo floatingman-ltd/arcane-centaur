@@ -55,7 +55,9 @@ return {
     keys = {
       {
         "<leader>aa",
-        function() require("avante.api").ask() end,
+        function()
+          require("avante.api").ask()
+        end,
         desc = "Avante: open with current provider (ollama)",
       },
       {

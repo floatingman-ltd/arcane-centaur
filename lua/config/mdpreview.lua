@@ -17,8 +17,10 @@ local util = require("config.util")
 --- Falls back to just the filename if the file is not under cwd.
 local function relative_path()
   local full = vim.fn.expand("%:p")
-  local cwd  = vim.fn.getcwd()
-  if cwd:sub(-1) ~= "/" then cwd = cwd .. "/" end
+  local cwd = vim.fn.getcwd()
+  if cwd:sub(-1) ~= "/" then
+    cwd = cwd .. "/"
+  end
   if full:sub(1, #cwd) == cwd then
     return full:sub(#cwd + 1)
   end
@@ -38,10 +40,15 @@ end
 
 --- Register the MdServerPreview user command (idempotent — safe to call from ftplugin).
 function M.setup()
-  if M._loaded then return end
+  if M._loaded then
+    return
+  end
   M._loaded = true
-  vim.api.nvim_create_user_command("MdServerPreview", M.preview,
-    { desc = "Open markdown file in markserv Docker preview server" })
+  vim.api.nvim_create_user_command(
+    "MdServerPreview",
+    M.preview,
+    { desc = "Open markdown file in markserv Docker preview server" }
+  )
 end
 
 return M
