@@ -34,5 +34,5 @@
 ## 7. Ship
 
 - [x] 7.1 Commit the normalize as one mechanical commit: `style(lua): format entire tree with stylua (2-space via .stylua.toml)`; add the enforcement + `.git-blame-ignore-revs` (referencing that SHA) in follow-up commit(s) on the same branch.
-- [ ] 7.2 Raise PR → `main`; review the stat/diff; merge.
-- [ ] 7.3 Post-merge: `git checkout main && git pull`; confirm `stylua --check .` is clean and the hook fires on a test `.lua` edit.
+- [x] 7.2 Raise PR → `main`; review the stat/diff; merge. (PR #152, merge commit `5b6d90f`)
+- [x] 7.3 Post-merge: `git checkout main && git pull`; confirm `stylua --check .` is clean and the hook fires on a test `.lua` edit. (`stylua --check lua/ after/ init.lua` clean on `main`; hook verified live during 3.1/5.4)
