@@ -1394,9 +1394,9 @@ two namespaces.
 ### Raise PR & merge
 
 - [X] All validation steps above pass (8.1–8.6). One defect found & fixed on-branch (`<leader>gcv` eager-registration, §8.3); one pre-existing non-08 finding logged (`ANTHROPIC_API_KEY` shadows `claude_cli` login, §8.5 — separate fix).
-- [ ] Raise PR: `feat/08-add-claudecode-session` → `main` (confirm `snacks.nvim` is **NOT** in dependencies)
-- [ ] Review and approve PR
-- [ ] Merge PR
+- [X] Raise PR: `feat/08-add-claudecode-session` → `main` (confirm `snacks.nvim` is **NOT** in dependencies)
+- [X] Review and approve PR
+- [X] Merge PR
 
 ### Post-merge
 
