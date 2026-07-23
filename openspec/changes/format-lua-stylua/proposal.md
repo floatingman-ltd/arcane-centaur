@@ -1,55 +1,73 @@
 ## Why
 
 `conform.nvim` runs `stylua` as the Lua formatter on save (`lua = { "stylua" }` in
-`lua/plugins/conform.lua`), but the repository's Lua was never actually formatted with stylua, and
-until Change 05 there was no `.stylua.toml`. Two consequences:
+`lua/plugins/conform.lua`), and Change 05 added a `.stylua.toml` pinning the repo's 2-space style —
+but the committed Lua was **never normalized**, so `stylua --check` flags **dozens** of files
+(the proposal originally measured ~29 in `lua/`; tree-wide it is most of the 61 Lua files). Two gaps:
 
-1. With no config, stylua falls back to its default indent (**tabs**), while every committed Lua
-   file uses **2-space** indent — so saving any Lua file silently reindents it to tabs (churn).
-2. Beyond indent, the existing Lua does not match stylua's other rules either — `stylua --check
-   lua/` reports **~29 files** would change (trailing commas, one-array-item-per-line, expanded
-   single-line `if`s, comment de-alignment). So even after pinning indent, editing any file yields
-   a large, noisy diff mixed in with the real change.
+1. **The tree doesn't conform.** Editing any Lua file yields a large, noisy diff — stylua rewraps and
+   retrailing-commas unrelated lines mixed in with the real change.
+2. **Nothing keeps it clean once normalized.** `conform`'s format-on-save only fires on a **user save
+   inside Neovim**. Files written by **Claude Code's Edit/Write tools** (and other editors / scripts)
+   are *not* formatted — so a one-shot normalization would re-rot on the first tool edit.
 
-Change 05 (`upgrade-avante-drop-dressing`) added a `.stylua.toml` pinning stylua to the repo's
-2-space style, which stops the tab flip going forward. This change finishes the job: run stylua
-across the whole tree once, so every Lua file already conforms and future edits produce clean,
-minimal diffs.
+This change finishes the job **and** makes it stick: normalize the whole tree once, then enforce the
+style on edits that bypass save.
 
 ## What Changes
 
-- Run `stylua` over all Lua in the repo (`lua/`, `after/`, `init.lua`, and any `plugin/`/`ftplugin/`
-  Lua) so every file matches `.stylua.toml` (2-space) and stylua's other defaults.
-- Formatting only — **no behavioural change**. `luac -p` on every file must still pass and Neovim
-  must start with no new errors.
+- **Normalize** — run `stylua` over all Lua (`lua/`, `after/`, `init.lua`, any `plugin/`/`ftplugin/`
+  Lua) so every file matches `.stylua.toml` + stylua defaults. Formatting only — **no behaviour
+  change**.
+- **Enforce (folded in)** — keep the tree clean after the one-shot:
+  - a **`PostToolUse` hook** in `.claude/settings.json` that runs `stylua` on `.lua` files after
+    `Edit`/`Write` (covers the gap that format-on-save leaves for Claude-tool edits);
+  - a **`stylua` step** in the `add-neovim-feature` skill's validation.
+- **Protect `git blame`** — add a `.git-blame-ignore-revs` file listing the reformat commit, and
+  document `git config blame.ignoreRevsFile .git-blame-ignore-revs` (GitHub honors the file
+  automatically) so the mechanical reformat doesn't pollute line history.
 
 ## Capabilities
 
 ### Modified Capabilities
 
-- `lua-formatting`: add the guarantee that the repo ships a `.stylua.toml` (2-space) **and** that all
-  committed Lua already conforms to stylua under it, so format-on-save is a no-op on unedited files.
+- `lua-formatting`: the repo ships `.stylua.toml` (2-space) **and** all committed Lua conforms to it,
+  **and** edits that bypass format-on-save (Claude Code tools, the feature-authoring skill) are kept
+  stylua-clean by enforcement — so the tree stays conformant, not just at the moment of the one-shot.
 
 ## Impact
 
-- ~29 Lua files reformatted (whitespace / trailing commas / wrapping only — no logic changes).
-- `.stylua.toml` — added in Change 05; this change depends on it being present.
-- No plugin or runtime behaviour changes; purely cosmetic.
+- **Dozens of Lua files** reformatted (whitespace / trailing commas / wrapping only — no logic).
+- **`.claude/settings.json`** — new `PostToolUse` hook (Edit/Write → stylua on `.lua`).
+- **`.claude/skills/add-neovim-feature`** — a `stylua` validation step added.
+- **`.git-blame-ignore-revs`** — new; lists the reformat commit SHA.
+- **`.stylua.toml`** — already on `main` (Change 05); relied on, not changed.
+- **stylua as a documented dependency** — handled under the `document-setup-prerequisites` change
+  (stylua is now load-bearing for both save *and* the hook).
+- No plugin or runtime behaviour changes; the reformat is purely cosmetic.
 
 ## Prerequisites and sequencing
 
-**Run LAST — the "end game".** Apply this after all functional changes (05–08) *and* the parked
-`document-setup-prerequisites` change have merged. Reformatting ~29 files early would muddy every
-in-flight change's diff and cause needless merge conflicts; doing it last confines the formatting
-churn to a single, reviewable commit and keeps the other changes' diffs clean.
+**Run NOW — not "last" as originally scoped.** The old "run last" rationale assumed other changes
+were in flight touching Lua; that is no longer true:
 
-- **Hard prerequisite:** Change 05 (adds `.stylua.toml`).
-- **Sequence:** last — after 05–08 and `document-setup-prerequisites`.
+- The 01–08 best-of-breed series is **merged**.
+- `document-setup-prerequisites` is **docs-only** (AsciiDoc) — no Lua overlap.
+- `migrate-treesitter-main` and the `claude_cli` key fix touch Lua but are **unstarted** (no branch to
+  conflict with).
+
+With no Lua work in flight, there is nothing for the reformat to muddy. More importantly, **the
+enforcement hook inverts the sequencing logic**: normalize + enable the hook now, and every
+subsequent change (the treesitter rewrite, the claude_cli fix) is *born* stylua-clean instead of
+producing noisy diffs until some future "end game."
+
+- **Hard prerequisite:** `.stylua.toml` on `main` (Change 05 — satisfied).
+- **Sequence:** next / now.
 
 ## Out of scope
 
-- Changing stylua's rules beyond the 2-space indent already pinned in Change 05 (accept stylua
-  defaults for everything else — `column_width = 120`, quote/paren style, etc.).
+- Changing stylua's rules beyond the 2-space indent pinned in Change 05 (accept defaults —
+  `column_width = 120`, `AutoPreferDouble` quotes, `Always` call parens, trailing commas).
 - Formatting non-Lua files (AsciiDoc, JSON, shell) — different tools, separate concern.
-- Adding or changing any format-on-save behaviour — `conform` already runs stylua; this change only
-  makes the existing files conform.
+- A git `pre-commit` `stylua --check` hook for human/CI edits — deferred (repo has no CI; the
+  `PostToolUse` hook + save + skill step cover the actual edit paths). Revisit if a CI pipeline lands.

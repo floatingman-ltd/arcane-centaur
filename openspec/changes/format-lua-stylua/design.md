@@ -1,53 +1,76 @@
 ## Context
 
-`lua/plugins/conform.lua` sets `formatters_by_ft.lua = { "stylua" }` with format-on-save, but:
-
-- no `.stylua.toml` existed until Change 05 added one (`indent_type = "Spaces"`, `indent_width = 2`),
-  so stylua defaulted to tabs; and
-- the committed Lua predates stylua entirely — `stylua --check lua/` flags ~29 files.
-
-So format-on-save silently reformats any edited Lua file to stylua style, producing large diffs and
-(pre-Change-05) a tab/space flip-flop. The tree needs a one-time normalization so the formatter and
-the committed code agree.
+`lua/plugins/conform.lua` sets `formatters_by_ft.lua = { "stylua" }` with format-on-save, and
+Change 05 added `.stylua.toml` (`indent_type = "Spaces"`, `indent_width = 2`). But the committed Lua
+predates stylua — `stylua --check` flags dozens of files. And format-on-save only runs on a **user
+save in Neovim**; files written by Claude Code's Edit/Write tools bypass it entirely. So the tree
+neither conforms today nor stays conformant on its own.
 
 ## Goals / Non-Goals
 
 **Goals**
-- Every committed Lua file conforms to `.stylua.toml` + stylua defaults, so format-on-save is a
-  no-op on unedited files and future diffs are minimal.
-- A single, mechanical, reviewable formatting commit.
+- Every committed Lua file conforms to `.stylua.toml` + stylua defaults (format-on-save becomes a
+  no-op on unedited files).
+- Edits that bypass save (Claude-tool writes, the feature skill) are kept stylua-clean.
+- A single, mechanical, reviewable formatting commit that doesn't wreck `git blame`.
 
 **Non-Goals**
-- No logic changes; no stylua rule changes beyond the 2-space indent pinned in Change 05.
-- No formatting of non-Lua files.
+- No logic changes; no stylua rule changes beyond the 2-space indent from Change 05.
+- No formatting of non-Lua files; no CI/pre-commit tooling (deferred).
 
 ## Decisions
 
-### Format the whole tree in one pass, last in the sequence
-Run stylua once over every Lua root, after all functional changes have merged. Doing it early would
-muddy every other change's diff and invite merge conflicts; doing it last isolates the churn.
+### Run now, not last (enforcement inverts the old logic)
+The original proposal sequenced this "last" to avoid muddying in-flight diffs and merge conflicts.
+That risk assumed concurrent Lua work — but 01–08 are merged, `document-setup-prerequisites` is
+docs-only, and the remaining Lua changes (`migrate-treesitter-main`, `claude_cli` fix) are unstarted.
+With nothing in flight, running now is safe; and because we add the `PostToolUse` hook in the same
+change, doing it now makes every later change born-clean rather than deferring cleanliness to an
+"end game." (Reformatting `treesitter.lua` now is moot — `migrate-treesitter-main` will replace it —
+but harmless.)
+
+### Enforce after normalizing (fills the save-only gap)
+A one-shot format re-rots the moment a non-save edit lands. Enforcement:
+- **`PostToolUse` hook** in `.claude/settings.json`: match `Edit|Write`, filter to paths ending
+  `.lua`, and run `stylua` on the written file (wired via the `update-config` skill). It must degrade
+  gracefully — if `stylua` is absent or errors on a mid-edit syntax slip, the hook warns but does not
+  block the edit. This is the piece conform's save-hook can't cover for tool writes.
+- **`add-neovim-feature` skill**: add a `stylua` step to its validation so the feature-authoring path
+  formats too.
+- **`pre-commit` (deferred):** a `stylua --check` git hook would cover human/CI edits, but the repo
+  has no CI and the paths above cover real edits; revisit if CI lands.
+
+### Protect `git blame`
+A dozens-of-files whitespace commit would poison `git blame` on every reformatted line. Add
+`.git-blame-ignore-revs` containing the reformat commit's SHA; GitHub auto-detects it, and locally
+`git config blame.ignoreRevsFile .git-blame-ignore-revs` makes `git blame` skip it. Document the
+local config step (it isn't automatic outside GitHub).
 
 ### Accept stylua's defaults (except indent)
-Only `indent_type = Spaces` / `indent_width = 2` are pinned (to match the repo). Everything else —
-`column_width = 120`, `AutoPreferDouble` quotes, `Always` call parens, trailing commas — uses stylua
-defaults. Keeps `.stylua.toml` minimal and the output predictable.
+Only `indent_type = Spaces` / `indent_width = 2` are pinned. Everything else — `column_width = 120`,
+`AutoPreferDouble` quotes, `Always` call parens, trailing commas — uses stylua defaults. Minimal
+config, predictable output, no bikeshedding.
 
 ### Verify semantics are unchanged
-Formatting must not change behaviour. After the pass, `luac -p` on every file and a clean Neovim
-start (`:messages` empty) confirm the reformat is purely cosmetic.
+The reformat must be purely cosmetic: `luac -p` on every file and a clean Neovim start
+(`:messages` empty) after the pass.
 
 ## Risks / Trade-offs
 
-- **Large diff (~29 files).** Mitigation: one isolated, mechanical commit reviewers can trust via
-  `git show --stat` and the `luac -p` gate; no logic touched.
-- **Merge conflicts if run early.** Mitigation: sequence it last (end game).
-- **Contributors without stylua.** conform already degrades gracefully when stylua is absent (the
-  file saves unformatted); `.stylua.toml` only standardises output when stylua *is* present.
+- **Large diff (dozens of files).** Mitigation: one isolated mechanical commit reviewers trust via
+  `git show --stat` + the `luac -p` gate; `.git-blame-ignore-revs` keeps blame usable.
+- **Hook plumbing.** The `PostToolUse` hook must extract the edited file path from the hook payload
+  and no-op cleanly when `stylua` is missing — must never block an edit. Verify by editing a `.lua`
+  via a Claude tool and confirming the file lands stylua-formatted.
+- **Contributors without stylua.** conform already degrades gracefully (saves unformatted); the hook
+  must do the same. Documenting stylua as a dependency (via `document-setup-prerequisites`) mitigates.
 
 ## Validation outline
-1. Confirm `.stylua.toml` is present (from Change 05).
-2. `stylua lua/ after/ init.lua` (plus any other Lua roots — `plugin/`, `ftplugin/`).
-3. `stylua --check .` → no diffs remain.
-4. `find . -name '*.lua' -not -path './.git/*' -print0 | xargs -0 luac -p` → all pass.
-5. Launch Neovim → `:messages` shows no load errors.
-6. `git show --stat` → only whitespace/formatting changes, no logic.
+1. `.stylua.toml` present (Change 05).
+2. `stylua lua/ after/ init.lua` (+ any other Lua roots); `stylua --check .` → no diffs.
+3. `find . -name '*.lua' -not -path './.git/*' -print0 | xargs -0 luac -p` → all pass.
+4. Launch Neovim → `:messages` clean.
+5. `git show --stat` → only whitespace/formatting.
+6. **Enforcement:** edit a `.lua` via a Claude Edit/Write → confirm it is stylua-formatted afterward
+   (hook fired); run the `add-neovim-feature` skill's stylua step.
+7. **Blame:** `.git-blame-ignore-revs` contains the reformat SHA; `git blame --ignore-revs-file` skips it.
