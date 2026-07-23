@@ -1233,7 +1233,7 @@ Keymaps — all nest under the **existing** `<leader>gc` "Claude" which-key grou
 3. `claudecode.nvim` is lazy-loaded on its `cmd`/`keys`, so it may not load until you first press a
    `<leader>gc*` session map — that is expected.
 
-- [ ] Branch checked out, `:Lazy sync` clean; `claudecode.nvim` listed in `:Lazy`; **`snacks.nvim` absent**
+- [X] Branch checked out, `:Lazy sync` clean; `claudecode.nvim` listed in `:Lazy`; **`snacks.nvim` absent**
 
 ### Validate
 
@@ -1249,7 +1249,7 @@ means it is never pulled in as a dependency.
    `:lua =pcall(require, "snacks")` → expect **`false`** (module not installed).
 3. `:messages` — no plugin load errors.
 
-- [ ] `claudecode.nvim` installed cleanly (lazy is fine); `snacks.nvim` absent (`pcall(require,"snacks")` → `false`)
+- [X] `claudecode.nvim` installed cleanly (lazy is fine); `snacks.nvim` absent (`pcall(require,"snacks")` → `false`)
 
 > **If snacks IS present:** either the `provider = "native"` opt regressed (check
 > `lua/plugins/claudecode.lua`) or another plugin/branch introduced snacks independently — inspect
@@ -1269,7 +1269,7 @@ CLI auto-discovers the lock file and connects over MCP; if it does not, `/ide` c
 4. `:ClaudeCodeStatus` reports the server running / a client connected. `:messages` — **no** errors
    about missing providers, snacks, or the WebSocket server.
 
-- [ ] Native terminal opens, `claude` CLI runs **authenticated**, lock file present, MCP shows connected
+- [X] Native terminal opens, `claude` CLI runs **authenticated**, lock file present, MCP shows connected
 
 > **Failure modes:**
 > - Terminal opens but the CLI shows a **login prompt** → not authenticated (prereqs): run `claude` in
@@ -1293,7 +1293,18 @@ selection via `:ClaudeCodeSend`, and the whole current file via `:ClaudeCodeAdd 
    **Expect:** Claude acknowledges the **current file** added to its context (an `@file` reference).
 4. In the session, ask *"what did I just share?"* — Claude should reference the selection and the file.
 
-- [ ] Selection (`<leader>gcv`) and buffer-add (`<leader>gcb`) both reach the session as context
+- [X] Selection (`<leader>gcv`) and buffer-add (`<leader>gcb`) both reach the session as context
+
+> **Defect found & fixed on this branch — `<leader>gcv` lost a race to native `gc` (comment).**
+> The visual-mode send map was registered via lazy.nvim's `keys` field, so it only existed *after* the
+> plugin lazy-loaded — after which-key had built its trigger tree. On fast/blind input the `<Space>gc`
+> prefix wasn't held and the buffered `gc` fired Neovim's native visual comment operator, commenting the
+> selection instead of sending it. The send/add **features** were never broken (verified directly via
+> `:ClaudeCodeSend` / `:ClaudeCodeAdd %`). **Fix:** register all six `<leader>gc*` maps eagerly in the
+> plugin spec's `init` (`vim.keymap.set`, keeping `cmd`-based lazy-load) so they exist before which-key
+> initialises — matching how `claude_cli` binds `gcs`/`gce`. `<leader>gc` and every binding are
+> unchanged; no `timeoutlen` tweak. Re-verified: fast `<leader>gcv` sends (no comment) **and** the
+> which-key popup path still lists/fires `v`.
 
 > **Failure modes:** nothing arrives → the session isn't connected (redo §8.2). `<leader>gcv` invoked
 > **outside** an active visual selection sends nothing — it must be pressed from Visual mode (or with a
@@ -1312,7 +1323,7 @@ When Claude proposes a file edit, claudecode opens a **native diff** view; `<lea
    trivial edit; when the diff opens, press `<leader>gcr` → the proposal is **rejected**, the diff
    closes, and the file is **unchanged**.
 
-- [ ] Accept (`<leader>gca`) writes the change; reject (`<leader>gcr`) leaves the file unchanged
+- [X] Accept (`<leader>gca`) writes the change; reject (`<leader>gcr`) leaves the file unchanged
 
 > **Failure modes:** no diff opens → Claude answered in prose; ask it explicitly to *edit the file*.
 > Maps do nothing → make sure focus is in the diff buffer/window. A stuck diff → `:ClaudeCodeCloseAllDiffs`.
@@ -1333,7 +1344,20 @@ and show the reply in a **floating scratch window** (dismiss with `q` or `<Esc>`
    shows an explanation of the selection. Dismiss with `q` / `<Esc>`.
    - With **no** selection, both commands fall back to sending the **whole buffer**.
 
-- [ ] `<leader>gcs` (float "claude suggest") and `<leader>gce` (float "claude explain") both render Claude's reply
+- [X] `<leader>gcs` (float "claude suggest") and `<leader>gce` (float "claude explain") both render Claude's reply — after neutralising an env var (below)
+
+> **Finding — pre-existing, NOT a change-08 regression; tracked for a separate fix. `ANTHROPIC_API_KEY` shadows the login.**
+> `<leader>gcs`/`gce` first failed: `claude CLI failed (exit 1): ⚠ claude.ai connectors are disabled
+> because ANTHROPIC_API_KEY … takes precedence over your claude.ai login`. Root cause: an
+> `ANTHROPIC_API_KEY` is exported from `~/.zshenv` (sourced by *every* zsh, so Neovim inherits it and
+> `vim.system` hands it to `claude -p`), overriding the claude.ai/subscription auth that
+> `claude_cli.lua` is documented to use. The **keymaps fire correctly** and 08 never touches
+> `claude_cli`, so this is not an 08 regression. Verified the feature works once the var is out of the
+> way: `:lua vim.env.ANTHROPIC_API_KEY = nil` → both floats render. The interactive claudecode session
+> (§8.2–8.4) tolerated the var and worked; only the headless `-p` path failed.
+> **Recommended fix (separate change — `claude_cli.lua` is out of 08 scope):** clear the var for the
+> subprocess — `vim.system({...}, { env = { ANTHROPIC_API_KEY = "" } }, …)` — so it always uses the
+> login, matching CLAUDE.md.
 
 > **Failure modes:** a `claude_cli: 'claude' CLI not found on $PATH` notify → binary off PATH. A long
 > hang with no float → the CLI is blocked on auth (prereqs).
@@ -1344,26 +1368,32 @@ claudecode's **upstream default prefix is `<leader>a`** — which is **avante** 
 maps were deliberately relocated under `<leader>gc`. This step confirms there is no bleed between the
 two namespaces.
 
-> **Note — there is no `<leader>ac`.** avante here is **Ollama-only**; the Claude/Anthropic provider is
-> intentionally disabled (subscription-OAuth ToS), so only `<leader>aa` and `<leader>ao` exist. (An
-> earlier draft of this step listed `<leader>ac` "Claude API provider" — that map is not configured.)
+> **Note on `<leader>a`.** avante here is **Ollama-only** — the Claude/Anthropic provider is
+> intentionally disabled (subscription-OAuth ToS), so the config adds no switch-to-Claude map. But
+> avante still registers its **own full default `<leader>a` keymap suite** (~18 entries:
+> ask/edit/refresh/toggle/models/…); the config's `keys` only *adds* `aa`/`ao` on top. So a large
+> `<leader>a` popup is **expected and pre-existing** — the isolation check is specifically that **no
+> claudecode (`ClaudeCode`-command) map bleeds into `<leader>a`**, not that the popup is short.
 
 1. Press `<leader>aa` — **avante** opens with the current provider (Ollama). If Ollama isn't running,
-   a clean connection error is acceptable — the point is the map fires *avante*, not claudecode.
+   a clean connection/model error is acceptable — the point is the map fires *avante*, not claudecode.
 2. Press `<leader>ao` — avante re-selects the Ollama provider and opens.
-3. which-key disjointness: press `<leader>a` and confirm the popup shows **only** avante entries
-   (`aa`, `ao`) — no `gc*`/claudecode entries. Then press `<leader>gc` and confirm the **"Claude"**
-   group lists both the one-shot maps (`gcs`, `gce`) and the session maps (`gcc`, `gcf`, `gcb`, `gcv`,
-   `gca`, `gcr`).
+3. Namespace isolation — two checks:
+   - **No claudecode bleed into `<leader>a`** (definitive, avoids eyeballing avante's ~18 entries):
+     `:lua do local n=0 for _,m in ipairs(vim.api.nvim_get_keymap("n")) do if m.lhs:sub(1,2)==" a" and (m.rhs or ""):match("ClaudeCode") then n=n+1 print("BLEED: "..m.lhs.." -> "..m.rhs) end end print(n==0 and "OK: no ClaudeCode maps under <leader>a" or "") end`
+     → expect `OK: no ClaudeCode maps under <leader>a` (no `BLEED:` lines).
+   - **`<leader>gc` is correctly mode-scoped** (send-selection is visual-only): in **normal** mode the
+     popup lists `s e c f b a r` (no `v`); in **visual** mode it lists `s e v` (session maps
+     `c/f/b/a/r` are normal-only). `v` appearing *only* in visual mode is correct — not a missing binding.
 
-- [ ] `<leader>aa`/`<leader>ao` fire avante unchanged; `<leader>a` and `<leader>gc` popups are disjoint (no cross-bleed)
+- [X] `<leader>aa`/`<leader>ao` fire avante unchanged; no `ClaudeCode` map bleeds into `<leader>a` (Lua check → OK); `<leader>gc` correctly mode-scoped (normal `s e c f b a r`, visual `s e v`)
 
 > **Failure mode:** a `gc*` entry appears under `<leader>a` (or an `a*` entry under `<leader>gc`) → a
 > `keys`/prefix regression in `lua/plugins/claudecode.lua`.
 
 ### Raise PR & merge
 
-- [ ] All validation steps above pass (8.1–8.6)
+- [X] All validation steps above pass (8.1–8.6). One defect found & fixed on-branch (`<leader>gcv` eager-registration, §8.3); one pre-existing non-08 finding logged (`ANTHROPIC_API_KEY` shadows `claude_cli` login, §8.5 — separate fix).
 - [ ] Raise PR: `feat/08-add-claudecode-session` → `main` (confirm `snacks.nvim` is **NOT** in dependencies)
 - [ ] Review and approve PR
 - [ ] Merge PR
