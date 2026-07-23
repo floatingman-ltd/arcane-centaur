@@ -370,6 +370,18 @@ server
 Plugins use `ft = ++{++ "markdown" }` (lazy-load on filetype) or
 `event = "VeryLazy"` (load after startup) to keep startup time fast.
 
+Plugin *keymaps* normally live in the spec's `keys = ++{++ ... }` field, which
+lazy-loads the plugin on first press. *Exception:* a `++<++leader++>++` map whose
+keystrokes traverse a native Vim operator must be registered *eagerly* in the spec's
+`init` via `vim.keymap.set` instead (keeping `cmd`/`ft` lazy-load). A `keys` mapping
+is only created when the plugin loads — after which-key has built its trigger tree —
+so on fast input the prefix is not held and the keys fall through to the native
+operator. This bit `claudecode.nvim`'s visual `++<++leader++>++gcv` (send selection):
+typed quickly it traversed `gc` and fired Neovim's built-in comment operator instead
+of sending. Registering in `init` makes the maps exist before which-key initialises,
+so the prefix holds regardless of typing speed. See the header comment of
+`lua/plugins/claudecode.lua`.
+
 === `lua/config/` — Non-Plugin Configuration Modules
 
 Reusable Lua modules that are `require()`d by plugin configs or

@@ -18,6 +18,7 @@ Lazy-loading is filetype-driven: plugins use lazy.nvim's `ft = { ... }` field so
 ## Key conventions
 
 - **Leader keys**: `<leader>` is Space (global maps in `lua/keymaps.lua`); `<localleader>` is `,` (per-filetype REPL/eval maps in `after/ftplugin/`). All keymaps set a `desc` — which-key surfaces them.
+- **Keymap registration**: plugin keymaps normally go in the lazy spec's `keys` field. **Exception**: a `<leader>` map whose keystrokes traverse a native operator (e.g. visual `<leader>gcv` → `gc` comment) must be bound **eagerly** in the spec's `init` via `vim.keymap.set` (keep `cmd`/`ft` lazy-load). A lazy `keys` map is only created when the plugin loads — *after* which-key builds its triggers — so on fast input the prefix isn't held and the keys fall through to the native operator. See `lua/plugins/claudecode.lua`.
 - **LSP**: every server shares one `on_attach` in `lua/config/lsp.lua`. Add servers there with `lspconfig.<server>.setup{ on_attach = on_attach }`.
 - **Formatting**: `lua/plugins/conform.lua` does format-on-save; add filetypes to its `formatters_by_ft`. F# uses `lsp_format = "prefer"`.
 - **Terminal capabilities**: branch on `lua/config/terminal.lua`'s flags (`has_nerd_font`, `has_undercurl`, `name`) rather than hardcoding terminal-specific behavior.
