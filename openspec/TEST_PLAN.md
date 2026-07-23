@@ -1400,13 +1400,13 @@ two namespaces.
 
 ### Post-merge
 
-- [ ] `git checkout main && git pull origin main`
-- [ ] Launch Neovim: `:Lazy sync` — confirm clean
+- [X] `git checkout main && git pull origin main`
+- [X] Launch Neovim: `:Lazy sync` — confirm clean
 
 ---
 
 ## All Changes Complete
 
-- [ ] All changes (hotfix + 03–08) validated on branch and merged to main
-- [ ] No open issues from validation runs
-- [ ] lazy-lock.json committed on main reflects the final plugin state
+- [X] All changes (hotfix + 03–08) validated on branch and merged to main
+- [X] No open **08** issues from validation runs — the one finding (`ANTHROPIC_API_KEY` shadowing `claude_cli`, §8.5) is pre-existing and non-08, tracked separately for its own fix
+- [X] lazy-lock.json committed on main reflects the final plugin state
