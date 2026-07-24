@@ -15,7 +15,7 @@
   "glow.nvim": { "branch": "main", "commit": "5d5954b2f22e109d4a6eba8b2618c5b96e4ee7a2" },
   "haskell-tools.nvim": { "branch": "master", "commit": "d223712c767011350ed887c3152da4955d9b1457" },
   "iron.nvim": { "branch": "master", "commit": "88cd340407b959f1168af2a6ae5a3d180e6df32c" },
-  "kulala.nvim": { "branch": "main", "commit": "7f83b6100321c848ca87ac9df414ebe6141e3f5f" },
+  "kulala.nvim": { "branch": "main", "commit": "5c2234e1a0ae8a95911231682c52be2a13fcc117" },
   "lazy.nvim": { "branch": "main", "commit": "306a05526ada86a7b30af95c5cc81ffba93fef97" },
   "lualine.nvim": { "branch": "master", "commit": "221ce6b2d999187044529f49da6554a92f740a96" },
   "markdown-preview.nvim": { "branch": "master", "commit": "a923f5fc5ba36a3b17e289dc35dc17f66d0548ee" },

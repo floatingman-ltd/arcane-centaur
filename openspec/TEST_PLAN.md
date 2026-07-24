@@ -1562,8 +1562,8 @@ separate, optional check you can run any time and isn't a blocker for this chang
 
 ### Post-merge
 
-- [ ] `git checkout main && git pull origin main`
-- [ ] Launch Neovim: `:Lazy sync` — confirm clean
+- [X] `git checkout main && git pull origin main` (fast-forwarded cleanly to `6dae71d`, then `835a831`)
+- [X] Launch Neovim: `:Lazy sync` — confirm clean
 - [X] TS.9 (deferred) — docs source review: `navigation.adoc`/`keybindings.adoc` Treesitter Text
       Objects sections read correctly (matched `|===` delimiters, valid `xref:` targets);
       `architecture.adoc` references `main`, not `master` (reworded the nvim-treesitter prose to
