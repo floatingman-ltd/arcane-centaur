@@ -1441,7 +1441,7 @@ instead of `master`'s module system, and restores text objects via
 3. `:Lazy` — confirm both `nvim-treesitter` and `nvim-treesitter-textobjects` show branch **`main`**,
    no error icons.
 
-- [ ] Branch checked out, `:Lazy sync` clean; both treesitter plugins on `main`; `:messages` empty
+- [X] Branch checked out, `:Lazy sync` clean; both treesitter plugins on `main`; `:messages` empty
 
 ### Validate
 
@@ -1452,7 +1452,7 @@ instead of `master`'s module system, and restores text objects via
    → expect `true`.
 2. Repeat for `testdocs/hello.cs`, `testdocs/hello.fs` (or `.fsx`), and `testdocs/hello.hs`.
 
-- [ ] All four (lua/cs/fs/hs) show real syntax highlighting and `highlighter.active` is non-nil
+- [X] All four (lua/cs/fs/hs) show real syntax highlighting and `highlighter.active` is non-nil
 
 #### TS.2 — Treesitter indent (`indentexpr`)
 
@@ -1461,17 +1461,21 @@ instead of `master`'s module system, and restores text objects via
 2. Go to the end of `function M.greet(name)`'s first line, press `o` to open a new line — confirm it
    auto-indents one level in (matching the existing body), not flush-left.
 
-- [ ] `indentexpr` set correctly; `o` inside a function body indents as expected
+- [X] `indentexpr` set correctly; `o` inside a function body indents as expected
 
 #### TS.3 — Markdown highlight/indent (nil-range workaround removed)
 
-1. Open a markdown file with a fenced code block (e.g. this `TEST_PLAN.md`).
+1. Open this file (`openspec/TEST_PLAN.md`) and jump to line 840 — a real fenced `lua` block
+   (`local a =` / `local b =`).
 2. Confirm no error appears in `:messages` (no `nil range` / `languagetree` traceback).
-3. Confirm the fenced code block's contents are syntax-highlighted in the block's own language
-   (e.g. a ```` ```lua ```` block shows Lua highlighting) — this proves the injection parser is
-   active, not just the outer markdown highlight.
+3. Confirm that fenced block's contents are syntax-highlighted **as Lua** (distinct from the
+   surrounding markdown prose) — this proves the injection parser is active, not just the outer
+   markdown highlight. **Only languages with an installed parser get injected highlighting** — this
+   config installs `commonlisp`/`clojure`/`scheme`/`fennel`/`janet_simple`/`lua`/`fsharp`/`vim`/
+   `markdown`/`markdown_inline`/`http`/`c_sharp`/`haskell` only, so fenced `bash` blocks elsewhere in
+   this file correctly stay plain-text (no parser installed) — that is expected, not a defect.
 
-- [ ] No nil-range error; fenced code blocks show injected-language highlighting
+- [X] No nil-range error; the `lua` fenced block (line 840) shows injected Lua highlighting (user also confirmed with an added `cs` fenced block); unsupported languages (e.g. `bash`) correctly show no injected highlighting (no parser installed)
 
 #### TS.4 — Select text objects: `af`/`if`, `ac`/`ic`, `aa`/`ia`
 
@@ -1482,12 +1486,14 @@ Use `testdocs/hello.cs`:
 2. Cursor in the same spot → `dif` → only the **body** of `Main` is deleted, signature/braces remain.
    Undo (`u`).
 3. Cursor on the `Program` line → `vac` → the **whole class** (through its closing `}`) is selected.
-4. Cursor on the `name` parameter in `Greet(string name)` → `dia` → just `name` is deleted, leaving
-   `Greet(string )`-shape. Undo (`u`).
+4. Cursor on the `name` parameter in `Greet(string name)` → `dia` → the whole parameter (`string
+   name`) is deleted, leaving `Greet()`. Undo (`u`). (C#'s textobjects query maps
+   `@parameter.inner`/`@parameter.outer` to the full `(parameter)` node — type + identifier together;
+   there is no identifier-only capture in this grammar's query, so this is correct, not a bug.)
 5. Repeat `vaf`/`dif` on `testdocs/hello.lua`'s `M.greet` — confirm the same behavior on a multi-line
    Lua function.
 
-- [ ] `vaf`/`ac`/`aa` select correctly; `dif`/`dia` delete only the inner content; no `tsrange` or
+- [X] `vaf`/`ac`/`aa` select correctly; `dif`/`dia` delete only the inner content; no `tsrange` or
       removed-API error in `:messages`
 
 #### TS.5 — Motions `]f`/`[f`/`]F`/`[F` and the jumplist
@@ -1499,7 +1505,7 @@ Use `testdocs/hello.cs`:
 4. Press `]F`/`[F` — confirm these land on function **ends** (the `end` keyword), distinct from
    `]f`/`[f`.
 
-- [ ] `]f`/`[f`/`]F`/`[F` move correctly; `<C-o>`/`<C-i>` navigate real jumplist entries
+- [X] `]f`/`[f`/`]F`/`[F` move correctly; `<C-o>`/`<C-i>` navigate real jumplist entries
 
 #### TS.6 — Lisp-family buffers keep vim-sexp, not treesitter
 
@@ -1509,36 +1515,45 @@ Use `testdocs/hello.cs`:
 3. `:verbose map af` in that buffer — confirm it resolves to a vim-sexp `<Plug>` mapping (e.g.
    `<Plug>(sexp_outer_list)`), not a Lua callback from `nvim-treesitter-textobjects`.
 
-- [ ] `af`/`if` in Lisp-family buffers still follow vim-sexp; no treesitter text object attached
+- [X] `af`/`if` in Lisp-family buffers still follow vim-sexp; no treesitter text object attached
 
 #### TS.7 — No collisions with existing bracket mappings
 
 1. In a buffer with unstaged git changes, press `]h`/`[h` — gitsigns hunk navigation still works.
 2. Press `]b`/`[b` — vim-unimpaired buffer navigation (`:bnext`/`:bprevious`) still works.
 3. `:verbose map ]c` — confirm **no** custom mapping (falls through to Vim's builtin diff-mode change
-   navigation), i.e. treesitter did **not** claim `]c`/`[c`.
+   navigation), i.e. treesitter did **not** claim `]c`/`[c`. (You may see a `which-key-trigger`
+   mapping here — that's which-key's own bookkeeping for the `]`-prefix group, not a functional
+   override; confirmed no plugin config maps `]c` anywhere in `lua/plugins/*.lua`/`keymaps.lua`.)
 
-- [ ] `]h`/`[h` (gitsigns) and `]b`/`[b` (unimpaired) unaffected; `]c`/`[c` unclaimed by treesitter
+- [X] `]h`/`[h` (gitsigns) and `]b`/`[b` (unimpaired) unaffected; `]c`/`[c` unclaimed by treesitter
 
 #### TS.8 — Clean startup and syntax
 
 1. Fresh `nvim` (no args) — `:messages` shows no plugin/LSP/treesitter errors.
 2. From a shell: `find . -name '*.lua' -not -path './.git/*' -print0 | xargs -0 luac -p` — all pass.
 
-- [ ] Clean `:messages` on startup; `luac -p` passes repo-wide
+- [X] Clean `:messages` on startup; `luac -p` passes repo-wide
 
-#### TS.9 — Docs render correctly
+#### TS.9 — Docs review (source-level, not the built Antora site)
+
+This is a **source review** in a text editor — confirming AsciiDoc syntax is well-formed (table
+delimiters `|===` matched, `xref:` targets look right). It does **not** require building the Antora
+site (`docker compose -f antora-playbook.yml run --rm antora antora-playbook.yml`); that's a
+separate, optional check you can run any time and isn't a blocker for this change.
 
 1. Open `docs/modules/ROOT/pages/editor/navigation.adoc` and `editor/keybindings.adoc` — confirm the
-   restored Treesitter Text Objects sections read correctly (tables render, no broken xrefs).
+   restored Treesitter Text Objects sections read correctly as AsciiDoc source (matched `|===` table
+   delimiters, `xref:editor/navigation.adoc[...]` links point at real anchors).
 2. Open `docs/modules/ROOT/pages/other/architecture.adoc` — confirm the `nvim-treesitter`/
    `nvim-treesitter-textobjects` entries reference `main`, not `master`.
 
-- [ ] Docs read correctly; no stale `master`-branch references remain in the three files above
+- [ ] **DEFERRED to post-merge** — docs source review moved to the *Post-merge* checklist below; not
+      a blocker for raising/merging this PR.
 
 ### Raise PR & merge
 
-- [ ] All validation steps above pass (TS.1–TS.9)
+- [ ] All validation steps above pass (TS.1–TS.8). TS.9 (docs source review) deferred to post-merge.
 - [ ] Raise PR: `fix/migrate-treesitter-main` → `main`
 - [ ] Review and approve PR
 - [ ] Merge PR
@@ -1547,3 +1562,6 @@ Use `testdocs/hello.cs`:
 
 - [ ] `git checkout main && git pull origin main`
 - [ ] Launch Neovim: `:Lazy sync` — confirm clean
+- [ ] TS.9 (deferred) — docs source review: `navigation.adoc`/`keybindings.adoc` Treesitter Text
+      Objects sections read correctly (matched `|===` delimiters, valid `xref:` targets);
+      `architecture.adoc` references `main`, not `master`
