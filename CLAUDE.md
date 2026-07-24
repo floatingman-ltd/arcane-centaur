@@ -75,6 +75,24 @@ find . -name '*.lua' -print0 | xargs -0 luac -p
 
 If `luac` is unavailable, run `:luafile %` / `:source %` inside Neovim, or `lua -e 'loadfile("<file>")()'` per file.
 
+**Manual verification before push/PR is required for every change that touches runtime behavior**
+(plugin configs, keymaps, LSP/treesitter/formatter wiring — not pure docs-only changes). Before
+pushing a branch or raising a PR:
+
+1. Add a dedicated section to `openspec/TEST_PLAN.md` for the change (`## Change · <name>`, branch
+   name, prerequisites, then numbered `Prepare` / `Validate` / `Raise PR & merge` / `Post-merge`
+   subsections — follow the structure of the existing `Change NN`/`Hotfix` sections there).
+2. Walk through each validation step **interactively in a live Neovim session** — headless/scripted
+   checks (`luac -p`, `:messages` capture) are a useful first pass but do not substitute for this;
+   they can miss things like actual rendered highlight colors or real keystroke timing.
+3. Check off each `- [ ]` as `- [X]` only once genuinely confirmed (not before). Log any defect found
+   and its fix inline (blockquote `>` note), the way `§8.3` documents the `<leader>gcv` race-condition
+   fix.
+4. Only push / raise the PR once every validation step for the change is checked off.
+
+This is the repo's standing practice — see the `Change 03`–`Change 08` and `Hotfix` sections in
+`openspec/TEST_PLAN.md` for the expected level of detail.
+
 ## Other tooling
 
 - **`scripts/confluence_publish.sh`** — publish/pull a Markdown file to/from a Confluence page (`--pull`, `--comments`, `--force`); needs `CONFLUENCE_EMAIL` + related env vars. `lua/config/confluence.lua` / `lua/config/jira.lua` wrap Atlassian integration in-editor.

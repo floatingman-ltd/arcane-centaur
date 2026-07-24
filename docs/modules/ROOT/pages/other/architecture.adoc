@@ -172,7 +172,8 @@ All plugins are managed by https://github.com/folke/lazy.nvim[lazy.nvim]. Specs 
 
 [cols="1,3"]
 |===
-|https://github.com/nvim-treesitter/nvim-treesitter[nvim-treesitter] (pinned: `master`) |Syntax highlighting and indent. Pinned to `master` and configured via `require("nvim-treesitter.configs").setup(opts)` so the `opts`-style API (`ensure_installed`/`highlight`/`indent`) is active. (Text objects were removed — the `master` query path is broken on Neovim 0.12.)
+|https://github.com/nvim-treesitter/nvim-treesitter[nvim-treesitter] (pinned: `main`) |Syntax highlighting and indent via Neovim's core treesitter APIs (`vim.treesitter.start()`, `indentexpr`). Moved off the frozen `master` branch, whose module API and text-objects query path are broken on Neovim 0.12.
+|https://github.com/nvim-treesitter/nvim-treesitter-textobjects[nvim-treesitter-textobjects] (pinned: `main`) |Semantic text objects (`af`/`if` function, `ac`/`ic` class, `aa`/`ia` argument) and jump motions (`++]++f`/`++[++f`/`++]++F`/`++[++F`). Disabled in Lisp-family buffers (vim-sexp handles those).
 |https://github.com/kylechui/nvim-surround[nvim-surround] |Surround text with quotes, brackets, tags (`ys`/`cs`/`ds`, identical keys to vim-surround)
 |https://github.com/tpope/vim-unimpaired[vim-unimpaired] |Paired bracket keymaps (`[b`, `]b`, etc.)
 |https://github.com/tpope/vim-repeat[vim-repeat] |Repeat plugin commands with `.`
@@ -242,7 +243,7 @@ haskell-tools.nvim auto-discovers Haskell DAP configurations once nvim-dap is pr
 [cols="1,3"]
 |===
 |https://github.com/habamax/vim-asciidoctor[vim-asciidoctor] |AsciiDoc syntax, section folding, and fenced-code-block highlighting under the canonical `asciidoctor` filetype (`*.adoc`/`*.asciidoc` → `asciidoctor` via `vim.filetype.add`).
-|https://github.com/OXY2DEV/markview.nvim[markview.nvim] |_(deferred)_ In-buffer AsciiDoc rendering requires the `cathaysia/tree-sitter-asciidoc` treesitter grammar, which is not in nvim-treesitter master. Re-enable when the grammar stabilises.
+|https://github.com/OXY2DEV/markview.nvim[markview.nvim] |_(deferred)_ In-buffer AsciiDoc rendering requires the `cathaysia/tree-sitter-asciidoc` treesitter grammar, which is not in nvim-treesitter's parser list (`master` or `main`). Re-enable when the grammar stabilises.
 |https://github.com/iamcco/markdown-preview.nvim[markdown-preview.nvim] |Live Markdown preview in browser (GUI)
 |https://github.com/ellisonleao/glow.nvim[glow.nvim] |Terminal Markdown preview via glow (console)
 |https://github.com/aklt/plantuml-syntax[plantuml-syntax] |PlantUML syntax highlighting
@@ -364,7 +365,7 @@ terminal)
 |`plantuml.lua` |PlantUML syntax {plus} ASCII/PNG preview via Docker
 server
 
-|`treesitter.lua` |Tree-sitter parsers for syntax highlighting and indent. Pins `nvim-treesitter` to `master` and routes `opts` through `nvim-treesitter.configs.setup`. Markdown highlight/indent disabled (nil-range hotfix).
+|`treesitter.lua` |Tree-sitter parsers, highlight, indent, and text objects. Pins `nvim-treesitter` {plus} `nvim-treesitter-textobjects` to `main`; highlight/indent wired via core `vim.treesitter.start()`/`indentexpr` in a `FileType` autocmd, text objects via the select/move API gated off for Lisp-family filetypes.
 |===
 
 Plugins use `ft = ++{++ "markdown" }` (lazy-load on filetype) or
