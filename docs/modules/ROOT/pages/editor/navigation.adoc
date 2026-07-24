@@ -148,6 +148,55 @@ _Global keymaps defined in `lua/keymaps.lua`. Tree plugin configured in
 
 '''''
 
+== Treesitter Text Objects (nvim-treesitter-textobjects)
+
+Text objects and motions are available in **F#, Haskell, C#, and Lua** buffers.
+They are **disabled** in Lisp-family buffers (lisp/clojure/scheme/fennel/janet)
+where vim-sexp provides structural `af`/`if` form objects instead.
+
+NOTE: This config tracks nvim-treesitter's maintained `main` branch (not the
+frozen `master`), which requires **Neovim ≥ 0.11** — already satisfied by this
+config's ≥ 0.12 baseline.
+
+=== Select objects
+
+Use with any operator (`d`, `c`, `y`, `v`):
+
+[cols=",",options="header",]
+|===
+|Keys |Object
+|`af` / `if` |Outer / inner function
+|`ac` / `ic` |Outer / inner class
+|`aa` / `ia` |Outer / inner argument (treesitter's `@parameter` capture)
+|===
+
+Examples: `daf` deletes a whole function; `vif` selects the function body; `cia`
+changes an argument.
+
+=== Move motions
+
+Jump between functions; each jump is added to the jumplist (`Ctrl-o` / `Ctrl-i`
+to navigate).
+
+[cols=",",options="header",]
+|===
+|Keys |Action
+|`++]++f` |Next function start
+|`++[++f` |Previous function start
+|`++]++F` |Next function end
+|`++[++F` |Previous function end
+|===
+
+NOTE: Class motions (`++]++c` / `++[++c`) are intentionally absent — those keys
+are reserved for Vim's built-in diff-mode change navigation.
+
+_Plugin: `nvim-treesitter/nvim-treesitter-textobjects`, pinned to its
+maintained `main` branch (queries Neovim's core treesitter APIs, so it works
+on 0.12 — the frozen `master` branch does not). Configured in
+`lua/plugins/treesitter.lua`._
+
+'''''
+
 == Unimpaired (vim-unimpaired)
 
 vim-unimpaired provides pairs of bracket mappings — `++[++` for
