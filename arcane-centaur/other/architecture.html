@@ -1,0 +1,1555 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Untitled :: Arcane Centaur Docs</title>
+    <link rel="canonical" href="https://floatingman-ltd.github.io/arcane-centaur/arcane-centaur/other/architecture.html">
+    <meta name="generator" content="Antora 3.1.15">
+    <link rel="stylesheet" href="../../_/css/site.css">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://floatingman-ltd.github.io/arcane-centaur">Arcane Centaur Docs</a>
+      <button class="navbar-burger" aria-controls="topbar-nav" aria-expanded="false" aria-label="Toggle main menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="#">Home</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Products</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Product A</a>
+            <a class="navbar-item" href="#">Product B</a>
+            <a class="navbar-item" href="#">Product C</a>
+          </div>
+        </div>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Services</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Service A</a>
+            <a class="navbar-item" href="#">Service B</a>
+            <a class="navbar-item" href="#">Service C</a>
+          </div>
+        </div>
+        <div class="navbar-item">
+          <span class="control">
+            <a class="button is-primary" href="#">Download</a>
+          </span>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="arcane-centaur" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../index.html">Arcane Centaur</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Home</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../getting-started.html">Getting Started</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Languages</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">.NET</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../languages/dotnet.html">Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../languages/dotnet-cheatsheet.html">Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Lisp Family</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../languages/lisp.html">Lisp / Clojure / Scheme / Fennel</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../languages/lisp-cheatsheet.html">Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../languages/janet.html">Janet Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../languages/janet-cheatsheet.html">Janet Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Haskell</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../languages/haskell.html">Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../languages/haskell-cheatsheet.html">Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Lua</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../languages/lua.html">Guide</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Editor Core</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../editor/editing.html">Editing Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../editor/navigation.html">Navigation Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../editor/code-intelligence.html">Code Intelligence Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../editor/git.html">Git Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../editor/git-cheatsheet.html">Git Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../editor/clipboard.html">Clipboard</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">AI &amp; Automation</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../ai/ai-tools.html">AI Tools Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../ai/ai-tools-cheatsheet.html">AI Tools Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Content Creation</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/markdown.html">Markdown Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/markdown-cheatsheet.html">Markdown Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/asciidoc.html">AsciiDoc Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/asciidoc-cheatsheet.html">AsciiDoc Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/diagrams.html">Diagrams &amp; PlantUML</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/presentations.html">Presentations (MARP)</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/rest.html">REST / HTTP Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/rest-cheatsheet.html">REST Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Project Tooling</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../tooling/jira.html">Jira Integration</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../tooling/confluence.html">Confluence Publishing</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Other</span>
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="1">
+    <a class="nav-link" href="architecture.html">Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="contributing.html">Contributing to Docs</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="jira-project-map.html">Jira Project Map</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Arcane Centaur</span>
+    <span class="version"></span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <div class="title"><a href="../index.html">Arcane Centaur</a></div>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Arcane Centaur</a></li>
+    <li>Other</li>
+    <li><a href="architecture.html">Architecture</a></li>
+  </ul>
+</nav>
+<div class="edit-this-page"><a href="file:///antora/docs/modules/ROOT/pages/other/architecture.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<div class="sect1">
+<h2 id="_configuration_architecture"><a class="anchor" href="#_configuration_architecture"></a>Configuration Architecture</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This document explains the directory structure of this Neovim
+configuration — what each directory and file is for, why it is placed
+where it is, and how the pieces fit together at startup.</p>
+</div>
+<div class="paragraph">
+<p><strong>Quick navigation</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#supported-languages">Supported Languages</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Language support matrix</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#plugin-overview">Plugin Overview</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">All plugins grouped by category</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#startup-order">Startup Order</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Init file loading sequence</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#root-level-files">Root-Level Files</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">init.lua, lazy-lock.json</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#lua">lua/</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">options, keymaps, plugins, config modules</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#after-ftplugin">after/ftplugin/</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Filetype-specific overrides</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#docker">docker/</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Docker service definitions</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#docs">docs/</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User documentation</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#openspec">openspec/</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Change management workflow</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#github">.github/</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GitHub Actions (docs CI)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#claude">.claude/</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Claude Code skills &amp; settings</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#console-detection">Console Detection</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">How is_console is determined</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#open-url">Open URL Behaviour</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Browser vs. notification</p></td>
+</tr>
+</tbody>
+</table>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="supported-languages"><a class="anchor" href="#supported-languages"></a>Supported Languages</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 15%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 15%;">
+<col style="width: 10%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Language</th>
+<th class="tableblock halign-left valign-top">Treesitter</th>
+<th class="tableblock halign-left valign-top">LSP</th>
+<th class="tableblock halign-left valign-top">REPL</th>
+<th class="tableblock halign-left valign-top">Structural Editing</th>
+<th class="tableblock halign-left valign-top">Guide</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Clojure</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">—</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅ nREPL (Conjure)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅ vim-sexp &#43; parinfer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../languages/lisp.html" class="xref page">Lisp guide</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Common Lisp</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">—</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅ Swank (Conjure)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅ vim-sexp &#43; parinfer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../languages/lisp.html" class="xref page">Lisp guide</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">C#</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅ roslyn.nvim</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">—</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">—</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../languages/dotnet.html" class="xref page">.NET guide</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">F#</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅ fsautocomplete</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅ dotnet fsi (iron.nvim)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">—</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../languages/dotnet.html" class="xref page">.NET guide</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fennel</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">—</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">—</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅ (Conjure)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅ parinfer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../languages/lisp.html" class="xref page">Lisp guide</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Haskell</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">—</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅ haskell-tools</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅ GHCi</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">—</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../languages/haskell.html" class="xref page">Haskell guide</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">HTTP</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">—</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">—</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">—</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../content/rest.html" class="xref page">REST guide</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Janet</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">—</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅ janet_lsp</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅ (Conjure)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅ vim-sexp &#43; parinfer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../languages/janet.html" class="xref page">Janet guide</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Lua</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">—</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">—</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">—</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">—</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Markdown</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅ marksman</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">—</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">—</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../content/markdown.html" class="xref page">Markdown guide</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Mermaid <em>(in Markdown)</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅ <em>(markdown)</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">—</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">—</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">—</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../content/diagrams.html" class="xref page">Diagrams guide</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MARP slides</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅ <em>(markdown)</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">—</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">—</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">—</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../content/presentations.html" class="xref page">Presentations guide</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PlantUML</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">—</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">—</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">—</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../content/diagrams.html" class="xref page">Diagrams guide</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Scheme</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">—</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅ built-in (Conjure)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">✅ vim-sexp &#43; parinfer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../languages/lisp.html" class="xref page">Lisp guide</a></p></td>
+</tr>
+</tbody>
+</table>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="plugin-overview"><a class="anchor" href="#plugin-overview"></a>Plugin Overview</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>All plugins are managed by <a href="https://github.com/folke/lazy.nvim">lazy.nvim</a>. Specs live in <code>lua/plugins/</code> — one file per group.</p>
+</div>
+<div class="sect2">
+<h3 id="_colorscheme"><a class="anchor" href="#_colorscheme"></a>Colorscheme</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/folke/tokyonight.nvim">tokyonight.nvim</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">TokyoNight color scheme (moon variant by default)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_completion_lsp"><a class="anchor" href="#_completion_lsp"></a>Completion &amp; LSP</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/neovim/nvim-lspconfig">nvim-lspconfig</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LSP server configuration helpers</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/saghen/blink.cmp">blink.cmp</a> v1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Completion engine (Rust fuzzy matcher, built-in LSP/buffer/path/snippet sources). Replaces nvim-cmp.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/saghen/blink.compat">blink.compat</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Bridges legacy nvim-cmp sources (cmp-spell, cmp-conjure) into blink.cmp.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/f3fora/cmp-spell">cmp-spell</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Spell dictionary source (bridged via blink.compat; active only when <code>:set spell</code>)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/stevearc/conform.nvim">conform.nvim</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Format-on-save and manual formatting</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_navigation_ui"><a class="anchor" href="#_navigation_ui"></a>Navigation &amp; UI</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/ibhagwan/fzf-lua">fzf-lua</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fuzzy finder for files, grep, buffers, diagnostics</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/nvim-tree/nvim-tree.lua">nvim-tree.lua</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">File explorer sidebar</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/nvim-lualine/lualine.nvim">lualine.nvim</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Status line (tokyonight theme, globalstatus, gitsigns diff + diagnostics)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/nvim-tree/nvim-web-devicons">nvim-web-devicons</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">File type icons (requires Nerd Font)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/folke/trouble.nvim">trouble.nvim</a> v3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Structured panel for diagnostics, symbols, LSP references, quickfix, and loclist (<code>&lt;leader&gt;x</code> group)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/folke/todo-comments.nvim">todo-comments.nvim</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Highlight and list <code>TODO</code>/<code>FIXME</code>/<code>HACK</code>/<code>NOTE</code>/<code>WARN</code> annotations; integrates with trouble and fzf-lua</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_editor_enhancement"><a class="anchor" href="#_editor_enhancement"></a>Editor Enhancement</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/nvim-treesitter/nvim-treesitter">nvim-treesitter</a> (pinned: <code>main</code>, the actively maintained branch)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Syntax highlighting and indent via Neovim&#8217;s core treesitter APIs (<code>vim.treesitter.start()</code>, <code>indentexpr</code>).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/nvim-treesitter/nvim-treesitter-textobjects">nvim-treesitter-textobjects</a> (pinned: <code>main</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Semantic text objects (<code>af</code>/<code>if</code> function, <code>ac</code>/<code>ic</code> class, <code>aa</code>/<code>ia</code> argument) and jump motions (<code>]f</code>/<code>[f</code>/<code>]F</code>/<code>[F</code>). Disabled in Lisp-family buffers (vim-sexp handles those).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/kylechui/nvim-surround">nvim-surround</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Surround text with quotes, brackets, tags (<code>ys</code>/<code>cs</code>/<code>ds</code>, identical keys to vim-surround)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/tpope/vim-unimpaired">vim-unimpaired</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Paired bracket keymaps (<code>[b</code>, <code>]b</code>, etc.)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/tpope/vim-repeat">vim-repeat</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Repeat plugin commands with <code>.</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/jakewvincent/mkdnflow.nvim">mkdnflow.nvim</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Markdown link following and note navigation</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_git"><a class="anchor" href="#_git"></a>Git</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/tpope/vim-fugitive">vim-fugitive</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Git commands inside Neovim (<code>:G</code>, <code>:Gdiff</code>, etc.)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/lewis6991/gitsigns.nvim">gitsigns.nvim</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Inline hunk signs, stage/unstage hunks</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/sindrets/diffview.nvim">diffview.nvim</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Side-by-side diff and file history views</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_languages_lisp_family"><a class="anchor" href="#_languages_lisp_family"></a>Languages — Lisp Family</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/Olical/conjure">conjure</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Evaluate code in a running REPL from the editor</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/PaterJason/cmp-conjure">cmp-conjure</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Conjure completion source (bridged into blink.cmp via blink.compat)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/guns/vim-sexp">vim-sexp</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Structural S-expression editing</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/tpope/vim-sexp-mappings-for-regular-people">vim-sexp-mappings-for-regular-people</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Friendlier default keymaps for vim-sexp</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/gpanders/nvim-parinfer">nvim-parinfer</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Automatic parenthesis balancing via indentation</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/HiPhish/rainbow-delimiters.nvim">rainbow-delimiters.nvim</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Color-coded nested delimiters</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_languages_net"><a class="anchor" href="#_languages_net"></a>Languages — .NET</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/seblyng/roslyn.nvim">roslyn.nvim</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Roslyn LSP for C# (OmniSharp successor)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/Vigemus/iron.nvim">iron.nvim</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">REPL management (used for F# <code>dotnet fsi</code>)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/GustavEikaas/easy-dotnet.nvim">easy-dotnet.nvim</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Solution management, test runner, DAP auto-registration (LSP disabled — roslyn.nvim owns C# LSP)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_debugging"><a class="anchor" href="#_debugging"></a>Debugging</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/mfussenegger/nvim-dap">nvim-dap</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Debug Adapter Protocol client; function-key + <code>&lt;leader&gt;b</code> keymaps</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/rcarriga/nvim-dap-ui">nvim-dap-ui</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Debug UI (auto-opens on session start); requires <code>nvim-neotest/nvim-nio</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>netcoredbg is auto-registered as the C# / F# DAP adapter by easy-dotnet.
+haskell-tools.nvim auto-discovers Haskell DAP configurations once nvim-dap is present.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_languages_haskell"><a class="anchor" href="#_languages_haskell"></a>Languages — Haskell</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/mrcjkb/haskell-tools.nvim">haskell-tools.nvim</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Haskell LSP, GHCi REPL, Hoogle search; DAP configs auto-discovered when nvim-dap is installed</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_ai_automation"><a class="anchor" href="#_ai_automation"></a>AI &amp; Automation</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/yetone/avante.nvim">avante.nvim</a> v0.1.*</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AI chat panel, Ollama-only backend (Claude disabled — Anthropic subscription-OAuth ToS). dressing.nvim removed (archived upstream); vim.ui falls back to native.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/coder/claudecode.nvim">claudecode.nvim</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Persistent Claude Code session via WebSocket MCP (<code>&lt;leader&gt;gc</code> group). Native terminal provider (no snacks). Coexists with one-shot <code>claude_cli</code> commands.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/MunifTanjim/nui.nvim">nui.nvim</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">UI component library (required by avante)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/nvim-lua/plenary.nvim">plenary.nvim</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Lua utility library (required by avante + diffview)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_content_preview"><a class="anchor" href="#_content_preview"></a>Content &amp; Preview</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/habamax/vim-asciidoctor">vim-asciidoctor</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AsciiDoc syntax, section folding, and fenced-code-block highlighting under the canonical <code>asciidoctor</code> filetype (<code><strong>.adoc</code>/<code></strong>.asciidoc</code> → <code>asciidoctor</code> via <code>vim.filetype.add</code>).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/OXY2DEV/markview.nvim">markview.nvim</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>(deferred)</em> In-buffer AsciiDoc rendering requires the <code>cathaysia/tree-sitter-asciidoc</code> treesitter grammar, which is not in nvim-treesitter&#8217;s parser list (<code>master</code> or <code>main</code>). Re-enable when the grammar stabilises.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/iamcco/markdown-preview.nvim">markdown-preview.nvim</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Live Markdown preview in browser (GUI)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/ellisonleao/glow.nvim">glow.nvim</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Terminal Markdown preview via glow (console)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/aklt/plantuml-syntax">plantuml-syntax</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PlantUML syntax highlighting</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/mistweaverco/kulala.nvim">kulala.nvim</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">HTTP/REST client for <code>.http</code> files</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/turbio/bracey.vim">bracey.vim</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Live HTML preview in browser</p></td>
+</tr>
+</tbody>
+</table>
+<hr>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="startup-order"><a class="anchor" href="#startup-order"></a>Startup Order</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Neovim always loads files in this sequence:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>init.lua
+  └── lua/options.lua      (vim options and leader keys)
+  └── lua/loader/init.lua  (bootstraps lazy.nvim; loads all plugins)
+  └── lua/keymaps.lua      (global keymaps)
+
+after/ftplugin/&lt;ft&gt;.lua    (loaded by Neovim automatically when a filetype buffer opens)</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Everything else is loaded on-demand — either by lazy.nvim when a plugin
+is first needed, or by <code>require()</code> calls inside plugin config functions.</p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="root-level-files"><a class="anchor" href="#root-level-files"></a>Root-Level Files</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">File</th>
+<th class="tableblock halign-left valign-top">Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>init.lua</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Entry point. Requires <code>options</code>, <code>loader</code>, and <code>keymaps</code> in
+order. Nothing else belongs here.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>lazy-lock.json</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pinned commit hashes for every plugin. Guarantees
+reproducible installs. Managed by lazy.nvim — commit this file so all
+machines stay in sync.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>readme.md</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Human-readable overview: keybindings, supported languages,
+plugin list, Docker services.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>CLAUDE.md</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Project guidance for Claude Code (architecture, conventions,
+commands).</p></td>
+</tr>
+</tbody>
+</table>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="lua"><a class="anchor" href="#lua"></a><code>lua/</code> — The Lua Source Tree</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>All runtime Lua code lives here. Neovim adds <code>lua/</code> to the Lua
+<code>package.path</code> automatically, so <code>require("config.terminal")</code> maps to
+<code>lua/config/terminal.lua</code>.</p>
+</div>
+<div class="sect2">
+<h3 id="_luaoptions_lua"><a class="anchor" href="#_luaoptions_lua"></a><code>lua/options.lua</code></h3>
+<div class="paragraph">
+<p>Sets <code>vim.opt.*</code> values (line numbers, tabs, scroll offset, etc.)
+and the two leader keys:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-lua hljs" data-lang="lua">vim.g.mapleader      = " "   -- Space  (global keymaps)
+vim.g.maplocalleader = ","   -- Comma  (filetype keymaps)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This file is loaded first so leader keys are defined before any plugin
+or keymap tries to reference them.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_luakeymaps_lua"><a class="anchor" href="#_luakeymaps_lua"></a><code>lua/keymaps.lua</code></h3>
+<div class="paragraph">
+<p>Global <code>&lt;leader&gt;</code> keymaps that are not tied to any plugin or
+filetype. Things like window navigation, buffer management, and
+diagnostic shortcuts.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_lualoaderinit_lua"><a class="anchor" href="#_lualoaderinit_lua"></a><code>lua/loader/init.lua</code></h3>
+<div class="paragraph">
+<p>Bootstraps <a href="https://github.com/folke/lazy.nvim">lazy.nvim</a> (downloads it
+if missing), then calls <code>lazy.setup()</code> with
+<code>{ import = "plugins" }</code>. This tells lazy.nvim to auto-import every
+file under <code>lua/plugins/</code> as a plugin spec.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_luaplugins_plugin_specs"><a class="anchor" href="#_luaplugins_plugin_specs"></a><code>lua/plugins/</code> — Plugin Specs</h3>
+<div class="paragraph">
+<p>One file per plugin group. Each file returns a lazy.nvim spec table.
+Examples:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">File</th>
+<th class="tableblock halign-left valign-top">What it configures</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>init.lua</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Bare-string plugins needing no config (statusline,
+surround, etc.)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>colorscheme.lua</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">TokyoNight theme; change <code>style =</code> to switch
+variants</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>avante.lua</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">avante.nvim AI chat (Ollama-only backend)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>conform.lua</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Format-on-save via conform.nvim</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>fzf-lua.lua</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fuzzy finder (files, grep, buffers)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>git.lua</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fugitive &#43; Gitsigns</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>haskell.lua</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">haskell-tools.nvim (LSP &#43; GHCi REPL)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>lisp.lua</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Conjure, vim-sexp, parinfer, rainbow-delimiters (all Lisp
+dialects)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>markdown.lua</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">markdown-preview.nvim (GUI) &#43; glow.nvim (console
+terminal)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>blink.lua</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">blink.cmp completion engine (v1); blink.compat bridges for cmp-spell and cmp-conjure</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>nvim-tree.lua</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">File explorer sidebar</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>plantuml.lua</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PlantUML syntax &#43; ASCII/PNG preview via Docker
+server</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>treesitter.lua</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tree-sitter parsers, highlight, indent, and text objects. Pins <code>nvim-treesitter</code> &#43; <code>nvim-treesitter-textobjects</code> to <code>main</code>; highlight/indent wired via core <code>vim.treesitter.start()</code>/<code>indentexpr</code> in a <code>FileType</code> autocmd, text objects via the select/move API gated off for Lisp-family filetypes.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Plugins use <code>ft = { "markdown" }</code> (lazy-load on filetype) or
+<code>event = "VeryLazy"</code> (load after startup) to keep startup time fast.</p>
+</div>
+<div class="paragraph">
+<p>Plugin <strong>keymaps</strong> normally live in the spec&#8217;s <code>keys = { &#8230;&#8203; }</code> field, which
+lazy-loads the plugin on first press. <strong>Exception:</strong> a <code>&lt;leader&gt;</code> map whose
+keystrokes traverse a native Vim operator must be registered <strong>eagerly</strong> in the spec&#8217;s
+<code>init</code> via <code>vim.keymap.set</code> instead (keeping <code>cmd</code>/<code>ft</code> lazy-load). A <code>keys</code> mapping
+is only created when the plugin loads — after which-key has built its trigger tree —
+so on fast input the prefix is not held and the keys fall through to the native
+operator. This bit <code>claudecode.nvim&#8217;s visual `&lt;leader&gt;gcv</code> (send selection):
+typed quickly it traversed <code>gc</code> and fired Neovim&#8217;s built-in comment operator instead
+of sending. Registering in <code>init</code> makes the maps exist before which-key initialises,
+so the prefix holds regardless of typing speed. See the header comment of
+<code>lua/plugins/claudecode.lua</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_luaconfig_non_plugin_configuration_modules"><a class="anchor" href="#_luaconfig_non_plugin_configuration_modules"></a><code>lua/config/</code> — Non-Plugin Configuration Modules</h3>
+<div class="paragraph">
+<p>Reusable Lua modules that are `require()`d by plugin configs or
+ftplugins. They do not return lazy.nvim specs.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">File</th>
+<th class="tableblock halign-left valign-top">Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>terminal.lua</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Detects the terminal environment: <code>is_console</code>,
+<code>is_wsl</code>, <code>has_nerd_font</code>, <code>has_undercurl</code>. Plugin
+configs branch on these flags instead of hardcoding terminal-specific
+behaviour.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>lsp.lua</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Shared <code>on_attach</code> function and LSP server setup
+(<code>lspconfig.&lt;server&gt;.setup{}</code>). All servers use the same
+on_attach so keymaps are consistent.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>treesitter.lua</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tree-sitter parser list and configuration (called
+from <code>lua/plugins/treesitter.lua</code>).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>util.lua</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Small shared helpers, e.g. <code>open_url()</code> which respects
+<code>is_console</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>confluence.lua</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:MdToConfluence</code>, <code>:MdFromConfluence</code>,
+<code>:MdConfluenceComments</code> commands. Requires <code>CONFLUENCE_EMAIL</code> &#43;
+<code>CONFLUENCE_API_TOKEN</code> env vars.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jira.lua</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:JiraCreateIssue</code>, <code>:JiraCreateStory</code> commands. Requires
+<code>JIRA_EMAIL</code> &#43; <code>JIRA_API_TOKEN</code> &#43;
+<code>JIRA_BASE_URL</code> env vars.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>marp.lua</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:MarpPreview</code>, <code>:MarpToPptx</code>, <code>:MarpToHtml</code>, <code>:MarpToPdf</code>
+via the MARP Docker container.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mdpdf.lua</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:MdToPdf</code> — Markdown → PDF with PlantUML diagrams via
+Docker.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mdpreview.lua</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:MdServerPreview</code> — live Markdown preview via the
+markserv Docker container (handles cross-page links).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>openspec.lua</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">OpenSpec workflow integration (proposal/spec/task
+management).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>claude_cli.lua</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Helpers for the Claude CLI integration
+(<code>:ClaudeSuggest</code> / <code>:ClaudeExplain</code>).</p></td>
+</tr>
+</tbody>
+</table>
+<hr>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="after-ftplugin"><a class="anchor" href="#after-ftplugin"></a><code>after/ftplugin/</code> — Filetype-Specific Overrides</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Neovim automatically sources <code>after/ftplugin/&lt;filetype&gt;.lua</code>
+when a buffer of that filetype is opened. This is the correct place for:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Setting <code>vim.b.maplocalleader</code></p>
+</li>
+<li>
+<p>Filetype-specific indent settings</p>
+</li>
+<li>
+<p><code>&lt;localleader&gt;</code> keymaps (REPL, preview, export, etc.)</p>
+</li>
+<li>
+<p>Calling <code>require("config.&lt;module&gt;").setup()</code> for filetype
+modules</p>
+</li>
+</ul>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 34%;">
+<col style="width: 33%;">
+<col style="width: 33%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">File</th>
+<th class="tableblock halign-left valign-top">Filetype</th>
+<th class="tableblock halign-left valign-top">Key things it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>markdown.lua</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>markdown</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,p</code> preview (glow/markdown-preview);
+Confluence, Jira, MARP, PDF commands</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>plantuml.lua</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>plantuml</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,p</code> / <code>&lt;leader&gt;pa</code> diagram preview
+via Docker</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>lisp.lua</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>lisp</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Conjure REPL keymaps, parinfer mode</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>clojure.lua</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>clojure</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Conjure REPL keymaps</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>scheme.lua</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>scheme</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Conjure REPL keymaps</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>fsharp.lua</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>fsharp</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">iron.nvim REPL keymaps (<code>dotnet fsi</code>)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>haskell.lua</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>haskell</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">haskell-tools keymaps (GHCi REPL, Hoogle
+search)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>html.lua</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>html</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Indent overrides</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>http.lua</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>http</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">rest.nvim request execution keymaps</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>cs.lua</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>cs</code> (C#)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">.NET / OmniSharp keymaps</p></td>
+</tr>
+</tbody>
+</table>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="docker"><a class="anchor" href="#docker"></a><code>docker/</code> — Docker Service Definitions</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Each subdirectory is a self-contained Docker Compose service used by a
+Neovim feature. Start them independently with
+<code>docker compose -f &lt;path&gt; up -d</code>.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 34%;">
+<col style="width: 33%;">
+<col style="width: 33%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Directory</th>
+<th class="tableblock halign-left valign-top">Service</th>
+<th class="tableblock halign-left valign-top">Used by</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>plantuml-server/</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PlantUML HTTP server (port 8080)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:PumlPreview</code>,
+<code>:PumlPreviewAscii</code>, Markdown PDF export</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>markserv/</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Markserv live-reload server</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:MdServerPreview</code>
+(cross-page Markdown links)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>marp/</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MARP CLI renderer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:MarpPreview</code>, <code>:MarpToPptx</code>,
+<code>:MarpToHtml</code>, <code>:MarpToPdf</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>md2pdf/</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pandoc &#43; filters for PDF export</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:MdToPdf</code> (includes
+PlantUML &#43; Mermaid diagram rendering)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ollama/</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ollama LLM server (port 11434)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">avante.nvim ollama backend</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>sbcl-swank/</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SBCL Common Lisp &#43; Swank server (port 4005)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Conjure Common Lisp REPL</p></td>
+</tr>
+</tbody>
+</table>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="docs"><a class="anchor" href="#docs"></a><code>docs/</code> — User Documentation</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Human-readable reference material, authored in AsciiDoc. Not loaded by Neovim.</p>
+</div>
+<div class="paragraph">
+<p>All documentation lives under <code>docs/modules/ROOT/pages/</code> as <code>.adoc</code> files —
+this is the source of truth. There are no auto-generated files and no Markdown
+source files under <code>docs/</code>.</p>
+</div>
+<div class="sect2">
+<h3 id="_docsguides"><a class="anchor" href="#_docsguides"></a><code>docs/guides/</code></h3>
+<div class="paragraph">
+<p>Long-form setup and usage guides, one per feature area. Start here when
+setting up a new language or feature on a fresh machine.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_docscheatsheets"><a class="anchor" href="#_docscheatsheets"></a><code>docs/cheatsheets/</code></h3>
+<div class="paragraph">
+<p>Quick-reference keymap tables. <code>index.adoc</code> is the single-page master
+reference. Each other file covers one plugin or language area.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_docslearning"><a class="anchor" href="#_docslearning"></a><code>docs/learning/</code></h3>
+<div class="paragraph">
+<p>Step-by-step learning paths for specific languages (currently Janet).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_docsmodulesrootnav_adoc"><a class="anchor" href="#_docsmodulesrootnav_adoc"></a><code>docs/modules/ROOT/nav.adoc</code></h3>
+<div class="paragraph">
+<p>Sidebar navigation for the Antora docs site. Must be updated whenever
+a page is added or removed. See <a href="contributing.html" class="xref page">Contributing to Docs</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_jira_project_map_adoc"><a class="anchor" href="#_jira_project_map_adoc"></a><code>jira-project-map.adoc</code></h3>
+<div class="paragraph">
+<p>Maps directory prefixes to Jira project keys. Used by
+<code>lua/config/jira.lua</code> to automatically select the right Jira project
+when creating issues.</p>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="scripts"><a class="anchor" href="#scripts"></a><code>scripts/</code> — Shell and Pandoc Scripts</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Helper scripts invoked by Neovim commands, not intended to be run
+directly by the user.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">File</th>
+<th class="tableblock halign-left valign-top">Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>confluence_publish.sh</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Converts Markdown → Confluence storage
+format and POSTs via REST API</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>confluence_preproc.py</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Python pre-processor: resolves local image
+paths and PlantUML blocks before publish</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>confluence_filter.lua</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pandoc Lua filter used during Confluence
+conversion</p></td>
+</tr>
+</tbody>
+</table>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="openspec"><a class="anchor" href="#openspec"></a><code>openspec/</code> — OpenSpec Change Management</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>OpenSpec is a lightweight spec-driven workflow for tracking proposed
+changes to this configuration. Its workflow steps are available to
+Claude Code as skills in <code>.claude/skills/</code> (e.g. <code>/openspec-propose</code>).</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>openspec/
+  config.yaml          # Schema declaration (spec-driven)
+  specs/               # Ratified/merged specs (source of truth)
+  changes/             # In-progress changes
+    &lt;change-name&gt;/
+      proposal.md      # What and why
+      design.md        # How (technical approach)
+      tasks.md         # Implementation checklist
+      specs/           # Delta specs for this change
+        &lt;feature&gt;/
+          spec.md      # Requirement + scenarios for one feature slice
+    archive/           # Completed changes (historical record)</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Active changes in <code>changes/</code> represent work in progress. Once
+implemented and verified, a change is archived (moved to
+<code>changes/archive/</code>) and its specs are merged into the top-level <code>specs/</code>
+directory.</p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="github"><a class="anchor" href="#github"></a><code>.github/</code> — GitHub Actions</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>workflows/docs.yml</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CI workflow that builds and publishes the Antora
+documentation site.</p></td>
+</tr>
+</tbody>
+</table>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="claude"><a class="anchor" href="#claude"></a><code>.claude/</code> — Claude Code Integration</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>skills/</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Claude Code skill definitions — each <code>SKILL.md</code> is invocable
+as a slash command (<code>/openspec-propose</code>, <code>/add-neovim-feature</code>, etc.).
+Project guidance lives in <code>CLAUDE.md</code> at the repo root.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>settings.local.json</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Project-local Claude Code settings (e.g.
+permission allowlist).</p></td>
+</tr>
+</tbody>
+</table>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="serena"><a class="anchor" href="#serena"></a><code>.serena/</code> — Serena MCP Server State</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Runtime state for the <a href="https://github.com/oraios/serena">Serena</a> MCP
+server:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>project.yml</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Project-level Serena configuration (shared, committed)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>project.local.yml</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Machine-local overrides (gitignored)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>cache/</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Serena’s symbol index cache (gitignored, rebuilt
+automatically)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>memories/</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Persistent memory files written by AI assistants during
+sessions</p></td>
+</tr>
+</tbody>
+</table>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="testdocs"><a class="anchor" href="#testdocs"></a><code>testdocs/</code></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Sample files used for manual testing of preview features
+(e.g. <code>test.puml</code> for verifying the PlantUML ASCII preview). Not part of
+the production config.</p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="console-detection"><a class="anchor" href="#console-detection"></a>Console Detection</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The configuration detects console mode via a single boolean flag:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-lua hljs" data-lang="lua">local term = require("config.terminal")
+if term.is_console then ...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>is_console</code> is <code>true</code> when <strong>both</strong> <code>$DISPLAY</code> and
+<code>$WAYLAND_DISPLAY</code> are unset. It is <code>false</code> when either is set,
+which covers:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Environment</th>
+<th class="tableblock halign-left valign-top"><code>$DISPLAY</code></th>
+<th class="tableblock halign-left valign-top"><code>$WAYLAND_DISPLAY</code></th>
+<th class="tableblock halign-left valign-top"><code>is_console</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Physical TTY (<code>$TERM=linux</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">unset</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">unset</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SSH without X forwarding</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">unset</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">unset</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">tmux on headless server</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">unset</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">unset</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">X11 GUI terminal</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">set (e.g. <code>:0</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">unset</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Wayland GUI terminal</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">unset</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">set (e.g. <code>wayland-0</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">tmux inside GUI terminal</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">set (outer terminal sets it)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">—</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>No manual override flag is needed. If the detection is wrong for your
+setup, file an issue.</p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="open-url"><a class="anchor" href="#open-url"></a>Open URL Behaviour</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In console mode, <code>util.open_url</code> skips all browser-opener attempts
+and instead emits an <code>INFO</code> notification containing the full URL. Copy
+it and open it manually (e.g. in w3m, or paste it into a GUI browser on
+another machine).</p>
+</div>
+<div class="paragraph">
+<p>In GUI mode, the existing behaviour is unchanged: <code>xdg-open</code> / <code>open</code> /
+<code>wslview</code> / <code>explorer.exe</code> are tried in order, and a <code>WARN</code> notification
+is emitted if none are found.</p>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>This page was built using the Antora default UI.</p>
+  <p>The source code for this UI is licensed under the terms of the MPL-2.0 license.</p>
+</footer>
+<script id="site-script" src="../../_/js/site.js" data-ui-root-path="../../_"></script>
+<script async src="../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

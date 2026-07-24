@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Untitled :: Arcane Centaur Docs</title>
+    <link rel="canonical" href="https://floatingman-ltd.github.io/arcane-centaur/arcane-centaur/languages/dotnet-cheatsheet.html">
+    <meta name="generator" content="Antora 3.1.15">
+    <link rel="stylesheet" href="../../_/css/site.css">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://floatingman-ltd.github.io/arcane-centaur">Arcane Centaur Docs</a>
+      <button class="navbar-burger" aria-controls="topbar-nav" aria-expanded="false" aria-label="Toggle main menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="#">Home</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Products</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Product A</a>
+            <a class="navbar-item" href="#">Product B</a>
+            <a class="navbar-item" href="#">Product C</a>
+          </div>
+        </div>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Services</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Service A</a>
+            <a class="navbar-item" href="#">Service B</a>
+            <a class="navbar-item" href="#">Service C</a>
+          </div>
+        </div>
+        <div class="navbar-item">
+          <span class="control">
+            <a class="button is-primary" href="#">Download</a>
+          </span>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="arcane-centaur" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../index.html">Arcane Centaur</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Home</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../getting-started.html">Getting Started</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Languages</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">.NET</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="dotnet.html">Guide</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="dotnet-cheatsheet.html">Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Lisp Family</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lisp.html">Lisp / Clojure / Scheme / Fennel</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lisp-cheatsheet.html">Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="janet.html">Janet Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="janet-cheatsheet.html">Janet Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Haskell</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="haskell.html">Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="haskell-cheatsheet.html">Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Lua</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lua.html">Guide</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Editor Core</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../editor/editing.html">Editing Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../editor/navigation.html">Navigation Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../editor/code-intelligence.html">Code Intelligence Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../editor/git.html">Git Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../editor/git-cheatsheet.html">Git Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../editor/clipboard.html">Clipboard</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">AI &amp; Automation</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../ai/ai-tools.html">AI Tools Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../ai/ai-tools-cheatsheet.html">AI Tools Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Content Creation</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/markdown.html">Markdown Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/markdown-cheatsheet.html">Markdown Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/asciidoc.html">AsciiDoc Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/asciidoc-cheatsheet.html">AsciiDoc Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/diagrams.html">Diagrams &amp; PlantUML</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/presentations.html">Presentations (MARP)</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/rest.html">REST / HTTP Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/rest-cheatsheet.html">REST Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Project Tooling</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../tooling/jira.html">Jira Integration</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../tooling/confluence.html">Confluence Publishing</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Other</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../other/architecture.html">Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../other/contributing.html">Contributing to Docs</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../other/jira-project-map.html">Jira Project Map</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Arcane Centaur</span>
+    <span class="version"></span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <div class="title"><a href="../index.html">Arcane Centaur</a></div>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Arcane Centaur</a></li>
+    <li>Languages</li>
+    <li>.NET</li>
+    <li><a href="dotnet-cheatsheet.html">Cheatsheet</a></li>
+  </ul>
+</nav>
+<div class="edit-this-page"><a href="file:///antora/docs/modules/ROOT/pages/languages/dotnet-cheatsheet.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<div class="sect1">
+<h2 id="_net_cheatsheet_c_and_f"><a class="anchor" href="#_net_cheatsheet_c_and_f"></a>.NET Cheatsheet (C# and F#)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><strong>LocalLeader</strong> = <code>,</code> in <code>.cs</code>, <code>.fs</code>, <code>.fsx</code>, and <code>.fsi</code> buffers.</p>
+</div>
+<div class="paragraph">
+<p>→ Back to <a href="../index.html" class="xref page">main cheatsheet</a> · <a href="dotnet.html" class="xref page">Full guide</a></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_repl_iron_nvim"><a class="anchor" href="#_repl_iron_nvim"></a>REPL — iron.nvim</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>REPL backend: <strong>csharprepl</strong> for C# buffers · <strong>dotnet fsi</strong> for F# buffers.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Keys</th>
+<th class="tableblock halign-left valign-top">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,sl</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Send current line to REPL</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,sc</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Send motion or visual selection to REPL</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,sp</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Send current paragraph to REPL</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,sf</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Send entire file to REPL</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,s&lt;CR&gt;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Send carriage return to REPL</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,si</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Interrupt REPL</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,sq</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Quit / exit REPL</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,cl</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Clear REPL output</p></td>
+</tr>
+</tbody>
+</table>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_lsp"><a class="anchor" href="#_lsp"></a>LSP</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Keys</th>
+<th class="tableblock halign-left valign-top">Mode</th>
+<th class="tableblock halign-left valign-top">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>gd</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Normal</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Go to definition</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>K</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Normal</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Hover documentation</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>gr</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Normal</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Find references</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;leader&gt;rn</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Normal</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rename symbol</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;leader&gt;ca</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Normal</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Code action</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;leader&gt;e</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Normal</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Show diagnostic float</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[d</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Normal</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Previous diagnostic</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>]d</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Normal</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Next diagnostic</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>LSP server: <strong>Roslyn</strong> for C# buffers · <strong>fsautocomplete</strong> for F# buffers.</p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_roslyn_commands_c_only"><a class="anchor" href="#_roslyn_commands_c_only"></a>Roslyn Commands (C# only)</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Command</th>
+<th class="tableblock halign-left valign-top">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:Roslyn target</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Switch solution target (when multiple <code>.sln</code> files exist)</p></td>
+</tr>
+</tbody>
+</table>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_debugging_nvim_dap_netcoredbg"><a class="anchor" href="#_debugging_nvim_dap_netcoredbg"></a>Debugging (nvim-dap + netcoredbg)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Prerequisites: netcoredbg (GitHub-release binary — <strong>not</strong> <code>dotnet tool</code>), the <code>EasyDotnet</code> server tool
+(<code>dotnet tool install -g EasyDotnet</code>), and <code>fzf</code>. Details in the .NET guide.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Keys</th>
+<th class="tableblock halign-left valign-top">Mode</th>
+<th class="tableblock halign-left valign-top">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;F9&gt;</code> / <code>&lt;leader&gt;bb</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Normal</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Toggle breakpoint</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;F5&gt;</code> / <code>&lt;leader&gt;bc</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Normal</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Continue / start</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;F10&gt;</code> / <code>&lt;leader&gt;bv</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Normal</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Step over</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;F11&gt;</code> / <code>&lt;leader&gt;bi</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Normal</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Step into</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;F12&gt;</code> / <code>&lt;leader&gt;bo</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Normal</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Step out</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;S-F5&gt;</code> / <code>&lt;leader&gt;bt</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Normal</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Terminate</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;leader&gt;bu</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Normal</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Toggle debug UI</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;leader&gt;br</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Normal</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Open REPL</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The <code>&lt;leader&gt;b</code> mirrors exist for terminals that grab the F-keys (e.g. <code>&lt;F11&gt;</code> fullscreen).</p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_testing_running_easy_dotnet"><a class="anchor" href="#_testing_running_easy_dotnet"></a>Testing &amp; Running (easy-dotnet)</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Keys</th>
+<th class="tableblock halign-left valign-top">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,tt</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Test project (picker)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,tr</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Run project (picker)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,tb</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Build project (picker)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>This page was built using the Antora default UI.</p>
+  <p>The source code for this UI is licensed under the terms of the MPL-2.0 license.</p>
+</footer>
+<script id="site-script" src="../../_/js/site.js" data-ui-root-path="../../_"></script>
+<script async src="../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Untitled :: Arcane Centaur Docs</title>
+    <link rel="canonical" href="https://floatingman-ltd.github.io/arcane-centaur/arcane-centaur/editor/git.html">
+    <meta name="generator" content="Antora 3.1.15">
+    <link rel="stylesheet" href="../../_/css/site.css">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://floatingman-ltd.github.io/arcane-centaur">Arcane Centaur Docs</a>
+      <button class="navbar-burger" aria-controls="topbar-nav" aria-expanded="false" aria-label="Toggle main menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="#">Home</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Products</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Product A</a>
+            <a class="navbar-item" href="#">Product B</a>
+            <a class="navbar-item" href="#">Product C</a>
+          </div>
+        </div>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Services</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Service A</a>
+            <a class="navbar-item" href="#">Service B</a>
+            <a class="navbar-item" href="#">Service C</a>
+          </div>
+        </div>
+        <div class="navbar-item">
+          <span class="control">
+            <a class="button is-primary" href="#">Download</a>
+          </span>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="arcane-centaur" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../index.html">Arcane Centaur</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Home</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../getting-started.html">Getting Started</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Languages</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">.NET</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../languages/dotnet.html">Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../languages/dotnet-cheatsheet.html">Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Lisp Family</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../languages/lisp.html">Lisp / Clojure / Scheme / Fennel</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../languages/lisp-cheatsheet.html">Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../languages/janet.html">Janet Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../languages/janet-cheatsheet.html">Janet Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Haskell</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../languages/haskell.html">Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../languages/haskell-cheatsheet.html">Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Lua</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../languages/lua.html">Guide</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Editor Core</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="editing.html">Editing Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="navigation.html">Navigation Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="code-intelligence.html">Code Intelligence Cheatsheet</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="1">
+    <a class="nav-link" href="git.html">Git Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="git-cheatsheet.html">Git Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="clipboard.html">Clipboard</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">AI &amp; Automation</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../ai/ai-tools.html">AI Tools Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../ai/ai-tools-cheatsheet.html">AI Tools Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Content Creation</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/markdown.html">Markdown Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/markdown-cheatsheet.html">Markdown Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/asciidoc.html">AsciiDoc Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/asciidoc-cheatsheet.html">AsciiDoc Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/diagrams.html">Diagrams &amp; PlantUML</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/presentations.html">Presentations (MARP)</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/rest.html">REST / HTTP Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/rest-cheatsheet.html">REST Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Project Tooling</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../tooling/jira.html">Jira Integration</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../tooling/confluence.html">Confluence Publishing</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Other</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../other/architecture.html">Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../other/contributing.html">Contributing to Docs</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../other/jira-project-map.html">Jira Project Map</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Arcane Centaur</span>
+    <span class="version"></span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <div class="title"><a href="../index.html">Arcane Centaur</a></div>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Arcane Centaur</a></li>
+    <li>Editor Core</li>
+    <li><a href="git.html">Git Guide</a></li>
+  </ul>
+</nav>
+<div class="edit-this-page"><a href="file:///antora/docs/modules/ROOT/pages/editor/git.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<div class="sect1">
+<h2 id="_git_guide"><a class="anchor" href="#_git_guide"></a>Git Guide</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This configuration bundles three complementary git tools that work together as a workflow: <strong>vim-fugitive</strong> for full git operations, <strong>gitsigns.nvim</strong> for in-buffer hunk management, and <strong>diffview.nvim</strong> for side-by-side diffs and file history.</p>
+</div>
+<div class="paragraph">
+<p><strong>Quick navigation</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#quick-start">Quick Start</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Stage, commit, and push from Neovim</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#reviewing">Reviewing Changes</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Diff view and hunk navigation</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#staging">Staging Hunks</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Stage partial changes with gitsigns</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#committing">Committing with Fugitive</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Full commit workflow</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#conflicts">Resolving Conflicts</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Three-way merge with diffview</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#history">File History</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Browse commit history per file</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#workflow">Typical Workflow</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Day-to-day git in Neovim</p></td>
+</tr>
+</tbody>
+</table>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="quick-start"><a class="anchor" href="#quick-start"></a>Quick Start</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Press <code>&lt;leader&gt;gs</code> to open the fugitive status window.</p>
+</li>
+<li>
+<p>Navigate to a file and press <code>s</code> to stage it (or <code>u</code> to unstage).</p>
+</li>
+<li>
+<p>Press <code>cc</code> to open the commit message editor.</p>
+</li>
+<li>
+<p>Write your commit message, then save and quit (<code>:wq</code>) to commit.</p>
+</li>
+<li>
+<p>Use <code>&lt;leader&gt;gp</code> to push.</p>
+</li>
+</ol>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="reviewing"><a class="anchor" href="#reviewing"></a>Reviewing Changes</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_in_buffer_signs_gitsigns"><a class="anchor" href="#_in_buffer_signs_gitsigns"></a>In-buffer signs (gitsigns)</h3>
+<div class="paragraph">
+<p>Changed lines are marked in the sign column:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>▎</code> added</p>
+</li>
+<li>
+<p><code>▎</code> changed</p>
+</li>
+<li>
+<p><code>▁</code> / <code>▔</code> deleted line</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Navigate between hunks with <code>]h</code> (next) and <code>[h</code> (previous).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_full_diff_view_diffview_nvim"><a class="anchor" href="#_full_diff_view_diffview_nvim"></a>Full diff view (diffview.nvim)</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Keys</th>
+<th class="tableblock halign-left valign-top">Mode</th>
+<th class="tableblock halign-left valign-top">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;leader&gt;gD</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Normal</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Open diffview — all unstaged changes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;leader&gt;gX</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Normal</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Close diffview</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The diffview panel shows all changed files on the left; click any file
+to open a side-by-side diff. Diffview also supports comparing against
+any git ref:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-vim hljs" data-lang="vim">:DiffviewOpen HEAD~3    " diff last 3 commits
+:DiffviewOpen main      " diff against main branch</code></pre>
+</div>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="staging"><a class="anchor" href="#staging"></a>Staging Hunks</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Stage (or reset) individual hunks without opening the fugitive status:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Keys</th>
+<th class="tableblock halign-left valign-top">Mode</th>
+<th class="tableblock halign-left valign-top">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;leader&gt;hs</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Normal / Visual</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Stage hunk (or selected lines)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;leader&gt;hr</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Normal / Visual</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Reset hunk (or selected lines)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;leader&gt;hu</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Normal</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Undo last stage</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;leader&gt;hp</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Normal</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Preview hunk inline</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>In Visual mode, only the lines in the selection are staged / reset.</p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="committing"><a class="anchor" href="#committing"></a>Committing with Fugitive</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Keys</th>
+<th class="tableblock halign-left valign-top">Action</th>
+<th class="tableblock halign-left valign-top"><code>&lt;leader&gt;gs</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Open git status (<code>:Git</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>s</code> <em>(inside status)</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Stage file / hunk under cursor</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>u</code> <em>(inside status)</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unstage file / hunk</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>=</code> <em>(inside status)</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Toggle inline diff for file under cursor</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>cc</code> <em>(inside status)</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Commit staged changes — opens message editor</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Additional fugitive keymaps:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Keys</th>
+<th class="tableblock halign-left valign-top">Mode</th>
+<th class="tableblock halign-left valign-top">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;leader&gt;gb</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Normal</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Git blame for current file</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;leader&gt;gl</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Normal</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Git log</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;leader&gt;gd</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Normal</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Git diff (unstaged changes)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;leader&gt;gp</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Normal</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Git push</p></td>
+</tr>
+</tbody>
+</table>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="conflicts"><a class="anchor" href="#conflicts"></a>Resolving Conflicts</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Use diffview.nvim&#8217;s merge-conflict panel:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-vim hljs" data-lang="vim">:DiffviewOpen     " opens showing unresolved conflicts with a 3-way layout</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the merge panel:
+* Left pane — <code>OURS</code>
+* Middle pane — working copy (edit here)
+* Right pane — <code>THEIRS</code></p>
+</div>
+<div class="paragraph">
+<p>Stage the file with <code>&lt;leader&gt;hs</code> (or from <code>:Git</code>) once resolved.</p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="history"><a class="anchor" href="#history"></a>File History</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Keys</th>
+<th class="tableblock halign-left valign-top">Mode</th>
+<th class="tableblock halign-left valign-top">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;leader&gt;gH</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Normal</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Open diffview file history for current file</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;leader&gt;gX</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Normal</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Close diffview</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The file history panel lists all commits that touched the current file.
+Press <code>Enter</code> on any commit to open a diff of that commit.</p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="workflow"><a class="anchor" href="#workflow"></a>Typical Workflow</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Edit code.</p>
+</li>
+<li>
+<p><code>&lt;leader&gt;hs</code> — stage individual hunks as you work.</p>
+</li>
+<li>
+<p><code>&lt;leader&gt;gs</code> — open status window for a final review.</p>
+</li>
+<li>
+<p><code>cc</code> — write commit message and commit.</p>
+</li>
+<li>
+<p><code>&lt;leader&gt;gp</code> — push.</p>
+</li>
+<li>
+<p><code>&lt;leader&gt;gD</code> — verify the diff before and after.</p>
+</li>
+</ol>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_setup"><a class="anchor" href="#_setup"></a>Setup</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Git itself must be installed and on your <code>$PATH</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">sudo apt install git
+git --version</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>No additional plugin configuration is required — all three plugins are
+loaded automatically when Neovim starts.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_prerequisites"><a class="anchor" href="#_prerequisites"></a>Prerequisites</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Dependency</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Notes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>git</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>sudo apt install git</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Neovim ≥ 0.12</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">See <a href="../getting-started.html" class="xref page">Getting Started</a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>This page was built using the Antora default UI.</p>
+  <p>The source code for this UI is licensed under the terms of the MPL-2.0 license.</p>
+</footer>
+<script id="site-script" src="../../_/js/site.js" data-ui-root-path="../../_"></script>
+<script async src="../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>
