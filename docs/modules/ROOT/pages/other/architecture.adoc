@@ -172,7 +172,7 @@ All plugins are managed by https://github.com/folke/lazy.nvim[lazy.nvim]. Specs 
 
 [cols="1,3"]
 |===
-|https://github.com/nvim-treesitter/nvim-treesitter[nvim-treesitter] (pinned: `main`) |Syntax highlighting and indent via Neovim's core treesitter APIs (`vim.treesitter.start()`, `indentexpr`). Moved off the frozen `master` branch, whose module API and text-objects query path are broken on Neovim 0.12.
+|https://github.com/nvim-treesitter/nvim-treesitter[nvim-treesitter] (pinned: `main`, the actively maintained branch) |Syntax highlighting and indent via Neovim's core treesitter APIs (`vim.treesitter.start()`, `indentexpr`).
 |https://github.com/nvim-treesitter/nvim-treesitter-textobjects[nvim-treesitter-textobjects] (pinned: `main`) |Semantic text objects (`af`/`if` function, `ac`/`ic` class, `aa`/`ia` argument) and jump motions (`++]++f`/`++[++f`/`++]++F`/`++[++F`). Disabled in Lisp-family buffers (vim-sexp handles those).
 |https://github.com/kylechui/nvim-surround[nvim-surround] |Surround text with quotes, brackets, tags (`ys`/`cs`/`ds`, identical keys to vim-surround)
 |https://github.com/tpope/vim-unimpaired[vim-unimpaired] |Paired bracket keymaps (`[b`, `]b`, etc.)

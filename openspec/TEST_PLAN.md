@@ -1548,8 +1548,10 @@ separate, optional check you can run any time and isn't a blocker for this chang
 2. Open `docs/modules/ROOT/pages/other/architecture.adoc` — confirm the `nvim-treesitter`/
    `nvim-treesitter-textobjects` entries reference `main`, not `master`.
 
-- [ ] **DEFERRED to post-merge** — docs source review moved to the *Post-merge* checklist below; not
-      a blocker for raising/merging this PR.
+- [X] Docs source review completed post-merge — `navigation.adoc`/`keybindings.adoc` read correctly;
+      `architecture.adoc`'s `nvim-treesitter` prose reworded to drop an ambiguous `master` mention
+      (the pin itself always correctly said `main` — the surrounding sentence just also named the old
+      branch for context, which read as if it were stale)
 
 ### Raise PR & merge
 
@@ -1562,6 +1564,7 @@ separate, optional check you can run any time and isn't a blocker for this chang
 
 - [ ] `git checkout main && git pull origin main`
 - [ ] Launch Neovim: `:Lazy sync` — confirm clean
-- [ ] TS.9 (deferred) — docs source review: `navigation.adoc`/`keybindings.adoc` Treesitter Text
+- [X] TS.9 (deferred) — docs source review: `navigation.adoc`/`keybindings.adoc` Treesitter Text
       Objects sections read correctly (matched `|===` delimiters, valid `xref:` targets);
-      `architecture.adoc` references `main`, not `master`
+      `architecture.adoc` references `main`, not `master` (reworded the nvim-treesitter prose to
+      drop an ambiguous `master` mention — the pin itself was always correct)
