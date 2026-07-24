@@ -1410,3 +1410,140 @@ two namespaces.
 - [X] All changes (hotfix + 03–08) validated on branch and merged to main
 - [X] No open **08** issues from validation runs — the one finding (`ANTHROPIC_API_KEY` shadowing `claude_cli`, §8.5) is pre-existing and non-08, tracked separately for its own fix
 - [X] lazy-lock.json committed on main reflects the final plugin state
+
+---
+
+## Change · migrate-treesitter-main
+
+**Branch:** `fix/migrate-treesitter-main`
+
+Moves `nvim-treesitter` and `nvim-treesitter-textobjects` off the frozen `master` branch onto the
+maintained `main` branch. `master`'s text-objects query path calls a Neovim API removed in 0.12
+(`tsrange.lua` → `:start()`), so `vaf`/`vif`/`daf`/`]f`/`[f` silently no-op today — this **supersedes**
+the `treesitter-markdown-highlight-disable` hotfix above and the text objects backed out after
+Change 01. `main` targets Neovim's core treesitter APIs (`vim.treesitter.start()`, `indentexpr`)
+instead of `master`'s module system, and restores text objects via
+`nvim-treesitter-textobjects`'s `main`-branch select/move API.
+
+**Prerequisites** (confirm before validating):
+- A C compiler on `$PATH` (parsers compile from source) — already required; confirmed in *One-Time
+  Test Machine Setup* (line 55).
+- `testdocs/hello.lua`, `hello.cs`, `hello.fs`/`hello.fsx`, `hello.hs`, and `hello.clj` (or
+  `hello.lisp`/`hello.janet`) as fixtures — all already in the repo.
+- A markdown file with a **fenced code block** to exercise the injection path (e.g. this very
+  `TEST_PLAN.md`, or scratch one with a ```` ```lua ```` block) — plain prose alone won't trigger it.
+
+### Prepare
+
+1. `git fetch origin && git checkout fix/migrate-treesitter-main`
+2. Launch Neovim: `:Lazy sync` — wait for completion. This **recompiles parsers** (first run can take
+   a minute or two) and installs `nvim-treesitter-textobjects` fresh.
+3. `:Lazy` — confirm both `nvim-treesitter` and `nvim-treesitter-textobjects` show branch **`main`**,
+   no error icons.
+
+- [ ] Branch checked out, `:Lazy sync` clean; both treesitter plugins on `main`; `:messages` empty
+
+### Validate
+
+#### TS.1 — Highlight active in the four supported languages
+
+1. Open `testdocs/hello.lua` — confirm syntax colors render (keywords, strings, comments distinctly
+   colored — not plain text). Run `:lua print(vim.treesitter.highlighter.active[vim.api.nvim_get_current_buf()] ~= nil)`
+   → expect `true`.
+2. Repeat for `testdocs/hello.cs`, `testdocs/hello.fs` (or `.fsx`), and `testdocs/hello.hs`.
+
+- [ ] All four (lua/cs/fs/hs) show real syntax highlighting and `highlighter.active` is non-nil
+
+#### TS.2 — Treesitter indent (`indentexpr`)
+
+1. In `testdocs/hello.lua`, run `:set indentexpr?` — expect
+   `indentexpr=v:lua.require'nvim-treesitter'.indentexpr()`.
+2. Go to the end of `function M.greet(name)`'s first line, press `o` to open a new line — confirm it
+   auto-indents one level in (matching the existing body), not flush-left.
+
+- [ ] `indentexpr` set correctly; `o` inside a function body indents as expected
+
+#### TS.3 — Markdown highlight/indent (nil-range workaround removed)
+
+1. Open a markdown file with a fenced code block (e.g. this `TEST_PLAN.md`).
+2. Confirm no error appears in `:messages` (no `nil range` / `languagetree` traceback).
+3. Confirm the fenced code block's contents are syntax-highlighted in the block's own language
+   (e.g. a ```` ```lua ```` block shows Lua highlighting) — this proves the injection parser is
+   active, not just the outer markdown highlight.
+
+- [ ] No nil-range error; fenced code blocks show injected-language highlighting
+
+#### TS.4 — Select text objects: `af`/`if`, `ac`/`ic`, `aa`/`ia`
+
+Use `testdocs/hello.cs`:
+
+1. Cursor inside `Main`'s body (the `Console.WriteLine(...)` line) → `vaf` → the **whole `Main`
+   method** (signature through its closing `}`) is visually selected.
+2. Cursor in the same spot → `dif` → only the **body** of `Main` is deleted, signature/braces remain.
+   Undo (`u`).
+3. Cursor on the `Program` line → `vac` → the **whole class** (through its closing `}`) is selected.
+4. Cursor on the `name` parameter in `Greet(string name)` → `dia` → just `name` is deleted, leaving
+   `Greet(string )`-shape. Undo (`u`).
+5. Repeat `vaf`/`dif` on `testdocs/hello.lua`'s `M.greet` — confirm the same behavior on a multi-line
+   Lua function.
+
+- [ ] `vaf`/`ac`/`aa` select correctly; `dif`/`dia` delete only the inner content; no `tsrange` or
+      removed-API error in `:messages`
+
+#### TS.5 — Motions `]f`/`[f`/`]F`/`[F` and the jumplist
+
+1. In `testdocs/hello.lua`, go to line 1 (`gg`).
+2. Press `]f` twice — cursor lands on `function M.greet`, then `function M.farewell`.
+3. Press `<C-o>` — cursor jumps back to `M.greet` (real jumplist entry, not just cursor movement).
+   Press `<C-i>` to jump forward again.
+4. Press `]F`/`[F` — confirm these land on function **ends** (the `end` keyword), distinct from
+   `]f`/`[f`.
+
+- [ ] `]f`/`[f`/`]F`/`[F` move correctly; `<C-o>`/`<C-i>` navigate real jumplist entries
+
+#### TS.6 — Lisp-family buffers keep vim-sexp, not treesitter
+
+1. Open `testdocs/hello.clj` (or `hello.lisp`/`hello.janet`).
+2. Cursor inside a form → `vaf` — confirm the selection follows **s-expression** structure (matches
+   parens), not a treesitter function-node boundary.
+3. `:verbose map af` in that buffer — confirm it resolves to a vim-sexp `<Plug>` mapping (e.g.
+   `<Plug>(sexp_outer_list)`), not a Lua callback from `nvim-treesitter-textobjects`.
+
+- [ ] `af`/`if` in Lisp-family buffers still follow vim-sexp; no treesitter text object attached
+
+#### TS.7 — No collisions with existing bracket mappings
+
+1. In a buffer with unstaged git changes, press `]h`/`[h` — gitsigns hunk navigation still works.
+2. Press `]b`/`[b` — vim-unimpaired buffer navigation (`:bnext`/`:bprevious`) still works.
+3. `:verbose map ]c` — confirm **no** custom mapping (falls through to Vim's builtin diff-mode change
+   navigation), i.e. treesitter did **not** claim `]c`/`[c`.
+
+- [ ] `]h`/`[h` (gitsigns) and `]b`/`[b` (unimpaired) unaffected; `]c`/`[c` unclaimed by treesitter
+
+#### TS.8 — Clean startup and syntax
+
+1. Fresh `nvim` (no args) — `:messages` shows no plugin/LSP/treesitter errors.
+2. From a shell: `find . -name '*.lua' -not -path './.git/*' -print0 | xargs -0 luac -p` — all pass.
+
+- [ ] Clean `:messages` on startup; `luac -p` passes repo-wide
+
+#### TS.9 — Docs render correctly
+
+1. Open `docs/modules/ROOT/pages/editor/navigation.adoc` and `editor/keybindings.adoc` — confirm the
+   restored Treesitter Text Objects sections read correctly (tables render, no broken xrefs).
+2. Open `docs/modules/ROOT/pages/other/architecture.adoc` — confirm the `nvim-treesitter`/
+   `nvim-treesitter-textobjects` entries reference `main`, not `master`.
+
+- [ ] Docs read correctly; no stale `master`-branch references remain in the three files above
+
+### Raise PR & merge
+
+- [ ] All validation steps above pass (TS.1–TS.9)
+- [ ] Raise PR: `fix/migrate-treesitter-main` → `main`
+- [ ] Review and approve PR
+- [ ] Merge PR
+
+### Post-merge
+
+- [ ] `git checkout main && git pull origin main`
+- [ ] Launch Neovim: `:Lazy sync` — confirm clean
