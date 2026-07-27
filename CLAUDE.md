@@ -49,11 +49,11 @@ GitHub Copilot and OpenCode have been removed in favour of Claude; the OpenSpec/
 
 This repo uses **OpenSpec** (`openspec/`, `schema: spec-driven`) to drive changes. Capabilities are documented as specs under `openspec/specs/<capability>/`, change proposals live in `openspec/changes/` and are moved to `openspec/changes/archive/` once shipped. `lua/config/openspec.lua` provides in-editor commands. When making a substantive feature change, check whether an OpenSpec proposal/spec is expected for it.
 
-The OpenSpec and project workflows are also available as Claude Code skills in **`.claude/skills/`** — invoke them as slash commands: `/openspec-propose`, `/openspec-apply-change`, `/openspec-continue-change`, `/openspec-verify-change`, `/openspec-archive-change`, `/openspec-explore`, `/openspec-sync-specs`, `/openspec-onboard`, plus `/add-neovim-feature` and `/add-learning-lesson`.
+The OpenSpec and project workflows are also available as Claude Code skills in **`.claude/skills/`** — invoke them as slash commands: `/openspec-propose`, `/openspec-apply-change`, `/openspec-continue-change`, `/openspec-verify-change`, `/openspec-archive-change`, `/openspec-explore`, `/openspec-sync-specs`, `/openspec-onboard`, plus `/add-neovim-feature`.
 
 ## Documentation
 
-**AsciiDoc under `docs/modules/ROOT/pages/` is the source of truth** (Antora site). The only Markdown in the repo is the root `readme.md` (metadata + link to the hosted site). Pages are organized by area: `languages/`, `editor/`, `ai/`, `content/`, `tooling/`, `learning/`. Each guide typically has a matching `*-cheatsheet.adoc`. The nav is `docs/modules/ROOT/nav.adoc` — add an `xref:` entry there when you add a page.
+**AsciiDoc under `docs/modules/ROOT/pages/` is the source of truth** (Antora site). The only Markdown in the repo is the root `readme.md` (metadata + link to the hosted site). Pages are organized by area: `languages/`, `editor/`, `ai/`, `content/`, `tooling/`, `other/`. Each guide typically has a matching `*-cheatsheet.adoc`. The nav is `docs/modules/ROOT/nav.adoc` — add an `xref:` entry there when you add a page.
 
 AsciiDoc filetype in-editor is **`asciidoctor`** (not `asciidoc`) — registered by `lua/plugins/asciidoc.lua` via `vim.filetype.add`. All `after/ftplugin/` and filetype-keyed config must use `asciidoctor`. Syntax/folding: `habamax/vim-asciidoctor`. In-buffer `markview.nvim` rendering was **deferred** (it needs `cathaysia/tree-sitter-asciidoc`, which is absent from nvim-treesitter master) — there is no `markview`/`<localleader>mv` toggle; re-enable when the grammar is available. Docker/Antora preview: `after/ftplugin/asciidoctor.lua`.
 
