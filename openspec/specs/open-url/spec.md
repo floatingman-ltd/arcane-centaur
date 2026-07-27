@@ -1,3 +1,13 @@
+# open-url Specification
+
+## Purpose
+
+Provides `util.open_url`, the single entry point every feature uses to hand a URL to the user.
+When a display is available it tries the graphical openers in priority order (`xdg-open`, `open`,
+`wslview`, `explorer.exe`); when `term.is_console` is `true` it skips them entirely and emits an
+INFO notification containing the URL, so a console user can copy it rather than watching a silent
+no-op. A GUI session with no usable opener still produces a WARN with install guidance.
+
 ## Requirements
 
 ### Requirement: URL opening with console fallback

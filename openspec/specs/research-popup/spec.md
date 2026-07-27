@@ -1,4 +1,18 @@
-## ADDED Requirements
+# research-popup Specification
+
+## Purpose
+
+Answers free-form questions from inside the editor through the `claude` CLI, in two flavours:
+`:ResearchAsk` (`<leader>?a`) sends the bare question for general knowledge, while
+`:ResearchLocal` (`<leader>?l`) grounds the prompt in *this* configuration — live keymap
+descriptions plus the assembled cheatsheet — and instructs the model to answer only from that
+context and to say so when the answer isn't there. Both prompt through one shared input, run
+asynchronously via `vim.system` so the editor stays responsive, and render into the same floating
+window helper used by `claude-cli-integration` (`q`/`<Esc>` to dismiss). Authentication comes from
+Claude Code itself; no `ANTHROPIC_API_KEY` is required, and a missing `claude` binary aborts with
+a notification.
+
+## Requirements
 
 ### Requirement: Free-form question prompt (shared input)
 The feature SHALL provide two commands, `:ResearchLocal` and `:ResearchAsk`, each of which prompts the user for a free-form question through a single shared input mechanism before issuing any request. Cancelling or submitting empty input SHALL abort with no request and no result window.

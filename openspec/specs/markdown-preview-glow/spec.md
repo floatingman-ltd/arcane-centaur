@@ -1,3 +1,14 @@
+# markdown-preview-glow Specification
+
+## Purpose
+
+Provides markdown preview that works without a browser, by rendering the current buffer with the
+`glow` binary into a centered floating scratch window via `glow.nvim`. `glow.nvim` loads for
+markdown filetypes in every environment, while the browser-based `markdown-preview.nvim` loads
+only when `term.is_console` is `false`; a single preview keymap dispatches to `:Glow` on a console
+and `:MarkdownPreviewToggle` in a GUI, so the trigger is the same either way. A missing `glow`
+binary degrades to a WARN notification with install instructions rather than an error.
+
 ## Requirements
 
 ### Requirement: Glow documentation lives in the Markdown guide

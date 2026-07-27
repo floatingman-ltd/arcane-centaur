@@ -1,3 +1,14 @@
+# console-detection Specification
+
+## Purpose
+
+Detects whether Neovim is running without a graphical display and exposes that as a single
+boolean flag, `term.is_console` in `lua/config/terminal.lua`, derived solely from the absence of
+both `$DISPLAY` and `$WAYLAND_DISPLAY`. Other capabilities branch on this flag rather than
+hardcoding terminal-specific behaviour, so features with a graphical dependency (browser preview,
+URL opening, PNG diagram rendering) can fall back to console-native equivalents on a TTY, over
+SSH, or in tmux on a headless server.
+
 ## Requirements
 
 ### Requirement: Console detection documentation lives in the Architecture guide

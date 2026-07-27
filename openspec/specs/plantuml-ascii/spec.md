@@ -1,3 +1,14 @@
+# plantuml-ascii Specification
+
+## Purpose
+
+Renders PlantUML diagrams as text instead of images, so diagram preview works without a browser.
+`:PumlPreviewAscii` is registered for `plantuml` buffers in every environment: it reuses the
+existing encoding logic, fetches the plain-ASCII rendering from the PlantUML Docker server's
+`/txt/` endpoint, and shows it in a centered floating scratch window. When `term.is_console` is
+`true`, plain `:PumlPreview` routes to the same ASCII path; the PNG-in-a-browser path is only
+registered in GUI sessions. Encoding failures emit an ERROR and open no window.
+
 ## Requirements
 
 ### Requirement: PlantUML ASCII documentation lives in the Diagrams guide
