@@ -1,4 +1,14 @@
-## ADDED Requirements
+# openspec-integration Specification
+
+## Purpose
+
+Wraps the `openspec` CLI in editor commands so the spec-driven workflow can be driven without
+leaving Neovim. `lua/config/openspec.lua` registers `:OpenspecNew` (prompts for a name, runs
+`openspec new change`), `:OpenspecStatus` (global, or scoped to a change when given an argument),
+and `:OpenspecList`, each running in the repo root and showing its output in a read-only bottom
+split scratch buffer, bound to `<leader>osn` / `<leader>oss` / `<leader>osl`.
+
+## Requirements
 
 ### Requirement: New change command
 The integration SHALL provide a `:OpenspecNew` command that prompts for a change name and runs `openspec new change "<name>"`, displaying the result in a bottom split scratch buffer.

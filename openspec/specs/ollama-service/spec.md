@@ -1,3 +1,14 @@
+# ollama-service Specification
+
+## Purpose
+
+Runs a local Ollama inference server as a Docker Compose service at
+`docker/ollama/docker-compose.yml`, providing the offline model backend that avante.nvim and the
+Ollama learning path depend on. The service follows the same conventions as the other services in
+`docker/`: port `11434` bound to loopback only, model data persisted in a named volume so pulls
+survive `down`/`up` cycles, `restart: unless-stopped` for recovery after reboot, and NVIDIA GPU
+acceleration left commented out so the default startup is CPU-only.
+
 ## Requirements
 
 ### Requirement: Ollama Docker Compose service
