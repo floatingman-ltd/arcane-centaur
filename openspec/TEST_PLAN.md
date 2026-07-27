@@ -1555,10 +1555,10 @@ separate, optional check you can run any time and isn't a blocker for this chang
 
 ### Raise PR & merge
 
-- [ ] All validation steps above pass (TS.1–TS.8). TS.9 (docs source review) deferred to post-merge.
-- [ ] Raise PR: `fix/migrate-treesitter-main` → `main`
-- [ ] Review and approve PR
-- [ ] Merge PR
+- [X] All validation steps above pass (TS.1–TS.8). TS.9 (docs source review) deferred to post-merge.
+- [X] Raise PR: `fix/migrate-treesitter-main` → `main` (PR #154)
+- [X] Review and approve PR
+- [X] Merge PR (PR #154; docs follow-up from TS.9 merged as PR #155)
 
 ### Post-merge
 
@@ -1568,3 +1568,5 @@ separate, optional check you can run any time and isn't a blocker for this chang
       Objects sections read correctly (matched `|===` delimiters, valid `xref:` targets);
       `architecture.adoc` references `main`, not `master` (reworded the nvim-treesitter prose to
       drop an ambiguous `master` mention — the pin itself was always correct)
+- [X] Change archived — `openspec/changes/archive/2026-07-24-migrate-treesitter-main/`, delta promoted
+      to the `treesitter-editing` capability spec (PR #156)
