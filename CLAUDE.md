@@ -62,7 +62,7 @@ AsciiDoc filetype in-editor is **`asciidoctor`** (not `asciidoc`) — registered
 Build the docs site locally (requires Docker; output goes to `build/site/`, gitignored):
 
 ```sh
-docker compose -f antora-playbook.yml run --rm antora antora-playbook.yml
+./docker/antora/run.sh antora-playbook.yml
 ```
 
 ## Validation

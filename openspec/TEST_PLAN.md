@@ -1539,7 +1539,7 @@ Use `testdocs/hello.cs`:
 
 This is a **source review** in a text editor — confirming AsciiDoc syntax is well-formed (table
 delimiters `|===` matched, `xref:` targets look right). It does **not** require building the Antora
-site (`docker compose -f antora-playbook.yml run --rm antora antora-playbook.yml`); that's a
+site (`./docker/antora/run.sh antora-playbook.yml`); that's a
 separate, optional check you can run any time and isn't a blocker for this change.
 
 1. Open `docs/modules/ROOT/pages/editor/navigation.adoc` and `editor/keybindings.adoc` — confirm the

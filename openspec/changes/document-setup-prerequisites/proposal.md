@@ -25,5 +25,5 @@ The config's plugin/tooling set has grown a lot (blink completion, treesitter pa
 
 - **Files:** `docs/modules/ROOT/pages/getting-started.adoc` (expand); `docs/modules/ROOT/pages/languages/setup.adoc` (new); `docs/modules/ROOT/pages/languages/{dotnet,lisp,haskell,janet,lua}.adoc` (normalize Prerequisites); `docs/modules/ROOT/nav.adoc` (add entry).
 - **Docs only** — no `lua/` or config changes.
-- The Antora build (`docker compose -f antora-playbook.yml run --rm antora antora-playbook.yml`) must still succeed (valid AsciiDoc, resolvable xrefs).
+- The Antora build (`./docker/antora/run.sh antora-playbook.yml`) must still succeed (valid AsciiDoc, resolvable xrefs).
 - Independent of the in-flight `feat/03`+ migration branches — describes external prerequisites, which are stable across those config changes.
