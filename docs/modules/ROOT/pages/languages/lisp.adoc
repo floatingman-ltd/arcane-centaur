@@ -46,12 +46,6 @@ the current buffer or selection.
 | xref:#prerequisites[Prerequisites] | SBCL, Clojure, Scheme options
 |===
 
-[NOTE]
-====
-*New to Common Lisp in this config?*
-Work through the xref:learning/lisp/index.adoc[Common Lisp Learning Series] — 11 REPL-driven lessons from setup through building a web service, plus implementation appendices for SBCL, CCL, ECL, and ABCL.
-====
-
 '''''
 
 [[quick-start]]
@@ -484,13 +478,12 @@ popup. To see the complete history:
 **CLISP** is a bytecode interpreter with no native threads. The shared
 `swank-start.lisp` uses `:style :spawn` which requires native thread
 support — CLISP would need `:style nil` or `:style :sigio` instead.
-The project is also largely dormant. CLISP is documented in the learning
-arc appendix (Appendix E) but no container is provided.
+The project is also largely dormant, and no container is provided.
 
 **Allegro CL** (Franz) and **LispWorks** are commercial implementations.
 Allegro's free Express edition is restricted; LispWorks is GUI-oriented
-with no free Docker distribution. Both are covered in the learning arc
-appendix (Appendix F) with pointers to their evaluation licenses.
+with no free Docker distribution. Consult their vendor sites for
+evaluation licenses.
 
 Conjure connects to any Swank server on `127.0.0.1:4005`, so any
 implementation you start locally — with the settings from

@@ -193,7 +193,7 @@ create it
 that change:
 
 ....
-:OpenspecStatus add-ollama-learning-path
+:OpenspecStatus document-setup-prerequisites
 ....
 
 Output is shown in a read-only bottom split (15 lines tall). Press `q`

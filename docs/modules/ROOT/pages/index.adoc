@@ -23,7 +23,7 @@ Requires *Neovim ≥ 0.12*. On first launch, https://github.com/folke/lazy.nvim[
 [cols="1,3"]
 |===
 | xref:languages/lisp.adoc[Lisp / Clojure / Scheme / Fennel] | REPL-driven development with Conjure and vim-sexp
-| xref:languages/janet.adoc[Janet] | Janet language guide and learning path
+| xref:languages/janet.adoc[Janet] | Janet language guide
 | xref:languages/dotnet.adoc[.NET (C# and F#)] | Roslyn LSP, iron.nvim REPL, fsautocomplete
 | xref:languages/haskell.adoc[Haskell] | haskell-tools, HLS, GHCi integration
 |===

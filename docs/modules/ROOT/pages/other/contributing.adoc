@@ -21,7 +21,6 @@ Open the relevant `.adoc` file under `docs/modules/ROOT/pages/` and edit it dire
 |===
 |`docs/modules/ROOT/pages/guides/` |Full how-to guides
 |`docs/modules/ROOT/pages/cheatsheets/` |Quick reference tables
-|`docs/modules/ROOT/pages/learning/` |Step-by-step learning paths
 |===
 . Add an `xref:` entry in `docs/modules/ROOT/nav.adoc` to make it reachable from the sidebar.
 . Follow the guide template (see below).
