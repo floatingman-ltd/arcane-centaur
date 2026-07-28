@@ -430,14 +430,20 @@ To pin a specific version instead of auto-resolving the newest, set
 [[prerequisites]]
 == Prerequisites
 
+.NET-specific tools only. Base requirements — Neovim itself, git, `fzf`, a C compiler for the
+Treesitter parsers — are in xref:getting-started.adoc[Getting Started]; the cross-language view is
+in xref:languages/setup.adoc#dotnet[Language Setup].
+
 [width="100%",cols="34%,33%,33%",options="header",]
 |===
 |Dependency |Purpose |Install hint
 |*.NET SDK ≥ 8* (net8.0 or net10.0 — both LTS) |C# and F# compiler, `dotnet fsi` REPL. The **runtime must match the project's `<TargetFramework>`** to run/debug. |https://dotnet.microsoft.com/download
-|*Neovim ≥ 0.12* |Required by roslyn.nvim |See xref:getting-started.adoc[Getting Started]
 |*Roslyn LSP* |C# language server (roslyn.nvim) |<<setup,Installing the Roslyn Language Server>>
-|*netcoredbg* |C#/F# debug adapter (nvim-dap) |<<debugging,Debugging § Prerequisites>>
-|*`fzf`* |easy-dotnet project/test picker |`sudo apt install fzf` (or brew/dnf)
+|*fsautocomplete* |F# language server; also provides F# formatting |`dotnet tool install -g fsautocomplete`
+|*csharprepl* |C# REPL (iron.nvim) |`dotnet tool install -g csharprepl`
+|*csharpier* |C# formatter |`dotnet tool install -g csharpier`
+|*EasyDotnet* |Server tool easy-dotnet.nvim needs for solution management, run, and test |`dotnet tool install -g EasyDotnet`
+|*netcoredbg* |C#/F# debug adapter (nvim-dap) |<<debugging,Debugging § Prerequisites>> — a GitHub release binary, *not* a `dotnet tool`
 |===
 
 === Installing .NET SDK

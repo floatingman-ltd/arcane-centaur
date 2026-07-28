@@ -8,10 +8,20 @@ This guide covers everything you need before opening this configuration for the 
 |===
 | xref:#neovim[Neovim ≥ 0.12] | AppImage and tarball install methods
 | xref:#quick-start[Quick Start] | Clone the repo and launch Neovim
+| xref:#required-everyone[Required for everyone] | The tools nothing works without
+| xref:#required-per-feature[Required per feature] | Only if you use that feature
 | xref:#docker[Docker] | Required by AI tools, diagrams, Markdown export, and presentations
 | xref:#docker-containers[Docker Containers] | Per-container start/stop reference
-| xref:#system-deps[System Dependencies] | git, curl, unzip, build-essential
+| xref:#wsl[WSL] | Clipboard and browser integration
+| xref:languages/setup.adoc[Language Setup] | Per-language tools (LSP, REPL, formatter, debugger)
 |===
+
+[TIP]
+====
+This page covers the *shared* toolchain. Anything specific to one language — LSP servers, REPLs,
+formatters, debuggers — lives in xref:languages/setup.adoc[Language Setup], organised per language
+so you install only what you actually use.
+====
 
 ---
 [[neovim]]
@@ -99,16 +109,32 @@ Review any `ERROR` items. `WARN` items for optional features (LSP servers, runti
 
 Docker Engine and Docker Compose are required by several features:
 
-[width="100%",cols="34%,33%,33%",options="header",]
+All nine containerized services, and what each one is for:
+
+[width="100%",cols="30%,30%,40%",options="header",]
 |===
-|Feature |Docker service |Compose file
+|Feature |Docker service |How it is invoked
 |AI chat (ollama backend) |Ollama LLM server |`docker/ollama/docker-compose.yml`
 |Diagrams |PlantUML server |`docker/plantuml-server/docker-compose.yml`
-|Markdown PDF export |pandoc/extra |`docker/md2pdf/` (via `docker run`)
-|Project-wide Markdown preview |markserv |`docker/markserv/docker-compose.yml`
 |Presentations |MARP CLI |`docker/marp/docker-compose.yml`
+|Project-wide Markdown preview |markserv |`docker/markserv/docker-compose.yml`
 |Common Lisp REPL |SBCL + Swank (default), CCL, ECL, ABCL |`docker/lisp-swank/docker-compose.yml`
+|Markdown → PDF export |pandoc + filters |`docker/md2pdf/` (filters, driven by the pandoc wrapper)
+|Document conversion |pandoc |`docker/pandoc/run.sh`
+|AsciiDoc → HTML (single file) |asciidoctor |`docker/asciidoctor/run.sh`
+|Docs site build (this site) |antora |`docker/antora/run.sh`
 |===
+
+[NOTE]
+====
+The last three are `run.sh` wrappers around `docker run`, not Compose services — there is no
+container to start and stop. Run them on demand:
+
+[source,sh]
+----
+./docker/antora/run.sh antora-playbook.yml   # build this documentation site
+----
+====
 
 === Installing Docker Engine
 
@@ -243,9 +269,11 @@ Ollama and the other services containerized on purpose. A fresh `docker run --rm
 ---
 
 [[system-deps]]
-== System Dependencies
+[[required-everyone]]
+== Required for everyone
 
-These packages are needed by lazy.nvim's LuaRocks support and various plugin build steps:
+Install these before first launch. Without them the config either fails to install plugins or
+loses core editing functionality.
 
 [source,sh]
 ----
@@ -255,21 +283,134 @@ sudo apt install -y \
   curl \
   unzip \
   lua5.4 \
-  luarocks
+  luarocks \
+  ripgrep \
+  fzf
 ----
 
 [cols="1,2"]
 |===
 |Package |Why it's needed
-|`build-essential` |Compiles native plugin components (e.g. telescope-fzf-native)
+|`build-essential` |A C compiler — *compiles Treesitter parsers*, plus native plugin components
 |`git` |lazy.nvim fetches plugins via git
 |`curl` |Used by install scripts and plugin build steps
 |`unzip` |Needed to extract some plugin archives
 |`lua5.4` |Required by lazy.nvim's LuaRocks support
 |`luarocks` |Plugin dependency manager used by lazy.nvim
+|`ripgrep` |Backs the fuzzy picker's live grep, todo-comments, and trouble
+|`fzf` |Backs fzf-lua — the picker used for files, buffers, and symbols
 |===
 
-=== Node.js (optional — required for markdown-preview.nvim)
+[[c-compiler]]
+=== C compiler (build-essential)
+
+Treesitter parsers are *compiled from source on your machine* at install time, so a working
+`cc`/`gcc` is required for syntax highlighting, indentation, and the `af`/`if` text objects in
+every supported language.
+
+[IMPORTANT]
+====
+A missing C compiler *fails silently*. Parser installation aborts, and the only symptom is a file
+with no syntax highlighting — no error, no notification, nothing in `:messages`. If highlighting
+is missing for one language, check the compiler before anything else.
+====
+
+[source,sh]
+----
+sudo apt install -y build-essential   # Debian/Ubuntu
+cc --version                          # verify
+----
+
+Then confirm the parsers actually built:
+
+[source,vim]
+----
+:checkhealth nvim-treesitter
+----
+
+See xref:languages/setup.adoc#parsers[Language Setup → Treesitter parsers] for the full parser list.
+
+[[editor-binaries]]
+=== ripgrep and fzf
+
+These two are easy to overlook because nothing errors without them — the config just quietly
+loses its core navigation UX.
+
+[cols="1,2"]
+|===
+|Binary |What breaks without it
+|`rg` (ripgrep) |Live grep in the picker, the todo-comments list (`++<++leader++>++xT`), and trouble's search
+|`fzf` |fzf-lua itself — the picker used for files, buffers, git files, and symbols
+|===
+
+[source,sh]
+----
+sudo apt install -y ripgrep fzf     # Debian/Ubuntu
+# or: brew install ripgrep fzf
+----
+
+[[required-per-feature]]
+== Required per feature
+
+Everything below is needed *only* if you use the feature it belongs to. Skipping any of these
+leaves the rest of the config fully functional.
+
+[cols="1,2,2",options="header"]
+|===
+|Binary |Needed by |Install
+|`node` + `npm` |markdown-preview.nvim and bracey.vim build steps |xref:#nodejs[see below]
+|`make` |avante.nvim's build step |`sudo apt install -y make` (included in `build-essential`)
+|`claude` |All three AI features |xref:#claude-cli[see below]
+|`python3` |PlantUML diagram encoding |`sudo apt install -y python3`
+|`glow` |Console (no-browser) Markdown preview |xref:#glow[see below]
+|`docker` |Nine containerized features |xref:#docker[see above]
+|===
+
+[[claude-cli]]
+=== claude CLI (AI features)
+
+Three separate features shell out to the `claude` binary, so without it none of the AI integration
+works:
+
+[cols="1,2"]
+|===
+|Feature |Entry points
+|`claude_cli` |`:ClaudeSuggest` / `:ClaudeExplain` — `++<++leader++>++gcs` / `++<++leader++>++gce`
+|claudecode.nvim |The persistent editor-aware session — `++<++leader++>++gcc`
+|Research popup |`:ResearchLocal` / `:ResearchAsk` — `++<++leader++>++?l` / `++<++leader++>++?a`
+|===
+
+Install Claude Code and make sure `claude` is on your `$PATH`:
+https://docs.claude.com/en/docs/claude-code/overview[Claude Code documentation].
+
+[WARNING]
+====
+These features authenticate through Claude Code itself. They do *not* use `ANTHROPIC_API_KEY` —
+and a stray `ANTHROPIC_API_KEY` in your environment actively breaks `claude_cli`. Unset it if the
+commands start failing.
+====
+
+[[glow]]
+=== glow (console Markdown preview)
+
+`glow` renders Markdown in a floating window, which is how preview works when there is no browser
+available (a TTY, an SSH session, tmux on a headless box). In a GUI session the preview keymap
+uses `markdown-preview.nvim` in a browser instead, so `glow` is only required for the console path.
+
+[source,sh]
+----
+sudo apt install -y glow      # or: brew install glow
+----
+
+Without it, the preview keymap emits a warning with install instructions rather than failing.
+
+[[nodejs]]
+=== Node.js and npm
+
+Required by the build steps of *two* plugins — `markdown-preview.nvim` and `bracey.vim` (live HTML
+preview). Both fail to build without it.
+
+Use https://github.com/nvm-sh/nvm[nvm] to install Node.js without root:
 
 Use https://github.com/nvm-sh/nvm[nvm] to install Node.js without root:
 
@@ -318,6 +459,34 @@ git config blame.ignoreRevsFile .git-blame-ignore-revs
 
 Without this, `git blame` (and editor blame integrations) will show the reformat commit for
 every line it touched.
+
+---
+
+[[wsl]]
+== WSL
+
+Running under WSL2 adds two host-integration binaries the config probes for. Neither is fatal, but
+both affect everyday use.
+
+[cols="1,2,2",options="header"]
+|===
+|Binary |Purpose |Install
+|`win32yank.exe` |Clipboard integration — yanking to and from the Windows clipboard |https://github.com/equalsraf/win32yank/releases[GitHub release]; put it on your `$PATH` inside WSL
+|`wslview` |Opens URLs in your Windows browser |`sudo apt install -y wslu`
+|===
+
+Without `wslview`, `util.open_url` falls back to printing the URL as a notification so you can copy
+it manually — the same behaviour the config uses on a headless console. Without `win32yank.exe`,
+Neovim's clipboard provider has nothing to bridge to Windows; see
+xref:editor/clipboard.adoc[the Clipboard guide] for the per-environment provider setup.
+
+---
+
+== Next: language tooling
+
+The base toolchain is done. For the LSP server, REPL, formatter, debugger, and parser each language
+needs, continue to xref:languages/setup.adoc[Language Setup] — it is organised per language so you
+install only what you use.
 
 ---
 

@@ -456,6 +456,11 @@ popup. To see the complete history:
 [[prerequisites]]
 == Prerequisites
 
+Lisp-specific tools only. Base requirements — Neovim itself, git, a C compiler for the Treesitter
+parsers — are in xref:getting-started.adoc[Getting Started]; the cross-language view is in
+xref:languages/setup.adoc#lisp[Language Setup]. The Common Lisp REPLs are containerized, so
+Docker is the only host-side prerequisite for them.
+
 === Choosing a REPL
 
 [width="100%",cols="34%,33%,33%",options="header",]
@@ -489,11 +494,10 @@ Conjure connects to any Swank server on `127.0.0.1:4005`, so any
 implementation you start locally — with the settings from
 `docker/lisp-swank/swank-start.lisp` — is compatible.
 
-=== Neovim
+=== Base requirements
 
-Neovim ≥ 0.12 is required. See
-xref:getting-started.adoc[Getting Started] for install
-instructions.
+Neovim itself, git, and the C compiler that builds the Lisp Treesitter parsers are covered once in
+xref:getting-started.adoc[Getting Started] rather than repeated per language.
 
 This configuration is built around an interactive, REPL-driven Lisp
 workflow. Four plugins work together to give you a seamless experience:
@@ -520,7 +524,8 @@ All four plugins lazy-load only when you open a *Lisp*, *Clojure*,
 
 ____
 *Janet* shares the same plugin set (Conjure, vim-sexp, parinfer,
-rainbow-delimiters). See janet.md for the Janet-specific guide.
+rainbow-delimiters). See xref:languages/janet.adoc[the Janet guide] for the
+Janet-specific workflow.
 ____
 
 https://github.com/stevearc/conform.nvim[conform.nvim] is also loaded

@@ -177,6 +177,10 @@ the server is attached to the current buffer. To open the LSP log:
 [[prerequisites]]
 == Prerequisites
 
+Janet-specific tools only. Base requirements — Neovim itself, git, a C compiler for the Treesitter
+parser — are in xref:getting-started.adoc[Getting Started]; the cross-language view is in
+xref:languages/setup.adoc#janet[Language Setup].
+
 === Installing Janet
 
 [width="100%",cols="50%,50%",options="header",]
@@ -236,10 +240,10 @@ janet bootstrap.janet
 See https://github.com/janet-lang/jpm[janet-lang/jpm] for full
 instructions.
 
-=== Neovim
+=== Base requirements
 
-Neovim ≥ 0.12 is required. See
-xref:getting-started.adoc[Getting Started] for install instructions.
+Neovim itself, git, and the C compiler that builds the `janet_simple` Treesitter parser are covered
+once in xref:getting-started.adoc[Getting Started] rather than repeated per language.
 
 Janet is a lightweight, expressive Lisp dialect designed for scripting,
 system automation, and embedding. This configuration provides

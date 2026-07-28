@@ -1,0 +1,268 @@
+== Language Setup
+
+Everything you need to install *per language*, in one place. Working with C#? Install the four
+tools in the xref:#dotnet[.NET] section. Working with Lisp? The xref:#lisp[Lisp family] section.
+Nothing here is needed until you actually open a file of that type — the config lazy-loads all
+language tooling by filetype.
+
+Base tools that *every* language needs — Neovim, git, curl, a C compiler, and the editor binaries
+`rg` and `fzf` — live in xref:getting-started.adoc[Getting Started]. Install those first.
+
+*Quick navigation*
+
+[cols="1,3"]
+|===
+| xref:#matrix[At a glance] | Every language and its five tool slots
+| xref:#lua[Lua] | lua-language-server, stylua
+| xref:#dotnet[.NET (C# and F#)] | SDK, Roslyn, fsautocomplete, netcoredbg
+| xref:#haskell[Haskell] | ghcup, GHC, HLS, haskell-debug-adapter
+| xref:#lisp[Lisp family] | Common Lisp, Clojure, Scheme, Fennel
+| xref:#janet[Janet] | janet, janet-lsp
+| xref:#parsers[Treesitter parsers] | The C-compiler requirement
+|===
+
+[[matrix]]
+== At a glance
+
+Each language occupies up to five tool slots. `—` means the config wires nothing for that slot;
+it is not a gap you need to fill.
+
+[cols="1,1,1,1,1,1",options="header"]
+|===
+|Language |LSP server |REPL / runtime |Formatter |Debugger |Parser
+
+|xref:#lua[Lua]
+|`lua-language-server`
+|—
+|`stylua`
+|—
+|`lua`
+
+|xref:#dotnet[C#]
+|`Microsoft.CodeAnalysis.LanguageServer` (Roslyn)
+|`csharprepl`
+|`csharpier`
+|`netcoredbg`
+|`c_sharp`
+
+|xref:#dotnet[F#]
+|`fsautocomplete`
+|`dotnet fsi`
+|via LSP
+|`netcoredbg`
+|`fsharp`
+
+|xref:#haskell[Haskell]
+|`haskell-language-server`
+|GHCi
+|via LSP
+|`haskell-debug-adapter`
+|`haskell`
+
+|xref:#lisp[Common Lisp]
+|— (Swank introspection)
+|SBCL {plus} Swank
+|—
+|—
+|`commonlisp`
+
+|xref:#lisp[Clojure]
+|—
+|Clojure CLI {plus} nREPL
+|—
+|—
+|`clojure`
+
+|xref:#lisp[Scheme]
+|—
+|MIT Scheme
+|—
+|—
+|`scheme`
+
+|xref:#lisp[Fennel]
+|—
+|`fennel --repl`
+|—
+|—
+|`fennel`
+
+|xref:#janet[Janet]
+|`janet-lsp`
+|`janet` {plus} Conjure
+|—
+|—
+|`janet_simple`
+|===
+
+[NOTE]
+====
+The Lisp family (Common Lisp, Clojure, Scheme, Fennel, Janet) deliberately has *no LSP*. Editor
+intelligence comes from the live REPL connection instead — see
+xref:languages/lisp.adoc[the Lisp guide].
+====
+
+[[lua]]
+== Lua
+
+Guide: xref:languages/lua.adoc#prerequisites[Lua Prerequisites]
+
+[cols="1,1,2",options="header"]
+|===
+|Dependency |Purpose |Install
+|*lua-language-server* |LSP — completion, diagnostics, go-to-definition |https://github.com/LuaLS/lua-language-server/releases[GitHub release] (or `brew install lua-language-server`)
+|*stylua* |Formatter |`cargo install stylua` — or a https://github.com/JohnnyMorganz/StyLua/releases[GitHub release] binary
+|===
+
+[IMPORTANT]
+====
+`stylua` is *required, not optional*, for Lua work in this repo. It is load-bearing twice over:
+conform's format-on-save uses it, and a `PostToolUse` hook re-runs it on every Lua file Claude
+Code edits, so the committed tree stays stylua-clean.
+
+It degrades gracefully — a missing `stylua` means formatting simply does not apply. Edits are
+never blocked and nothing errors.
+====
+
+[[dotnet]]
+== .NET (C# and F#)
+
+Guide: xref:languages/dotnet.adoc#prerequisites[.NET Prerequisites]
+
+[cols="1,1,2",options="header"]
+|===
+|Dependency |Purpose |Install
+
+|*.NET SDK*
+|Compiler, `dotnet fsi`, and the `dotnet tool` host everything else installs through
+|https://dotnet.microsoft.com/download[Microsoft download page]
+
+|*Microsoft.CodeAnalysis.LanguageServer*
+|C# LSP (Roslyn), driven by roslyn.nvim
+|Must be on `$PATH` — see xref:languages/dotnet.adoc#prerequisites[the .NET guide]
+
+|*fsautocomplete*
+|F# LSP; also provides F# formatting
+|`dotnet tool install -g fsautocomplete`
+
+|*csharprepl*
+|C# REPL, driven by iron.nvim
+|`dotnet tool install -g csharprepl`
+
+|*csharpier*
+|C# formatter
+|`dotnet tool install -g csharpier`
+
+|*EasyDotnet*
+|Server tool that easy-dotnet.nvim requires for solution management, run, and test
+|`dotnet tool install -g EasyDotnet`
+
+|*netcoredbg*
+|Debug adapter, auto-registered with nvim-dap by easy-dotnet
+|A https://github.com/Samsung/netcoredbg/releases[GitHub release] binary — *not* a `dotnet tool`
+|===
+
+[WARNING]
+====
+`netcoredbg` is the one .NET tool you cannot get with `dotnet tool install`. Download the release
+archive for your platform and put the binary on `$PATH`.
+====
+
+[[haskell]]
+== Haskell
+
+Guide: xref:languages/haskell.adoc#prerequisites[Haskell Prerequisites]
+
+[cols="1,1,2",options="header"]
+|===
+|Dependency |Purpose |Install
+
+|*ghcup*
+|Installer that manages every other Haskell tool
+|https://www.haskell.org/ghcup/[ghcup]
+
+|*GHC {plus} cabal / stack*
+|Compiler and build tooling; GHCi is the REPL
+|`ghcup install ghc` and `ghcup install cabal`
+
+|*haskell-language-server*
+|LSP, driven by haskell-tools.nvim (not `lua/config/lsp.lua`)
+|`ghcup install hls`
+
+|*haskell-debug-adapter*
+|Debug adapter for nvim-dap
+|`cabal install haskell-dap ghci-dap haskell-debug-adapter`
+|===
+
+[NOTE]
+====
+Haskell debugging needs *both* `haskell-debug-adapter` **and** an open cabal or stack project.
+haskell-tools.nvim registers `require("dap").configurations.haskell` only when it detects a
+project, so on a bare `.hs` file the debug configuration list stays empty even with the adapter
+installed. This is why the Haskell debugging validation step (`§7.5` in
+`openspec/TEST_PLAN.md`) is deferred rather than failing.
+====
+
+[[lisp]]
+== Lisp family
+
+Guide: xref:languages/lisp.adoc#prerequisites[Lisp Prerequisites]
+
+The Common Lisp REPLs are containerized — you do not install SBCL, CCL, ECL, or ABCL on the host.
+See xref:getting-started.adoc#sbcl-swank[the lisp-swank container] for the compose commands and
+the `:4005` contract.
+
+[cols="1,1,2",options="header"]
+|===
+|Dependency |Purpose |Install
+
+|*Docker*
+|Runs the Swank REPL containers (SBCL, CCL, ECL, ABCL)
+|xref:getting-started.adoc#docker[Getting Started → Docker]
+
+|*Clojure CLI* or *Leiningen*
+|Clojure nREPL
+|https://clojure.org/guides/install_clojure[clojure.org] — then `clojure -M:nrepl`
+
+|*MIT Scheme*
+|Scheme REPL
+|`sudo apt install mit-scheme`
+
+|*Fennel*
+|Fennel REPL
+|https://fennel-lang.org/setup[fennel-lang.org] — then `fennel --repl`
+|===
+
+[[janet]]
+== Janet
+
+Guide: xref:languages/janet.adoc#prerequisites[Janet Prerequisites]
+
+[cols="1,1,2",options="header"]
+|===
+|Dependency |Purpose |Install
+|*janet* |Language runtime and REPL |https://janet-lang.org/docs/index.html[janet-lang.org] (or build from source)
+|*jpm* |Janet package manager, used to install janet-lsp |Ships with most janet builds — see xref:languages/janet.adoc#prerequisites[the Janet guide]
+|*janet-lsp* |LSP server |`jpm install janet-lsp`
+|===
+
+[[parsers]]
+== Treesitter parsers
+
+Syntax highlighting, indentation, and the `af`/`if` text objects all come from Treesitter, and
+*parsers are compiled from source on your machine*. That means a working C compiler is a hard
+requirement for every language in the table above.
+
+If `cc`/`gcc` is missing, parser installation fails and the only symptom you see is a file with
+no syntax highlighting — nothing announces the missing compiler. See
+xref:getting-started.adoc#c-compiler[Getting Started → C compiler] for the install command and
+how to verify.
+
+The config installs these parsers automatically on first launch: `commonlisp`, `clojure`,
+`scheme`, `fennel`, `janet_simple`, `lua`, `fsharp`, `c_sharp`, `haskell`, `vim`, `http`,
+`markdown`, and `markdown_inline`. Check the result with:
+
+[source,vim]
+----
+:checkhealth nvim-treesitter
+----

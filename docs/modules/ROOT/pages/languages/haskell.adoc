@@ -84,14 +84,30 @@ DAP launch configurations once https://github.com/mfussenegger/nvim-dap[nvim-dap
 is installed (added in change 07 for .NET debug support).
 
 Use the standard debug keymaps (`<F5>`, `<F9>`, `<F10>`/`<F11>`/`<F12>`) to start
-a session. No additional Haskell-specific debug adapter install is required for
-basic GHCi-based debugging; a full `haskell-debug-adapter` setup is optional and
-left for a future change.
+a session.
+
+[IMPORTANT]
+====
+Haskell debugging needs *two* things, and both must be present before any debug configuration
+appears:
+
+. **`haskell-debug-adapter` installed** — `cabal install haskell-dap ghci-dap haskell-debug-adapter`
+. **An open cabal or stack project** — haskell-tools.nvim registers
+  `require("dap").configurations.haskell` only when it detects project files
+
+On a bare `.hs` file with no project, the configuration list stays *empty* even with the adapter
+installed, and `<F5>` has nothing to launch. This is why the Haskell debugging validation step
+(`§7.5` in `openspec/TEST_PLAN.md`) is deferred rather than failing.
+====
 
 '''''
 
 [[prerequisites]]
 == Prerequisites
+
+Haskell-specific tools only. Base requirements — Neovim itself, git, a C compiler for the
+Treesitter parser — are in xref:getting-started.adoc[Getting Started]; the cross-language view is
+in xref:languages/setup.adoc#haskell[Language Setup].
 
 [width="100%",cols="34%,33%,33%",options="header",]
 |===
@@ -101,6 +117,6 @@ left for a future change.
 
 |*haskell-language-server* |LSP server |`ghcup install hls`
 
-|*Neovim ≥ 0.12* |Minimum version required |See
-xref:getting-started.adoc[Getting Started]
+|*haskell-debug-adapter* |Debug adapter for nvim-dap — also requires an open cabal/stack project
+|`cabal install haskell-dap ghci-dap haskell-debug-adapter`
 |===
