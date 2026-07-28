@@ -84,7 +84,7 @@ In Visual mode, only the lines in the selection are staged / reset.
 [[committing]]
 == Committing with Fugitive
 
-[cols=",,",options="header",]
+[cols="1,2",options="header"]
 |===
 |Keys |Action
 |`++<++leader++>++gs` |Open git status (`:Git`)
