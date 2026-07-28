@@ -82,7 +82,7 @@ Preview the full site locally before pushing:
 
 [source,sh]
 ----
-docker compose -f antora-playbook.yml run --rm antora antora-playbook.yml
+./docker/antora/run.sh antora-playbook.yml
 # Then open build/site/index.html in a browser
 ----
 

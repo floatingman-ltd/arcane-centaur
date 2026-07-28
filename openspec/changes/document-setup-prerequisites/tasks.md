@@ -24,5 +24,5 @@
 ## 4. Nav + build verification
 
 - [ ] 4.1 Add an `xref` to `languages/setup.adoc` in the Languages group of `docs/modules/ROOT/nav.adoc`.
-- [ ] 4.2 Rebuild the Antora site (`docker compose -f antora-playbook.yml run --rm antora antora-playbook.yml`) — confirm no AsciiDoc/xref errors.
+- [ ] 4.2 Rebuild the Antora site (`./docker/antora/run.sh antora-playbook.yml`) — confirm no AsciiDoc/xref errors.
 - [ ] 4.3 Spot-check rendered pages: getting-started base tables, the matrix, and a couple of guide Prerequisites cross-links.
