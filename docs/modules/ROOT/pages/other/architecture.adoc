@@ -522,10 +522,6 @@ setting up a new language or feature on a fresh machine.
 Quick-reference keymap tables. `index.adoc` is the single-page master
 reference. Each other file covers one plugin or language area.
 
-=== `docs/learning/`
-
-Step-by-step learning paths for specific languages (currently Janet).
-
 === `docs/modules/ROOT/nav.adoc`
 
 Sidebar navigation for the Antora docs site. Must be updated whenever
