@@ -3,9 +3,15 @@
 - [ ] 1.1 Restructure the dependency coverage into **Required for everyone** (Neovim ≥ 0.12, git, curl, unzip, C compiler/build-essential) vs **Required per feature** (Node/npm, Docker).
 - [ ] 1.2 Call out **build-essential / a C compiler (`cc`/`gcc`)** as required to compile nvim-treesitter parsers, and that a missing compiler fails parser install silently (no highlight).
 - [ ] 1.3 Update the Node.js section: it's required for plugin build steps of **markdown-preview.nvim AND bracey.vim** (not "optional, markdown-preview only").
-- [ ] 1.4 Add/verify a **feature→dependency table**: AI/Ollama, diagrams/PlantUML, Markdown export, presentations/MARP, AsciiDoc/Antora preview, Lisp REPL containers → their Docker service/compose file.
+- [ ] 1.4 Add/verify a **feature→dependency table** covering **all nine** services in `docker/`, not just the well-known ones: AI/Ollama (`ollama`), diagrams/PlantUML (`plantuml-server`), Markdown export (`md2pdf`, `pandoc` — two distinct services), presentations/MARP (`marp`), AsciiDoc/Antora preview (`antora`, `asciidoctor` — site build vs single-file conversion), Markdown live preview (`markserv`), Lisp REPL containers (`lisp-swank`).
 - [ ] 1.5 Add a link (xref) to the new Language Setup matrix page.
 - [ ] 1.6 Document the **editor tooling binaries** that are effectively required-for-everyone but currently undocumented: **`ripgrep` (`rg`)** and **`fzf`** — runtime deps of fzf-lua (the picker), todo-comments (`<leader>xT`), and trouble. Include install one-liners; note the config's core UX degrades without them.
+- [ ] 1.7 Document the **feature binaries the config shells out to** that appear nowhere in the setup docs today (all confirmed by `executable()` / `build` checks in `lua/`):
+  - **`claude`** — required by *three* AI features: `claude_cli` (`:ClaudeSuggest`/`:ClaudeExplain`), claudecode.nvim (`<leader>gcc`), and research-popup (`<leader>?l` / `<leader>?a`). Note it uses Claude Code's own auth, **not** `ANTHROPIC_API_KEY`, and that a stray `ANTHROPIC_API_KEY` breaks `claude_cli`.
+  - **`python3`** — required by `lua/plugins/plantuml.lua` for the diagram encoding step; **both** `:PumlPreview` and `:PumlPreviewAscii` fail without it.
+  - **`glow`** — required for console markdown preview; without it the preview keymap only works in a GUI session.
+  - **`make`** — required by avante.nvim's `build = "make"` step.
+- [ ] 1.8 Add a **WSL section**: `win32yank.exe` (clipboard integration) and `wslview` (opening URLs in the Windows browser) are both probed by the config and currently undocumented. Note that without `wslview`, `util.open_url` falls back to a notification.
 
 ## 2. Language Setup matrix — new page
 
