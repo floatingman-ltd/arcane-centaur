@@ -79,12 +79,26 @@ Indent settings for Lua buffers (set in `after/ftplugin/lua.lua`):
 [[prerequisites]]
 == Prerequisites
 
+Lua-specific tools only. Base requirements — Neovim itself, git, a C compiler for the Treesitter
+parser — are in xref:getting-started.adoc[Getting Started]; the cross-language view is in
+xref:languages/setup.adoc#lua[Language Setup].
+
 [width="100%",cols="34%,33%,33%",options="header",]
 |===
 |Dependency |Purpose |Install hint
 |`lua-language-server` |LSP (completions, diagnostics, go-to-def) |See below
-|`stylua` |Format-on-save |Binary download — see below
+|`stylua` |Format-on-save *and* the Claude Code `PostToolUse` hook |Binary download — see below
 |===
+
+[IMPORTANT]
+====
+`stylua` is *required, not optional*, for Lua work in this repo. It is load-bearing twice over:
+conform's format-on-save uses it, and a `PostToolUse` hook re-runs it on every Lua file Claude
+Code edits, so the committed tree stays stylua-clean.
+
+It degrades gracefully — a missing `stylua` means formatting simply does not apply. Edits are never
+blocked and nothing errors.
+====
 
 === Installing lua-language-server
 
@@ -158,7 +172,7 @@ Verify:
 stylua --version
 ----
 
-=== Neovim
+=== Base requirements
 
-Neovim ≥ 0.12 is required. See
-xref:../getting-started.adoc[Getting Started] for install instructions.
+Neovim itself, git, and the C compiler that builds the `lua` Treesitter parser are covered once in
+xref:getting-started.adoc[Getting Started] rather than repeated per language.
