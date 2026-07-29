@@ -104,8 +104,8 @@ fi
 MD_FILE="$(realpath "$1")"
 [[ -f "$MD_FILE" ]] || die "file not found: $MD_FILE"
 
-: "${CONFLUENCE_EMAIL:?CONFLUENCE_EMAIL must be set (see docs/guides/confluence.md)}"
-: "${CONFLUENCE_API_TOKEN:?CONFLUENCE_API_TOKEN must be set (see docs/guides/confluence.md)}"
+: "${CONFLUENCE_EMAIL:?CONFLUENCE_EMAIL must be set (see docs/modules/ROOT/pages/tooling/confluence.adoc)}"
+: "${CONFLUENCE_API_TOKEN:?CONFLUENCE_API_TOKEN must be set (see docs/modules/ROOT/pages/tooling/confluence.adoc)}"
 
 # ── Git root and page map ─────────────────────────────────────────────────────
 

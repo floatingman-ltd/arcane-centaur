@@ -58,7 +58,7 @@ vim.lsp.config("janet_lsp", { on_attach = on_attach, capabilities = capabilities
 vim.lsp.enable("janet_lsp")
 
 -- C# LSP (roslyn.nvim manages the server; we attach shared keymaps here)
--- Requires the Roslyn server binary on $PATH — see docs/guides/dotnet.md.
+-- Requires the Roslyn server binary on $PATH — see docs/modules/ROOT/pages/languages/dotnet.adoc.
 --
 -- cmd override: roslyn.nvim's default cmd is `{ <server>, "--stdio" }`, which targets a
 -- `roslyn-language-server` wrapper. Against the raw Microsoft.CodeAnalysis.LanguageServer we

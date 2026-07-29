@@ -31,7 +31,7 @@
 --   the page directly and a confirmation dialog is shown.  Commit
 --   .confluence-state.json so the whole team benefits.
 --
--- See docs/guides/confluence.md for full setup instructions.
+-- See docs/modules/ROOT/pages/tooling/confluence.adoc for full setup instructions.
 
 local M = {}
 
@@ -223,7 +223,7 @@ function M.publish()
   if not email or email == "" or not token or token == "" then
     vim.notify(
       "Confluence: CONFLUENCE_EMAIL and CONFLUENCE_API_TOKEN must be set.\n"
-        .. "See docs/guides/confluence.md for setup instructions.",
+        .. "See docs/modules/ROOT/pages/tooling/confluence.adoc for setup instructions.",
       vim.log.levels.ERROR
     )
     return
@@ -461,7 +461,7 @@ function M.pull()
   if not email or email == "" or not token or token == "" then
     vim.notify(
       "Confluence: CONFLUENCE_EMAIL and CONFLUENCE_API_TOKEN must be set.\n"
-        .. "See docs/guides/confluence.md for setup instructions.",
+        .. "See docs/modules/ROOT/pages/tooling/confluence.adoc for setup instructions.",
       vim.log.levels.ERROR
     )
     return
@@ -528,7 +528,7 @@ function M.fetch_comments()
   if not email or email == "" or not token or token == "" then
     vim.notify(
       "Confluence: CONFLUENCE_EMAIL and CONFLUENCE_API_TOKEN must be set.\n"
-        .. "See docs/guides/confluence.md for setup instructions.",
+        .. "See docs/modules/ROOT/pages/tooling/confluence.adoc for setup instructions.",
       vim.log.levels.ERROR
     )
     return

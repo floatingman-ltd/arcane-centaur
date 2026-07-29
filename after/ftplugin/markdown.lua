@@ -14,7 +14,7 @@ vim.keymap.set("n", "<localleader>p", function()
   if term.is_console then
     if vim.fn.executable("glow") ~= 1 then
       vim.notify(
-        "glow not found — see docs/guides/cli-console-mode.md for installation instructions",
+        "glow not found — see docs/modules/ROOT/pages/content/markdown.adoc for installation instructions",
         vim.log.levels.WARN
       )
       return
@@ -28,7 +28,7 @@ end, { buffer = true, desc = "Toggle markdown preview" })
 vim.keymap.set("n", "<localleader>pp", function()
   if vim.fn.executable("glow") ~= 1 then
     vim.notify(
-      "glow not found — see docs/guides/cli-console-mode.md for installation instructions",
+      "glow not found — see docs/modules/ROOT/pages/content/markdown.adoc for installation instructions",
       vim.log.levels.WARN
     )
     return
@@ -36,7 +36,7 @@ vim.keymap.set("n", "<localleader>pp", function()
   vim.cmd("Glow")
 end, { buffer = true, desc = "Popup preview (glow, always)" })
 
--- Markserv server preview (requires Docker; see docs/guides/markdown.md)
+-- Markserv server preview (requires Docker; see docs/modules/ROOT/pages/content/markdown.adoc)
 require("config.mdpreview").setup()
 vim.keymap.set(
   "n",
@@ -52,7 +52,7 @@ vim.keymap.set("n", "<localleader>mx", "<cmd>MarpToPptx<cr>", { buffer = true, d
 vim.keymap.set("n", "<localleader>mh", "<cmd>MarpToHtml<cr>", { buffer = true, desc = "MARP: export to HTML" })
 vim.keymap.set("n", "<localleader>md", "<cmd>MarpToPdf<cr>", { buffer = true, desc = "MARP: export to PDF" })
 
--- Markdown → PDF with PlantUML diagrams (requires Docker; see docs/guides/diagrams.md)
+-- Markdown → PDF with PlantUML diagrams (requires Docker; see docs/modules/ROOT/pages/content/diagrams.adoc)
 require("config.mdpdf").setup()
 vim.keymap.set(
   "n",
@@ -61,7 +61,7 @@ vim.keymap.set(
   { buffer = true, desc = "Export markdown to PDF with PlantUML diagrams" }
 )
 
--- Confluence publish/pull/comments (requires CONFLUENCE_EMAIL + CONFLUENCE_API_TOKEN env vars; see docs/guides/confluence.md)
+-- Confluence publish/pull/comments (requires CONFLUENCE_EMAIL + CONFLUENCE_API_TOKEN env vars; see docs/modules/ROOT/pages/tooling/confluence.adoc)
 require("config.confluence").setup()
 vim.keymap.set(
   "n",
@@ -82,7 +82,7 @@ vim.keymap.set(
   { buffer = true, desc = "Confluence: fetch comments to sidecar file" }
 )
 
--- Jira issue/story creation (requires JIRA_EMAIL + JIRA_API_TOKEN + JIRA_BASE_URL env vars; see docs/guides/jira.md)
+-- Jira issue/story creation (requires JIRA_EMAIL + JIRA_API_TOKEN + JIRA_BASE_URL env vars; see docs/modules/ROOT/pages/tooling/jira.adoc)
 require("config.jira").setup()
 vim.keymap.set(
   "n",

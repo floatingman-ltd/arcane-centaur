@@ -8,7 +8,7 @@
 -- The server runs at http://localhost:8090.  Live reload on port 35729
 -- refreshes the browser automatically when you save a file.
 --
--- See docs/guides/markdown.md for the full guide.
+-- See docs/modules/ROOT/pages/content/markdown.adoc for the full guide.
 
 local M = {}
 local util = require("config.util")

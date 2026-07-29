@@ -4,7 +4,7 @@
 -- Prerequisites:
 --   dotnet tool install -g csharpier    (C# formatter)
 --   dotnet tool install -g csharprepl   (C# REPL)
---   Roslyn server binary on $PATH       (see docs/guides/dotnet.md)
+--   Roslyn server binary on $PATH       (see docs/modules/ROOT/pages/languages/dotnet.adoc)
 return {
   -- iron.nvim: REPL interaction for F# Interactive (dotnet fsi) and C# (csharprepl)
   -- Usage: <localleader>sl  send line   <localleader>sc  send motion/selection
@@ -57,7 +57,7 @@ return {
   },
 
   -- roslyn.nvim: official Microsoft Roslyn C# language server.
-  -- The server binary must be installed separately — see docs/guides/dotnet.md.
+  -- The server binary must be installed separately — see docs/modules/ROOT/pages/languages/dotnet.adoc.
   -- LSP keymaps (gd, K, gr, etc.) are attached via vim.lsp.config in lua/config/lsp.lua.
   {
     "seblyng/roslyn.nvim",

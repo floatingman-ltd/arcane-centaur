@@ -7,7 +7,7 @@
 --   mermaid-filter.lua  — renders fenced mermaid blocks via the Kroki public API
 --                         (https://kroki.io) — requires internet access
 --
--- See docs/guides/diagrams.md for the full guide.
+-- See docs/modules/ROOT/pages/content/diagrams.adoc for the full guide.
 
 local M = {}
 
