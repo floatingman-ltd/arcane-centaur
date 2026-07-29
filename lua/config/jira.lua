@@ -22,9 +22,9 @@
 -- Project map:
 --   docs/jira-project-map.md at the git root maps directory/file path prefixes
 --   (relative to the git root) to Jira project keys.  The longest matching
---   prefix wins.  See docs/guides/jira.md for the table format.
+--   prefix wins.  See docs/modules/ROOT/pages/tooling/jira.adoc for the table format.
 --
--- See docs/guides/jira.md for full setup instructions.
+-- See docs/modules/ROOT/pages/tooling/jira.adoc for full setup instructions.
 
 local M = {}
 
@@ -188,7 +188,8 @@ function M.create_issue(issue_type, pre_desc)
 
   if not email or email == "" or not token or token == "" then
     vim.notify(
-      "Jira: JIRA_EMAIL and JIRA_API_TOKEN must be set.\n" .. "See docs/guides/jira.md for setup instructions.",
+      "Jira: JIRA_EMAIL and JIRA_API_TOKEN must be set.\n"
+        .. "See docs/modules/ROOT/pages/tooling/jira.adoc for setup instructions.",
       vim.log.levels.ERROR
     )
     return
@@ -197,7 +198,7 @@ function M.create_issue(issue_type, pre_desc)
   if not base_url or base_url == "" then
     vim.notify(
       "Jira: JIRA_BASE_URL must be set (e.g. https://yourcompany.atlassian.net).\n"
-        .. "See docs/guides/jira.md for setup instructions.",
+        .. "See docs/modules/ROOT/pages/tooling/jira.adoc for setup instructions.",
       vim.log.levels.ERROR
     )
     return
