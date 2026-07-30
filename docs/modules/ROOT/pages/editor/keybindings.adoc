@@ -109,7 +109,9 @@ Active in **F#, Haskell, C#, Lua** buffers (disabled in Lisp-family — vim-sexp
 |`zk` |Normal |Jump to previous fold
 |===
 
-Closed folds display `▸ <name> ··· N lines`. C# buffers use Roslyn LSP for precise `#region` folds; all other languages use treesitter with indent fallback.
+Closed folds display the fold's opening line followed by `··· N lines ···`. C# buffers use Roslyn
+LSP for precise `#region` folds; every other filetype uses the LSP provider with an indent
+fallback. Markdown folds by indent only, and asciidoctor manages its own section folding.
 
 '''''
 
