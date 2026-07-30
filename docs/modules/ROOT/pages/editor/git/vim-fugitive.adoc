@@ -1,0 +1,119 @@
+== vim-fugitive
+
+Run git without leaving the editor. vim-fugitive turns the ordinary git commands you already
+know — status, commit, blame, log, push — into editor windows you can move around in. Instead of
+switching to a terminal to see what changed and stage it, you open a status window, tick files
+off, and write your commit message in a normal buffer.
+
+It is the tool to reach for when you want the *whole* picture: everything that changed, across
+every file, ready to stage and commit. For touching up one or two lines as you type, see
+xref:editor/git/gitsigns.adoc[gitsigns]; for reading a change side by side, see
+xref:editor/git/diffview.adoc[diffview].
+
+Any git command works directly as `:Git ++<++args++>++`, or its short alias `:G ++<++args++>++`
+— for example `:Git commit`, `:G rebase -i HEAD~3`.
+
+=== Keymaps
+
+[cols="1,1,2",options="header"]
+|===
+|Keys |Mode |Action
+|`++<++leader++>++gs` |Normal |Open git status (`:Git`)
+|`++<++leader++>++gb` |Normal |Git blame for current file
+|`++<++leader++>++gl` |Normal |Git log
+|`++<++leader++>++gd` |Normal |Git diff (unstaged changes)
+|`++<++leader++>++gp` |Normal |Git push
+|===
+
+=== Inside the `:Git` status window
+
+These keys are fugitive's own — they work once the status window is open, and are not bound in
+this config.
+
+==== Staging
+
+[cols="1,2",options="header"]
+|===
+|Keys |Action
+|`s` |Stage file / hunk under cursor
+|`u` |Unstage file / hunk under cursor
+|`-` |Toggle stage / unstage
+|`U` |Unstage everything
+|`X` |Discard change under cursor
+|`=` |Toggle inline diff
+|`++>++` / `++<++` |Show / hide inline diff
+|`I` |Interactive patch (`:Git add --patch` / `reset --patch`)
+|===
+
+==== Committing
+
+[cols="1,2",options="header"]
+|===
+|Keys |Action
+|`cc` |Create a commit
+|`ca` |Amend last commit (edit message)
+|`ce` |Amend last commit (keep message)
+|`cw` |Reword last commit
+|`cf` |Create `fixup!` commit for commit under cursor
+|`crc` |Revert commit under cursor
+|===
+
+==== Navigation and diff
+
+[cols="1,2",options="header"]
+|===
+|Keys |Action
+|`(` / `)` |Previous / next file or hunk
+|`++[++c` / `++]++c` |Previous / next hunk (auto-expands inline diffs)
+|`++[++[` / `++]++]` |Jump section backward / forward
+|`gu` |Jump to Untracked section
+|`gs` |Jump to Staged section
+|`dd` |`:Gdiffsplit` on file under cursor
+|`dv` |`:Gvdiffsplit` (vertical)
+|`ds` |`:Ghdiffsplit` (horizontal)
+|`++<++CR++>++` |Open file under cursor
+|`o` |Open in horizontal split
+|`gO` |Open in vertical split
+|`O` |Open in new tab
+|`gq` |Close the status buffer
+|`g?` |Help — all fugitive maps
+|===
+
+==== Stash
+
+[cols="1,2",options="header"]
+|===
+|Keys |Action
+|`czz` |Push stash
+|`czw` |Push stash of working tree (`--keep-index`)
+|`czs` |Push stash of stage only
+|`czp` / `czP` |Pop / apply topmost stash
+|===
+
+=== A commit, start to finish
+
+[arabic]
+. `++<++leader++>++gs` — open the status window.
+. Move to a file and press `s` to stage it, `u` to unstage.
+. `=` to check the inline diff before committing.
+. `cc` — write the commit message, then `:wq` to commit.
+. `++<++leader++>++gp` — push.
+
+=== Setup
+
+Only git itself, on your `$PATH`:
+
+[source,sh]
+----
+sudo apt install git
+git --version
+----
+
+No plugin configuration is needed. See xref:getting-started.adoc[Getting Started] for the base
+toolchain.
+
+'''''
+
+_In the editor, which-key shows these maps live as you type a prefix (built from each keymap's
+`desc`), and `++<++leader++>++?` opens the context-aware cheatsheet. Those are the authoritative
+live view. Plugin configured in `lua/plugins/git.lua`._

@@ -1,0 +1,74 @@
+== gitsigns.nvim
+
+Shows you what you changed, as you change it. Gitsigns marks every added, edited, or deleted line
+in the narrow column to the left of your code, so the shape of your edit is visible without
+running any command. You can then act on one change at a time — stage it, undo it, or peek at what
+the line looked like before — without staging the whole file.
+
+This is the close-range tool: use it while you are actually typing. For the full repository
+picture and for writing the commit, see xref:editor/git/vim-fugitive.adoc[vim-fugitive].
+
+A *hunk* is just one contiguous block of changed lines. Most of the keymaps below act on the hunk
+your cursor is sitting in.
+
+The signs in the left column mean:
+
+* `▎` added
+* `▎` changed
+* `▁` / `▔` deleted line
+
+=== Hunk navigation
+
+[cols="1,1,2",options="header"]
+|===
+|Keys |Mode |Action
+|`++]++h` |Normal |Jump to next hunk
+|`++[++h` |Normal |Jump to previous hunk
+|===
+
+=== Hunk actions
+
+[cols="1,1,2",options="header"]
+|===
+|Keys |Mode |Action
+|`++<++leader++>++hs` |Normal / Visual |Stage hunk (or selected lines)
+|`++<++leader++>++hr` |Normal / Visual |Reset hunk (or selected lines)
+|`++<++leader++>++hS` |Normal |Stage entire buffer
+|`++<++leader++>++hR` |Normal |Reset entire buffer
+|`++<++leader++>++hu` |Normal |Undo last stage
+|`++<++leader++>++hp` |Normal |Preview hunk inline
+|`++<++leader++>++hb` |Normal |Full blame for current line
+|`++<++leader++>++hd` |Normal |Diff this file (unstaged)
+|`++<++leader++>++hD` |Normal |Diff this file (staged, vs. HEAD)
+|===
+
+In Visual mode, only the lines inside your selection are staged or reset — which is how you commit
+half of a messy change and leave the rest.
+
+=== Text object
+
+[cols="1,1,2",options="header"]
+|===
+|Keys |Mode |Action
+|`++<++leader++>++ih` |Visual / Operator |Select current hunk
+|===
+
+Because it is a text object it composes with ordinary operators — `d++<++leader++>++ih` deletes
+the hunk, `y++<++leader++>++ih` yanks it.
+
+____
+*Note — Haskell buffers:* `++<++leader++>++hs` is used by haskell-tools for Hoogle search in
+`.hs` files. The buffer-local Haskell binding wins there, so stage from the fugitive status window
+(`:Git`) instead while editing Haskell.
+____
+
+=== Setup
+
+None. Gitsigns attaches by itself to any file inside a git repository, and stays out of the way in
+files that are not tracked.
+
+'''''
+
+_In the editor, which-key shows these maps live as you type a prefix (built from each keymap's
+`desc`), and `++<++leader++>++?` opens the context-aware cheatsheet. Those are the authoritative
+live view. Plugin configured in `lua/plugins/git.lua`._
