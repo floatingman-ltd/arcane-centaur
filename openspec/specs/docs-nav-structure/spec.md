@@ -22,13 +22,19 @@ than a flat alphabetical list. The groups SHALL be:
 - **THEN** no ungrouped top-level guide entries SHALL appear outside a named group
 
 ### Requirement: Guides and cheatsheets co-located per topic group
-Within each topic group in the nav, the relevant guide AND cheatsheet SHALL be listed
-together. The guide SHALL appear before the cheatsheet within the group.
 
-#### Scenario: Git group contains both guide and cheatsheet
+Within each topic group in the nav, an area that has NOT been migrated to the per-plugin page model SHALL list its guide AND cheatsheet together, with the guide before the cheatsheet. An area that HAS been migrated to the per-plugin page model (see the `docs-plugin-page` capability) SHALL instead list one entry per plugin page under that area, and SHALL NOT retain a separate guide+cheatsheet pair for the migrated plugins.
+
+#### Scenario: Git group lists per-plugin pages
+
 - **WHEN** a reader browses the Editor Core group
-- **THEN** both the Git guide and Git cheatsheet SHALL appear within that group
-- **THEN** the guide SHALL be listed before the cheatsheet
+- **THEN** the Git entries are one nav entry each for the vim-fugitive, gitsigns, and diffview pages
+- **AND** no "Git Guide" or "Git Cheatsheet" nav entry remains
+
+#### Scenario: Unmigrated areas keep guide+cheatsheet co-location
+
+- **WHEN** a reader browses an area not yet migrated to the per-plugin model
+- **THEN** that area's guide and cheatsheet still appear together, guide before cheatsheet
 
 ### Requirement: Lisp and Janet grouped together in nav
 The Lisp and Janet guides and cheatsheets SHALL appear adjacent to each other under a
