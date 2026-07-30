@@ -24,4 +24,4 @@ Keymap documentation is spread across three unsynchronized surfaces and drifts: 
 - **Files:** new `docs/modules/ROOT/pages/editor/git/{vim-fugitive,gitsigns,diffview}.adoc` (or equivalent per-plugin paths); `docs/modules/ROOT/nav.adoc` (Git entries); remove `docs/modules/ROOT/pages/editor/git.adoc` and `editor/git-cheatsheet.adoc` after migration.
 - **Docs only** — no `lua/`, keymap, or plugin-config changes; no runtime behavior touched, so the manual TEST_PLAN live-session requirement does not apply (validation is an Antora build + xref/nav spot-check).
 - **`docs-guide-template`** is unaffected for the pilot — the remaining per-area guides still follow it. The plugin-page model is a distinct page type introduced by `docs-plugin-page`; reconciling the two templates repo-wide is deferred to the follow-up rollout change.
-- The Antora build (`docker compose -f antora-playbook.yml run --rm antora antora-playbook.yml`) must still succeed with valid AsciiDoc and resolvable xrefs.
+- The Antora build (`./docker/antora/run.sh antora-playbook.yml`) must still succeed with valid AsciiDoc and resolvable xrefs.

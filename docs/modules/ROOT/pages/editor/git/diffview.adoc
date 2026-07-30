@@ -1,0 +1,62 @@
+== diffview.nvim
+
+Compare two versions of your work side by side. Diffview opens a dedicated tab with the list of
+changed files down the left and the old and new versions of the selected file next to each other
+on the right, so you can read a change the way you would read a pull request — file by file,
+in context.
+
+It answers three questions that are awkward to answer any other way: *what have I changed so
+far?*, *how did this file get to be the way it is?*, and *how do I settle a merge conflict?*
+
+For staging and committing see xref:editor/git/vim-fugitive.adoc[vim-fugitive]; for marking up
+changes as you type see xref:editor/git/gitsigns.adoc[gitsigns].
+
+=== Keymaps
+
+[cols="1,1,2",options="header"]
+|===
+|Keys |Mode |Action
+|`++<++leader++>++gD` |Normal |Open diff view (all working tree changes)
+|`++<++leader++>++gH` |Normal |Open file history for current file
+|`++<++leader++>++gX` |Normal |Close diff view
+|===
+
+=== Comparing against any commit or branch
+
+The keymaps cover the common case — your uncommitted work. To compare against something else,
+call the commands directly:
+
+[source,vim]
+----
+:DiffviewOpen HEAD~3      " working tree vs. 3 commits ago
+:DiffviewOpen main        " working tree vs. the main branch
+:DiffviewFileHistory      " history for every file, not just the current one
+----
+
+=== File history
+
+`++<++leader++>++gH` lists every commit that touched the file you are in. Press `++<++CR++>++` on
+any commit to open that commit's diff. This is the fastest way to answer "when did this line
+become wrong, and who was there at the time".
+
+=== Resolving merge conflicts
+
+When a merge leaves conflicts, `:DiffviewOpen` shows them in a three-pane layout:
+
+* *Left* — `OURS`, the version on your branch
+* *Middle* — the working copy; this is the one you edit
+* *Right* — `THEIRS`, the version coming in
+
+Edit the middle pane until it reads the way you want, then stage the file — with the stage-hunk
+map from xref:editor/git/gitsigns.adoc[gitsigns], or from the
+xref:editor/git/vim-fugitive.adoc[fugitive] status window.
+
+=== Setup
+
+None beyond git itself. The plugin loads on first use of any of the keymaps above.
+
+'''''
+
+_In the editor, which-key shows these maps live as you type a prefix (built from each keymap's
+`desc`), and `++<++leader++>++?` opens the context-aware cheatsheet. Those are the authoritative
+live view. Plugin configured in `lua/plugins/git.lua`._
