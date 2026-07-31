@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Untitled :: Arcane Centaur Docs</title>
+    <link rel="canonical" href="https://floatingman-ltd.github.io/arcane-centaur/arcane-centaur/languages/setup.html">
+    <meta name="generator" content="Antora 3.1.15">
+    <link rel="stylesheet" href="../../_/css/site.css">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://floatingman-ltd.github.io/arcane-centaur">Arcane Centaur Docs</a>
+      <button class="navbar-burger" aria-controls="topbar-nav" aria-expanded="false" aria-label="Toggle main menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="#">Home</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Products</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Product A</a>
+            <a class="navbar-item" href="#">Product B</a>
+            <a class="navbar-item" href="#">Product C</a>
+          </div>
+        </div>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Services</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Service A</a>
+            <a class="navbar-item" href="#">Service B</a>
+            <a class="navbar-item" href="#">Service C</a>
+          </div>
+        </div>
+        <div class="navbar-item">
+          <span class="control">
+            <a class="button is-primary" href="#">Download</a>
+          </span>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="arcane-centaur" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../index.html">Arcane Centaur</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Home</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../getting-started.html">Getting Started</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Languages</span>
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="1">
+    <a class="nav-link" href="setup.html">Language Setup</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">.NET</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="dotnet.html">Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="dotnet-cheatsheet.html">Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Lisp Family</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lisp.html">Lisp / Clojure / Scheme / Fennel</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lisp-cheatsheet.html">Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="janet.html">Janet Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="janet-cheatsheet.html">Janet Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Haskell</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="haskell.html">Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="haskell-cheatsheet.html">Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Lua</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lua.html">Guide</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Editor Core</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../editor/editing.html">Editing Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../editor/navigation.html">Navigation Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../editor/code-intelligence.html">Code Intelligence Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Git</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../editor/git/vim-fugitive.html">vim-fugitive</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../editor/git/gitsigns.html">gitsigns</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../editor/git/diffview.html">diffview</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../editor/clipboard.html">Clipboard</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">AI &amp; Automation</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../ai/ai-tools.html">AI Tools Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../ai/ai-tools-cheatsheet.html">AI Tools Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Content Creation</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/markdown.html">Markdown Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/markdown-cheatsheet.html">Markdown Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/asciidoc.html">AsciiDoc Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/asciidoc-cheatsheet.html">AsciiDoc Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/diagrams.html">Diagrams &amp; PlantUML</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/presentations.html">Presentations (MARP)</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/rest.html">REST / HTTP Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/rest-cheatsheet.html">REST Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Project Tooling</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../tooling/jira.html">Jira Integration</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../tooling/confluence.html">Confluence Publishing</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Other</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../other/architecture.html">Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../other/contributing.html">Contributing to Docs</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../other/jira-project-map.html">Jira Project Map</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Arcane Centaur</span>
+    <span class="version"></span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <div class="title"><a href="../index.html">Arcane Centaur</a></div>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Arcane Centaur</a></li>
+    <li>Languages</li>
+    <li><a href="setup.html">Language Setup</a></li>
+  </ul>
+</nav>
+<div class="edit-this-page"><a href="file:///antora/docs/modules/ROOT/pages/languages/setup.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<div class="sect1">
+<h2 id="_language_setup"><a class="anchor" href="#_language_setup"></a>Language Setup</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Everything you need to install <strong>per language</strong>, in one place. Working with C#? Install the four
+tools in the <a href="#dotnet">.NET</a> section. Working with Lisp? The <a href="#lisp">Lisp family</a> section.
+Nothing here is needed until you actually open a file of that type — the config lazy-loads all
+language tooling by filetype.</p>
+</div>
+<div class="paragraph">
+<p>Base tools that <strong>every</strong> language needs — Neovim, git, curl, a C compiler, and the editor binaries
+<code>rg</code> and <code>fzf</code> — live in <a href="../getting-started.html" class="xref page">Getting Started</a>. Install those first.</p>
+</div>
+<div class="paragraph">
+<p><strong>Quick navigation</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#matrix">At a glance</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Every language and its five tool slots</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#lua">Lua</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">lua-language-server, stylua</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#dotnet">.NET (C# and F#)</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SDK, Roslyn, fsautocomplete, netcoredbg</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#haskell">Haskell</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ghcup, GHC, HLS, haskell-debug-adapter</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#lisp">Lisp family</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Common Lisp, Clojure, Scheme, Fennel</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#janet">Janet</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">janet, janet-lsp</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#parsers">Treesitter parsers</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The C-compiler requirement</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="matrix"><a class="anchor" href="#matrix"></a>At a glance</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Each language occupies up to five tool slots. <code>—</code> means the config wires nothing for that slot;
+it is not a gap you need to fill.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Language</th>
+<th class="tableblock halign-left valign-top">LSP server</th>
+<th class="tableblock halign-left valign-top">REPL / runtime</th>
+<th class="tableblock halign-left valign-top">Formatter</th>
+<th class="tableblock halign-left valign-top">Debugger</th>
+<th class="tableblock halign-left valign-top">Parser</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#lua">Lua</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>lua-language-server</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">—</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>stylua</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">—</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>lua</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#dotnet">C#</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Microsoft.CodeAnalysis.LanguageServer</code> (Roslyn)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>csharprepl</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>csharpier</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>netcoredbg</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>c_sharp</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#dotnet">F#</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>fsautocomplete</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>dotnet fsi</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">via LSP</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>netcoredbg</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>fsharp</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#haskell">Haskell</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>haskell-language-server</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GHCi</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">via LSP</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>haskell-debug-adapter</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>haskell</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#lisp">Common Lisp</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">— (Swank introspection)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SBCL &#43; Swank</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">—</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">—</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>commonlisp</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#lisp">Clojure</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">—</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Clojure CLI &#43; nREPL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">—</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">—</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>clojure</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#lisp">Scheme</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">—</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MIT Scheme</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">—</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">—</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>scheme</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#lisp">Fennel</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">—</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>fennel --repl</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">—</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">—</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>fennel</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#janet">Janet</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>janet-lsp</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>janet</code> &#43; Conjure</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">—</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">—</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>janet_simple</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The Lisp family (Common Lisp, Clojure, Scheme, Fennel, Janet) deliberately has <strong>no LSP</strong>. Editor
+intelligence comes from the live REPL connection instead — see
+<a href="lisp.html" class="xref page">the Lisp guide</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="lua"><a class="anchor" href="#lua"></a>Lua</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Guide: <a href="lua.html#prerequisites" class="xref page">Lua Prerequisites</a></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Dependency</th>
+<th class="tableblock halign-left valign-top">Purpose</th>
+<th class="tableblock halign-left valign-top">Install</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>lua-language-server</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LSP — completion, diagnostics, go-to-definition</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/LuaLS/lua-language-server/releases">GitHub release</a> (or <code>brew install lua-language-server</code>)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>stylua</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Formatter</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>cargo install stylua</code> — or a <a href="https://github.com/JohnnyMorganz/StyLua/releases">GitHub release</a> binary</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><code>stylua</code> is <strong>required, not optional</strong>, for Lua work in this repo. It is load-bearing twice over:
+conform&#8217;s format-on-save uses it, and a <code>PostToolUse</code> hook re-runs it on every Lua file Claude
+Code edits, so the committed tree stays stylua-clean.</p>
+</div>
+<div class="paragraph">
+<p>It degrades gracefully — a missing <code>stylua</code> means formatting simply does not apply. Edits are
+never blocked and nothing errors.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="dotnet"><a class="anchor" href="#dotnet"></a>.NET (C# and F#)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Guide: <a href="dotnet.html#prerequisites" class="xref page">.NET Prerequisites</a></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Dependency</th>
+<th class="tableblock halign-left valign-top">Purpose</th>
+<th class="tableblock halign-left valign-top">Install</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>.NET SDK</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Compiler, <code>dotnet fsi</code>, and the <code>dotnet tool</code> host everything else installs through</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://dotnet.microsoft.com/download">Microsoft download page</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Microsoft.CodeAnalysis.LanguageServer</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">C# LSP (Roslyn), driven by roslyn.nvim</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Must be on <code>$PATH</code> — see <a href="dotnet.html#prerequisites" class="xref page">the .NET guide</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>fsautocomplete</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">F# LSP; also provides F# formatting</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>dotnet tool install -g fsautocomplete</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>csharprepl</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">C# REPL, driven by iron.nvim</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>dotnet tool install -g csharprepl</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>csharpier</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">C# formatter</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>dotnet tool install -g csharpier</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>EasyDotnet</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Server tool that easy-dotnet.nvim requires for solution management, run, and test</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>dotnet tool install -g EasyDotnet</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>netcoredbg</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Debug adapter, auto-registered with nvim-dap by easy-dotnet</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A <a href="https://github.com/Samsung/netcoredbg/releases">GitHub release</a> binary — <strong>not</strong> a <code>dotnet tool</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><code>netcoredbg</code> is the one .NET tool you cannot get with <code>dotnet tool install</code>. Download the release
+archive for your platform and put the binary on <code>$PATH</code>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="haskell"><a class="anchor" href="#haskell"></a>Haskell</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Guide: <a href="haskell.html#prerequisites" class="xref page">Haskell Prerequisites</a></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Dependency</th>
+<th class="tableblock halign-left valign-top">Purpose</th>
+<th class="tableblock halign-left valign-top">Install</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>ghcup</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Installer that manages every other Haskell tool</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://www.haskell.org/ghcup/">ghcup</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>GHC &#43; cabal / stack</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Compiler and build tooling; GHCi is the REPL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ghcup install ghc</code> and <code>ghcup install cabal</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>haskell-language-server</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LSP, driven by haskell-tools.nvim (not <code>lua/config/lsp.lua</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ghcup install hls</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>haskell-debug-adapter</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Debug adapter for nvim-dap</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>cabal install haskell-dap ghci-dap haskell-debug-adapter</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Haskell debugging needs <strong>both</strong> <code>haskell-debug-adapter</code> <strong>and</strong> an open cabal or stack project.
+haskell-tools.nvim registers <code>require("dap").configurations.haskell</code> only when it detects a
+project, so on a bare <code>.hs</code> file the debug configuration list stays empty even with the adapter
+installed. This is why the Haskell debugging validation step (<code>§7.5</code> in
+<code>openspec/TEST_PLAN.md</code>) is deferred rather than failing.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="lisp"><a class="anchor" href="#lisp"></a>Lisp family</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Guide: <a href="lisp.html#prerequisites" class="xref page">Lisp Prerequisites</a></p>
+</div>
+<div class="paragraph">
+<p>The Common Lisp REPLs are containerized — you do not install SBCL, CCL, ECL, or ABCL on the host.
+See <a href="../getting-started.html#sbcl-swank" class="xref page">the lisp-swank container</a> for the compose commands and
+the <code>:4005</code> contract.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Dependency</th>
+<th class="tableblock halign-left valign-top">Purpose</th>
+<th class="tableblock halign-left valign-top">Install</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Docker</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Runs the Swank REPL containers (SBCL, CCL, ECL, ABCL)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../getting-started.html#docker" class="xref page">Getting Started → Docker</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Clojure CLI</strong> or <strong>Leiningen</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Clojure nREPL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://clojure.org/guides/install_clojure">clojure.org</a> — then <code>clojure -M:nrepl</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>MIT Scheme</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Scheme REPL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>sudo apt install mit-scheme</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Fennel</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fennel REPL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://fennel-lang.org/setup">fennel-lang.org</a> — then <code>fennel --repl</code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="janet"><a class="anchor" href="#janet"></a>Janet</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Guide: <a href="janet.html#prerequisites" class="xref page">Janet Prerequisites</a></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Dependency</th>
+<th class="tableblock halign-left valign-top">Purpose</th>
+<th class="tableblock halign-left valign-top">Install</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>janet</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Language runtime and REPL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://janet-lang.org/docs/index.html">janet-lang.org</a> (or build from source)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>jpm</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Janet package manager, used to install janet-lsp</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ships with most janet builds — see <a href="janet.html#prerequisites" class="xref page">the Janet guide</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>janet-lsp</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LSP server</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jpm install janet-lsp</code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="parsers"><a class="anchor" href="#parsers"></a>Treesitter parsers</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Syntax highlighting, indentation, and the <code>af</code>/<code>if</code> text objects all come from Treesitter, and
+<strong>parsers are compiled from source on your machine</strong>. That means a working C compiler is a hard
+requirement for every language in the table above.</p>
+</div>
+<div class="paragraph">
+<p>If <code>cc</code>/<code>gcc</code> is missing, parser installation fails and the only symptom you see is a file with
+no syntax highlighting — nothing announces the missing compiler. See
+<a href="../getting-started.html#c-compiler" class="xref page">Getting Started → C compiler</a> for the install command and
+how to verify.</p>
+</div>
+<div class="paragraph">
+<p>The config installs these parsers automatically on first launch: <code>commonlisp</code>, <code>clojure</code>,
+<code>scheme</code>, <code>fennel</code>, <code>janet_simple</code>, <code>lua</code>, <code>fsharp</code>, <code>c_sharp</code>, <code>haskell</code>, <code>vim</code>, <code>http</code>,
+<code>markdown</code>, and <code>markdown_inline</code>. Check the result with:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-vim hljs" data-lang="vim">:checkhealth nvim-treesitter</code></pre>
+</div>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>This page was built using the Antora default UI.</p>
+  <p>The source code for this UI is licensed under the terms of the MPL-2.0 license.</p>
+</footer>
+<script id="site-script" src="../../_/js/site.js" data-ui-root-path="../../_"></script>
+<script async src="../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>
