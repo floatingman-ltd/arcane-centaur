@@ -164,20 +164,43 @@ fuzzy completion engine with sub-millisecond latency. Replaces nvim-cmp.
 
 === Completion Menu
 
+IMPORTANT: `Enter` does **not** accept a completion. Accept with `Ctrl-y`. `Enter`
+always inserts a newline in insert mode and executes the command on the command line,
+whether or not the menu is open and whether or not an entry is highlighted. If you are
+used to `Enter` confirming a suggestion, this is the one key you have to relearn.
+
+There is a single completion keymap, and it behaves identically in insert mode and on
+the command line. Previously the two were configured separately and disagreed about
+which key accepted.
+
 [cols=",,",options="header",]
 |===
 |Keys |Mode |Action
-|`Alt-Space` |Insert |Open completion menu on demand
-|`Ctrl-n` |Insert (menu open) |Select next suggestion
-|`Ctrl-p` |Insert (menu open) |Select previous suggestion
-|`Enter` |Insert |Confirm highlighted suggestion
-|`Ctrl-e` |Insert |Dismiss completion menu
-|`Ctrl-f` |Insert |Scroll documentation preview down
-|`Ctrl-b` |Insert |Scroll documentation preview up
+|`Ctrl-n` |Insert / Command-line |Open the completion menu when it is closed; select the next suggestion when it is already open
+|`Ctrl-p` |Insert / Command-line |Select previous suggestion
+|`Ctrl-y` |Insert / Command-line |Accept the highlighted suggestion, or the top one if none is highlighted
+|`Ctrl-e` |Insert / Command-line |Cancel — dismiss the menu and restore the text you typed
+|`Ctrl-f` |Insert / Command-line |Scroll documentation preview down
+|`Ctrl-b` |Insert / Command-line |Scroll documentation preview up
 |===
 
-`Enter` only inserts when an entry is actively highlighted — it will not
-accidentally confirm the first suggestion (`preselect = false`).
+==== The trigger key
+
+`Ctrl-n` does double duty: it is the manual trigger *and* the select-next key. With the
+menu closed it opens it; with the menu already open it walks down the list. So opening
+the menu and selecting the first entry is `Ctrl-n` twice, not once — nothing is
+highlighted when the menu first appears (`preselect = false`), so a completion is never
+committed implicitly. Only an explicit `Ctrl-y` inserts anything.
+
+This mirrors what insert-mode `Ctrl-n` already means in stock Vim.
+
+NOTE: There is no `Alt-Space` trigger, despite what older revisions of these docs said.
+This configuration runs under WSL in a Windows console, which claims `Alt-Space` for its
+own system menu, so the keystroke never reached Neovim. `Ctrl-Space` is swallowed the
+same way. Any manual trigger here has to be a plain `Ctrl`-plus-letter chord.
+
+TIP: `Ctrl-n` in *normal* mode is unrelated — it opens the file tree. The completion
+keymap only binds insert and command-line modes.
 
 === Completion Sources
 
@@ -200,6 +223,14 @@ accidentally confirm the first suggestion (`preselect = false`).
 |`/` / `?` search |Buffer words
 |`:` commands |File paths, then Ex commands
 |===
+
+The menu appears on its own at these prompts (`auto_show`), so you usually will not need
+the trigger. The keys are the same as insert mode — `Ctrl-y` accepts, `Ctrl-n`/`Ctrl-p`
+walk the list, `Ctrl-e` cancels — and `Enter` executes the command line as always.
+
+NOTE: `Tab` does not select completion items here. blink's stock command-line preset used
+it, but this configuration uses the shared keymap instead so that insert mode and the
+command line cannot drift apart, and `Tab` falls back to native command-line completion.
 
 _Configured in `lua/plugins/blink.lua`. LSP capabilities wired in `lua/config/lsp.lua`._
 

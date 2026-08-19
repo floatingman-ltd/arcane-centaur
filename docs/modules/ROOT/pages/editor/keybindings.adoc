@@ -300,17 +300,25 @@ NOTE: `]t`/`[t` remain vim-unimpaired tag navigation (not remapped for todos).
 
 === Auto-Completion (blink.cmp)
 
+IMPORTANT: `Enter` does **not** accept a completion. Accept with `Ctrl-y`, in insert
+mode and on the command line alike. `Enter` always means newline (insert) or execute
+(command line).
+
+The same keys work in insert mode and at the `:` / `/` prompt.
+
 [cols=",,",options="header",]
 |===
 |Keys |Mode |Action
-|`Alt-Space` |Insert |Open completion menu
-|`Ctrl-n` |Insert |Select next suggestion (menu open)
-|`Ctrl-p` |Insert |Select previous suggestion (menu open)
-|`Enter` |Insert |Confirm highlighted suggestion
-|`Ctrl-e` |Insert |Dismiss completion menu
-|`Ctrl-f` |Insert |Scroll docs preview down
-|`Ctrl-b` |Insert |Scroll docs preview up
+|`Ctrl-n` |Insert / Command-line |Open the menu when closed; select next suggestion when open
+|`Ctrl-p` |Insert / Command-line |Select previous suggestion
+|`Ctrl-y` |Insert / Command-line |Accept the highlighted suggestion, or the top one if none is highlighted
+|`Ctrl-e` |Insert / Command-line |Dismiss the menu and restore what you typed
+|`Ctrl-f` |Insert / Command-line |Scroll docs preview down
+|`Ctrl-b` |Insert / Command-line |Scroll docs preview up
 |===
+
+NOTE: `Ctrl-n` is both the manual trigger and the select-next key — press it once to
+open the menu (nothing is highlighted yet), again to select the first item.
 
 → xref:editor/code-intelligence.adoc[Full reference]
 

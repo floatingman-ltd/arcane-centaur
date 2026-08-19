@@ -165,17 +165,20 @@
 
 ---
 
-## Auto-Completion (nvim-cmp)
+## Auto-Completion (blink.cmp)
+
+**`Enter` does not accept — `Ctrl-y` does.** Same keys in insert mode and at the `:`/`/` prompt.
 
 | Key | Mode | Action |
 |-----|------|--------|
-| `Alt-Space` | Insert | Open completion menu |
-| `Ctrl-n` | Insert | Next suggestion |
-| `Ctrl-p` | Insert | Previous suggestion |
-| `Enter` | Insert | Confirm highlighted suggestion |
-| `Ctrl-e` | Insert | Dismiss completion menu |
-| `Ctrl-f` | Insert | Scroll docs down |
-| `Ctrl-b` | Insert | Scroll docs up |
+| `Ctrl-n` | Insert / Cmdline | Open menu when closed; next suggestion when open |
+| `Ctrl-p` | Insert / Cmdline | Previous suggestion |
+| `Ctrl-y` | Insert / Cmdline | Accept highlighted suggestion (or the top one) |
+| `Ctrl-e` | Insert / Cmdline | Dismiss menu, restore typed text |
+| `Ctrl-f` | Insert / Cmdline | Scroll docs down |
+| `Ctrl-b` | Insert / Cmdline | Scroll docs up |
+
+`Ctrl-n` is both trigger and select-next: once to open (nothing highlighted), again to pick the first item. `Enter` always means newline / execute.
 
 ---
 

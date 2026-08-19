@@ -8,11 +8,13 @@ The shared keymap SHALL be:
 
 | Key | Action |
 |---|---|
-| `<C-Space>` | Show the completion menu |
-| `<C-n>` / `<C-p>` | Select next / previous item |
+| `<C-n>` | Show the completion menu when it is closed; select the next item when it is open |
+| `<C-p>` | Select the previous item |
 | `<C-y>` | Accept the selected item, or the top item when none is selected |
 | `<C-e>` | Cancel — dismiss the menu and restore the typed text |
 | `<C-b>` / `<C-f>` | Scroll the documentation window up / down |
+
+The manual trigger SHALL be a plain `Ctrl`-plus-letter chord rather than a chord involving `Alt` or `Space`, both of which the host console reserves.
 
 #### Scenario: Enter never accepts a completion
 
@@ -25,6 +27,18 @@ The shared keymap SHALL be:
 - **WHEN** the menu is visible and the user presses `<C-n>` then `<C-y>`
 - **THEN** the next item SHALL be selected and accepted
 
+#### Scenario: The trigger key opens the menu without selecting
+
+- **WHEN** the completion menu is closed and the user presses `<C-n>`
+- **THEN** the menu SHALL open
+- **AND** no item SHALL be highlighted
+
+#### Scenario: The trigger key selects once the menu is open
+
+- **WHEN** the completion menu is already open and the user presses `<C-n>`
+- **THEN** the next item SHALL be selected
+- **AND** the menu SHALL NOT be re-opened or reset
+
 #### Scenario: Accept without navigating
 
 - **WHEN** the menu is visible with no item highlighted and the user presses `<C-y>`
@@ -36,16 +50,16 @@ The shared keymap SHALL be:
 - **THEN** the menu SHALL be dismissed
 - **AND** the text the user typed SHALL be restored
 
-#### Scenario: Trigger and scroll docs
+#### Scenario: Scroll the documentation window
 
-- **WHEN** the user presses `<C-Space>`, `<C-b>`, or `<C-f>`
-- **THEN** completion SHALL respectively be triggered, scroll the doc window up, and scroll it down
+- **WHEN** the user presses `<C-b>` or `<C-f>` with the documentation window visible
+- **THEN** it SHALL respectively scroll up and scroll down
 
 #### Scenario: The manual trigger reaches Neovim under WSL
 
 - **WHEN** the user presses the manual completion trigger in a Windows-hosted console under WSL
 - **THEN** the keystroke SHALL reach Neovim and open the completion menu
-- **AND** the trigger SHALL NOT be a combination the host console reserves for itself, such as `Alt-Space`
+- **AND** the trigger SHALL NOT be a combination the host console reserves for itself, such as `Alt-Space` or `Ctrl-Space`
 
 #### Scenario: Documented keys match the configuration
 

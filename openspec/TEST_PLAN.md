@@ -1570,3 +1570,202 @@ separate, optional check you can run any time and isn't a blocker for this chang
       drop an ambiguous `master` mention — the pin itself was always correct)
 - [X] Change archived — `openspec/changes/archive/2026-07-24-migrate-treesitter-main/`, delta promoted
       to the `treesitter-editing` capability spec (PR #156)
+
+---
+
+## Change · fix-blink-completion-keymap
+
+**Branch:** `fix/blink-completion-keymap`
+
+Replaces the two divergent blink.cmp keymaps with **one table used identically in insert mode and on
+the command line**. Fixes two logged defects (`recommendations/ideas.md`): there was no working manual
+completion trigger, and the accept key differed between insert mode and the `:` prompt with neither
+documented.
+
+Two **BREAKING** changes, both deliberate:
+
+- **`<CR>` no longer accepts a completion.** `Enter` always inserts a newline (insert) or executes
+  (command line). Accept is **`<C-y>`** in both modes. `<CR>` cannot mean "accept" on the command
+  line, where it must execute — so as long as it was the insert-mode accept key the two modes could
+  never match.
+- **`<M-Space>` is removed**, and `<C-n>` takes on the trigger role in addition to select-next. With
+  the menu closed `<C-n>` opens it (highlighting nothing); with the menu open it selects the next
+  item. This is also stock Vim's meaning for insert-mode `<C-n>`.
+
+> **Why not `<C-Space>`, which the original proposal specified:** it was tested in this console
+> *before* any config was written and is **swallowed exactly like `Alt-Space`** — the keystroke never
+> reaches Neovim. Both are chords the Windows console reserves. Any trigger here has to be a plain
+> `Ctrl`-plus-letter chord. The change artifacts (proposal, design D2, `completion-engine` delta) were
+> updated to match the tested reality rather than the original guess.
+
+**Prerequisites** (confirm before validating):
+- Nothing to install. This is a pure config + docs change; no plugin added, removed, or re-pinned.
+- A buffer with an **attached LSP** for real completion candidates — `testdocs/hello.lua` (`lua_ls`)
+  is the easiest; `testdocs/hello.cs` also works.
+- `testdocs/hello.clj` (or `hello.lisp`/`hello.janet`) to exercise the Conjure source, and any buffer
+  with `:set spell` for the spell source.
+
+### Prepare
+
+1. `git fetch origin && git checkout fix/blink-completion-keymap`
+2. Launch Neovim: `:Lazy sync` — should be a no-op for blink (version pin unchanged); confirm no
+   errors.
+3. `:messages` — confirm empty.
+
+- [ ] Branch checked out, `:Lazy sync` clean, `:messages` empty
+
+### Validate
+
+#### BC.1 — The trigger opens the menu without selecting anything
+
+1. Open `testdocs/hello.lua`, enter insert mode, and type a partial identifier (e.g. `vim.ap`).
+2. Press `<C-n>` **once** — the completion menu appears.
+3. Confirm **no item is highlighted**. This is the no-auto-select guarantee (`preselect = false`); if
+   an item is highlighted, `show_and_insert` was used instead of `show` and this step fails.
+4. Press `<C-n>` a second time — now the **first item** highlights.
+
+- [ ] `<C-n>` opens the menu with nothing highlighted; a second press selects the first item
+
+#### BC.2 — Navigate and accept in insert mode
+
+1. With the menu open and items showing, press `<C-n>`/`<C-p>` — the highlight moves down/up.
+2. Press `<C-y>` — the highlighted item is inserted.
+3. Undo, retype the prefix, open the menu, and press `<C-y>` **with nothing highlighted** — the
+   **top** item is inserted. (This is why the binding is `select_and_accept` rather than `accept`;
+   plain `accept` is a no-op when nothing is selected.)
+
+- [ ] `<C-n>`/`<C-p>` move the highlight; `<C-y>` accepts the highlighted item; `<C-y>` with nothing
+      highlighted accepts the top item
+
+#### BC.3 — `<CR>` never accepts (the breaking change)
+
+1. Open the menu in insert mode with an item **highlighted**.
+2. Press `<CR>`.
+3. Confirm a **newline is inserted** and the highlighted completion is **not** committed.
+4. Repeat with nothing highlighted — same result.
+
+- [ ] `<CR>` inserts a newline and accepts nothing, whether or not an item is highlighted
+
+#### BC.4 — Cancel restores the typed text
+
+1. Type a partial word, press `<C-n>` twice so an item is highlighted.
+2. Press `<C-e>`.
+3. Confirm the menu closes **and the text you originally typed is restored** — not the
+   partially-completed word. (`<C-e>` is `cancel`, not `hide`; `hide` would leave the inserted text
+   behind.)
+
+- [ ] `<C-e>` dismisses the menu and restores the typed text
+
+#### BC.5 — Documentation scroll
+
+1. Open the menu on an item that has a documentation window (an LSP function in `hello.lua` with a
+   long signature/docstring).
+2. Press `<C-f>` / `<C-b>` — the documentation window scrolls down / up.
+
+- [ ] `<C-f>`/`<C-b>` scroll the documentation window
+
+#### BC.6 — The same keys behave the same way on the command line
+
+This is the whole point of the change — the keys must not differ from BC.1–BC.5.
+
+1. Press `:` and type a partial command or path (e.g. `:e testd`). The menu auto-shows
+   (`auto_show = true`), so it may already be open.
+2. Confirm `<C-n>`/`<C-p>` move the highlight, `<C-y>` accepts the highlighted candidate into the
+   command line, and `<C-e>` cancels and restores what you typed.
+3. Press `<CR>` with the menu open — confirm the **command executes** as normal.
+4. Press `/` and type a partial word — confirm buffer-word candidates are still offered and the same
+   keys work.
+
+- [ ] All keys behave identically at the `:` prompt; `<CR>` still executes; `/` search completion
+      still offers buffer words
+
+#### BC.7 — `<Tab>` at the `:` prompt (design.md Open Question)
+
+Dropping blink's stock `cmdline` preset means `<Tab>` no longer selects completion items; it falls
+back to native command-line completion.
+
+1. At a `:` prompt with a partial path, press `<Tab>` and observe what happens.
+2. **Record the verdict below.** If losing `<Tab>` selection is genuinely missed in daily use, add
+   `<Tab>` to the shared table as a `select_next` alias — that can be done without breaking the
+   one-keymap-everywhere goal, since it would apply to both modes.
+
+- [ ] `<Tab>` behavior at the `:` prompt observed and verdict recorded (acceptable as-is / add it
+      back as a `select_next` alias)
+
+#### BC.8 — Command-line history recall still reachable
+
+Native `<C-n>` at the `:` prompt recalls the next history entry. blink's stock preset already
+shadowed it with `select_next` before this change, and `auto_show` means the menu is usually already
+open — so `show` returns `nil` and `<C-n>` should behave as it did before. The `"fallback"` entry is
+what preserves history recall when blink declines.
+
+1. Press `:` on an empty command line and press `<C-n>` — record whether history recall still works.
+2. Compare against the behavior you remember from `main`. This is the one place the `<C-n>` double
+   duty could plausibly annoy.
+
+- [ ] Command-line history recall behavior recorded; no regression versus `main`
+
+#### BC.9 — Other sources still ride the same menu
+
+1. Open `testdocs/hello.clj` (or `hello.lisp`/`hello.janet`), start a Conjure REPL, and confirm
+   Conjure completions still appear in the menu using the new keys.
+2. In any buffer, `:set spell`, type a partial word of **3+ characters**, and confirm dictionary
+   candidates appear. `:set nospell` and confirm they stop appearing.
+
+- [ ] Conjure completions work in lisp-family buffers; spell candidates appear only with `spell` on
+      and only at 3+ characters
+
+#### BC.10 — Normal-mode `<C-n>` is unaffected
+
+The shared keymap binds insert and command-line modes only. `<C-n>` in normal mode is the file tree.
+
+1. In normal mode, press `<C-n>` — the file tree opens.
+2. `:verbose imap <C-n>` — confirm it resolves to a blink mapping; `:verbose nmap <C-n>` — confirm it
+   resolves to the `lua/keymaps.lua` tree mapping.
+
+- [ ] Normal-mode `<C-n>` still opens the file tree; the two meanings are cleanly separated by mode
+
+#### BC.11 — Clean startup and syntax
+
+1. Fresh `nvim` (no args) — `:messages` shows no errors.
+2. From a shell: `find . -name '*.lua' -not -path './build/*' -print0 | xargs -0 luac -p` — all pass.
+3. `:lua vim.print(require("blink.cmp.config").keymap)` and
+   `:lua vim.print(require("blink.cmp.config").cmdline.keymap)` — confirm both show the **same six
+   keys** with `preset = "none"`, and that neither contains `<CR>` or `<M-Space>`.
+
+- [ ] Clean `:messages`; `luac -p` passes; both keymaps resolve to the same six keys with no `<CR>`
+      or `<M-Space>`
+
+#### BC.12 — Docs match the configuration
+
+1. `docs/modules/ROOT/pages/editor/keybindings.adoc` — Auto-Completion section lists the six keys,
+   leads with the `Enter`-does-not-accept callout, and notes the `<C-n>` double duty.
+2. `docs/modules/ROOT/pages/editor/code-intelligence.adoc` — same, plus the "trigger key" subsection,
+   the WSL note explaining why there is no `Alt-Space`/`Ctrl-Space`, and a Command-line Completion
+   section that states the accept key and the `<Tab>` fallback.
+3. `cheatsheets/core.md` — the `<leader>?` surface matches both pages, and its heading now reads
+   **blink.cmp** (it still said "nvim-cmp", stale since change 03).
+4. `grep -rn -i 'M-Space\|Alt-Space\|Alt+Space' docs/ cheatsheets/` — the only hits are the two lines
+   of the explanatory WSL note in `code-intelligence.adoc`. No surface **asserts** the key works.
+5. Site build: `rm -rf build/site && ./docker/antora/run.sh antora-playbook.yml` — no errors, no
+   unresolved xrefs.
+6. In a live session, press `<leader>?` and confirm the rendered cheatsheet shows the new keys.
+
+- [ ] All three surfaces agree with the config; no page asserts `Alt-Space`; Antora builds clean;
+      `<leader>?` shows the new keys
+
+### Raise PR & merge
+
+- [ ] All validation steps above pass (BC.1–BC.12)
+- [ ] Raise PR: `fix/blink-completion-keymap` → `main`
+- [ ] Review and approve PR
+- [ ] Merge PR
+
+### Post-merge
+
+- [ ] `git checkout main && git pull origin main`
+- [ ] Launch Neovim: `:Lazy sync` — confirm clean
+- [ ] Remove the two fixed entries from `recommendations/ideas.md` ("Things that seem broken" — the
+      `<M-Space>` trigger and the split accept key). The snippet-navigation entry added by this
+      change **stays** — it is a separate, still-open gap.
+- [ ] Change archived, `completion-engine` delta promoted to the capability spec
