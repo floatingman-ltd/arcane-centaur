@@ -1,3 +1,31 @@
+-- One completion keymap, used identically in insert mode and on the command
+-- line. The two modes used to be configured separately and drifted: insert
+-- accepted with <CR>, while cmdline inherited blink's stock preset and accepted
+-- with <C-y>. Muscle memory built in one mode silently failed in the other.
+--
+-- <CR> is deliberately unbound: it cannot mean "accept" on the command line,
+-- where it has to execute, so leaving it as the insert-mode accept key is what
+-- made a shared keymap impossible. Enter now always means newline/execute, and
+-- <C-y> always means accept.
+--
+-- <C-n> does double duty as the manual trigger. blink tries a key's commands in
+-- order and stops at the first truthy one; `show` returns true only when the
+-- menu is closed, so a closed menu opens (highlighting nothing) and an open one
+-- falls through to `select_next`. This is also vanilla Vim's meaning for
+-- insert-mode <C-n>. It replaces <M-Space>, which could never fire here: this
+-- config runs under WSL in a Windows console, which claims Alt-Space for its own
+-- system menu. <C-Space> was tried as the replacement and is swallowed the same
+-- way, hence a plain Ctrl-plus-letter chord.
+local completion_keymap = {
+  preset = "none",
+  ["<C-n>"] = { "show", "select_next", "fallback" },
+  ["<C-p>"] = { "select_prev", "fallback" },
+  ["<C-y>"] = { "select_and_accept", "fallback" },
+  ["<C-e>"] = { "cancel", "fallback" },
+  ["<C-b>"] = { "scroll_documentation_up", "fallback" },
+  ["<C-f>"] = { "scroll_documentation_down", "fallback" },
+}
+
 return {
   {
     "saghen/blink.cmp",
@@ -7,16 +35,7 @@ return {
       "f3fora/cmp-spell",
     },
     opts = {
-      keymap = {
-        preset = "none",
-        ["<C-b>"] = { "scroll_documentation_up", "fallback" },
-        ["<C-f>"] = { "scroll_documentation_down", "fallback" },
-        ["<M-Space>"] = { "show", "fallback" },
-        ["<C-e>"] = { "hide", "fallback" },
-        ["<CR>"] = { "accept", "fallback" },
-        ["<C-n>"] = { "select_next", "fallback" },
-        ["<C-p>"] = { "select_prev", "fallback" },
-      },
+      keymap = completion_keymap,
       completion = {
         list = {
           selection = { preselect = false, auto_insert = false },
@@ -54,10 +73,13 @@ return {
       },
       cmdline = {
         enabled = true,
-        -- The main keymap uses preset "none", which cmdline would otherwise
-        -- inherit (leaving no keys to navigate/accept). Give cmdline its own
-        -- preset and auto-show the menu so `:` command/path completion appears.
-        keymap = { preset = "cmdline" },
+        -- Deliberately the same table as insert mode, not blink's "cmdline"
+        -- preset. cmdline needs an explicit keymap because it would otherwise
+        -- inherit preset "none" and have no keys at all; giving it the shared
+        -- table rather than a second preset is what keeps the two modes from
+        -- drifting apart again. auto_show makes `:` command/path completion
+        -- appear without pressing the trigger.
+        keymap = completion_keymap,
         completion = { menu = { auto_show = true } },
         sources = function()
           local t = vim.fn.getcmdtype()

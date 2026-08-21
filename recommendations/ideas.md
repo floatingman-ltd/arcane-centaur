@@ -30,3 +30,11 @@
   either context. Logged as a deliberate Non-Goal in the reorganize-per-plugin-docs design
   ("the blink cmdline accept-key alignment"); deciding whether to align the keys is a
   runtime change, documenting whatever they end up being is docs-only.
+
+- snippet placeholders cannot be navigated. `snippets` is an active completion source
+  (`lua/plugins/blink.lua:26`), so snippet completions are offered and expand — but
+  `snippet_forward` / `snippet_backward` are bound nowhere in the config, and the insert-mode
+  keymap uses `preset = "none"`, so nothing supplies them by default either. Once a snippet is
+  accepted there is no way to jump between its placeholders. A pre-existing gap rather than a
+  regression; explicitly out of scope for the `fix-blink-completion-keymap` change, which only
+  addresses the manual trigger and the cross-mode accept key.
