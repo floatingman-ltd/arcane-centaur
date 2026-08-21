@@ -180,6 +180,7 @@ which key accepted.
 |`Ctrl-p` |Insert / Command-line |Select previous suggestion
 |`Ctrl-y` |Insert / Command-line |Accept the highlighted suggestion, or the top one if none is highlighted
 |`Ctrl-e` |Insert / Command-line |Cancel — dismiss the menu and restore the text you typed
+|`Ctrl-k` |Insert / Command-line |Show the documentation window for the selected entry
 |`Ctrl-f` |Insert / Command-line |Scroll documentation preview down
 |`Ctrl-b` |Insert / Command-line |Scroll documentation preview up
 |===
@@ -187,10 +188,15 @@ which key accepted.
 ==== The trigger key
 
 `Ctrl-n` does double duty: it is the manual trigger *and* the select-next key. With the
-menu closed it opens it; with the menu already open it walks down the list. So opening
-the menu and selecting the first entry is `Ctrl-n` twice, not once — nothing is
-highlighted when the menu first appears (`preselect = false`), so a completion is never
-committed implicitly. Only an explicit `Ctrl-y` inserts anything.
+menu closed it opens it; with the menu already open it walks down the list.
+
+In practice the menu is usually already open, because it auto-shows the moment you type a
+keyword (`show_on_keyword`). So while typing a word, the *first* `Ctrl-n` selects the first
+entry. You only see the trigger role when the menu is genuinely closed — after dismissing
+it with `Ctrl-e`, or when the cursor is not in a keyword at all.
+
+Either way nothing is highlighted when the menu appears (`preselect = false`), so a
+completion is never committed implicitly. Only an explicit `Ctrl-y` inserts anything.
 
 This mirrors what insert-mode `Ctrl-n` already means in stock Vim.
 
@@ -198,6 +204,35 @@ NOTE: There is no `Alt-Space` trigger, despite what older revisions of these doc
 This configuration runs under WSL in a Windows console, which claims `Alt-Space` for its
 own system menu, so the keystroke never reached Neovim. `Ctrl-Space` is swallowed the
 same way. Any manual trigger here has to be a plain `Ctrl`-plus-letter chord.
+
+==== The documentation window
+
+Selecting an entry shows a documentation window beside the menu after a short delay
+(500ms). `Ctrl-f` and `Ctrl-b` scroll it, four lines at a time.
+
+Two things make this less visible than you might expect. The window is 20 rows tall, and
+the scroll keys clamp to the content, so a docstring that already fits will not appear to
+move at all — the keys are working, there is simply nothing to scroll. And the window only
+renders what the language server actually sends: an entry with neither `detail` nor
+`documentation` closes it silently.
+
+CAUTION: `lua_ls` supplies neither field on its completion entries, so **the documentation
+window never appears in Lua buffers**, whatever you press. C# via roslyn is the reliable
+place to see it. Since this configuration is mostly Lua, expect the window less often than
+these keys suggest.
+
+If the automatic window gets in the way, turn it off for the session:
+
+[source,vim]
+----
+:BlinkDocsToggle
+----
+
+That switches between *timed* (the window appears on its own) and *on-demand* (it appears
+only when you press `Ctrl-k`), reporting the new state. It is not persisted — every session
+starts timed. `Ctrl-k` works in both modes, and needs an entry already selected, so it is
+`Ctrl-n` then `Ctrl-k`. A window that is already open when you switch to on-demand keeps
+following your selection until the menu closes.
 
 TIP: `Ctrl-n` in *normal* mode is unrelated — it opens the file tree. The completion
 keymap only binds insert and command-line modes.
@@ -226,7 +261,8 @@ keymap only binds insert and command-line modes.
 
 The menu appears on its own at these prompts (`auto_show`), so you usually will not need
 the trigger. The keys are the same as insert mode — `Ctrl-y` accepts, `Ctrl-n`/`Ctrl-p`
-walk the list, `Ctrl-e` cancels — and `Enter` executes the command line as always.
+walk the list, `Ctrl-e` cancels, `Ctrl-k` shows documentation — and `Enter` executes the
+command line as always. Completing a command is therefore `:Blin` `Ctrl-n` `Ctrl-y`.
 
 NOTE: `Tab` does not select completion items here. blink's stock command-line preset used
 it, but this configuration uses the shared keymap instead so that insert mode and the

@@ -59,7 +59,18 @@ Relevant existing behavior that constrains the fix: `completion.list.selection =
 
 - _Why:_ `hide` closes the menu and leaves whatever was inserted; `cancel` restores what the user actually typed. For a dismiss key, restore is the expected behavior, and it matches blink's stock cmdline preset — again converging the two modes.
 
-**D6 — `<C-b>` / `<C-f>` keep their current meaning.** Documentation scroll, carried over unchanged into both modes.
+**D6 — `<C-b>` / `<C-f>` keep their current meaning, and `<C-k>` makes them reachable.** Documentation scroll, carried over unchanged into both modes.
+
+Carrying them over unchanged turned out to hide a defect, found during validation (TEST_PLAN BC.5): blink leaves `completion.documentation.auto_show` at `false` and nothing was bound to `show_documentation`, so the documentation window could never open. Both scroll commands begin `if not documentation.win:is_open() then return end`, so the two keys always fell through to `fallback` and did nothing — while all three documentation surfaces advertised them. That is the same can't-possibly-work defect as `<M-Space>`, which is what this change exists to fix; it survived precisely *because* the keys were carried over without being exercised.
+
+Resolved by shipping both ways to open the window:
+
+- `documentation.auto_show = true` (500ms) is the default, so the window appears on its own.
+- `["<C-k>"] = { "show_documentation", "fallback" }` opens it explicitly. `show_documentation` requires an item to already be selected, so it is `<C-n>` then `<C-k>`.
+- `:BlinkDocsToggle` flips between the two at runtime. This works because `completion/windows/documentation.lua:14` captures the config table **by reference** and re-reads `auto_show` on every selection; the value must stay a boolean, but blink validates only at setup. Deliberately not persisted — every session starts timed.
+
+- _Key choice:_ `<C-k>` and `<C-l>` are bound in **normal** mode only (`lua/keymaps.lua:18-19`, window motions), so an insert/cmdline binding does not collide — the same mode separation that lets `<C-n>` mean the file tree in normal mode. Native insert-mode `<C-k>` (digraphs) still works through the `fallback` entry whenever no item is selected.
+- _Known limitation:_ `lua_ls` supplies neither `detail` nor `documentation` on its completion items, and `show_item` closes the window silently in exactly that case, so the window never appears in Lua buffers regardless of which mechanism is used. Verified working in C# via roslyn.
 
 ## Risks / Trade-offs
 
