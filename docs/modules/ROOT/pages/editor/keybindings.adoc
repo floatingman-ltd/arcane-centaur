@@ -68,10 +68,14 @@ xref:editor/git/gitsigns.adoc[gitsigns] · xref:editor/git/diffview.adoc[diffvie
 [cols=",,",options="header",]
 |===
 |Keys |Mode |Action
+|`++<++leader++>++t` |Normal |Toggle file tree
 |`++<++leader++>++n` or `Ctrl-n` |Normal |Open file tree
 |`Ctrl-t` |Normal |Toggle file tree
 |`Ctrl-f` |Normal |Reveal current file in tree
 |===
+
+NOTE: `++<++leader++>++t` used to toggle the terminal — that moved to
+`++<++leader++>++T`.
 
 → xref:editor/navigation.adoc[Full reference]
 
@@ -117,11 +121,14 @@ fallback. Markdown folds by indent only, and asciidoctor manages its own section
 
 === Terminal & IDE Layout
 
+CAUTION: The terminal toggle is `++<++leader++>++T` (capital `T`). It moved off
+`++<++leader++>++t`, which now toggles the file tree.
+
 [cols=",,",options="header",]
 |===
 |Keys |Mode |Action
 |`++<++leader++>++L` |Normal |Assemble IDE layout (tree + editor + full-width terminal)
-|`++<++leader++>++t` |Normal |Toggle full-width terminal split
+|`++<++leader++>++T` |Normal |Toggle full-width terminal split
 |`Esc` |Terminal |Exit terminal insert mode
 |`:Bd` |Normal |Delete buffer, keep window open (layout-preserving)
 |===

@@ -43,12 +43,18 @@ assembled does nothing, and focus always returns to the editor window.
   the terminal panel) as the only remaining window — no more full-width
   tree after `:q` on the last editor.
 
+[[terminal]]
 == Terminal
+
+CAUTION: The terminal toggle moved from `++<++leader++>++t` to
+*`++<++leader++>++T`* (capital `T`). `++<++leader++>++t` now toggles the
+<<file-tree,file tree>>, where `t` is the mnemonic most people reach for. The
+terminal's behavior is otherwise unchanged.
 
 [width="100%",cols="34%,33%,33%",options="header",]
 |===
 |Keys |Mode |Action
-|`++<++leader++>++t` |Normal |Toggle full-width terminal (persistent shell)
+|`++<++leader++>++T` |Normal |Toggle full-width terminal (persistent shell)
 |`Esc` |Terminal |Exit terminal insert mode
 |===
 
@@ -105,6 +111,7 @@ _Plugin configured in `lua/plugins/fzf-lua.lua`._
 
 '''''
 
+[[file-tree]]
 == File Tree (nvim-tree)
 
 *Leader* = `Space`
@@ -114,10 +121,17 @@ _Plugin configured in `lua/plugins/fzf-lua.lua`._
 [cols=",,",options="header",]
 |===
 |Keys |Mode |Action
+|`++<++leader++>++t` |Normal |Toggle file tree (open/close)
 |`++<++leader++>++n` or `Ctrl-n` |Normal |Open file tree
 |`Ctrl-t` |Normal |Toggle file tree (open/close)
 |`Ctrl-f` |Normal |Reveal current file in tree
 |===
+
+`++<++leader++>++t` and `Ctrl-t` both toggle; `++<++leader++>++n` and `Ctrl-n`
+only ever open, so they will not close a tree you already have.
+
+NOTE: `++<++leader++>++t` used to toggle the terminal — that is now
+`++<++leader++>++T`. See <<terminal,Terminal>>.
 
 === Inside the Tree Window
 
