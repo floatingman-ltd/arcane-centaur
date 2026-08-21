@@ -1966,3 +1966,160 @@ six-key table, then invalidated and redone against seven.
       `<M-Space>` trigger and the split accept key). The snippet-navigation entry added by this
       change **stays** — it is a separate, still-open gap.
 - [X] Change archived, `completion-engine` delta promoted to the capability spec
+
+## Change · fix-tree-terminal-keymaps
+
+**Branch:** `fix/tree-terminal-keymaps`
+
+Moves the file-tree toggle onto `<leader>t` and the terminal toggle onto `<leader>T`. `t` reads as
+*tree*, and reaching for it to open the tree instead dropped a terminal split at the bottom of the
+screen — the defect that prompted this change.
+
+One **BREAKING** change, deliberate:
+
+- **`<leader>t` no longer opens the terminal.** The terminal is **`<leader>T`** (capital `T`). The
+  terminal's own behavior — persistent shell, full-width `botright` split, `resize 15`,
+  `winfixheight` — is untouched; only the key changed.
+
+Everything else on these prefixes is unchanged, per design D2: `<leader>n` and `<C-n>` stay
+**open-only** (`NvimTreeOpen`, so they can never close a tree you already have), `<C-t>` stays a
+toggle, and `<C-f>` still reveals the current file. `toggle_terminal` and `ide_layout` are unedited,
+so `<leader>L` keeps sharing the same terminal open path.
+
+**Prerequisites** (confirm before validating):
+- Nothing to install. Pure keymap + docs change; no plugin added, removed, or re-pinned.
+- Any file to open Neovim on — `testdocs/hello.lua` is fine. The IDE-layout steps want at least
+  **two** files open to exercise `:Bd`.
+- Note the ordering constraint with `fix-blink-completion-keymap`: both changes edit
+  `docs/.../editor/keybindings.adoc`, `cheatsheets/core.md`, and append to this file. **Merge blink
+  first**, then rebase this branch.
+
+### Prepare
+
+1. `git fetch origin && git checkout fix/tree-terminal-keymaps`
+2. Launch Neovim: `:Lazy sync` — should be a no-op (no plugin pins touched); confirm no errors.
+3. `:messages` — confirm empty.
+
+- [ ] Branch checked out, `:Lazy sync` clean, `:messages` empty
+
+### Validate
+
+#### TK.1 — `<leader>t` toggles the file tree
+
+1. From an editor window with the tree closed, press `<leader>t` — the tree opens on the left.
+2. Press `<leader>t` again — the tree **closes**. (This is the toggle half; `<leader>n` deliberately
+   does not do this.)
+3. Repeat once more to confirm it is a stable toggle, not a one-shot.
+
+- [ ] `<leader>t` opens the tree when closed and closes it when open
+
+#### TK.2 — The open-only and legacy tree keys are unchanged
+
+1. With the tree **closed**, press `<leader>n` — the tree opens.
+2. Press `<leader>n` again — the tree **stays open** (it is `NvimTreeOpen`, not a toggle). This is
+   intentional: it is the "I want the tree, don't gamble" key.
+3. Repeat both steps with `<C-n>` — same behavior.
+4. Press `<C-t>` twice — it still toggles, exactly like `<leader>t`.
+5. With a file open, press `<C-f>` — the current file is revealed and highlighted in the tree.
+
+- [ ] `<leader>n`/`<C-n>` open and never close; `<C-t>` still toggles; `<C-f>` still reveals
+
+#### TK.3 — `<leader>T` toggles the terminal, including from inside the tree
+
+1. From an editor window, press `<leader>T` — a terminal opens as a **full-width** split at the
+   bottom, 15 lines tall, and lands in insert mode.
+2. Type something recognizable (e.g. `echo marker-one`) so the scrollback is identifiable.
+3. Press `<Esc>` to leave terminal insert mode, then `<leader>T` — the terminal window closes.
+4. Press `<leader>T` again — the **same shell** returns with `marker-one` still in the scrollback.
+   A fresh prompt with no history means the buffer was recreated and this step fails.
+5. Focus the **tree** window (`<leader>t` if needed, then move into it) and press `<leader>T` from
+   there — the terminal must still open **full-width across the bottom**, not as a ~30-column split
+   inside the tree column.
+6. With the terminal open, open another split (`:split`) — confirm the terminal window stays 15 lines
+   (`winfixheight`).
+
+- [ ] `<leader>T` opens the full-width bottom split from an editor window *and* from inside the tree;
+      shell and scrollback survive toggling; height stays 15 when other splits open
+
+#### TK.4 — `<leader>t` never opens a terminal (the reported defect)
+
+The original report was that this misfired *after* a terminal had already been opened once, so test
+that state explicitly rather than only from a clean start.
+
+1. Press `<leader>T` to open the terminal, then `<leader>T` to close it (so `term_buf` is now a live,
+   hidden buffer).
+2. Press `<leader>t` — the **tree** toggles. No terminal split appears.
+3. Open the terminal again with `<leader>T` and leave it open. Now press `<leader>t` — the tree
+   toggles and the terminal window is left alone.
+
+- [ ] `<leader>t` toggles only the tree in every state, including after the terminal has been opened
+
+#### TK.5 — `<leader>L` still assembles the layout and is still idempotent
+
+1. From a clean `nvim testdocs/hello.lua`, press `<leader>L` — tree on the left, editor in the
+   middle, full-width terminal at the bottom, and **focus lands in the editor** (not the tree, not
+   the terminal).
+2. Press `<leader>L` again — no duplicate windows, no second terminal, focus still in the editor.
+3. Press `<leader>L` a third time with the tree manually closed beforehand — it should re-open the
+   tree and reuse the existing terminal rather than spawning a new shell (check the `marker-one`
+   scrollback from TK.3 is still there).
+
+- [ ] `<leader>L` assembles the layout with focus in the editor, is idempotent, and reuses the
+      existing shell
+
+#### TK.6 — which-key shows both keys and `<leader>t` fires immediately
+
+1. Press `<leader>` and wait for the which-key popup — confirm **both** `t` ("File tree: toggle") and
+   `T` ("Toggle terminal split") are listed with those descriptions.
+2. Press `<leader>t` at normal typing speed — the tree must toggle **immediately**, with no
+   `timeoutlen` pause. A delay means something has made `<leader>t` a which-key prefix (i.e. some
+   `<leader>t<x>` map was introduced), which task 1.2 exists to prevent.
+3. `:verbose map <leader>t` — confirm it resolves to `:NvimTreeToggle<CR>` from `lua/keymaps.lua`,
+   and `:verbose map <leader>T` resolves to the `toggle_terminal` Lua callback.
+
+- [ ] which-key lists both with correct descriptions; `<leader>t` fires with no prefix timeout;
+      both maps resolve to the expected targets
+
+#### TK.7 — `:Bd` and the ide-layout guardrails are undisturbed
+
+These are `ide-layout` requirements this change must not regress.
+
+1. With the layout assembled (`<leader>L`), open a second file so two buffers exist.
+2. Run `:Bd` on one — the **window stays open** showing the other file, and the tree's width is
+   unchanged. The layout must not collapse.
+3. With the layout assembled, `:q` the last editor window — Neovim **exits cleanly**. It must not
+   leave the tree (or the terminal) behind as the only remaining window, stretched full-width.
+4. Trigger a float over the layout (`<leader>?` cheatsheet) — it renders over the layout normally and
+   closes without disturbing the windows.
+
+- [ ] `:Bd` preserves the window and tree width; `:q` on the last editor exits cleanly with no
+      orphaned tree; floats unaffected
+
+#### TK.8 — Clean startup and syntax
+
+1. Fresh `nvim` (no args) — `:messages` shows no errors.
+2. From a shell: `find . -name '*.lua' -not -path './.git/*' -not -path './build/*' -print0 | xargs -0 luac -p` — all pass.
+3. `stylua --check lua/keymaps.lua` — clean.
+4. `openspec validate fix-tree-terminal-keymaps --strict` — passes.
+
+- [ ] Clean `:messages` on startup; `luac -p`, `stylua --check`, and `openspec validate` all pass
+
+### Raise PR & merge
+
+- [ ] All validation steps above pass (TK.1–TK.8), with any defect and its fix logged inline as a
+      blockquote note
+- [ ] `fix-blink-completion-keymap` merged first, and this branch rebased onto the updated `main`
+      (conflicts expected only where both touch `keybindings.adoc`, `cheatsheets/core.md`, and this
+      file — the hunks are in different sections, so keep both sides)
+- [ ] Raise PR: `fix/tree-terminal-keymaps` → `main`
+- [ ] Review and approve PR
+- [ ] Merge PR
+
+### Post-merge
+
+- [ ] `git checkout main && git pull origin main`
+- [ ] Launch Neovim from `main`, re-confirm TK.1 and TK.3 (the two keys that moved) on the merged
+      config
+- [ ] Rebuild the docs site (`rm -rf build/site && ./docker/antora/run.sh antora-playbook.yml`) and
+      confirm the `[[file-tree]]`/`[[terminal]]` cross-references resolve in the rendered pages
+- [ ] Change archived and the delta promoted to the capability spec
