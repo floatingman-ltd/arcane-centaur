@@ -2198,8 +2198,13 @@ These are `ide-layout` requirements this change must not regress.
 ### Post-merge
 
 - [X] `git checkout main && git pull origin main` (`main` at `7684430`)
-- [ ] Launch Neovim from `main`, re-confirm TK.1 and TK.3 (the two keys that moved) on the merged
+- [X] Launch Neovim from `main`, re-confirm TK.1 and TK.3 (the two keys that moved) on the merged
       config
+
+> Confirmed live on merged `main`. Headless resolution matched: `<leader>t` -> `:NvimTreeToggle<CR>`,
+> `<leader>T` -> the `toggle_terminal` callback, `<C-t>` **UNMAPPED** (the removal landing as
+> intended), with `<leader>n`/`<C-n>` -> `:NvimTreeOpen<CR>` and `<C-f>` -> `:NvimTreeFindFile<CR>`
+> unchanged.
 - [X] Rebuild the docs site (`rm -rf build/site && ./docker/antora/run.sh antora-playbook.yml`) and
 
 > Rebuilt clean: exit 0 with only the five pre-existing `{name}`/`{pat}`/`{feed}` attribute warnings,
@@ -2207,4 +2212,10 @@ These are `ide-layout` requirements this change must not regress.
 > `editor/navigation.html` — `file-tree`, `terminal` and `inside-tree` each have an `id` and live
 > `href`s. The single remaining "Toggle file tree" on each page is the `<leader>t` row, as intended.
       confirm the `[[file-tree]]`/`[[terminal]]` cross-references resolve in the rendered pages
-- [ ] Change archived and the delta promoted to the capability spec
+- [X] Change archived and the delta promoted to the capability spec
+
+> Archived as `openspec/changes/archive/2026-08-24-fix-tree-terminal-keymaps/`. The `ide-layout`
+> delta is promoted: the terminal requirement now names `<leader>T` and states that `<leader>t`
+> SHALL NOT toggle the terminal, and a new *File tree keymaps* requirement records that `<leader>t`
+> is the only toggle and that no global `<C-t>` binding is provided, with the reason.
+> `openspec validate --all --strict`: 40 passed, 0 failed.
