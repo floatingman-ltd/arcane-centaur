@@ -22,6 +22,13 @@ local completion_keymap = {
   ["<C-p>"] = { "select_prev", "fallback" },
   ["<C-y>"] = { "select_and_accept", "fallback" },
   ["<C-e>"] = { "cancel", "fallback" },
+  -- Summon the documentation window on demand. Needed whenever the automatic
+  -- window is off (see :BlinkDocsToggle below), and still useful when it is on,
+  -- to bring the window back after dismissing it. show_documentation requires an
+  -- item to already be selected, so this is <C-n> then <C-k>. <C-k>/<C-l> are
+  -- normal-mode window motions only, so there is no collision; native
+  -- insert-mode <C-k> (digraphs) survives via the fallback.
+  ["<C-k>"] = { "show_documentation", "fallback" },
   ["<C-b>"] = { "scroll_documentation_up", "fallback" },
   ["<C-f>"] = { "scroll_documentation_down", "fallback" },
 }
@@ -39,6 +46,19 @@ return {
       completion = {
         list = {
           selection = { preselect = false, auto_insert = false },
+        },
+        -- blink defaults auto_show to false, which left the documentation window
+        -- permanently closed -- and <C-b>/<C-f>, bound to scroll_documentation_*,
+        -- dead, since both bail with
+        -- `if not documentation.win:is_open() then return end`. Three doc surfaces
+        -- advertised those keys regardless: the same can't-possibly-work defect as
+        -- <M-Space>, which is what this change was raised to fix.
+        --
+        -- Default to the timed window. Flip to on-demand-only at runtime with
+        -- :BlinkDocsToggle; <C-k> summons the window in either mode.
+        documentation = {
+          auto_show = true,
+          auto_show_delay_ms = 500,
         },
       },
       sources = {
@@ -93,5 +113,26 @@ return {
         end,
       },
     },
+    config = function(_, opts)
+      require("blink.cmp").setup(opts)
+
+      -- Runtime switch between the timed documentation window and on-demand-only.
+      -- blink's own module captures `require("blink.cmp.config").completion.documentation`
+      -- by reference and re-reads `auto_show` on every item selection, so flipping the
+      -- field takes effect immediately -- no restart, no re-setup. It has to stay a
+      -- boolean (blink validates `{ config.auto_show, "boolean" }`), but that check only
+      -- runs at setup, so a runtime flip is safe.
+      --
+      -- Not persisted: every session starts on the timed default. With auto_show off,
+      -- <C-k> is the only way to raise the window.
+      vim.api.nvim_create_user_command("BlinkDocsToggle", function()
+        local docs = require("blink.cmp.config").completion.documentation
+        docs.auto_show = not docs.auto_show
+        vim.notify(
+          "blink docs window: " .. (docs.auto_show and "timed (auto)" or "on-demand (<C-k> only)"),
+          vim.log.levels.INFO
+        )
+      end, { desc = "Toggle the blink completion docs window between timed and on-demand" })
+    end,
   },
 }

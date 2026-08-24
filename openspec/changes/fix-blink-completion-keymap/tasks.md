@@ -12,7 +12,7 @@
 
 ## 2. Rewrite the keymap in `lua/plugins/blink.lua`
 
-- [X] 2.1 Define the shared keymap once as a local table: `<C-n>` = `{ "show", "select_next", "fallback" }`, `<C-p>` select_prev, `<C-y>` `select_and_accept`, `<C-e>` `cancel`, `<C-b>`/`<C-f>` scroll docs — each ending in a `"fallback"` entry. Note `<C-n>` takes **three** commands in order; the other keys take one plus the fallback.
+- [X] 2.1 Define the shared keymap once as a local table: `<C-n>` = `{ "show", "select_next", "fallback" }`, `<C-p>` select_prev, `<C-y>` `select_and_accept`, `<C-e>` `cancel`, `<C-k>` `show_documentation`, `<C-b>`/`<C-f>` scroll docs — each ending in a `"fallback"` entry. Note `<C-n>` takes **three** commands in order; the other keys take one plus the fallback.
 - [X] 2.2 Assign it to `opts.keymap` with `preset = "none"`, replacing the current table. Remove the `<M-Space>` and `<CR>` entries.
 - [X] 2.3 Assign the same table to `opts.cmdline.keymap` with `preset = "none"`, replacing `preset = "cmdline"`.
 - [X] 2.4 Update the comment at `lua/plugins/blink.lua:57` — it currently explains why cmdline needs its own preset, which stops being true. Replace it with a note that both modes share one table deliberately.

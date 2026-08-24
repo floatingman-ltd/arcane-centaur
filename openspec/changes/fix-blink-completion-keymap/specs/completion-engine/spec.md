@@ -12,6 +12,7 @@ The shared keymap SHALL be:
 | `<C-p>` | Select the previous item |
 | `<C-y>` | Accept the selected item, or the top item when none is selected |
 | `<C-e>` | Cancel — dismiss the menu and restore the typed text |
+| `<C-k>` | Show the documentation window for the selected item |
 | `<C-b>` / `<C-f>` | Scroll the documentation window up / down |
 
 The manual trigger SHALL be a plain `Ctrl`-plus-letter chord rather than a chord involving `Alt` or `Space`, both of which the host console reserves.
@@ -54,6 +55,23 @@ The manual trigger SHALL be a plain `Ctrl`-plus-letter chord rather than a chord
 
 - **WHEN** the user presses `<C-b>` or `<C-f>` with the documentation window visible
 - **THEN** it SHALL respectively scroll up and scroll down
+
+#### Scenario: The documentation window is reachable
+
+Keys that scroll the documentation window are meaningless if the window can never open. The
+configuration SHALL provide at least one way to open it.
+
+- **WHEN** the user selects a completion item whose source supplies documentation
+- **THEN** the documentation window SHALL become visible without requiring a keystroke
+- **AND** the user SHALL also be able to open it explicitly with `<C-k>`
+
+#### Scenario: Switching the documentation window between timed and on-demand
+
+- **WHEN** the user runs `:BlinkDocsToggle`
+- **THEN** the automatic documentation window SHALL be enabled or disabled for the current session
+- **AND** the new state SHALL be reported to the user
+- **AND** `<C-k>` SHALL continue to open the window in either state
+- **AND** a new session SHALL start with the automatic window enabled
 
 #### Scenario: The manual trigger reaches Neovim under WSL
 

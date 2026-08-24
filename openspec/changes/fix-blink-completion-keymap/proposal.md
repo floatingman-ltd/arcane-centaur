@@ -15,6 +15,7 @@ Two logged defects in the completion keymap, both rooted in the same thing — t
   | `<C-p>` | Select previous |
   | `<C-y>` | Accept the selected item (or the top item if none selected) |
   | `<C-e>` | Cancel — close the menu and restore what was typed |
+  | `<C-k>` | Show the documentation window for the selected item |
   | `<C-b>` / `<C-f>` | Scroll the documentation window up / down |
 
 - **BREAKING — `<CR>` no longer accepts a completion.** Enter inserts a newline in insert mode and executes the command on the command line, always. Accepting is `<C-y>` in both modes. This removes the class of accident where Enter silently commits a suggestion, and is what makes a single cross-mode keymap possible at all.

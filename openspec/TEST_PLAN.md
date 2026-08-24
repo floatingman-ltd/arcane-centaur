@@ -1612,29 +1612,54 @@ Two **BREAKING** changes, both deliberate:
    errors.
 3. `:messages` — confirm empty.
 
-- [ ] Branch checked out, `:Lazy sync` clean, `:messages` empty
+- [X] Branch checked out, `:Lazy sync` clean, `:messages` empty
 
 ### Validate
 
-#### BC.1 — The trigger opens the menu without selecting anything
+#### BC.1 — The menu appears without selecting anything
 
 1. Open `testdocs/hello.lua`, enter insert mode, and type a partial identifier (e.g. `vim.ap`).
-2. Press `<C-n>` **once** — the completion menu appears.
+2. The completion menu **auto-shows as you type** (`completion.trigger.show_on_keyword = true`); you
+   do not have to press anything.
 3. Confirm **no item is highlighted**. This is the no-auto-select guarantee (`preselect = false`); if
    an item is highlighted, `show_and_insert` was used instead of `show` and this step fails.
-4. Press `<C-n>` a second time — now the **first item** highlights.
+4. Press `<C-n>` once — the **first item** highlights.
+5. To see the *trigger* role instead, dismiss the menu with `<C-e>` and press `<C-n>` from that
+   closed state — the menu reopens with nothing highlighted.
 
-- [ ] `<C-n>` opens the menu with nothing highlighted; a second press selects the first item
+- [X] The menu appears with nothing highlighted; `<C-n>` then selects the first item; `<C-n>` from a
+      closed menu reopens it without selecting
+
+> **Defect found and fixed — documentation, not behavior.** This step originally read "press `<C-n>`
+> once to open the menu, again to select the first item", and all three doc surfaces said the same.
+> That is only true from a **closed** menu. `completion.trigger.show_on_keyword` is on, so while
+> typing a word the menu is *already* open, and `cmp.show()` (`blink/cmp/init.lua:62`) begins
+> `if menu.win:is_open() ... then return end` — returning nil, so blink falls through to the next
+> command in `{ "show", "select_next", "fallback" }`. The first `<C-n>` therefore selects item 1, and
+> a second press selects item 2. The keymap is correct and there is no regression risk: `show`
+> no-ops rather than resetting the menu, and nothing is ever highlighted until asked. Only the prose
+> was wrong. Corrected the `<C-n>` notes in `keybindings.adoc`, `code-intelligence.adoc` (the
+> "trigger key" subsection), and `cheatsheets/core.md`; the table rows already read correctly ("Open
+> the menu when closed; select next suggestion when open"). Re-check under BC.12.
+
+> Note for anyone re-walking this: blink applies its insert-mode keys **buffer-locally on
+> `InsertEnter`** (`keymap/init.lua:78-86`), not globally at startup. So `<C-n>` is blink's only
+> while you are actually in insert mode — in normal mode it remains `:NvimTreeOpen<CR>`. Pressing it
+> a hair too early opens the file tree, which looks like a failure but is not one. Confirm the
+> statusline reads `-- INSERT --` before the keypress. Verified the six buffer-local maps land
+> correctly once in insert mode: `<C-N> => blink.cmp: Show, Select Next`, plus `<C-P>`/`<C-Y>`/
+> `<C-E>`/`<C-B>`/`<C-F>`.
 
 #### BC.2 — Navigate and accept in insert mode
 
 1. With the menu open and items showing, press `<C-n>`/`<C-p>` — the highlight moves down/up.
 2. Press `<C-y>` — the highlighted item is inserted.
-3. Undo, retype the prefix, open the menu, and press `<C-y>` **with nothing highlighted** — the
-   **top** item is inserted. (This is why the binding is `select_and_accept` rather than `accept`;
-   plain `accept` is a no-op when nothing is selected.)
+3. Undo, retype the prefix, and — **without pressing `<C-n>` at all**, since the menu auto-shows
+   with nothing highlighted — press `<C-y>`. The **top** item is inserted. (This is why the binding
+   is `select_and_accept` rather than `accept`; plain `accept` is a no-op when nothing is selected.
+   Pressing `<C-n>` first would defeat the test by selecting item 1.)
 
-- [ ] `<C-n>`/`<C-p>` move the highlight; `<C-y>` accepts the highlighted item; `<C-y>` with nothing
+- [X] `<C-n>`/`<C-p>` move the highlight; `<C-y>` accepts the highlighted item; `<C-y>` with nothing
       highlighted accepts the top item
 
 #### BC.3 — `<CR>` never accepts (the breaking change)
@@ -1644,7 +1669,7 @@ Two **BREAKING** changes, both deliberate:
 3. Confirm a **newline is inserted** and the highlighted completion is **not** committed.
 4. Repeat with nothing highlighted — same result.
 
-- [ ] `<CR>` inserts a newline and accepts nothing, whether or not an item is highlighted
+- [X] `<CR>` inserts a newline and accepts nothing, whether or not an item is highlighted
 
 #### BC.4 — Cancel restores the typed text
 
@@ -1654,15 +1679,71 @@ Two **BREAKING** changes, both deliberate:
    partially-completed word. (`<C-e>` is `cancel`, not `hide`; `hide` would leave the inserted text
    behind.)
 
-- [ ] `<C-e>` dismisses the menu and restores the typed text
+- [X] `<C-e>` dismisses the menu and restores the typed text
 
 #### BC.5 — Documentation scroll
 
-1. Open the menu on an item that has a documentation window (an LSP function in `hello.lua` with a
-   long signature/docstring).
-2. Press `<C-f>` / `<C-b>` — the documentation window scrolls down / up.
+**Do not use a Lua buffer for this** — see the defect note below. Use the C# project fixture, which
+has a docs-capable LSP and no spell pollution (`after/ftplugin/cs.lua` sets `spell = false`).
 
-- [ ] `<C-f>`/`<C-b>` scroll the documentation window
+1. `nvim testdocs/csharp-project/Program.cs` and wait for roslyn to attach (10-30s on a cold start;
+   confirm with `:lua =vim.lsp.get_clients({bufnr=0})[1].name` -> `roslyn`). The bare `testdocs/hello.cs`
+   is not enough; roslyn needs the `.csproj`.
+2. Insert mode inside `Main`, type `Console.Wr`, press `<C-n>` to select `WriteLine`.
+3. Press `<C-k>` -> the documentation window appears.
+4. Press `<C-f>` / `<C-b>` -> the documentation scrolls down / up, 4 lines per press.
+
+Note that a docstring shorter than the window (default `max_height = 20`) will not appear to scroll
+at all: `scroll_down` clamps to `math.min(line_count, bottom_line + amount)`, so when everything is
+already visible the cursor cannot advance. To prove the keys deterministically, temporarily set
+`completion.documentation.window.max_height = 5` so any docstring overflows, then revert.
+
+- [X] `<C-f>`/`<C-b>` scroll the documentation window
+
+> **Defect found and fixed — `<C-f>`/`<C-b>` were dead keys.** blink leaves
+> `completion.documentation.auto_show` at `false`, and nothing bound `show_documentation`, so the
+> documentation window could never open. Both scroll commands begin
+> `if not documentation.win:is_open() then return end`, so the two keys always fell through to
+> `fallback` and did nothing — while `keybindings.adoc`, `code-intelligence.adoc` and
+> `cheatsheets/core.md` all advertised them as "Scroll docs preview down/up". This is the same
+> can't-possibly-work defect as `<M-Space>`, which is the very thing this change was raised to fix;
+> it survived because the keymap was carried over wholesale. **Fix:** added
+> `["<C-k>"] = { "show_documentation", "fallback" }` to the shared table, so the window can be
+> summoned on demand and the scroll keys have something to act on. `<C-k>`/`<C-l>` are normal-mode
+> window motions only (`lua/keymaps.lua:18-19`), so there is no collision, and native insert-mode
+> `<C-k>` (digraphs) still works via the fallback.
+>
+> **Settled design — timed by default, switchable at runtime.** Two approaches were trialled: a
+> timed window (`documentation.auto_show = true`, 500ms) and an on-demand `<C-k>`. The first trial
+> of the timed window was a false negative — it was tested in a Lua buffer, where the window can
+> never appear for the reason below — so it was re-run in C# once that was understood. The change
+> ships **both**: `auto_show = true` is the default, and `:BlinkDocsToggle` flips to on-demand-only
+> at runtime. This works because `completion/windows/documentation.lua:14` captures
+> `require("blink.cmp.config").completion.documentation` **by reference** and re-reads `auto_show`
+> on every item selection (`elseif config.auto_show then`), so flipping the field takes effect
+> immediately with no restart. It must remain a boolean — blink validates
+> `{ config.auto_show, "boolean" }` — but that check runs only at setup. The setting is
+> deliberately **not persisted**: every session starts timed. Note that a docs window already open
+> when you toggle off keeps tracking the selection for that menu, since `auto_show_item`'s first
+> branch updates an open window regardless of the flag; it simply will not reappear next time.
+>
+> **Known limitation — no documentation in Lua buffers.** `lua_ls` supplies neither `detail` nor
+> `documentation` on its completion items here, and `show_item` calls `docs.close()` and returns
+> silently for exactly that case. So `<C-k>` does nothing in `.lua` files no matter what is bound.
+> Confirmed working in C# via roslyn. Since this config is mostly Lua, temper expectations for the
+> key's day-to-day usefulness.
+>
+> **Out of scope, logged separately — spell source pollutes Lua completions.** `lua/options.lua:48`
+> sets `o.spell = true` globally. The clojure/cs/lisp/scheme/fsharp/janet ftplugins each set
+> `spell = false`, but `after/ftplugin/lua.lua` does not, so blink's spell source is live in Lua
+> buffers and returns junk candidates (`"nevi m_crea"`, `"no vim_crea"`). Unrelated to the keymap;
+> needs its own change.
+>
+> **Out of scope — overloads are not browsable.** Roslyn collapses a method's overloads into one
+> completion item, so the docs window cannot page through them; overloads belong to
+> `textDocument/signatureHelp`. blink's `signature.enabled` is `false`, `on_attach` binds no
+> `vim.lsp.buf.signature_help`, and blink's signature window renders only
+> `signatures[(activeSignature or 0) + 1]` with no cycling command. Would be a new feature.
 
 #### BC.6 — The same keys behave the same way on the command line
 
@@ -1672,12 +1753,36 @@ This is the whole point of the change — the keys must not differ from BC.1–B
    (`auto_show = true`), so it may already be open.
 2. Confirm `<C-n>`/`<C-p>` move the highlight, `<C-y>` accepts the highlighted candidate into the
    command line, and `<C-e>` cancels and restores what you typed.
-3. Press `<CR>` with the menu open — confirm the **command executes** as normal.
+3. Press `<CR>` with the menu open and a candidate **highlighted** — confirm the command line runs
+   **exactly what you typed**, ignoring the highlighted candidate. Typing `e testd` with `testdocs/`
+   highlighted must open an empty buffer named `testd`, *not* `testdocs/`. Opening the highlighted
+   candidate would mean `<CR>` had accepted, which is the defect this change removes. (`:e` on a
+   nonexistent path only creates an unwritten buffer; nothing is written to disk. `:bd!` to clear.)
 4. Press `/` and type a partial word — confirm buffer-word candidates are still offered and the same
    keys work.
+5. `<C-k>` at the `:` prompt. The shared table is handed to `cmdline.keymap` unchanged, so the key
+   is bound here too — but **nothing can ever be shown**, and this step only checks that it is
+   harmless. Command-line candidates carry `labelDetails` (the inline grey description) and never
+   `detail` or `documentation`, which are the only two fields `show_item` accepts; it calls
+   `docs.close()` and returns for anything else. So: type `e testd`, `<C-n>` to select, `<C-k>` —
+   confirm **no window appears**, no literal character is inserted, the command line is intact, and
+   the menu is not dismissed.
 
-- [ ] All keys behave identically at the `:` prompt; `<CR>` still executes; `/` search completion
-      still offers buffer words
+   > This is deliberately a weak assertion, and it cannot be made stronger. A path-preview test was
+   > drafted here on the strength of `sources/path/init.lua:73-95`, which does set `documentation`
+   > on resolve — but that was read from source rather than observed, and live testing showed no
+   > window at the `:` prompt (the cmdline source answers `:e ` file arguments via `getcompletion`,
+   > and its items carry no documentation). The claim was retracted from
+   > `code-intelligence.adoc` rather than left standing. The honest position is that `<C-k>` exists
+   > on the command line for keymap symmetry only.
+
+- [X] All keys behave identically at the `:` prompt; `<CR>` still executes; `/` search completion
+      still offers buffer words; `<C-k>` is bound and harmless
+
+> `<CR>` confirmed to run **exactly what was typed**: `e testd` with `testdocs/` highlighted opened
+> an empty buffer named `testd`, not `testdocs/`. Nothing written to disk. The original step wording
+> ("the command executes as normal") was too loose to distinguish a pass from a failure and read as
+> though something had gone wrong; rewritten to state the concrete expected buffer name.
 
 #### BC.7 — `<Tab>` at the `:` prompt (design.md Open Question)
 
@@ -1689,8 +1794,18 @@ back to native command-line completion.
    `<Tab>` to the shared table as a `select_next` alias — that can be done without breaking the
    one-keymap-everywhere goal, since it would apply to both modes.
 
-- [ ] `<Tab>` behavior at the `:` prompt observed and verdict recorded (acceptable as-is / add it
+- [X] `<Tab>` behavior at the `:` prompt observed and verdict recorded (acceptable as-is / add it
       back as a `select_next` alias)
+
+> **Verdict: acceptable as-is — do not bind `<Tab>`.** The fallback is not a dead key: `wildmenu` is
+> on with `wildmode=full` and `wildoptions=pum`, so `<Tab>` hands over to Neovim's native wildmenu,
+> which draws its own popup and cycles through full matches.
+>
+> The reason for *not* binding it is the change's own principle. Native wildmenu `<Tab>` exists only
+> on the command line, so finger memory built on it silently fails in insert mode — exactly the
+> cross-mode drift this change exists to remove. Binding `<Tab>` in the shared table would have made
+> it symmetric, but only by removing working native behavior to duplicate what `<C-n>` already does.
+> The asymmetry is inherent to `<Tab>` here, so the answer is to not rely on it.
 
 #### BC.8 — Command-line history recall still reachable
 
@@ -1703,7 +1818,25 @@ what preserves history recall when blink declines.
 2. Compare against the behavior you remember from `main`. This is the one place the `<C-n>` double
    duty could plausibly annoy.
 
-- [ ] Command-line history recall behavior recorded; no regression versus `main`
+- [X] Command-line history recall behavior recorded; no regression versus `main`
+
+> **Verdict: no regression; documented rather than changed.** On an empty `:` prompt `<C-n>` opens
+> blink's menu and `<C-p>` recalls the previous history entry, landing on the most recent command.
+> There is a prev but no next, which looks odd until you read the command lists: `<C-p>` is
+> `{ "select_prev", "fallback" }`, so with no menu open `select_prev` declines and the fallback
+> reaches native `<C-p>`; `<C-n>` is `{ "show", "select_next", "fallback" }`, and `show` *succeeds*
+> and opens the menu, so it never reaches its fallback. The asymmetry is a side effect of `<C-n>`
+> carrying the trigger role, not a defect.
+>
+> `<Up>`/`<Down>` work as expected and are the proper history keys — better than `<C-p>`/`<C-n>` for
+> the purpose, since they filter history by the typed prefix while the Ctrl pair walk it unfiltered.
+>
+> Disabling the `<C-p>` fallback on the command line was considered and rejected. It would mean
+> giving `cmdline.keymap` a mode-specific override, reintroducing exactly the divergence this change
+> removes. The `"fallback"` rule is already consistent across modes — "do what this mode natively
+> does with this key" — and only Neovim's native meaning differs (history on the command line,
+> keyword completion in insert mode). Special-casing would make the rule inconsistent to tidy one
+> outcome. Documented in `code-intelligence.adoc` instead.
 
 #### BC.9 — Other sources still ride the same menu
 
@@ -1712,8 +1845,21 @@ what preserves history recall when blink declines.
 2. In any buffer, `:set spell`, type a partial word of **3+ characters**, and confirm dictionary
    candidates appear. `:set nospell` and confirm they stop appearing.
 
-- [ ] Conjure completions work in lisp-family buffers; spell candidates appear only with `spell` on
-      and only at 3+ characters
+- [X] Conjure completions work in lisp-family buffers *(9a: N/A — see note)*; spell candidates appear
+      only with `spell` on and only at 3+ characters
+
+> **9a — recorded N/A, no REPL available.** Conjure completions require a live REPL, which was not
+> worth standing up for this. Defensible here rather than a gap: this change is keymap-only and
+> alters no source wiring, `conjure` remains listed in `sources.per_filetype` for the lisp-family
+> filetypes, and the shared table has been shown to drive every other source exercised (lsp, buffer,
+> path, snippets, spell). Nothing about the keymap is source-specific. Re-check opportunistically
+> the next time a REPL is running.
+>
+> **9b — passed.** Spell candidates appear with `:set spell` at 3+ characters, do not appear at 2
+> (the `min_keyword_length = 3` guard holds), and disappear with `:set nospell` (the
+> `enabled = function() return vim.opt.spell:get() end` gate holds). Worth confirming given the
+> separate finding that this source floods Lua buffers with junk — that is caused by `o.spell = true`
+> globally with no `spell = false` in `after/ftplugin/lua.lua`, not by a broken guard.
 
 #### BC.10 — Normal-mode `<C-n>` is unaffected
 
@@ -1723,7 +1869,19 @@ The shared keymap binds insert and command-line modes only. `<C-n>` in normal mo
 2. `:verbose imap <C-n>` — confirm it resolves to a blink mapping; `:verbose nmap <C-n>` — confirm it
    resolves to the `lua/keymaps.lua` tree mapping.
 
-- [ ] Normal-mode `<C-n>` still opens the file tree; the two meanings are cleanly separated by mode
+- [X] Normal-mode `<C-n>` still opens the file tree; the two meanings are cleanly separated by mode
+
+> Confirmed: `:verbose nmap <C-n>` resolves to `:NvimTreeOpen<CR>` from `lua/keymaps.lua`,
+> `:verbose imap <C-n>` to the blink mapping, with no leakage in either direction. Note that
+> `:verbose imap` reports nothing until you have entered insert mode in that buffer at least once,
+> since blink applies its keys buffer-locally on `InsertEnter` — the same mechanism that made BC.1
+> look like a failure.
+>
+> **Reservation recorded, no action now.** The separation works, but `<C-n>` is carrying a lot:
+> file tree in normal mode, trigger *and* select-next in insert, select-next on the command line.
+> Logged under "Things to keep an eye on" in `recommendations/ideas.md` to settle with use rather
+> than decided here. The note there observes that the tree role is the cheapest to drop, since after
+> `fix-tree-terminal-keymaps` the tree also answers to `<leader>t`, `<C-t>`, `<leader>n` and `<C-f>`.
 
 #### BC.11 — Clean startup and syntax
 
@@ -1733,30 +1891,69 @@ The shared keymap binds insert and command-line modes only. `<C-n>` in normal mo
    `:lua vim.print(require("blink.cmp.config").cmdline.keymap)` — confirm both show the **same six
    keys** with `preset = "none"`, and that neither contains `<CR>` or `<M-Space>`.
 
-- [ ] Clean `:messages`; `luac -p` passes; both keymaps resolve to the same six keys with no `<CR>`
+- [X] Clean `:messages`; `luac -p` passes; both keymaps resolve to the same keys with no `<CR>`
       or `<M-Space>`
+
+> Verified headlessly. `luac -p` passes repo-wide; `:messages` empty after a real session with
+> `:Lazy sync`. Both keymaps print `preset=none` with exactly `<C-b> <C-e> <C-f> <C-n> <C-p> <C-y>` —
+> stronger than "the same keys": `lua/plugins/blink.lua` declares one `completion_keymap` table
+> (line 19) and passes that same object to both `keymap` (line 38) and `cmdline.keymap` (line 82),
+> so the two modes cannot drift. `selection = { preselect = false, auto_insert = false }` at line 41.
+>
+> **Re-verified after BC.5 added `<C-k>`:** both modes now resolve to seven identical keys —
+> `<C-b> <C-e> <C-f> <C-k> <C-n> <C-p> <C-y>`. The seventh key reached `cmdline.keymap` with no
+> cmdline-specific edit, which is the shared-table design proving itself.
 
 #### BC.12 — Docs match the configuration
 
-1. `docs/modules/ROOT/pages/editor/keybindings.adoc` — Auto-Completion section lists the six keys,
-   leads with the `Enter`-does-not-accept callout, and notes the `<C-n>` double duty.
+**Re-scoped after BC.5 added `<C-k>` and `:BlinkDocsToggle`.** Steps 1-5 were cleared once against a
+six-key table, then invalidated and redone against seven.
+
+1. `docs/modules/ROOT/pages/editor/keybindings.adoc` — Auto-Completion section lists all **seven**
+   keys including `<C-k>`, leads with the `Enter`-does-not-accept callout, notes the `<C-n>` double
+   duty, and carries the note about the timed documentation window and `:BlinkDocsToggle`.
 2. `docs/modules/ROOT/pages/editor/code-intelligence.adoc` — same, plus the "trigger key" subsection,
-   the WSL note explaining why there is no `Alt-Space`/`Ctrl-Space`, and a Command-line Completion
-   section that states the accept key and the `<Tab>` fallback.
+   the new "The documentation window" subsection (timed default, `:BlinkDocsToggle`, why a short
+   docstring will not appear to scroll, and the `lua_ls` limitation), the WSL note explaining why
+   there is no `Alt-Space`/`Ctrl-Space`, and a Command-line Completion section that states the accept
+   key and the `<Tab>` fallback.
 3. `cheatsheets/core.md` — the `<leader>?` surface matches both pages, and its heading now reads
    **blink.cmp** (it still said "nvim-cmp", stale since change 03).
 4. `grep -rn -i 'M-Space\|Alt-Space\|Alt+Space' docs/ cheatsheets/` — the only hits are the two lines
    of the explanatory WSL note in `code-intelligence.adoc`. No surface **asserts** the key works.
 5. Site build: `rm -rf build/site && ./docker/antora/run.sh antora-playbook.yml` — no errors, no
    unresolved xrefs.
-6. In a live session, press `<leader>?` and confirm the rendered cheatsheet shows the new keys.
+6. In a live session, press `<leader>?` and confirm the rendered cheatsheet shows the new keys,
+   including `<C-k>`.
+7. Also confirm here how the **timed documentation window actually feels** in normal use — it is the
+   shipped default, and the original open question behind BC.5. Run `:BlinkDocsToggle` once to see
+   the on-demand mode and the state notification.
 
-- [ ] All three surfaces agree with the config; no page asserts `Alt-Space`; Antora builds clean;
+> Steps 1-5 re-verified after the seven-key rewrite: all three surfaces carry the `<C-k>` row and the
+> toggle; the `Alt-Space` grep still returns only the two explanatory WSL lines; Antora exits 0 with
+> the same five pre-existing `{name}`/`{pat}`/`{feed}` attribute warnings (all on untouched lines,
+> confirmed against `git diff main...HEAD`) and no new ones; the rendered
+> `code-intelligence.html`/`keybindings.html` both contain `BlinkDocsToggle` and the `Ctrl-k` rows.
+> Steps 6 and 7 are live and remain outstanding.
+
+- [X] All three surfaces agree with the config; no page asserts `Alt-Space`; Antora builds clean;
       `<leader>?` shows the new keys
+
+> Steps 6 and 7 passed. **Verdict on the timed documentation window: keep it as the default.** This
+> was the original open question behind the whole `<C-k>` investigation — the first attempt to answer
+> it was a false negative, tested in a Lua buffer where the window can never appear. Judged properly
+> in C# via roslyn, the 500ms timed window is the shipped default, with `:BlinkDocsToggle` available
+> to switch to on-demand per session.
+>
+> Step 6 also surfaced a separate, unrelated defect in the `<leader>?` popup itself: glow mis-wraps
+> paragraphs at around 118 columns, orphaning single words. Not caused by this change — it only
+> became visible because this change added the first real prose paragraphs to `cheatsheets/core.md`,
+> every other section being tables and short headers. Split out to `fix/glow-wrap-width` rather than
+> grown into this branch.
 
 ### Raise PR & merge
 
-- [ ] All validation steps above pass (BC.1–BC.12)
+- [X] All validation steps above pass (BC.1–BC.12)
 - [ ] Raise PR: `fix/blink-completion-keymap` → `main`
 - [ ] Review and approve PR
 - [ ] Merge PR

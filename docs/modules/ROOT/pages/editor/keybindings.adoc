@@ -313,12 +313,21 @@ The same keys work in insert mode and at the `:` / `/` prompt.
 |`Ctrl-p` |Insert / Command-line |Select previous suggestion
 |`Ctrl-y` |Insert / Command-line |Accept the highlighted suggestion, or the top one if none is highlighted
 |`Ctrl-e` |Insert / Command-line |Dismiss the menu and restore what you typed
+|`Ctrl-k` |Insert / Command-line |Show the documentation window for the selected entry
 |`Ctrl-f` |Insert / Command-line |Scroll docs preview down
 |`Ctrl-b` |Insert / Command-line |Scroll docs preview up
 |===
 
-NOTE: `Ctrl-n` is both the manual trigger and the select-next key — press it once to
-open the menu (nothing is highlighted yet), again to select the first item.
+NOTE: `Ctrl-n` is both the manual trigger and the select-next key. The menu auto-shows
+as you type, so mid-word the *first* `Ctrl-n` already selects the first item; the trigger
+role only shows itself when the menu is closed, such as after `Ctrl-e`. Either way nothing
+is highlighted until you ask for it.
+
+NOTE: The documentation window appears on its own after 500ms; `:BlinkDocsToggle` switches
+it to on-demand-only for the session, where `Ctrl-k` raises it. The window only ever renders
+what a source actually supplies, which is narrower than it sounds: `lua_ls` sends none, so it
+never appears in Lua buffers, and command-line candidates send none either, so it never
+appears at the `:` prompt. C# via roslyn is the reliable place to see it.
 
 → xref:editor/code-intelligence.adoc[Full reference]
 

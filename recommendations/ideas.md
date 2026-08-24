@@ -9,6 +9,42 @@
 2. some sort of visual buffer tabbing:
    - the sidebar panels for claude.cli and avanate.nvim are awkward to read, it seems both would like to be "full screen" 
    - the terminal at the bottom of the screen requires scrolling, it too would like a "full screen"
+3. signature help, and a way to browse method overloads. Today there is no way to see a method's
+   other overloads. Roslyn collapses them into a *single* completion item and just notes the count
+   ("+16 overloads"), so the completion documentation window cannot page through them — it renders
+   one item's docs and there is no second item to move to. Overloads belong to a different LSP
+   request, `textDocument/signatureHelp`, which is switched off here on both available paths:
+   blink's own module has `signature.enabled = false`, and `on_attach` in `lua/config/lsp.lua`
+   binds no `vim.lsp.buf.signature_help`. Enabling blink's would not be sufficient on its own
+   either: its window renders only `signatures[(activeSignature or 0) + 1]`
+   (`signature/window.lua:54`) and the command set is just `show_signature` / `hide_signature` /
+   `scroll_signature_up` / `scroll_signature_down` — there is **no overload-cycling command**. So
+   this needs signature help turned on *plus* something that actually cycles signatures, with its
+   own keybindings and doc updates. Surfaced while validating `fix-blink-completion-keymap`; well
+   outside that change, which is a keymap consolidation.
+
+## Things to keep an eye on
+
+Not defects — they work as designed — but ergonomics we are not yet sure about. Left to settle with
+use before deciding.
+
+- **`<C-n>` carries several meanings, separated only by mode.** In normal mode it opens the file
+  tree (`lua/keymaps.lua`); in insert mode it is both the manual completion trigger *and*
+  select-next; on the command line it is select-next. The separation is clean and was verified
+  (TEST_PLAN BC.10: `:verbose nmap <C-n>` resolves to `:NvimTreeOpen<CR>`, `:verbose imap <C-n>` to
+  the blink mapping, no leakage either way) — but "same chord, four jobs" is a lot to hold, and it
+  already caused one false failure during validation, where pressing it a moment before entering
+  insert mode opened the tree instead of the completion menu.
+
+  Worth noting if this is revisited: **the tree role is the cheapest to give up.** Once
+  `fix-tree-terminal-keymaps` lands, the tree answers to `<leader>t` (toggle), `<C-t>` (toggle),
+  `<leader>n` (open) and `<C-f>` (reveal) — so dropping `<C-n>` would remove nothing that is not
+  already covered twice over, and would leave `<C-n>` meaning one thing: completion, in both modes
+  that have it. The alternative, moving the completion trigger instead, is worse — it is constrained
+  to plain `Ctrl`-plus-letter chords by the WSL console, and `<C-n>` is what stock Vim already means
+  in insert mode.
+
+  Deferred deliberately: see how it feels in daily use first.
 
 ## Things that seem broken
 

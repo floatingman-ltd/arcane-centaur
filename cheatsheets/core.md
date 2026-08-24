@@ -175,10 +175,13 @@
 | `Ctrl-p` | Insert / Cmdline | Previous suggestion |
 | `Ctrl-y` | Insert / Cmdline | Accept highlighted suggestion (or the top one) |
 | `Ctrl-e` | Insert / Cmdline | Dismiss menu, restore typed text |
+| `Ctrl-k` | Insert / Cmdline | Show docs window for the selected entry |
 | `Ctrl-f` | Insert / Cmdline | Scroll docs down |
 | `Ctrl-b` | Insert / Cmdline | Scroll docs up |
 
-`Ctrl-n` is both trigger and select-next: once to open (nothing highlighted), again to pick the first item. `Enter` always means newline / execute.
+`Ctrl-n` is both trigger and select-next. The menu auto-shows as you type, so mid-word the first press already picks the first item; it only *opens* the menu when closed (e.g. after `Ctrl-e`). Nothing is highlighted until you ask. `Enter` always means newline / execute.
+
+Docs window appears on its own after 500ms; `:BlinkDocsToggle` makes it on-demand (`Ctrl-k`) for the session. It only renders what a source supplies: `lua_ls` sends none, and neither do command-line candidates, so it appears in neither Lua buffers nor the `:` prompt. C# via roslyn is where you will see it.
 
 ---
 

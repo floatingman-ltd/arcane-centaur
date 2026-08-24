@@ -59,7 +59,18 @@ Relevant existing behavior that constrains the fix: `completion.list.selection =
 
 - _Why:_ `hide` closes the menu and leaves whatever was inserted; `cancel` restores what the user actually typed. For a dismiss key, restore is the expected behavior, and it matches blink's stock cmdline preset — again converging the two modes.
 
-**D6 — `<C-b>` / `<C-f>` keep their current meaning.** Documentation scroll, carried over unchanged into both modes.
+**D6 — `<C-b>` / `<C-f>` keep their current meaning, and `<C-k>` makes them reachable.** Documentation scroll, carried over unchanged into both modes.
+
+Carrying them over unchanged turned out to hide a defect, found during validation (TEST_PLAN BC.5): blink leaves `completion.documentation.auto_show` at `false` and nothing was bound to `show_documentation`, so the documentation window could never open. Both scroll commands begin `if not documentation.win:is_open() then return end`, so the two keys always fell through to `fallback` and did nothing — while all three documentation surfaces advertised them. That is the same can't-possibly-work defect as `<M-Space>`, which is what this change exists to fix; it survived precisely *because* the keys were carried over without being exercised.
+
+Resolved by shipping both ways to open the window:
+
+- `documentation.auto_show = true` (500ms) is the default, so the window appears on its own.
+- `["<C-k>"] = { "show_documentation", "fallback" }` opens it explicitly. `show_documentation` requires an item to already be selected, so it is `<C-n>` then `<C-k>`.
+- `:BlinkDocsToggle` flips between the two at runtime. This works because `completion/windows/documentation.lua:14` captures the config table **by reference** and re-reads `auto_show` on every selection; the value must stay a boolean, but blink validates only at setup. Deliberately not persisted — every session starts timed.
+
+- _Key choice:_ `<C-k>` and `<C-l>` are bound in **normal** mode only (`lua/keymaps.lua:18-19`, window motions), so an insert/cmdline binding does not collide — the same mode separation that lets `<C-n>` mean the file tree in normal mode. Native insert-mode `<C-k>` (digraphs) still works through the `fallback` entry whenever no item is selected.
+- _Known limitation:_ `lua_ls` supplies neither `detail` nor `documentation` on its completion items, and `show_item` closes the window silently in exactly that case, so the window never appears in Lua buffers regardless of which mechanism is used. Verified working in C# via roslyn.
 
 ## Risks / Trade-offs
 
@@ -80,4 +91,8 @@ Relevant existing behavior that constrains the fix: `completion.list.selection =
 
 ## Open Questions
 
-- Whether `<Tab>` at the `:` prompt is missed once it falls back to native command-line completion. Resolve during live validation rather than by guessing — if it is missed, `<Tab>` can be added to the shared table as a select-next alias without breaking the one-set-everywhere goal.
+- ~~Whether `<Tab>` at the `:` prompt is missed once it falls back to native command-line completion.~~ **Resolved during live validation (TEST_PLAN BC.7): keep the fallback, do not bind `<Tab>`.**
+
+  The fallback is not a dead key — `wildmenu` is on with `wildmode=full` and `wildoptions=pum`, so `<Tab>` hands over to Neovim's own wildmenu, which draws its own popup and cycles through full matches. Nothing is lost by leaving it alone.
+
+  The decisive argument was against binding it, and it is the same principle the whole change rests on: native wildmenu `<Tab>` exists **only** on the command line. Building finger memory on it produces a habit that silently fails the moment you are in insert mode — precisely the cross-mode drift this change was raised to eliminate. Binding `<Tab>` in the shared table would have made it symmetric, but at the cost of removing working native behavior to gain something `<C-n>` already does. The asymmetry is inherent to `<Tab>` here, so the right move is to not rely on it at all.
