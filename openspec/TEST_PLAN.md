@@ -2000,7 +2000,13 @@ so `<leader>L` keeps sharing the same terminal open path.
 2. Launch Neovim: `:Lazy sync` — should be a no-op (no plugin pins touched); confirm no errors.
 3. `:messages` — confirm empty.
 
-- [ ] Branch checked out, `:Lazy sync` clean, `:messages` empty
+- [X] Branch checked out, `:Lazy sync` clean, no errors in `:messages` (lazy.nvim's update
+      notices excepted — see TK.8)
+
+> Evidenced by the validation walk itself: TK.1-TK.8 were all run in live sessions on this branch,
+> and TK.8 confirmed a fresh startup carries no plugin, LSP or keymap errors. `:Lazy sync` is a
+> no-op here — this change touches no plugin specs. The original wording said "`:messages` empty",
+> corrected for the same reason as TK.8: it never is, because the update checker always reports.
 
 ### Validate
 
