@@ -34,5 +34,5 @@
 
 ## 5. Ship
 
-- [ ] 5.1 Only once every validation step is ticked, push the branch and raise the PR.
+- [X] 5.1 Only once every validation step is ticked, push the branch and raise the PR. (PR #173, merged.)
 - [X] 5.2 Confirm `openspec validate fix-tree-terminal-keymaps` passes.

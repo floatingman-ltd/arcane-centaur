@@ -2191,15 +2191,20 @@ These are `ide-layout` requirements this change must not regress.
 > after the blink archive/bookkeeping merged (PR #172). Both times only `openspec/TEST_PLAN.md`
 > conflicted, resolved by rebuilding from `main` and re-appending this section; `keybindings.adoc`
 > and `cheatsheets/core.md` auto-merged and were verified to carry both changes.
-- [ ] Raise PR: `fix/tree-terminal-keymaps` → `main`
-- [ ] Review and approve PR
-- [ ] Merge PR
+- [X] Raise PR: `fix/tree-terminal-keymaps` → `main` (PR #173)
+- [X] Review and approve PR
+- [X] Merge PR
 
 ### Post-merge
 
-- [ ] `git checkout main && git pull origin main`
+- [X] `git checkout main && git pull origin main` (`main` at `7684430`)
 - [ ] Launch Neovim from `main`, re-confirm TK.1 and TK.3 (the two keys that moved) on the merged
       config
-- [ ] Rebuild the docs site (`rm -rf build/site && ./docker/antora/run.sh antora-playbook.yml`) and
+- [X] Rebuild the docs site (`rm -rf build/site && ./docker/antora/run.sh antora-playbook.yml`) and
+
+> Rebuilt clean: exit 0 with only the five pre-existing `{name}`/`{pat}`/`{feed}` attribute warnings,
+> none on lines this change touched. All three anchors resolve in the rendered
+> `editor/navigation.html` — `file-tree`, `terminal` and `inside-tree` each have an `id` and live
+> `href`s. The single remaining "Toggle file tree" on each page is the `<leader>t` row, as intended.
       confirm the `[[file-tree]]`/`[[terminal]]` cross-references resolve in the rendered pages
 - [ ] Change archived and the delta promoted to the capability spec
