@@ -2105,8 +2105,15 @@ that state explicitly rather than only from a clean start.
    tree and reuse the existing terminal rather than spawning a new shell (check the `marker-one`
    scrollback from TK.3 is still there).
 
-- [ ] `<leader>L` assembles the layout with focus in the editor, is idempotent, and reuses the
+- [X] `<leader>L` assembles the layout with focus in the editor, is idempotent, and reuses the
       existing shell
+
+> Passed, including the full-width terminal — so `<leader>L` is **not** affected by the reduced-width
+> defect recorded under TK.3, even though `ide_layout` opens its terminal through the same
+> `botright split` code. That narrows the defect to `toggle_terminal` invoked with focus already in
+> the tree window, rather than to the split call itself. Initially skipped in this pass, then run.
+
+
 
 #### TK.6 — which-key shows both keys and `<leader>t` fires immediately
 
@@ -2118,7 +2125,7 @@ that state explicitly rather than only from a clean start.
 3. `:verbose map <leader>t` — confirm it resolves to `:NvimTreeToggle<CR>` from `lua/keymaps.lua`,
    and `:verbose map <leader>T` resolves to the `toggle_terminal` Lua callback.
 
-- [ ] which-key lists both with correct descriptions; `<leader>t` fires with no prefix timeout;
+- [X] which-key lists both with correct descriptions; `<leader>t` fires with no prefix timeout;
       both maps resolve to the expected targets
 
 #### TK.7 — `:Bd` and the ide-layout guardrails are undisturbed
@@ -2133,25 +2140,51 @@ These are `ide-layout` requirements this change must not regress.
 4. Trigger a float over the layout (`<leader>?` cheatsheet) — it renders over the layout normally and
    closes without disturbing the windows.
 
-- [ ] `:Bd` preserves the window and tree width; `:q` on the last editor exits cleanly with no
+- [X] `:Bd` preserves the window and tree width; `:q` on the last editor exits cleanly with no
       orphaned tree; floats unaffected
 
 #### TK.8 — Clean startup and syntax
 
-1. Fresh `nvim` (no args) — `:messages` shows no errors.
+1. Fresh `nvim` (no args) — `:messages` shows no plugin, LSP or keymap **errors**. It will not
+   be empty: `lua/loader/init.lua:21` sets `checker = { enabled = true }`, so lazy.nvim reports any
+   available plugin updates at every startup. Those notices are expected. Read the list and confirm
+   nothing in it is an error or traceback.
 2. From a shell: `find . -name '*.lua' -not -path './.git/*' -not -path './build/*' -print0 | xargs -0 luac -p` — all pass.
 3. `stylua --check lua/keymaps.lua` — clean.
 4. `openspec validate fix-tree-terminal-keymaps --strict` — passes.
 
-- [ ] Clean `:messages` on startup; `luac -p`, `stylua --check`, and `openspec validate` all pass
+- [X] No errors in `:messages` on startup — lazy.nvim's update notices excepted and expected;
+      `luac -p`, `stylua --check`, and `openspec validate` all pass
+
+> `:messages` on a fresh `nvim` contained lazy.nvim's "plugin updates available" notices for three
+> plugins, and nothing else. The step originally read "`:messages` shows no errors" but was relayed
+> as "confirm `:messages` is empty" — which it was not. The criterion above has been rewritten to
+> name the lazy notices explicitly, rather than leaving a reader to reinterpret "clean" after seeing
+> the result. No plugin, LSP or keymap errors. `luac -p` passes repo-wide, `stylua --check lua/keymaps.lua` is clean, and
+> `openspec validate fix-tree-terminal-keymaps --strict` reports valid. A headless startup produced
+> genuinely empty `:messages`, which is consistent — the checker needs a real session to report.
+>
+> Side note, not part of this change: three plugins have updates pending, i.e. a future lazy-lock
+> sync.
 
 ### Raise PR & merge
 
-- [ ] All validation steps above pass (TK.1–TK.8), with any defect and its fix logged inline as a
+- [X] All validation steps above pass (TK.1–TK.8), with any defect and its fix logged inline as a
       blockquote note
-- [ ] `fix-blink-completion-keymap` merged first, and this branch rebased onto the updated `main`
+
+> Two defects found and one wrong expectation corrected, all recorded inline: the global `<C-t>`
+> toggle never worked (shadowed by nvim-tree inside the tree window) and was removed; the terminal
+> opens at reduced width when toggled from inside the tree, logged in `recommendations/ideas.md` and
+> deliberately left unfixed; and TK.2's step 5 expectation about nvim-tree's own `<C-t>` was wrong
+> and was corrected. TK.3 was also ticked prematurely and has been amended.
+- [X] `fix-blink-completion-keymap` merged first, and this branch rebased onto the updated `main`
       (conflicts expected only where both touch `keybindings.adoc`, `cheatsheets/core.md`, and this
       file — the hunks are in different sections, so keep both sides)
+
+> Rebased twice: once onto `ae7a3de` after blink merged (PRs #170/#171), then again onto `60250e3`
+> after the blink archive/bookkeeping merged (PR #172). Both times only `openspec/TEST_PLAN.md`
+> conflicted, resolved by rebuilding from `main` and re-appending this section; `keybindings.adoc`
+> and `cheatsheets/core.md` auto-merged and were verified to carry both changes.
 - [ ] Raise PR: `fix/tree-terminal-keymaps` → `main`
 - [ ] Review and approve PR
 - [ ] Merge PR
