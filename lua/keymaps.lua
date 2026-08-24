@@ -88,10 +88,15 @@ vim.keymap.set(
 -- <leader>t is the tree toggle because `t` reads as *tree*; it used to open the
 -- terminal, which is now <leader>T. <leader>n and <C-n> are the open-only
 -- variants, for opening the tree without the risk of closing it.
+--
+-- There is deliberately no global <C-t> toggle. nvim-tree binds <C-t>
+-- buffer-locally inside the tree window to api.node.open.tab ("Open: New Tab"),
+-- and a buffer-local map wins, so a global <C-t> could open the tree but never
+-- close it from inside -- it silently did something else entirely instead.
+-- <leader>t is the single toggle.
 vim.keymap.set("n", "<leader>t", ":NvimTreeToggle<CR>", { noremap = true, silent = true, desc = "File tree: toggle" })
 vim.keymap.set("n", "<leader>n", ":NvimTreeOpen<CR>", { noremap = true, silent = true, desc = "File tree: open" })
 vim.keymap.set("n", "<C-n>", ":NvimTreeOpen<CR>", { noremap = true, silent = true, desc = "File tree: open" })
-vim.keymap.set("n", "<C-t>", ":NvimTreeToggle<CR>", { noremap = true, silent = true, desc = "File tree: toggle" })
 vim.keymap.set(
   "n",
   "<C-f>",

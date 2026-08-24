@@ -19,7 +19,7 @@ The terminal toggle (`<leader>T`) SHALL open the terminal in a full-width split 
 ## ADDED Requirements
 
 ### Requirement: File tree keymaps
-The file tree SHALL be reachable by keymap without entering a command. `<leader>t` SHALL toggle the tree open and closed. `<leader>n` and `<C-n>` SHALL open the tree, and `<C-t>` SHALL toggle it. Every one of these keymaps SHALL carry a `desc` so which-key surfaces it, and SHALL match what the documentation states.
+The file tree SHALL be reachable by keymap without entering a command. `<leader>t` SHALL toggle the tree open and closed, and SHALL be the only toggle. `<leader>n` and `<C-n>` SHALL open the tree without closing it. No global `<C-t>` binding SHALL be provided, because nvim-tree claims `<C-t>` buffer-locally inside the tree window and a global mapping cannot close the tree from there. Every one of these keymaps SHALL carry a `desc` so which-key surfaces it, and SHALL match what the documentation states.
 
 #### Scenario: Toggle the tree with the leader key
 

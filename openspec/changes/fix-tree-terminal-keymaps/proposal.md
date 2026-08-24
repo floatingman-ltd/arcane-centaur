@@ -10,7 +10,8 @@ The tree's keymaps are also entirely unspecified. `<leader>n`, `<C-n>`, and `<C-
 
 - **`<leader>t` becomes the file tree toggle** (`:NvimTreeToggle`) — the mnemonic the user reaches for.
 - **The terminal toggle moves to `<leader>T`.** Its behavior is unchanged: same full-width bottom split, same persistent shell, same fixed height. Only the key differs. It is deliberately *not* removed — `<leader>L` (IDE layout assembly) opens the terminal through the same code path and depends on it.
-- **Existing tree keymaps are kept as-is**: `<leader>n` and `<C-n>` open the tree, `<C-t>` toggles it. All three already work and are already documented; nothing that a reader has been told is true stops being true.
+- **The open-only tree keymaps are kept as-is**: `<leader>n` and `<C-n>` open the tree. Both already work and are already documented.
+- **BREAKING — the global `<C-t>` tree toggle is removed.** It was never reliable: nvim-tree binds `<C-t>` buffer-locally inside the tree window to *Open: New Tab* (`nvim-tree/keymap.lua:64`), and a buffer-local mapping wins over a global one. So `<C-t>` could open the tree but never close it from inside — it silently opened a tab instead. Found during validation. `<leader>t` is now the single toggle.
 - **The file tree keymaps become specified.** `ide-layout` gains a requirement covering the tree's open and toggle bindings, so the config and the docs have something to be checked against.
 - Update the three doc surfaces that state `<leader>t` toggles the terminal, and add the new tree binding.
 

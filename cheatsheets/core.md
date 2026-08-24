@@ -38,7 +38,6 @@
 |-----|--------|
 | `<leader>t` | Toggle file tree |
 | `<leader>n` / `Ctrl-n` | Open file tree (never closes it) |
-| `Ctrl-t` | Toggle file tree |
 | `Ctrl-f` | Reveal current file in tree |
 
 ## IDE Layout & Terminal

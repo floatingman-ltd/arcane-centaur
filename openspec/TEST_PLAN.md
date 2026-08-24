@@ -2011,18 +2011,37 @@ so `<leader>L` keeps sharing the same terminal open path.
    does not do this.)
 3. Repeat once more to confirm it is a stable toggle, not a one-shot.
 
-- [ ] `<leader>t` opens the tree when closed and closes it when open
+- [X] `<leader>t` opens the tree when closed and closes it when open
 
-#### TK.2 — The open-only and legacy tree keys are unchanged
+#### TK.2 — The open-only tree keys are unchanged, and `<C-t>` is gone
 
 1. With the tree **closed**, press `<leader>n` — the tree opens.
 2. Press `<leader>n` again — the tree **stays open** (it is `NvimTreeOpen`, not a toggle). This is
    intentional: it is the "I want the tree, don't gamble" key.
 3. Repeat both steps with `<C-n>` — same behavior.
-4. Press `<C-t>` twice — it still toggles, exactly like `<leader>t`.
-5. With a file open, press `<C-f>` — the current file is revealed and highlighted in the tree.
+4. With the tree **closed**, press `<C-t>` — **nothing should happen**. The global toggle has been
+   removed; `<C-t>` is no longer bound outside the tree window. `:verbose nmap <C-t>` in a normal
+   buffer should report **no mapping**.
+5. Open the tree, put the cursor on a file, and press `<C-t>` — this is nvim-tree's own buffer-local
+   binding, *Open: New Tab*. Whatever it does here is nvim-tree's business, not ours; just confirm it
+   does **not** close the tree.
+6. With a file open, press `<C-f>` — the current file is revealed and highlighted in the tree.
 
-- [ ] `<leader>n`/`<C-n>` open and never close; `<C-t>` still toggles; `<C-f>` still reveals
+- [ ] `<leader>n`/`<C-n>` open and never close; `<C-t>` is unbound outside the tree and belongs to
+      nvim-tree inside it; `<C-f>` still reveals
+
+> **Defect found during this step and fixed — the global `<C-t>` toggle never worked properly.**
+> nvim-tree binds `<C-t>` **buffer-locally inside the tree window** to `api.node.open.tab` —
+> *Open: New Tab* (`nvim-tree/keymap.lua:64`) — and a buffer-local mapping wins over a global one.
+> So the global `:NvimTreeToggle` could open the tree but could never close it from inside; pressing
+> it there silently did something else entirely. Three doc surfaces claimed `<C-t>` toggles the tree.
+>
+> The global binding is removed rather than repaired: `<leader>t` is now the single toggle. This
+> revises design **D2**, which had kept `<C-t>` on the reasoning that it "works today" — it did not.
+> Removing a documented key that never behaved as documented is a smaller correction than leaving the
+> claim standing. `navigation.adoc`, `keybindings.adoc` and `cheatsheets/core.md` updated, each
+> stating why there is no global `<C-t>`; the "Inside the Tree Window" row documenting nvim-tree's own
+> `<C-t>` stays, because that one is real.
 
 #### TK.3 — `<leader>T` toggles the terminal, including from inside the tree
 

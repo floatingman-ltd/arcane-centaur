@@ -31,7 +31,7 @@ The tree keymaps are documented in three places and match the config exactly. Th
 
 - Changing any terminal *behavior* — split position, persistence, height, focus return.
 - Touching `<leader>L`, `:Bd`, the quit guardrails, or float behavior.
-- Removing `<C-t>`, `<leader>n`, or `<C-n>`.
+- Removing `<leader>n` or `<C-n>`.
 - The full-screen panel / buffer-tabbing ideas in `recommendations/ideas.md`.
 - The blink completion keymap defects — a separate change.
 
@@ -43,10 +43,11 @@ The tree keymaps are documented in three places and match the config exactly. Th
 - _Alternative rejected:_ delete the toggle and let `<leader>L` and `:terminal` cover it. Considered and declined — it trades a one-line change for a multi-requirement spec rewrite, to remove something that is not broken.
 - _Alternative rejected:_ make `<leader>t` a group (`tt` tree, `tm` terminal). Declined — adds a keystroke to both for a collision between exactly two things.
 
-**D2 — Keep `<C-t>`, `<leader>n`, and `<C-n>` exactly as they are.**
+**D2 — Keep `<leader>n` and `<C-n>` as they are; remove the global `<C-t>`.**
 
-- _Why:_ All three work today and all three are documented in all three surfaces. The reported defect is that the *expected* key was missing, not that the existing ones were wrong. Adding `<leader>t` satisfies the expectation without invalidating anything a reader has already learned.
-- _Trade-off:_ the tree ends up with four bindings (`<leader>t`, `<leader>n`, `<C-t>`, `<C-n>`), which is more than it strictly needs. Retiring `<C-t>` and `<C-n>` later is a trivial follow-up once `<leader>t` has bedded in; doing it now would break working documented keys in the same change that fixes a keymap complaint.
+- _Why keep the open-only pair:_ both work today and both are documented in all three surfaces. The reported defect is that the *expected* key was missing, not that the existing ones were wrong. Adding `<leader>t` satisfies the expectation without invalidating anything a reader has already learned.
+- _Why `<C-t>` is different — revised during validation._ D2 originally kept `<C-t>` too, on the reasoning that it "works today". Live testing showed it does not: nvim-tree binds `<C-t>` **buffer-locally inside the tree window** to `api.node.open.tab` — *Open: New Tab* (`nvim-tree/keymap.lua:64`) — and a buffer-local mapping wins over a global one. So the global toggle could open the tree but never close it from inside; pressing it there silently opened a tab. That is not a documented key being retired, it is a documented key that never did what three doc surfaces claimed. Removing it and leaving `<leader>t` as the single toggle is the smaller lie to unwind.
+- _Trade-off:_ the tree keeps three bindings (`<leader>t`, `<leader>n`, `<C-n>`). Retiring `<C-n>` later is still a trivial follow-up once `<leader>t` has bedded in — see the note on `<C-n>`'s overloading in `recommendations/ideas.md`.
 
 **D3 — Specify the tree keymaps inside `ide-layout` rather than creating a new capability.**
 
@@ -75,4 +76,4 @@ The tree keymaps are documented in three places and match the config exactly. Th
 
 ## Open Questions
 
-- Whether `<C-t>` and `<C-n>` are worth keeping once `<leader>t` exists. Deliberately left alone here (D2); revisit after living with the new binding.
+- ~~Whether `<C-t>` and `<C-n>` are worth keeping once `<leader>t` exists.~~ **Partly resolved during validation: `<C-t>` is removed** (see D2 — it was shadowed by nvim-tree inside the tree window and could never close it). `<C-n>` is still deliberately left alone; revisit after living with the new binding, and see the note on its overloading in `recommendations/ideas.md`.

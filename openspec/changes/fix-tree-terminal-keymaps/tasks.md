@@ -7,7 +7,7 @@
 
 - [X] 2.1 Change the terminal binding at line 191 from `<leader>t` to `<leader>T`, keeping `toggle_terminal` and its `desc` ("Toggle terminal split") otherwise untouched.
 - [X] 2.2 Add `<leader>t` → `:NvimTreeToggle<CR>` beside the existing tree maps (lines 87–90), with `desc = "File tree: toggle"` to match the `<C-t>` entry.
-- [X] 2.3 Leave `<leader>n`, `<C-n>`, and `<C-t>` exactly as they are (design D2).
+- [X] 2.3 Leave `<leader>n` and `<C-n>` exactly as they are (design D2). **Revised during validation: the global `<C-t>` toggle is removed** — nvim-tree binds `<C-t>` buffer-locally inside the tree window to *Open: New Tab* (`nvim-tree/keymap.lua:64`), which wins over a global map, so `<C-t>` could open the tree but never close it from inside. Three doc surfaces claimed otherwise; all updated.
 - [X] 2.4 Leave `toggle_terminal` and `ide_layout` unmodified — `<leader>L` shares the terminal open path and must keep working.
 - [X] 2.5 Syntax-check: `find . -name '*.lua' -print0 | xargs -0 luac -p`.
 
@@ -24,7 +24,7 @@
 ## 4. Manual validation (required — this is a runtime change)
 
 - [X] 4.1 Add a `## Change · fix-tree-terminal-keymaps` section to `openspec/TEST_PLAN.md` following the structure of the existing `Change NN` sections (branch name, prerequisites, then numbered Prepare / Validate / Raise PR & merge / Post-merge subsections).
-- [ ] 4.2 Validate the tree in a live session: `<leader>t` opens the tree when closed and closes it when open; `<leader>n` and `<C-n>` open it and leave it open when pressed again; `<C-t>` still toggles.
+- [ ] 4.2 Validate the tree in a live session: `<leader>t` opens the tree when closed and closes it when open; `<leader>n` and `<C-n>` open it and leave it open when pressed again; `<C-t>` is unbound outside the tree window (removed — see 2.3).
 - [ ] 4.3 Validate the terminal: `<leader>T` opens the full-width bottom split from an editor window *and* from inside the tree window; toggling off and on preserves the shell and its scrollback; the window stays 15 lines when other splits open.
 - [ ] 4.4 Confirm `<leader>t` no longer opens a terminal in any state, including after a terminal has already been opened once — the exact scenario in the original report.
 - [ ] 4.5 Validate `<leader>L` still assembles the full layout (tree left, terminal bottom, focus in the editor) and is still idempotent.
