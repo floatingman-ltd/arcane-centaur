@@ -91,7 +91,7 @@ the picker with any `:FzfLua ++<++command++>++` call.
 |`Enter` |Open selected file (default split)
 |`Ctrl-v` |Open selected file in vertical split
 |`Ctrl-s` / `Ctrl-x` |Open selected file in horizontal split
-|`Ctrl-t` |Open selected file in new tab
+|`Ctrl-t` |Open selected file in a new tab (the new tab has no tree — `gT` returns to this one)
 |`Ctrl-c` / `Esc` |Close the picker
 |`Ctrl-a` |Select all items
 |`Ctrl-d` |Deselect all items

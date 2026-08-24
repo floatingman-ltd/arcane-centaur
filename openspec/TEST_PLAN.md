@@ -2023,12 +2023,15 @@ so `<leader>L` keeps sharing the same terminal open path.
    removed; `<C-t>` is no longer bound outside the tree window. `:verbose nmap <C-t>` in a normal
    buffer should report **no mapping**.
 5. Open the tree, put the cursor on a file, and press `<C-t>` — this is nvim-tree's own buffer-local
-   binding, *Open: New Tab*. Whatever it does here is nvim-tree's business, not ours; just confirm it
-   does **not** close the tree.
+   binding, *Open: New Tab*. Expect the file to open **in a new tab, with no tree visible**. The tree
+   has not closed; nvim-tree does not carry it into a new tab (`tab.sync.open` defaults off and this
+   config does not set it), so you are simply looking at a tab that never had one. Confirm with `gT`
+   or `:tabprevious` — the original tab still has its tree open, exactly as you left it. This is
+   nvim-tree's behaviour and is explicitly out of scope.
 6. With a file open, press `<C-f>` — the current file is revealed and highlighted in the tree.
 
-- [ ] `<leader>n`/`<C-n>` open and never close; `<C-t>` is unbound outside the tree and belongs to
-      nvim-tree inside it; `<C-f>` still reveals
+- [X] `<leader>n`/`<C-n>` open and never close; `<C-t>` is unbound outside the tree and belongs to
+      nvim-tree inside it (new tab, tree intact on `gT`); `<C-f>` still reveals
 
 > **Defect found during this step and fixed — the global `<C-t>` toggle never worked properly.**
 > nvim-tree binds `<C-t>` **buffer-locally inside the tree window** to `api.node.open.tab` —
