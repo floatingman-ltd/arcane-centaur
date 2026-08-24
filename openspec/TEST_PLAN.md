@@ -1954,15 +1954,15 @@ six-key table, then invalidated and redone against seven.
 ### Raise PR & merge
 
 - [X] All validation steps above pass (BC.1–BC.12)
-- [ ] Raise PR: `fix/blink-completion-keymap` → `main`
-- [ ] Review and approve PR
-- [ ] Merge PR
+- [X] Raise PR: `fix/blink-completion-keymap` → `main` (PRs #170, #171)
+- [X] Review and approve PR
+- [X] Merge PR
 
 ### Post-merge
 
-- [ ] `git checkout main && git pull origin main`
-- [ ] Launch Neovim: `:Lazy sync` — confirm clean
-- [ ] Remove the two fixed entries from `recommendations/ideas.md` ("Things that seem broken" — the
+- [X] `git checkout main && git pull origin main` (`main` at `ae7a3de`)
+- [X] Launch Neovim: `:Lazy sync` — confirm clean
+- [X] Remove the two fixed entries from `recommendations/ideas.md` ("Things that seem broken" — the
       `<M-Space>` trigger and the split accept key). The snippet-navigation entry added by this
       change **stays** — it is a separate, still-open gap.
-- [ ] Change archived, `completion-engine` delta promoted to the capability spec
+- [X] Change archived, `completion-engine` delta promoted to the capability spec

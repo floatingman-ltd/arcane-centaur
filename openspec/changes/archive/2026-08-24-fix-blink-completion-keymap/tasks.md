@@ -39,16 +39,41 @@
 ## 5. Manual validation (required — this is a runtime change)
 
 - [X] 5.1 Add a `## Change · fix-blink-completion-keymap` section to `openspec/TEST_PLAN.md` following the structure of the existing `Change NN` sections (branch name, prerequisites, then numbered Prepare / Validate / Raise PR & merge / Post-merge subsections).
-- [ ] 5.2 Validate in a live session — insert mode: `<C-n>` with the menu closed opens it **with nothing highlighted**; `<C-n>` again selects the first item; further `<C-n>`/`<C-p>` move; `<C-y>` accepts the highlighted item; `<C-y>` with nothing highlighted accepts the top item; `<C-e>` dismisses and restores the typed text; `<C-b>`/`<C-f>` scroll the doc window; `<CR>` inserts a newline and accepts nothing.
-- [ ] 5.3 Validate on the command line — the same keys do the same things at the `:` prompt; `<CR>` still executes the command; `/` search completion still offers buffer words.
-- [ ] 5.4 Specifically exercise `<Tab>` at the `:` prompt and record whether losing blink's `<Tab>` selection is acceptable (design.md Open Question). If it is missed, add `<Tab>` to the shared table as a select-next alias.
-- [ ] 5.5 Confirm the no-auto-select behavior survives: opening the menu highlights nothing until `<C-n>` is pressed.
-- [ ] 5.6 Check the lisp-family filetypes still get Conjure completions and that spell completions still appear only with `spell` on — both ride on the same menu and are covered by other requirements in this capability.
-- [ ] 5.7 Check `<C-n>` in normal mode still opens the file tree — the shared keymap binds `<C-n>` in insert and cmdline only. This matters more now that `<C-n>` is the trigger: the two meanings sit on one key separated only by mode.
-- [ ] 5.7a Check command-line history recall at the `:` prompt. Native `<C-n>` recalls the next history entry; blink's stock preset already shadowed it with `select_next` before this change, and `auto_show` means the menu is usually open, so `show` should return `nil` and the key should behave as it does today. Confirm history recall still works in the states where blink declines (the `"fallback"` entry), and record the behavior either way — this is the one place the double duty could plausibly annoy.
-- [ ] 5.8 Tick each TEST_PLAN box only once genuinely confirmed, logging any defect and its fix inline as a blockquote note.
+- [X] 5.2 Validate in a live session — insert mode: `<C-n>` with the menu closed opens it **with nothing highlighted**; `<C-n>` again selects the first item; further `<C-n>`/`<C-p>` move; `<C-y>` accepts the highlighted item; `<C-y>` with nothing highlighted accepts the top item; `<C-e>` dismisses and restores the typed text; `<C-b>`/`<C-f>` scroll the doc window; `<CR>` inserts a newline and accepts nothing.
+- [X] 5.3 Validate on the command line — the same keys do the same things at the `:` prompt; `<CR>` still executes the command; `/` search completion still offers buffer words.
+- [X] 5.4 Specifically exercise `<Tab>` at the `:` prompt and record whether losing blink's `<Tab>` selection is acceptable (design.md Open Question). If it is missed, add `<Tab>` to the shared table as a select-next alias.
+- [X] 5.5 Confirm the no-auto-select behavior survives: opening the menu highlights nothing until `<C-n>` is pressed.
+- [X] 5.6 Check the lisp-family filetypes still get Conjure completions and that spell completions still appear only with `spell` on — both ride on the same menu and are covered by other requirements in this capability.
+- [X] 5.7 Check `<C-n>` in normal mode still opens the file tree — the shared keymap binds `<C-n>` in insert and cmdline only. This matters more now that `<C-n>` is the trigger: the two meanings sit on one key separated only by mode.
+- [X] 5.7a Check command-line history recall at the `:` prompt. Native `<C-n>` recalls the next history entry; blink's stock preset already shadowed it with `select_next` before this change, and `auto_show` means the menu is usually open, so `show` should return `nil` and the key should behave as it does today. Confirm history recall still works in the states where blink declines (the `"fallback"` entry), and record the behavior either way — this is the one place the double duty could plausibly annoy.
+- [X] 5.8 Tick each TEST_PLAN box only once genuinely confirmed, logging any defect and its fix inline as a blockquote note.
+
+> Walked live as TEST_PLAN `BC.1`-`BC.12`; outcomes and verdicts are recorded there in full.
+> Three things worth carrying here:
+>
+> - **5.2's own wording was wrong and has been corrected in TEST_PLAN.** It says `<C-n>` opens the
+>   menu and a second press selects the first item. That only holds from a *closed* menu.
+>   `completion.trigger.show_on_keyword` is on, so while typing a word the menu is already open and
+>   `cmp.show()` returns nil, falling through to `select_next` — the **first** press selects item 1.
+>   All three doc surfaces repeated the same error and were fixed.
+> - **5.4 verdict: keep the native wildmenu, do not bind `<Tab>`.** It is not a dead key —
+>   `wildmode=full` completes to the first full match and cycles. Left alone because wildmenu `<Tab>`
+>   exists only on the command line, so a habit built on it fails in insert mode, which is the drift
+>   this change removes. `design.md`'s Open Question is resolved accordingly.
+> - **5.7a verdict: no regression, documented not changed.** `<C-p>` recalls history on an empty
+>   prompt via its fallback; `<C-n>` does not, because `show` succeeds and never reaches its
+>   fallback. `<Up>`/`<Down>` remain the proper history keys and filter by typed prefix. Disabling
+>   the cmdline fallback was rejected — it needs a mode-specific override, reintroducing the
+>   divergence this change exists to remove.
+>
+> 5.6's Conjure half was recorded **N/A** (no REPL available); the change is keymap-only and touches
+> no source wiring. The spell half passed.
+>
+> Validation also found `<C-f>`/`<C-b>` were **dead keys** — `documentation.auto_show` defaults false
+> and nothing bound `show_documentation`, so the window could never open. Fixed by adding `<C-k>`
+> plus `:BlinkDocsToggle`; the shared table is now seven keys.
 
 ## 6. Ship
 
-- [ ] 6.1 Only once every validation step is ticked, push the branch and raise the PR.
+- [X] 6.1 Only once every validation step is ticked, push the branch and raise the PR.
 - [X] 6.2 Confirm `openspec validate fix-blink-completion-keymap` passes. (`--strict`: valid; full repo `--all --strict`: 41 passed, 0 failed.)
