@@ -56,8 +56,6 @@ use before deciding.
 
   Found during `fix-tree-terminal-keymaps` validation (TEST_PLAN TK.3/TK.4) and deliberately **not fixed there**: the terminal panel's split approach is itself under review (see the full-screen panel idea above), so effort spent on the current geometry may be wasted. Revisit if the panel survives in its present form.
 
-- `<leader>t` is supposed to toggle the treeview but it toggles the terminal if it has been opened
-
 - snippet placeholders cannot be navigated. `snippets` is an active completion source
   (`lua/plugins/blink.lua:26`), so snippet completions are offered and expand — but
   `snippet_forward` / `snippet_backward` are bound nowhere in the config, and the insert-mode
