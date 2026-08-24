@@ -1936,12 +1936,24 @@ six-key table, then invalidated and redone against seven.
 > `code-intelligence.html`/`keybindings.html` both contain `BlinkDocsToggle` and the `Ctrl-k` rows.
 > Steps 6 and 7 are live and remain outstanding.
 
-- [ ] All three surfaces agree with the config; no page asserts `Alt-Space`; Antora builds clean;
+- [X] All three surfaces agree with the config; no page asserts `Alt-Space`; Antora builds clean;
       `<leader>?` shows the new keys
+
+> Steps 6 and 7 passed. **Verdict on the timed documentation window: keep it as the default.** This
+> was the original open question behind the whole `<C-k>` investigation — the first attempt to answer
+> it was a false negative, tested in a Lua buffer where the window can never appear. Judged properly
+> in C# via roslyn, the 500ms timed window is the shipped default, with `:BlinkDocsToggle` available
+> to switch to on-demand per session.
+>
+> Step 6 also surfaced a separate, unrelated defect in the `<leader>?` popup itself: glow mis-wraps
+> paragraphs at around 118 columns, orphaning single words. Not caused by this change — it only
+> became visible because this change added the first real prose paragraphs to `cheatsheets/core.md`,
+> every other section being tables and short headers. Split out to `fix/glow-wrap-width` rather than
+> grown into this branch.
 
 ### Raise PR & merge
 
-- [ ] All validation steps above pass (BC.1–BC.12)
+- [X] All validation steps above pass (BC.1–BC.12)
 - [ ] Raise PR: `fix/blink-completion-keymap` → `main`
 - [ ] Review and approve PR
 - [ ] Merge PR
