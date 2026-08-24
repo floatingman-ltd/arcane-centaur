@@ -91,4 +91,8 @@ Resolved by shipping both ways to open the window:
 
 ## Open Questions
 
-- Whether `<Tab>` at the `:` prompt is missed once it falls back to native command-line completion. Resolve during live validation rather than by guessing — if it is missed, `<Tab>` can be added to the shared table as a select-next alias without breaking the one-set-everywhere goal.
+- ~~Whether `<Tab>` at the `:` prompt is missed once it falls back to native command-line completion.~~ **Resolved during live validation (TEST_PLAN BC.7): keep the fallback, do not bind `<Tab>`.**
+
+  The fallback is not a dead key — `wildmenu` is on with `wildmode=full` and `wildoptions=pum`, so `<Tab>` hands over to Neovim's own wildmenu, which draws its own popup and cycles through full matches. Nothing is lost by leaving it alone.
+
+  The decisive argument was against binding it, and it is the same principle the whole change rests on: native wildmenu `<Tab>` exists **only** on the command line. Building finger memory on it produces a habit that silently fails the moment you are in insert mode — precisely the cross-mode drift this change was raised to eliminate. Binding `<Tab>` in the shared table would have made it symmetric, but at the cost of removing working native behavior to gain something `<C-n>` already does. The asymmetry is inherent to `<Tab>` here, so the right move is to not rely on it at all.

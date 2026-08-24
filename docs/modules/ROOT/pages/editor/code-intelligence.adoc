@@ -264,9 +264,31 @@ the trigger. The keys are the same as insert mode — `Ctrl-y` accepts, `Ctrl-n`
 walk the list, `Ctrl-e` cancels, `Ctrl-k` shows documentation — and `Enter` executes the
 command line as always. Completing a command is therefore `:Blin` `Ctrl-n` `Ctrl-y`.
 
-NOTE: `Tab` does not select completion items here. blink's stock command-line preset used
-it, but this configuration uses the shared keymap instead so that insert mode and the
-command line cannot drift apart, and `Tab` falls back to native command-line completion.
+`Ctrl-k` is bound here as well, because the command line uses the same keymap table, but in
+practice it has nothing to show: command-line candidates carry only the short grey
+description rendered inline in the menu, not the `detail` or `documentation` fields the
+window renders. It is harmless — it will not disturb what you have typed — but do not
+expect a documentation window at the `:` prompt.
+
+TIP: Command-line *history* is on `Up` and `Down`, not `Ctrl-p`/`Ctrl-n` — and they are the
+better keys for it, since they recall only entries matching what you have already typed.
+`Ctrl-n`/`Ctrl-p` belong to the completion menu.
+
+You may notice `Ctrl-p` recalling history on an *empty* command line. That is the `fallback`
+entry doing its job: with no menu open there is nothing to select, so the key does whatever
+Neovim natively does with it. `Ctrl-n` does not behave symmetrically, because it carries the
+trigger role — `show` succeeds and opens the menu, so it never reaches the fallback. The
+fallback rule is the same in both modes; only Neovim's native meaning differs (history on the
+command line, keyword completion in insert mode).
+
+NOTE: `Tab` does not select items in blink's menu here. blink's stock command-line preset
+used it, but this configuration uses the shared keymap instead so that insert mode and the
+command line cannot drift apart. `Tab` therefore falls back to Neovim's own wildmenu, which
+is still perfectly usable — `wildmode=full` completes to the first full match and further
+presses cycle through the rest. It is deliberately left alone rather than rebound, because
+wildmenu `Tab` exists only on the command line: a habit built on it would fail in insert
+mode, which is the exact drift this keymap sets out to remove. Use `Ctrl-n` if you want one
+key that behaves the same in both places.
 
 _Configured in `lua/plugins/blink.lua`. LSP capabilities wired in `lua/config/lsp.lua`._
 

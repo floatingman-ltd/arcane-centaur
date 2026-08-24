@@ -324,8 +324,10 @@ role only shows itself when the menu is closed, such as after `Ctrl-e`. Either w
 is highlighted until you ask for it.
 
 NOTE: The documentation window appears on its own after 500ms; `:BlinkDocsToggle` switches
-it to on-demand-only for the session, where `Ctrl-k` raises it. `lua_ls` sends no
-documentation, so the window never appears in Lua buffers.
+it to on-demand-only for the session, where `Ctrl-k` raises it. The window only ever renders
+what a source actually supplies, which is narrower than it sounds: `lua_ls` sends none, so it
+never appears in Lua buffers, and command-line candidates send none either, so it never
+appears at the `:` prompt. C# via roslyn is the reliable place to see it.
 
 → xref:editor/code-intelligence.adoc[Full reference]
 

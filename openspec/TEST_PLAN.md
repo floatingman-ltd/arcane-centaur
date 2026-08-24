@@ -1753,12 +1753,36 @@ This is the whole point of the change — the keys must not differ from BC.1–B
    (`auto_show = true`), so it may already be open.
 2. Confirm `<C-n>`/`<C-p>` move the highlight, `<C-y>` accepts the highlighted candidate into the
    command line, and `<C-e>` cancels and restores what you typed.
-3. Press `<CR>` with the menu open — confirm the **command executes** as normal.
+3. Press `<CR>` with the menu open and a candidate **highlighted** — confirm the command line runs
+   **exactly what you typed**, ignoring the highlighted candidate. Typing `e testd` with `testdocs/`
+   highlighted must open an empty buffer named `testd`, *not* `testdocs/`. Opening the highlighted
+   candidate would mean `<CR>` had accepted, which is the defect this change removes. (`:e` on a
+   nonexistent path only creates an unwritten buffer; nothing is written to disk. `:bd!` to clear.)
 4. Press `/` and type a partial word — confirm buffer-word candidates are still offered and the same
    keys work.
+5. `<C-k>` at the `:` prompt. The shared table is handed to `cmdline.keymap` unchanged, so the key
+   is bound here too — but **nothing can ever be shown**, and this step only checks that it is
+   harmless. Command-line candidates carry `labelDetails` (the inline grey description) and never
+   `detail` or `documentation`, which are the only two fields `show_item` accepts; it calls
+   `docs.close()` and returns for anything else. So: type `e testd`, `<C-n>` to select, `<C-k>` —
+   confirm **no window appears**, no literal character is inserted, the command line is intact, and
+   the menu is not dismissed.
 
-- [ ] All keys behave identically at the `:` prompt; `<CR>` still executes; `/` search completion
-      still offers buffer words
+   > This is deliberately a weak assertion, and it cannot be made stronger. A path-preview test was
+   > drafted here on the strength of `sources/path/init.lua:73-95`, which does set `documentation`
+   > on resolve — but that was read from source rather than observed, and live testing showed no
+   > window at the `:` prompt (the cmdline source answers `:e ` file arguments via `getcompletion`,
+   > and its items carry no documentation). The claim was retracted from
+   > `code-intelligence.adoc` rather than left standing. The honest position is that `<C-k>` exists
+   > on the command line for keymap symmetry only.
+
+- [X] All keys behave identically at the `:` prompt; `<CR>` still executes; `/` search completion
+      still offers buffer words; `<C-k>` is bound and harmless
+
+> `<CR>` confirmed to run **exactly what was typed**: `e testd` with `testdocs/` highlighted opened
+> an empty buffer named `testd`, not `testdocs/`. Nothing written to disk. The original step wording
+> ("the command executes as normal") was too loose to distinguish a pass from a failure and read as
+> though something had gone wrong; rewritten to state the concrete expected buffer name.
 
 #### BC.7 — `<Tab>` at the `:` prompt (design.md Open Question)
 
@@ -1770,8 +1794,18 @@ back to native command-line completion.
    `<Tab>` to the shared table as a `select_next` alias — that can be done without breaking the
    one-keymap-everywhere goal, since it would apply to both modes.
 
-- [ ] `<Tab>` behavior at the `:` prompt observed and verdict recorded (acceptable as-is / add it
+- [X] `<Tab>` behavior at the `:` prompt observed and verdict recorded (acceptable as-is / add it
       back as a `select_next` alias)
+
+> **Verdict: acceptable as-is — do not bind `<Tab>`.** The fallback is not a dead key: `wildmenu` is
+> on with `wildmode=full` and `wildoptions=pum`, so `<Tab>` hands over to Neovim's native wildmenu,
+> which draws its own popup and cycles through full matches.
+>
+> The reason for *not* binding it is the change's own principle. Native wildmenu `<Tab>` exists only
+> on the command line, so finger memory built on it silently fails in insert mode — exactly the
+> cross-mode drift this change exists to remove. Binding `<Tab>` in the shared table would have made
+> it symmetric, but only by removing working native behavior to duplicate what `<C-n>` already does.
+> The asymmetry is inherent to `<Tab>` here, so the answer is to not rely on it.
 
 #### BC.8 — Command-line history recall still reachable
 
@@ -1784,7 +1818,25 @@ what preserves history recall when blink declines.
 2. Compare against the behavior you remember from `main`. This is the one place the `<C-n>` double
    duty could plausibly annoy.
 
-- [ ] Command-line history recall behavior recorded; no regression versus `main`
+- [X] Command-line history recall behavior recorded; no regression versus `main`
+
+> **Verdict: no regression; documented rather than changed.** On an empty `:` prompt `<C-n>` opens
+> blink's menu and `<C-p>` recalls the previous history entry, landing on the most recent command.
+> There is a prev but no next, which looks odd until you read the command lists: `<C-p>` is
+> `{ "select_prev", "fallback" }`, so with no menu open `select_prev` declines and the fallback
+> reaches native `<C-p>`; `<C-n>` is `{ "show", "select_next", "fallback" }`, and `show` *succeeds*
+> and opens the menu, so it never reaches its fallback. The asymmetry is a side effect of `<C-n>`
+> carrying the trigger role, not a defect.
+>
+> `<Up>`/`<Down>` work as expected and are the proper history keys — better than `<C-p>`/`<C-n>` for
+> the purpose, since they filter history by the typed prefix while the Ctrl pair walk it unfiltered.
+>
+> Disabling the `<C-p>` fallback on the command line was considered and rejected. It would mean
+> giving `cmdline.keymap` a mode-specific override, reintroducing exactly the divergence this change
+> removes. The `"fallback"` rule is already consistent across modes — "do what this mode natively
+> does with this key" — and only Neovim's native meaning differs (history on the command line,
+> keyword completion in insert mode). Special-casing would make the rule inconsistent to tidy one
+> outcome. Documented in `code-intelligence.adoc` instead.
 
 #### BC.9 — Other sources still ride the same menu
 
@@ -1793,8 +1845,21 @@ what preserves history recall when blink declines.
 2. In any buffer, `:set spell`, type a partial word of **3+ characters**, and confirm dictionary
    candidates appear. `:set nospell` and confirm they stop appearing.
 
-- [ ] Conjure completions work in lisp-family buffers; spell candidates appear only with `spell` on
-      and only at 3+ characters
+- [X] Conjure completions work in lisp-family buffers *(9a: N/A — see note)*; spell candidates appear
+      only with `spell` on and only at 3+ characters
+
+> **9a — recorded N/A, no REPL available.** Conjure completions require a live REPL, which was not
+> worth standing up for this. Defensible here rather than a gap: this change is keymap-only and
+> alters no source wiring, `conjure` remains listed in `sources.per_filetype` for the lisp-family
+> filetypes, and the shared table has been shown to drive every other source exercised (lsp, buffer,
+> path, snippets, spell). Nothing about the keymap is source-specific. Re-check opportunistically
+> the next time a REPL is running.
+>
+> **9b — passed.** Spell candidates appear with `:set spell` at 3+ characters, do not appear at 2
+> (the `min_keyword_length = 3` guard holds), and disappear with `:set nospell` (the
+> `enabled = function() return vim.opt.spell:get() end` gate holds). Worth confirming given the
+> separate finding that this source floods Lua buffers with junk — that is caused by `o.spell = true`
+> globally with no `spell = false` in `after/ftplugin/lua.lua`, not by a broken guard.
 
 #### BC.10 — Normal-mode `<C-n>` is unaffected
 
@@ -1804,7 +1869,19 @@ The shared keymap binds insert and command-line modes only. `<C-n>` in normal mo
 2. `:verbose imap <C-n>` — confirm it resolves to a blink mapping; `:verbose nmap <C-n>` — confirm it
    resolves to the `lua/keymaps.lua` tree mapping.
 
-- [ ] Normal-mode `<C-n>` still opens the file tree; the two meanings are cleanly separated by mode
+- [X] Normal-mode `<C-n>` still opens the file tree; the two meanings are cleanly separated by mode
+
+> Confirmed: `:verbose nmap <C-n>` resolves to `:NvimTreeOpen<CR>` from `lua/keymaps.lua`,
+> `:verbose imap <C-n>` to the blink mapping, with no leakage in either direction. Note that
+> `:verbose imap` reports nothing until you have entered insert mode in that buffer at least once,
+> since blink applies its keys buffer-locally on `InsertEnter` — the same mechanism that made BC.1
+> look like a failure.
+>
+> **Reservation recorded, no action now.** The separation works, but `<C-n>` is carrying a lot:
+> file tree in normal mode, trigger *and* select-next in insert, select-next on the command line.
+> Logged under "Things to keep an eye on" in `recommendations/ideas.md` to settle with use rather
+> than decided here. The note there observes that the tree role is the cheapest to drop, since after
+> `fix-tree-terminal-keymaps` the tree also answers to `<leader>t`, `<C-t>`, `<leader>n` and `<C-f>`.
 
 #### BC.11 — Clean startup and syntax
 
