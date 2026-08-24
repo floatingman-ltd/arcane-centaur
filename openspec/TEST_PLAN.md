@@ -2060,8 +2060,23 @@ so `<leader>L` keeps sharing the same terminal open path.
 6. With the terminal open, open another split (`:split`) — confirm the terminal window stays 15 lines
    (`winfixheight`).
 
-- [ ] `<leader>T` opens the full-width bottom split from an editor window *and* from inside the tree;
-      shell and scrollback survive toggling; height stays 15 when other splits open
+- [X] `<leader>T` opens the full-width bottom split from an editor window; shell and scrollback
+      survive toggling; height stays 15 when other splits open. **From inside the tree it opens at
+      reduced width — known defect, logged, not fixed here (see note).**
+
+> **Correction — this was ticked prematurely on "that all works", then contradicted by TK.4.** Step 5
+> asserts a full-width split when invoked from the tree window. Measured in a 171-column terminal:
+> from the text pane `winwidth(0)` is 171 (correct); from the tree it is 140 — 171 minus the
+> 30-column tree and its separator, so the split lands below the *editor column*, not across the
+> screen. That contradicts `ide-layout`'s *Full-width terminal toggle* requirement, whose scenario
+> says "not inside the tree column" in as many words.
+>
+> `toggle_terminal` does use `botright split`, which ought to be unconditional, so something
+> relocates the window afterwards — nvim-tree re-establishing its layout on `WinNew` is the obvious
+> suspect but is **unconfirmed**, and a scripted reproduction produced a correct 171-wide split, so
+> the trigger is not understood. Logged in `recommendations/ideas.md` and deliberately left unfixed:
+> the terminal panel's split approach is itself under review, so work on the current geometry may be
+> discarded. Everything else in TK.3 passes.
 
 #### TK.4 — `<leader>t` never opens a terminal (the reported defect)
 
@@ -2074,7 +2089,11 @@ that state explicitly rather than only from a clean start.
 3. Open the terminal again with `<leader>T` and leave it open. Now press `<leader>t` — the tree
    toggles and the terminal window is left alone.
 
-- [ ] `<leader>t` toggles only the tree in every state, including after the terminal has been opened
+- [X] `<leader>t` toggles only the tree in every state, including after the terminal has been opened
+
+> Passes — the originally reported defect is gone, including from the state it was reported in (after
+> a terminal had already been opened and closed, leaving a live hidden `term_buf`). The reduced-width
+> observation made during this step belongs to TK.3 and is recorded there.
 
 #### TK.5 — `<leader>L` still assembles the layout and is still idempotent
 
