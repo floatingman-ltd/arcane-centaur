@@ -36,16 +36,18 @@
 
 | Key | Action |
 |-----|--------|
-| `<leader>n` / `Ctrl-n` | Open file tree |
-| `Ctrl-t` | Toggle file tree |
+| `<leader>t` | Toggle file tree |
+| `<leader>n` / `Ctrl-n` | Open file tree (never closes it) |
 | `Ctrl-f` | Reveal current file in tree |
 
 ## IDE Layout & Terminal
 
+**The terminal is `<leader>T` (capital T).** It moved off `<leader>t`, which now toggles the file tree.
+
 | Key | Action |
 |-----|--------|
 | `<leader>L` | Assemble IDE layout (tree + editor + full-width terminal) |
-| `<leader>t` | Toggle full-width terminal (persistent shell) |
+| `<leader>T` | Toggle full-width terminal (persistent shell) |
 | `Esc` | Exit terminal insert mode |
 | `:Bd` | Delete buffer, keep window open |
 
