@@ -254,6 +254,18 @@ vim.keymap.set(
   { noremap = true, silent = true, desc = "Claude: explain code" }
 )
 
+-- :MarkdownPopup renders the current buffer in the shared markdown float,
+-- replacing glow's :Glow. Registered here, not in config/cheatsheet.lua, because
+-- that module is only required lazily from the <leader>? callback -- defining the
+-- command there left it undefined until the cheatsheet had been opened once.
+-- The require stays inside the callback so the module itself is still lazy.
+--
+-- Reads the buffer rather than a file, so unsaved changes are previewed too;
+-- glow needed a path on disk and could only show the last saved version.
+vim.api.nvim_create_user_command("MarkdownPopup", function()
+  require("config.cheatsheet").open_float(vim.api.nvim_buf_get_lines(0, 0, -1, false), "buffer")
+end, { desc = "Markdown: render the current buffer in a popup" })
+
 -- Context-aware cheatsheet
 vim.keymap.set("n", "<leader>?", function()
   require("config.cheatsheet").open_cheatsheet()

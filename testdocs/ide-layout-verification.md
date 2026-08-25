@@ -14,7 +14,7 @@ Open Neovim with a file: `nvim <some-file>`
 - [x] **Shell persists across toggles** — toggle terminal off (`<leader>T`), toggle back on; same shell session, history intact
 - [x] **`:Bd` keeps the layout** — open two files, run `:Bd` on one; window stays open showing the other file, tree width unchanged
 - [x] **`:q` last editor exits cleanly** — with layout assembled, `:q` the editor; Neovim exits, no full-width tree left behind
-- [x] **Floats unaffected** — trigger `:Glow`, `<leader>?` cheatsheet; popups render over the layout normally
+- [x] **Floats unaffected** — trigger `:MarkdownPopup` (was `:Glow`), `<leader>?` cheatsheet; popups render over the layout normally
 - [x] **Terminal height stable** — open another split (`:split`); terminal stays 15 lines tall
 
 ---

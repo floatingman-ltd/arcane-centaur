@@ -28,19 +28,21 @@ return {
       return not require("config.terminal").is_console
     end,
   },
+  -- In-editor markdown rendering. Replaced glow.nvim, whose word-wrap orphans
+  -- single words onto their own lines at essentially any width with no
+  -- configuration that avoids it (openspec/changes/archive/*-replace-glow-renderer).
+  -- Rendering in a real buffer hands wrapping to Neovim, which does it correctly
+  -- and reflows on resize -- something pre-rendered output can never do.
+  -- The shared float lives in lua/config/cheatsheet.lua (open_float).
   {
-    "ellisonleao/glow.nvim",
+    "MeanderingProgrammer/render-markdown.nvim",
     ft = { "markdown" },
-    cmd = { "Glow" },
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
     opts = {
-      style = "dark",
-      border = "rounded",
-      width = 120,
-      height = 80,
-      pager = false,
+      -- Render everywhere, including normal buffers, not just when a float is open.
+      render_modes = { "n", "c", "i" },
+      -- The float is a scratch buffer; allow rendering regardless of buftype/file.
+      file_types = { "markdown" },
     },
-    config = function(_, opts)
-      require("glow").setup(opts)
-    end,
   },
 }

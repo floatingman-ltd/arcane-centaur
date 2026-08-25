@@ -35,13 +35,76 @@ local function read_file(path)
   return content
 end
 
--- Delegate rendering to glow.nvim (cmd-loaded so available from any buffer).
-local function glow_open(path)
-  local ok, err = pcall(vim.cmd, "Glow " .. vim.fn.fnameescape(path))
-  if not ok then
-    vim.notify("Cheatsheet: " .. tostring(err), vim.log.levels.WARN)
+-- Render markdown in a centred float, in-editor. Replaces glow: glow pre-wrapped
+-- its output before it ever reached a buffer, and its word-wrap orphans single
+-- words onto their own lines at essentially any width. Here the buffer holds the
+-- source markdown unwrapped and Neovim wraps at display time, so there is no
+-- re-wrap step that can go wrong -- and the content reflows on resize, which
+-- pre-rendered output can never do.
+--
+-- Takes lines rather than a path so it also works for unsaved buffers (see
+-- :MarkdownPopup) and needs no temp file.
+local function open_float(lines, what)
+  -- `#lines == 0` alone would be dead code: nvim_buf_get_lines on an empty buffer
+  -- returns { "" }, one empty string, so the count is 1 and the guard never fires.
+  -- Check for content, not for entries.
+  local has_content = false
+  for _, l in ipairs(lines or {}) do
+    if l:match("%S") then
+      has_content = true
+      break
+    end
   end
+  if not has_content then
+    vim.notify("Cheatsheet: nothing to render for " .. (what or "request"), vim.log.levels.WARN)
+    return
+  end
+
+  local buf = vim.api.nvim_create_buf(false, true)
+  vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+  vim.bo[buf].modifiable = false
+  vim.bo[buf].bufhidden = "wipe"
+
+  -- Geometry matches what glow.nvim used, so the float does not move on screen.
+  local width = math.min(math.ceil(vim.o.columns * 0.7), 120)
+  local height = math.min(math.ceil(vim.o.lines * 0.7), 80)
+  local win = vim.api.nvim_open_win(buf, true, {
+    relative = "editor",
+    width = width,
+    height = height,
+    row = math.ceil((vim.o.lines - height) / 2 - 1),
+    col = math.ceil((vim.o.columns - width) / 2),
+    style = "minimal",
+    border = "rounded",
+  })
+
+  vim.wo[win].wrap = true
+  vim.wo[win].linebreak = true
+  vim.wo[win].breakindent = true
+  vim.wo[win].cursorline = false
+
+  -- ORDER MATTERS, do not "tidy" this. render-markdown.nvim does not attach if
+  -- the filetype is set before the buffer is displayed in a window -- it silently
+  -- renders nothing. Set the filetype *after* nvim_open_win, then ask it to
+  -- attach explicitly. Verified in openspec/changes/replace-glow-renderer
+  -- (task 1.2): filetype-first gives 0 extmarks, this order gives a full render.
+  vim.bo[buf].filetype = "markdown"
+  pcall(function()
+    require("render-markdown.api").buf_enable()
+  end)
+
+  for _, key in ipairs({ "q", "<Esc>" }) do
+    vim.keymap.set("n", key, function()
+      if vim.api.nvim_win_is_valid(win) then
+        vim.api.nvim_win_close(win, true)
+      end
+    end, { buffer = buf, nowait = true, silent = true, desc = "Close cheatsheet float" })
+  end
+
+  return win
 end
+
+M.open_float = open_float
 
 function M.open_guide(slug)
   local filename = guide_files[slug]
@@ -54,7 +117,7 @@ function M.open_guide(slug)
     vim.notify("Cheatsheet: guide not found: " .. path, vim.log.levels.WARN)
     return
   end
-  glow_open(path)
+  open_float(vim.fn.readfile(path), "guide '" .. slug .. "'")
 end
 
 -- Guide picker for the current filetype (or all guides if no ft match).
@@ -101,17 +164,8 @@ function M.open_cheatsheet()
     end
   end
 
-  -- Write to a stable cache path (overwritten each call; no cleanup needed).
-  local tmpfile = vim.fn.stdpath("cache") .. "/cheatsheet_preview.md"
-  local f = io.open(tmpfile, "w")
-  if not f then
-    vim.notify("Cheatsheet: could not write cache file", vim.log.levels.WARN)
-    return
-  end
-  f:write(combined)
-  f:close()
-
-  glow_open(tmpfile)
+  -- No temp file: glow needed a path on disk, in-editor rendering does not.
+  open_float(vim.split(combined, "\n", { plain = true }), "cheatsheet")
 end
 
 return M

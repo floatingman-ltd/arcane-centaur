@@ -458,7 +458,7 @@ LocalLeader is `,` in Markdown buffers.
 |`++<++Tab++>++` |Jump to next link in buffer (mkdnflow)
 |`++<++S-Tab++>++` |Jump to previous link in buffer (mkdnflow)
 |`,p` |Toggle Markdown browser preview (single-file)
-|`,pp` |Popup preview via glow (always available)
+|`,pp` |Toggle rendered Markdown / raw source (popup is `:MarkdownPopup`)
 |`,sp` |Open in markserv Docker server preview (cross-page links)
 |`,dp` |Export to PDF with PlantUML diagrams rendered
 |`,mp` |MARP: open slide in preview server

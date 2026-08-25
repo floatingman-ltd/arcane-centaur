@@ -279,7 +279,7 @@ vim-unimpaired provides the `[q`/`]q` (quickfix), `[b`/`]b` (buffers), `[f`/`]f`
 
 **Verdict: KEEP (good, minor caveats)**
 
-markdown-preview.nvim is the standard browser-preview solution despite its npm build step. glow.nvim is a solid terminal-preview option. mkdnflow.nvim is active and purpose-built for linked Markdown navigation — useful for the AsciiDoc-adjacent Markdown files in this config.
+markdown-preview.nvim is the standard browser-preview solution despite its npm build step. ~~glow.nvim is a solid terminal-preview option.~~ **Superseded:** glow was removed in `replace-glow-renderer` — its word-wrap orphans single words onto their own lines at essentially any width, and rendering in-editor with render-markdown.nvim hands wrapping to Neovim instead. mkdnflow.nvim is active and purpose-built for linked Markdown navigation — useful for the AsciiDoc-adjacent Markdown files in this config.
 
 Caveat: the `lazy = false` implicit in the file-level globals (`vim.g.mkdp_preview_options`) means these globals are set at startup even on non-Markdown files. This is fine in practice but could be moved into the plugin's `init` callback for cleanliness.
 
@@ -379,7 +379,7 @@ TokyoNight is actively maintained, has first-class support from plugin authors (
 | which-key.nvim | Keymap help | KEEP (best-of-breed) | — | Standard |
 | tokyonight.nvim | Colorscheme | KEEP (best-of-breed) | — | Well-maintained |
 | markdown-preview.nvim | MD browser preview | KEEP (good, minor caveats) | — | WSL-aware config |
-| glow.nvim | MD terminal preview | KEEP (good, minor caveats) | — | Complement to mkdp |
+| glow.nvim | MD terminal preview | ~~KEEP~~ **REMOVED** — superseded by render-markdown.nvim (`replace-glow-renderer`); glow's word-wrap orphans single words at any width | — | Was a complement to mkdp |
 | mkdnflow.nvim | MD link nav | KEEP (good, minor caveats) | — | Active |
 | plantuml-syntax | PlantUML syntax | KEEP (best-of-breed) | — | Standard |
 | bracey.vim | HTML live preview | KEEP (good, minor caveats) | — | No better Lua alt |

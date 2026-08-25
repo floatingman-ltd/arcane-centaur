@@ -42,8 +42,8 @@
 
 | Key | Action |
 |-----|--------|
-| `,p` | Toggle browser preview (console: glow, GUI: markdown-preview) |
-| `,pp` | Popup preview via glow (always) |
+| `,p` | Toggle preview (console: in-editor popup, GUI: markdown-preview) |
+| `,pp` | Toggle rendered Markdown / raw source (popup: `:MarkdownPopup`) |
 | `,sp` | Open in markserv Docker server (cross-page links) |
 
 ## Export

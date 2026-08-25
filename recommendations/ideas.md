@@ -9,7 +9,9 @@
 2. some sort of visual buffer tabbing:
    - the sidebar panels for claude.cli and avanate.nvim are awkward to read, it seems both would like to be "full screen" 
    - the terminal at the bottom of the screen requires scrolling, it too would like a "full screen"
-3. signature help, and a way to browse method overloads. Today there is no way to see a method's
+3. markdown folding on **headings**, not just indentation. Today `lua/plugins/ufo.lua` returns the *indent* provider for markdown, so nested lists fold and headings do not — which is not what most people expect from a document outline. The reason treesitter folding is disabled is recorded in `openspec/specs/code-folding/spec.md:48`: it "errors on special buffers such as the `glow` preview". **`replace-glow-renderer` removed glow**, so that rationale no longer applies, and treesitter folding is exactly what would provide heading folds. Worth re-testing whether the errors still occur with glow gone; if they do not, markdown could move to the treesitter provider and the `code-folding` spec would need a delta. Surfaced while validating `replace-glow-renderer` (RG.9c) — the expectation that `zM` would collapse sections is reasonable and currently unmet.
+
+4. signature help, and a way to browse method overloads. Today there is no way to see a method's
    other overloads. Roslyn collapses them into a *single* completion item and just notes the count
    ("+16 overloads"), so the completion documentation window cannot page through them — it renders
    one item's docs and there is no second item to move to. Overloads belong to a different LSP
@@ -55,6 +57,29 @@ use before deciding.
   `<leader>L` (IDE layout assembly) is **not** affected — it opens its terminal full-width through the same `botright split` code, which narrows the fault to `toggle_terminal` invoked with focus already in the tree window rather than to the split call itself.
 
   Found during `fix-tree-terminal-keymaps` validation (TEST_PLAN TK.3/TK.4) and deliberately **not fixed there**: the terminal panel's split approach is itself under review (see the full-screen panel idea above), so effort spent on the current geometry may be wasted. Revisit if the panel survives in its present form.
+
+- **three capability specs still reference `glow.nvim`, which no longer exists.** Found while implementing `replace-glow-renderer` (task 5.9) and deliberately *not* edited there: changing a spec outside a delta is how specs drift from the changes that are supposed to govern them. Each needs its own judgement:
+
+  * `openspec/specs/asciidoc-inbuffer-preview/spec.md:30` — **wrong, needs a delta.** A normative scenario requires that "markdown-preview.nvim / glow.nvim SHALL behave exactly as before this change". glow.nvim is removed, so the scenario is unsatisfiable as written.
+  * `openspec/specs/ide-layout/spec.md:70,73` — **wrong, needs a delta.** Names "Glow previews" among the floats the layout must not disturb, and a scenario begins "WHEN a Glow preview ... is triggered". That trigger no longer exists; the intent (floats are unaffected by the layout) is still valid and should be restated against the in-editor popup.
+  * `openspec/specs/code-folding/spec.md:48` — **cosmetic only.** glow appears as an illustrative example of a special buffer where treesitter folding errors. The requirement itself (do not use treesitter folding) is unaffected, and the replacement float was checked and does not reproduce the problem. Safe to leave; worth correcting opportunistically.
+
+  Best handled as one small follow-up change covering the two real ones, rather than folded into an unrelated branch.
+
+- **newline drops the cursor to column 0 in most languages — treesitter `indentexpr` is set without a query behind it.** Reported in C#: pressing Enter on an indented line puts the cursor at the left margin instead of aligning with the line above. Markdown behaves correctly, which is the clue.
+
+  `lua/plugins/treesitter.lua:50-55` sets `vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"` for **every** filetype in `HIGHLIGHT_FILETYPES`, unconditionally. But nvim-treesitter only ships an `indents.scm` for two of them:
+
+  * **has a query:** `lua`, `markdown`
+  * **no query at all:** `commonlisp`, `clojure`, `scheme`, `fennel`, `janet_simple`, `fsharp`, `vim`, `markdown_inline`, `http`, `c_sharp`, `haskell`
+
+  With no query the expression returns 0, and because `indentexpr` **overrides** `autoindent`/`smartindent`, the result is worse than not setting it: Vim's own indent handling is suppressed in favour of something that always answers zero. Verified by `nvim_get_runtime_file("queries/<lang>/indents.scm")` returning 0 files for all eleven.
+
+  Likely fix: set `indentexpr` only when a query exists for the buffer's language — resolve with `vim.treesitter.language.get_lang(ft)` and check `nvim_get_runtime_file` before assigning, letting `autoindent`/`smartindent` (or `cindent` for the C-like ones) handle the rest. Worth checking the Lisp family separately, since `nvim-parinfer` and vim-sexp may already be compensating there.
+
+  Surfaced as an aside during `replace-glow-renderer` validation; unrelated to that change and deliberately not fixed there.
+
+- **`,sp` looks like it does nothing.** `MdServerPreview` builds the markserv URL and hands it to `util.open_url`, which deliberately skips the browser when `term.is_console` and emits an INFO notification instead (`lua/config/util.lua:51-58`). The reasoning is sound — there is no graphical browser in a console — but an INFO notify is easy to miss entirely, so the command reads as broken when it has in fact worked. Mistaken for a defect during `replace-glow-renderer` validation (RG.9b). Options: put the URL on the clipboard as well, echo it on the command line where it persists, or offer to open it via `wslview`/`explorer.exe` even in console mode, since under WSL a Windows browser *is* usually reachable. Affects any `open_url` caller, not just `,sp`.
 
 - snippet placeholders cannot be navigated. `snippets` is an active completion source
   (`lua/plugins/blink.lua:26`), so snippet completions are offered and expand — but

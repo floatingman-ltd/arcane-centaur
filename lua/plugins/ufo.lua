@@ -5,7 +5,11 @@ return {
     event = "BufReadPost",
     opts = {
       provider_selector = function(bufnr, filetype, _)
-        -- Disable treesitter folding entirely (causes errors on special buffers like glow)
+        -- Disable treesitter folding entirely; it errors on special markdown
+        -- buffers. The example used to be glow's preview buffer, which is gone --
+        -- the in-editor markdown float replacing it was checked and does not
+        -- reproduce the problem (it is foldmethod=manual and fold commands are
+        -- fine), but the indent provider is kept for ordinary markdown buffers.
         if filetype == "markdown" then
           return { "indent" }
         end

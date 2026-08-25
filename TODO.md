@@ -107,8 +107,10 @@ decision to abandon/supersede.
     ```
 
 - [ ] **`origin/copilot/add-cli-markdown-preview-support`** — single commit adding
-  glow preview with `,gp` keymap. **Likely superseded** by the glow work in
-  `cli-console-mode`. Compare before raising a PR:
+  glow preview with `,gp` keymap. **Superseded twice over**: first by the
+  `cli-console-mode` work, and now by `replace-glow-renderer`, which removed glow
+  entirely in favour of in-editor rendering (`:MarkdownPopup`). Almost certainly
+  just delete it, but compare first:
     ```sh
     git diff main...copilot/add-cli-markdown-preview-support
     # If superseded:

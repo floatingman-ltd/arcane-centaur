@@ -50,15 +50,15 @@ directly in the editor, then press `,p` or `,sp` to open the browser
 preview for that file. Press `++<++BS++>++` to return to the original
 file.
 
-== Markdown Preview (markdown-preview.nvim {plus} glow.nvim)
+== Markdown Preview (markdown-preview.nvim {plus} in-editor popup)
 
 [width="100%",cols="34%,33%,33%",options="header",]
 |===
 |Keys |Mode |Action
 |`,p` |Normal |Toggle live browser preview (`MarkdownPreviewToggle`) —
-GUI; or glow popup in console
+GUI; or the in-editor popup in console
 
-|`,pp` |Normal |Force glow popup preview — always opens in-terminal,
+|`,pp` |Normal |Toggle rendered Markdown / raw source in the current buffer. The popup is `:MarkdownPopup`,
 regardless of environment
 |===
 
@@ -67,8 +67,9 @@ fenced code blocks render natively* in the browser — no extra plugin or
 Docker server required. PlantUML fenced code blocks are rendered via the
 PlantUML Docker server (`http://localhost:8080`).
 
-Use `,pp` when working full-screen in a terminal and you don’t want to
-context-switch to a browser.
+Use `,p` (or `:MarkdownPopup`) when working full-screen in a terminal and
+you don’t want to context-switch to a browser. Use `,pp` to drop back to
+the raw markup when you need to read or edit the source.
 
 *Limitation:* only the current buffer is served; clicking relative links
 to other `.md` files returns 404. Use the markserv server (`,sp`) for

@@ -187,7 +187,7 @@ Two Haskell debug adapters exist:
 
 **What they do:** Both render Markdown in-buffer using extmarks. render-markdown.nvim renders persistently (formatting stays visible while editing). markview.nvim uses a hybrid mode (preview disappears on cursor movement in the editing area).
 
-**Current state:** markdown-preview.nvim (browser preview) and glow.nvim (terminal-pager render) are already installed. These cover the "preview markdown" workflow.
+**Current state:** markdown-preview.nvim (browser preview) and render-markdown.nvim (in-editor render) are installed. These cover the "preview markdown" workflow. *(Was glow.nvim until `replace-glow-renderer`.)*
 
 **The gap:** Neither existing plugin renders inline while you edit. render-markdown.nvim would add that. However, for this config's actual Markdown usage (the root `readme.md` and occasional notes), it is marginal. The AsciiDoc in-buffer render case (markview.nvim) is more valuable (section 1b).
 

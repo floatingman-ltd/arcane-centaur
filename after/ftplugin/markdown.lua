@@ -2,39 +2,34 @@ vim.b.maplocalleader = ","
 
 -- nvim-treesitter's master branch caused a nil-range crash in languagetree.lua
 -- for the markdown_inline injection; main (core treesitter APIs) does not
--- reproduce it, so highlight is enabled normally. glow/markdown-preview/marksman
--- are unaffected either way (they don't use treesitter).
+-- reproduce it, so highlight is enabled normally. markdown-preview/marksman are
+-- unaffected either way (they don't use treesitter). The in-editor renderer does
+-- use treesitter, and needs this highlight active.
 vim.treesitter.start()
 vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
 
--- Route preview keymap to glow (console) or markdown-preview (GUI).
+-- Route preview keymap to the in-editor popup (console) or the browser (GUI).
+-- The console branch used to shell out to glow via :Glow, guarded by an
+-- executable() check with install instructions. Both the check and the guard are
+-- gone: rendering is in-editor now, so there is no binary that can be missing.
 local term = require("config.terminal")
 
 vim.keymap.set("n", "<localleader>p", function()
   if term.is_console then
-    if vim.fn.executable("glow") ~= 1 then
-      vim.notify(
-        "glow not found — see docs/modules/ROOT/pages/content/markdown.adoc for installation instructions",
-        vim.log.levels.WARN
-      )
-      return
-    end
-    vim.cmd("Glow")
+    vim.cmd("MarkdownPopup")
   else
     vim.cmd("MarkdownPreviewToggle")
   end
 end, { buffer = true, desc = "Toggle markdown preview" })
 
+-- ,pp toggles in-buffer rendering rather than opening a popup. With the renderer
+-- active the buffer already *is* the preview, so a float showing the same content
+-- was ceremony; toggling is the useful operation -- it flips between rendered
+-- output and the raw markup, for when you need to see or edit the source.
+-- The popup itself is still available on ,p (console) and via :MarkdownPopup.
 vim.keymap.set("n", "<localleader>pp", function()
-  if vim.fn.executable("glow") ~= 1 then
-    vim.notify(
-      "glow not found — see docs/modules/ROOT/pages/content/markdown.adoc for installation instructions",
-      vim.log.levels.WARN
-    )
-    return
-  end
-  vim.cmd("Glow")
-end, { buffer = true, desc = "Popup preview (glow, always)" })
+  require("render-markdown.api").buf_toggle()
+end, { buffer = true, desc = "Toggle rendered markdown / raw source" })
 
 -- Markserv server preview (requires Docker; see docs/modules/ROOT/pages/content/markdown.adoc)
 require("config.mdpreview").setup()
