@@ -2267,7 +2267,12 @@ The whole point of the change.
 4. For contrast, recall the old behaviour: glow orphaned a word in these exact paragraphs at every
    width tried except two.
 
-- [ ] Cheatsheet prose wraps with no orphaned words
+- [X] Cheatsheet prose wraps with no orphaned words
+
+> Confirmed live. This is the defect the change exists to remove, and it is gone structurally rather
+> than patched: the paragraph sits in the buffer as a single 270-character line and Neovim wraps it at
+> display time, so there is no re-wrap step left to get wrong. glow orphaned a word in these exact
+> paragraphs at every width tried except two.
 
 #### RG.2 — Content reflows on resize
 
@@ -2277,7 +2282,12 @@ New behaviour. glow could never do this, because its output was wrapped before r
 2. Resize the terminal window (or `:vertical resize` the surrounding editor).
 3. Confirm the float's text **re-wraps to the new width** rather than keeping its original line breaks.
 
-- [ ] Content reflows on resize
+- [X] Content reflows on resize
+
+> Confirmed. New behaviour: glow wrapped its output before it reached the buffer, so its text could
+> never reflow. Note the float *frame* does not resize — it is created at a fixed size from
+> `vim.o.columns`/`vim.o.lines` when opened; only the text inside re-wraps. Making the frame track the
+> editor too would be a small addition if it ever proves worth it.
 
 #### RG.3 — Tables still render as tables
 
@@ -2285,7 +2295,12 @@ New behaviour. glow could never do this, because its output was wrapped before r
    visible column structure — **not** as raw `| key | action |` pipe text.
 2. Confirm no table is truncated or wrapped mid-cell.
 
-- [ ] Tables render with visible column structure, none truncated or wrapped mid-cell
+- [X] Tables render with visible column structure, none truncated or wrapped mid-cell
+
+> Confirmed at a normal width (171-column terminal, 120-column float, widest table 82). This is the
+> check that justifies the dependency: `render-markdown.nvim` was chosen over the zero-plugin option
+> (plain markdown buffer plus `vim.treesitter.start()`) precisely so tables would not drop to raw pipe
+> text on a surface that is mostly tables. That trade-off holds.
 
 #### RG.4 — Narrow terminal: the accepted trade-off
 
@@ -2298,7 +2313,14 @@ the float drops below 82 — roughly a terminal under 118 columns.
 3. **Record a verdict**, and answer the design's open question: is this acceptable as-is, or is a
    `nowrap` toggle bound inside the float worth adding?
 
-- [ ] Narrow-terminal behaviour observed and verdict recorded
+- [X] Narrow-terminal behaviour observed and verdict recorded
+
+> **Verdict: acceptable as-is. No `nowrap` toggle.** The terminal runs full-screen 99.9% of the time,
+> so the float is at its 120-column cap and the widest cheatsheet table (82) has ~38 columns of
+> headroom. Sub-118-column terminals are an edge case that does not occur in practice here, and a
+> toggle for it would be speculative complexity — an extra key and an extra state, to serve a
+> situation that does not arise. Documented in `content/markdown.adoc` as a CAUTION so the behaviour
+> is at least explained if it is ever met.
 
 #### RG.5 — Language sheets and mini-guides
 
@@ -2306,14 +2328,21 @@ the float drops below 82 — roughly a terminal under 118 columns.
    the core sheet, separated by a rule.
 2. `<leader>?g` — confirm the guide picker opens and a chosen guide renders.
 
-- [ ] Language sheet appended correctly; mini-guides open and render
+- [X] Language sheet appended correctly; mini-guides open and render
+
+> Confirmed. This exercised `open_guide()`, the one caller of `open_float()` never touched by headless
+> testing — which matters because D4's argument is that a single shared entry point cannot drift
+> between the three surfaces.
 
 #### RG.6 — Dismissal
 
 1. With the float focused, press `q` — it closes and focus returns to the previous window.
 2. Re-open and press `<Esc>` — same.
 
-- [ ] `q` and `<Esc>` both dismiss the float and restore focus
+- [X] `q` and `<Esc>` both dismiss the float and restore focus
+
+> Confirmed, including the focus-restoration half — an existing `context-aware-cheatsheet`
+> requirement, preserved through the renderer swap.
 
 #### RG.7 — The preview surfaces
 
@@ -2323,9 +2352,25 @@ the float drops below 82 — roughly a terminal under 118 columns.
 3. Run `:MarkdownPopup` directly — works from a markdown buffer.
 4. **Type something without saving, then `<localleader>pp`** — the unsaved text SHALL appear. The popup
    renders the buffer, not the file; glow could only ever show the last saved version.
-5. Confirm **no** "glow not found" notification can appear on any of these paths.
+5. *(Static check, not a live one — do this from a shell, not by watching the UI.)* Confirm no glow
+   invocation path survives:
+   `grep -rn "executable(\"glow\")\|vim.cmd(\"Glow\")" --include='*.lua' lua/ after/` must return
+   nothing, and no `vim.notify` in `lua/` or `after/` may mention glow. Absence of a notification
+   cannot be established by looking at the editor; it is established by there being no code that
+   emits one.
 
-- [ ] `,pp`, console `,p` and `:MarkdownPopup` all work; unsaved changes are rendered; no glow warning
+- [X] `,pp`, console `,p` and `:MarkdownPopup` all work; unsaved changes are rendered; no glow
+      invocation path remains
+
+> Steps 1-4 confirmed live, including the new capability in step 4: the popup renders the **buffer**,
+> so unsaved edits appear. glow shelled out to a binary that read a file and could only ever show the
+> last saved version.
+>
+> Step 5 as originally written asked the reader to confirm the *absence* of a notification, which is
+> not observable by looking — a badly specified step, rewritten as the static check it always was.
+> Verified: no `executable("glow")` guard, no `vim.notify` mentioning glow, no `:Glow` invocation and
+> no plugin dependency anywhere in `lua/` or `after/`. The only glow references left are three
+> comments explaining what was replaced. There is no code path on which the notification could fire.
 
 #### RG.8 — `:MarkdownPopup` exists from a cold start
 
@@ -2336,7 +2381,17 @@ This caught a real bug during implementation, so test it in the state that expos
 3. It must work. If it reports `E492: Not an editor command`, the command has regressed to being
    registered inside the lazily-required `config.cheatsheet` module instead of `lua/keymaps.lua`.
 
-- [ ] `:MarkdownPopup` is defined without the cheatsheet having been opened first
+- [X] `:MarkdownPopup` is defined without the cheatsheet having been opened first
+
+> Passed — the command existed and ran from a cold start with `<leader>?` never pressed, which is the
+> regression this step was written to catch.
+>
+> **Incidental finding, fixed.** Running it in the startup scratch buffer opened a *blank* popup. Not a
+> defect in itself — an empty buffer reasonably renders as empty — but it exposed dead code: the
+> "nothing to render" guard tested `#lines == 0`, and `nvim_buf_get_lines` on an empty buffer returns
+> `{ "" }`, one empty string, so the count is 1 and the notification could **never** fire. Same class
+> as the `<C-f>`/`<C-b>` dead keys found in `fix-blink-completion-keymap`. The guard now tests for
+> actual content: an empty or whitespace-only buffer warns and opens nothing (verified: 0 floats).
 
 #### RG.9 — Nothing else regressed
 

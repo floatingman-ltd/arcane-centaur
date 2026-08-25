@@ -45,7 +45,17 @@ end
 -- Takes lines rather than a path so it also works for unsaved buffers (see
 -- :MarkdownPopup) and needs no temp file.
 local function open_float(lines, what)
-  if not lines or #lines == 0 then
+  -- `#lines == 0` alone would be dead code: nvim_buf_get_lines on an empty buffer
+  -- returns { "" }, one empty string, so the count is 1 and the guard never fires.
+  -- Check for content, not for entries.
+  local has_content = false
+  for _, l in ipairs(lines or {}) do
+    if l:match("%S") then
+      has_content = true
+      break
+    end
+  end
+  if not has_content then
     vim.notify("Cheatsheet: nothing to render for " .. (what or "request"), vim.log.levels.WARN)
     return
   end
