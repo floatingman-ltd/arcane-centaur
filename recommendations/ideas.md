@@ -79,6 +79,18 @@ use before deciding.
 
   Best handled as one small follow-up change covering the two real ones, rather than folded into an unrelated branch.
 
+- **two language servers are configured and enabled but not installed, and their documentation is wrong.** `lua/config/lsp.lua` calls `vim.lsp.enable` for `marksman` (markdown) and `fsautocomplete` (F#), but neither binary is on `$PATH`. Both fail silently — the filetype simply gets no LSP, so no hover, no references, no folding ranges, and no completion beyond buffer words.
+
+  Three documentation defects compound it:
+
+  * `docs/.../editor/code-intelligence.adoc:32` and `docs/.../content/diagrams.adoc:394` both say `sudo apt install marksman`. **That package does not exist** in the configured repos — `apt-cache policy marksman` returns nothing. Following the instruction produces "unable to locate package".
+  * `docs/.../other/architecture.adoc:100` lists **✅ marksman**, implying it is active. It is not installed.
+  * Neither server appears in `getting-started.adoc`'s prerequisite table, though every other required binary does. Same class as the ripgrep/fzf gap.
+
+  Fix direction: install both from their GitHub release binaries, matching how every other language server here is installed (`lua-language-server` in `~/.local/bin`, `janet-lsp` in `/usr/local/bin`, roslyn under `~/.local/share/roslyn`). Note LSP servers are the deliberate exception to keeping dependencies in Docker — they are editor subprocesses over stdio with direct filesystem access, and containerising them fights the design. Then correct the install instructions, drop or qualify the ✅, and add both to the prerequisite table.
+
+  Surfaced while exploring the treesitter provider sweep: markdown's fold provider list excludes `lsp`, and checking whether marksman could supply heading folds revealed it was never installed.
+
 - **newline drops the cursor to column 0 in most languages — treesitter `indentexpr` is set without a query behind it.** Reported in C#: pressing Enter on an indented line puts the cursor at the left margin instead of aligning with the line above. Markdown behaves correctly, which is the clue.
 
   `lua/plugins/treesitter.lua:50-55` sets `vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"` for **every** filetype in `HIGHLIGHT_FILETYPES`, unconditionally. But nvim-treesitter only ships an `indents.scm` for two of them:
