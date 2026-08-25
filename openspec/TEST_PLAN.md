@@ -2508,7 +2508,7 @@ proposal did not ask for.
 > Also surfaced and logged rather than absorbed: heading folds are now unblocked (glow was the stated
 > reason treesitter folding is disabled for markdown), and `open_url` silently notifying makes `,sp`
 > look broken.
-- [ ] Raise PR: `fix/replace-glow-renderer` → `main`
+- [X] Raise PR: `fix/replace-glow-renderer` → `main` (PR #175)
 - [ ] Review and approve PR
 - [ ] Merge PR
 
