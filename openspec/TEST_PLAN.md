@@ -2518,7 +2518,11 @@ proposal did not ask for.
 ### Post-merge
 
 - [X] `git checkout main && git pull origin main` (`main` at `a7a3310`)
-- [ ] Re-confirm RG.1 and RG.7 on the merged config
+- [X] Re-confirm RG.1 and RG.7 on the merged config
+
+> Confirmed on merged `main`. Worth having done rather than assumed: `,pp` changed meaning from
+> "force popup" to "toggle rendered/raw" *after* most of the validation walk, so this was its first
+> check outside the branch it was built on.
 - [X] Rebuild the docs site and confirm the renamed `popup-preview` anchor resolves
 
 > Rebuilt on merged `main`: exit 0 with only the five known pre-existing attribute warnings. The
