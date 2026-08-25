@@ -2416,7 +2416,24 @@ or `testdocs/test.md` — then press `zM` (close all folds) and `zR` (open all).
 `:messages` must show no error. This exercises the *ordinary* markdown path that `ufo.lua`'s indent
 provider serves; the float itself was already checked separately and is `foldmethod=manual`.
 
-- [ ] `,sp` (or N/A), PlantUML geometry (diff-verified), and markdown folding all unaffected
+- [X] `,sp` (or N/A), PlantUML geometry (diff-verified), and markdown folding all unaffected
+
+> **9a** — verified by diff, which is stronger than a visual pass: every changed line in
+> `lua/plugins/plantuml.lua` is a comment, and `0.7` / `120` / `80` are untouched.
+>
+> **9b** — `,sp` works. markserv was brought up and the URL confirmed serving (HTTP 200 for
+> `/testdocs/test.md`). Note it opens nothing on screen: `util.open_url` skips the browser when
+> `term.is_console` and emits an INFO notification with the URL instead, so the evidence is the
+> `open_url: http://localhost:8090/...` line in `:messages`, not a window appearing. That is
+> by design, and easy to mistake for the command doing nothing — logged as a UX item.
+>
+> **9c** — folding works: `zM` collapses the nested lists (24 lines inside closed folds), `zR`
+> reopens them, no errors. **Headings do not fold**, which is correct for the current config —
+> `ufo.lua` uses the *indent* provider for markdown. The expectation that they would is reasonable,
+> and this change removed the stated blocker (glow's buffers were why treesitter folding is
+> disabled), so it is logged as a follow-up rather than dismissed. The original `testdocs/test.md`
+> was too thin to fold at all, which made this step inconclusive rather than passing; the fixture was
+> rewritten to cover the renderer properly.
 
 #### RG.10 — Clean startup and syntax
 
@@ -2426,7 +2443,20 @@ provider serves; the float itself was already checked separately and is `foldmet
 3. `stylua --check lua/ after/`
 4. `openspec validate replace-glow-renderer --strict` and `openspec validate --all --strict`
 
-- [ ] No errors in `:messages`; `luac -p`, `stylua --check` and `openspec validate` all pass
+- [X] No errors in `:messages`; `luac -p`, `stylua --check` and `openspec validate` all pass
+
+> `:messages` on a fresh `nvim` was **entirely empty** — cleaner than the step predicted. The expected
+> lazy.nvim update notices are absent because the pending updates were applied to the installed
+> plugins during this change's `:Lazy sync` runs, so the checker has nothing left to report.
+> `luac -p` passes repo-wide, `stylua --check lua/ after/` is clean, and `openspec validate` passes
+> both scoped and repo-wide (41/41).
+>
+> **Consequence worth acting on separately:** the installed plugins are now ahead of `lazy-lock.json`
+> for `easy-dotnet.nvim`, `nui.nvim`, `nvim-lspconfig` and `nvim-treesitter`, so **every Neovim launch
+> re-dirties the lock file**. Those bumps were reverted out of this branch three times — they belong
+> to a lock-sync change, not here. This branch's lock diff is exactly two lines: `glow.nvim` removed,
+> `render-markdown.nvim` added. The sync is now genuinely owed; until it lands, expect a dirty
+> `lazy-lock.json` after any session.
 
 #### RG.11 — Open question: does `,pp` still earn its keep?
 
@@ -2438,12 +2468,46 @@ proposal did not ask for.
    with the renderer active.
 2. **Record a verdict:** keep the popup, replace it with a render toggle, or keep both.
 
-- [ ] Verdict recorded on whether `,pp` remains a popup
+- [X] Verdict recorded on whether `,pp` remains a popup
+
+> **Verdict: `,pp` becomes a render toggle. Implemented.** With the renderer live in the buffer, the
+> buffer already *is* the preview, so a float of the same content was ceremony. `,pp` now calls
+> `require("render-markdown.api").buf_toggle()`, flipping between rendered output and raw markup —
+> which is a more useful operation than the popup it replaced, since it is how you get at the source
+> to read or edit it. Verified: 46 extmarks -> 0 (raw) -> 46 (rendered).
+>
+> The popup is not lost: `,p` still opens it in console environments and `:MarkdownPopup` opens it
+> anywhere. This needed a `markdown-popup-preview` delta, since that capability required `,pp` to open
+> a forced popup — the requirement is rewritten with three new scenarios (toggle off, toggle back on,
+> popup still available). Doc surfaces updated: `markdown.adoc`, `markdown-cheatsheet.adoc`,
+> `keybindings.adoc` and `cheatsheets/markdown.md`. Note `,pp` in `.adoc` buffers is a separate
+> keymap in `after/ftplugin/asciidoctor.lua` and is untouched.
 
 ### Raise PR & merge
 
-- [ ] All validation steps pass (RG.1–RG.11), with any defect and its fix logged inline as a
+- [X] All validation steps pass (RG.1–RG.11), with any defect and its fix logged inline as a
       blockquote note
+
+> Two defects found and fixed, two badly-written steps rewritten, one fixture rebuilt, and both of
+> the design's open questions answered with the tool in front of us rather than guessed at.
+>
+> **Defects:** `:MarkdownPopup` did not exist from a cold start (registered in a lazily-required
+> module); and the `open_float` empty-content guard was unreachable, because
+> `nvim_buf_get_lines` returns `{ "" }` for an empty buffer so `#lines == 0` never fired.
+>
+> **Badly-written steps:** RG.7 step 5 asked the reader to confirm the *absence* of a notification,
+> which is not observable — rewritten as the static check it always was. RG.9 did not say what to open
+> or that two of its three parts need Docker — rewritten with prerequisites stated.
+>
+> **Fixture:** `testdocs/test.md` was six lines with no indentation, which made RG.9c inconclusive
+> rather than passing (nothing to fold) — rebuilt to 133 lines covering the renderer properly.
+>
+> **Verdicts:** RG.4 — no `nowrap` toggle, the terminal is full-screen almost always. RG.11 — `,pp`
+> becomes a render toggle, which needed a `markdown-popup-preview` delta.
+>
+> Also surfaced and logged rather than absorbed: heading folds are now unblocked (glow was the stated
+> reason treesitter folding is disabled for markdown), and `open_url` silently notifying makes `,sp`
+> look broken.
 - [ ] Raise PR: `fix/replace-glow-renderer` → `main`
 - [ ] Review and approve PR
 - [ ] Merge PR

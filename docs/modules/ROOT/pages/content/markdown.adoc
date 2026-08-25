@@ -213,8 +213,7 @@ LocalLeader is `,` in Markdown buffers.
 |`,p` |Toggle `markdown-preview.nvim` single-file browser preview (GUI)
 or the in-editor popup (console)
 
-|`,pp` |Force the in-editor popup preview — always in-terminal, regardless
-of environment
+|`,pp` |Toggle rendered Markdown / raw source in the current buffer
 
 |`,sp` |Open current file in markserv Docker server preview
 (`MdServerPreview`)
@@ -252,7 +251,7 @@ navigation)
 |Situation |Recommended tool
 |Single file, diagrams, cursor sync |`,p` — markdown-preview.nvim
 
-|Full-screen terminal, no browser context |`,pp` — in-editor popup (always
+|Full-screen terminal, no browser context |`,p` — in-editor popup (always
 in-terminal)
 
 |Multi-file project, cross-page links, diagrams |`,sp` — markserv Docker
@@ -272,7 +271,9 @@ server
 
 IMPORTANT: `:Glow` no longer exists, and neither does the `glow` binary requirement. The replacement command is *`:MarkdownPopup`*. If you have `:Glow` in muscle memory or in a personal mapping, that is the one thing to relearn here.
 
-In console sessions, `,p` opens the rendered Markdown in a floating popup rendered *inside Neovim*, using the same treesitter parsers the editor already loads. Use `,pp` to force the popup even in a GUI environment.
+Markdown is rendered *inside Neovim* as you edit it, using the treesitter parsers the editor already loads — so the buffer itself is the preview. `,pp` toggles that rendering off and on, which is how you get at the raw markup when you need to read or edit it.
+
+In console sessions `,p` opens the same rendered Markdown in a floating popup, which is useful for distraction-free reading; `:MarkdownPopup` opens that popup in any environment.
 
 [width="100%",cols="34%,33%,33%",options="header",]
 |===

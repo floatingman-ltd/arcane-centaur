@@ -43,7 +43,7 @@
 | Key | Action |
 |-----|--------|
 | `,p` | Toggle preview (console: in-editor popup, GUI: markdown-preview) |
-| `,pp` | Popup preview, in-editor — `:MarkdownPopup` (always) |
+| `,pp` | Toggle rendered Markdown / raw source (popup: `:MarkdownPopup`) |
 | `,sp` | Open in markserv Docker server (cross-page links) |
 
 ## Export

@@ -1,20 +1,25 @@
 ## MODIFIED Requirements
 
 ### Requirement: Forced popup preview keymap always available
-The config SHALL provide a `,pp` keymap in markdown buffers that opens the floating popup preview unconditionally, regardless of whether a graphical display is available. The popup SHALL be rendered in-editor; it SHALL NOT depend on any external binary, and SHALL therefore never fail for want of one.
+Because markdown is rendered in the buffer itself, a popup showing the same content is redundant. `,pp` SHALL instead toggle in-buffer rendering, flipping between rendered output and the raw markup, so the source can be read and edited on demand. A floating popup SHALL remain reachable — via `,p` in console environments and via the `:MarkdownPopup` command in any environment — and SHALL NOT depend on any external binary, so it can never fail for want of one.
 
-#### Scenario: Popup preview in GUI terminal
-- **WHEN** the user presses `,pp` in a markdown buffer inside a GUI-capable terminal (e.g. GNOME Terminal, WSL Terminal)
-- **THEN** the floating popup opens displaying the rendered markdown
+#### Scenario: Toggling rendering off reveals the raw source
+- **WHEN** the user presses `,pp` in a markdown buffer that is currently rendered
+- **THEN** rendering SHALL be disabled for that buffer and the raw markup SHALL be shown
 
-#### Scenario: Popup preview in console mode
-- **WHEN** the user presses `,pp` in a markdown buffer in a headless/TTY environment
-- **THEN** the floating popup opens (same behaviour as `,p` in that environment)
+#### Scenario: Toggling rendering back on
+- **WHEN** the user presses `,pp` again in the same buffer
+- **THEN** rendering SHALL be restored
+
+#### Scenario: The popup remains available
+- **WHEN** the user runs `:MarkdownPopup` in a markdown buffer
+- **THEN** the floating popup SHALL open displaying the rendered markdown
+- **AND** it SHALL work in both GUI and console environments
 
 #### Scenario: No external binary required
-- **WHEN** the user presses `,pp` on a machine with no markdown-rendering binary installed
-- **THEN** the popup opens and renders normally
-- **AND** no warning notification about a missing binary is shown
+- **WHEN** either the toggle or the popup is used on a machine with no markdown-rendering binary installed
+- **THEN** it SHALL work normally
+- **AND** no warning notification about a missing binary SHALL be shown
 
 ### Requirement: Existing ,p smart-routing unchanged
 The `,p` keymap SHALL continue to route by environment: `MarkdownPreviewToggle` in GUI environments, and the in-editor popup preview in console environments. The routing behaviour is unchanged; only the console-side renderer differs.

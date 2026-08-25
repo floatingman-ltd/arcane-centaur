@@ -9,7 +9,9 @@
 2. some sort of visual buffer tabbing:
    - the sidebar panels for claude.cli and avanate.nvim are awkward to read, it seems both would like to be "full screen" 
    - the terminal at the bottom of the screen requires scrolling, it too would like a "full screen"
-3. signature help, and a way to browse method overloads. Today there is no way to see a method's
+3. markdown folding on **headings**, not just indentation. Today `lua/plugins/ufo.lua` returns the *indent* provider for markdown, so nested lists fold and headings do not — which is not what most people expect from a document outline. The reason treesitter folding is disabled is recorded in `openspec/specs/code-folding/spec.md:48`: it "errors on special buffers such as the `glow` preview". **`replace-glow-renderer` removed glow**, so that rationale no longer applies, and treesitter folding is exactly what would provide heading folds. Worth re-testing whether the errors still occur with glow gone; if they do not, markdown could move to the treesitter provider and the `code-folding` spec would need a delta. Surfaced while validating `replace-glow-renderer` (RG.9c) — the expectation that `zM` would collapse sections is reasonable and currently unmet.
+
+4. signature help, and a way to browse method overloads. Today there is no way to see a method's
    other overloads. Roslyn collapses them into a *single* completion item and just notes the count
    ("+16 overloads"), so the completion documentation window cannot page through them — it renders
    one item's docs and there is no second item to move to. Overloads belong to a different LSP
@@ -63,6 +65,8 @@ use before deciding.
   * `openspec/specs/code-folding/spec.md:48` — **cosmetic only.** glow appears as an illustrative example of a special buffer where treesitter folding errors. The requirement itself (do not use treesitter folding) is unaffected, and the replacement float was checked and does not reproduce the problem. Safe to leave; worth correcting opportunistically.
 
   Best handled as one small follow-up change covering the two real ones, rather than folded into an unrelated branch.
+
+- **`,sp` looks like it does nothing.** `MdServerPreview` builds the markserv URL and hands it to `util.open_url`, which deliberately skips the browser when `term.is_console` and emits an INFO notification instead (`lua/config/util.lua:51-58`). The reasoning is sound — there is no graphical browser in a console — but an INFO notify is easy to miss entirely, so the command reads as broken when it has in fact worked. Mistaken for a defect during `replace-glow-renderer` validation (RG.9b). Options: put the URL on the clipboard as well, echo it on the command line where it persists, or offer to open it via `wslview`/`explorer.exe` even in console mode, since under WSL a Windows browser *is* usually reachable. Affects any `open_url` caller, not just `,sp`.
 
 - snippet placeholders cannot be navigated. `snippets` is an active completion source
   (`lua/plugins/blink.lua:26`), so snippet completions are offered and expand — but

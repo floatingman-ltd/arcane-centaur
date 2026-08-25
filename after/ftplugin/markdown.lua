@@ -22,9 +22,14 @@ vim.keymap.set("n", "<localleader>p", function()
   end
 end, { buffer = true, desc = "Toggle markdown preview" })
 
+-- ,pp toggles in-buffer rendering rather than opening a popup. With the renderer
+-- active the buffer already *is* the preview, so a float showing the same content
+-- was ceremony; toggling is the useful operation -- it flips between rendered
+-- output and the raw markup, for when you need to see or edit the source.
+-- The popup itself is still available on ,p (console) and via :MarkdownPopup.
 vim.keymap.set("n", "<localleader>pp", function()
-  vim.cmd("MarkdownPopup")
-end, { buffer = true, desc = "Popup preview (always)" })
+  require("render-markdown.api").buf_toggle()
+end, { buffer = true, desc = "Toggle rendered markdown / raw source" })
 
 -- Markserv server preview (requires Docker; see docs/modules/ROOT/pages/content/markdown.adoc)
 require("config.mdpreview").setup()

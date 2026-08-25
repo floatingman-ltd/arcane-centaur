@@ -99,19 +99,19 @@
 ## 6. Manual validation (required — this is a runtime change)
 
 - [x] 6.1 Add a `## Change · replace-glow-renderer` section to `openspec/TEST_PLAN.md`, following the existing sections' structure (branch, prerequisites, then numbered Prepare / Validate / Raise PR & merge / Post-merge).
-- [ ] 6.2 Validate the wrapping fix directly: open `<leader>?` and read the Auto-Completion prose paragraphs. **No orphaned single words.** This is the whole point — compare against the pre-change behaviour if in doubt.
-- [ ] 6.3 Resize the editor with the float open — confirm the content reflows. glow could never do this, so it is new behaviour, not a regression check.
-- [ ] 6.4 Confirm cheatsheet tables render with visible column structure and are not truncated or wrapped mid-cell at a normal terminal width.
-- [ ] 6.5 Check a **narrow** terminal (under ~118 columns), where tables are expected to wrap (design D3). Record whether the degradation is acceptable, and answer the design's open question about a `nowrap` toggle in the float.
-- [ ] 6.6 `<leader>?` from several filetypes — confirm the language sheet is still appended below the core sheet, and mini-guides (`<leader>?g`) still open.
-- [ ] 6.7 `q` and `<Esc>` both dismiss the float and return focus to the previous window.
-- [ ] 6.8 `<localleader>pp` and console `<localleader>p` open the popup; `:MarkdownPopup` works. Confirm **no** "glow not found" notification can appear anywhere.
-- [ ] 6.9 Answer the design's other open question: with rendering available in-buffer, does `<localleader>pp` still earn its keep as a popup, or should it become a render toggle? Decide with the tool in front of you and record the verdict.
-- [ ] 6.10 Fresh `nvim` — `:messages` shows no plugin, LSP or keymap **errors**. It will not be empty: lazy.nvim's update checker reports available updates at every startup, which is expected.
-- [ ] 6.11 Tick each TEST_PLAN box only once genuinely confirmed, logging any defect and its fix inline as a blockquote note.
+- [x] 6.2 Validate the wrapping fix directly: open `<leader>?` and read the Auto-Completion prose paragraphs. **No orphaned single words.** This is the whole point — compare against the pre-change behaviour if in doubt.
+- [x] 6.3 Resize the editor with the float open — confirm the content reflows. glow could never do this, so it is new behaviour, not a regression check.
+- [x] 6.4 Confirm cheatsheet tables render with visible column structure and are not truncated or wrapped mid-cell at a normal terminal width.
+- [x] 6.5 Check a **narrow** terminal (under ~118 columns), where tables are expected to wrap (design D3). Record whether the degradation is acceptable, and answer the design's open question about a `nowrap` toggle in the float.
+- [x] 6.6 `<leader>?` from several filetypes — confirm the language sheet is still appended below the core sheet, and mini-guides (`<leader>?g`) still open.
+- [x] 6.7 `q` and `<Esc>` both dismiss the float and return focus to the previous window.
+- [x] 6.8 `<localleader>pp` and console `<localleader>p` open the popup; `:MarkdownPopup` works. Confirm **no** "glow not found" notification can appear anywhere.
+- [x] 6.9 Answer the design's other open question: with rendering available in-buffer, does `<localleader>pp` still earn its keep as a popup, or should it become a render toggle? Decide with the tool in front of you and record the verdict.
+- [x] 6.10 Fresh `nvim` — `:messages` shows no plugin, LSP or keymap **errors**. It will not be empty: lazy.nvim's update checker reports available updates at every startup, which is expected.
+- [x] 6.11 Tick each TEST_PLAN box only once genuinely confirmed, logging any defect and its fix inline as a blockquote note.
 
 ## 7. Ship
 
 - [ ] 7.1 Only once every validation step is ticked, push the branch and raise the PR.
-- [ ] 7.2 Confirm `openspec validate replace-glow-renderer --strict` passes, and `--all --strict` alongside it.
+- [x] 7.2 Confirm `openspec validate replace-glow-renderer --strict` passes, and `--all --strict` alongside it.
 - [ ] 7.3 At archive time, watch the `markdown-preview-glow` retirement: this change removes **every** requirement from that capability. Commit before archiving so a partial spec write can be recovered — archiving is known not to be atomic in this repo.
