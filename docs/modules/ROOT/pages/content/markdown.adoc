@@ -24,7 +24,7 @@ For MARP presentation slides, see xref:content/presentations.adoc[Presentations 
 | xref:#mkdnflow[In-editor Navigation] | mkdnflow.nvim link following
 | xref:#keybindings[Keybindings Summary] | All local leader keymaps
 | xref:#choosing[Choosing the Right Preview Tool] | Decision guide
-| xref:#glow-preview[Glow (Console)] | In-terminal Markdown rendering
+| xref:#popup-preview[In-Editor Popup (Console)] | In-terminal Markdown rendering
 |===
 
 '''''
@@ -211,10 +211,10 @@ LocalLeader is `,` in Markdown buffers.
 |===
 |Keys |Action
 |`,p` |Toggle `markdown-preview.nvim` single-file browser preview (GUI)
-or glow popup (console)
+or the in-editor popup (console)
 
-|`,pp` |Force glow popup preview — always in-terminal, regardless of
-environment
+|`,pp` |Force the in-editor popup preview — always in-terminal, regardless
+of environment
 
 |`,sp` |Open current file in markserv Docker server preview
 (`MdServerPreview`)
@@ -252,7 +252,7 @@ navigation)
 |Situation |Recommended tool
 |Single file, diagrams, cursor sync |`,p` — markdown-preview.nvim
 
-|Full-screen terminal, no browser context |`,pp` — glow popup (always
+|Full-screen terminal, no browser context |`,pp` — in-editor popup (always
 in-terminal)
 
 |Multi-file project, cross-page links, diagrams |`,sp` — markserv Docker
@@ -267,27 +267,34 @@ server
 
 '''''
 
-[[glow-preview]]
-== Markdown Preview — Glow (Console)
+[[popup-preview]]
+== Markdown Preview — In-Editor Popup (Console)
 
-In console sessions, `,p` is routed to https://github.com/charmbracelet/glow[glow], which renders
-Markdown with colour and tables in a floating popup window. Use `,pp` to
-force the glow popup even in a GUI environment.
+IMPORTANT: `:Glow` no longer exists, and neither does the `glow` binary requirement. The replacement command is *`:MarkdownPopup`*. If you have `:Glow` in muscle memory or in a personal mapping, that is the one thing to relearn here.
+
+In console sessions, `,p` opens the rendered Markdown in a floating popup rendered *inside Neovim*, using the same treesitter parsers the editor already loads. Use `,pp` to force the popup even in a GUI environment.
 
 [width="100%",cols="34%,33%,33%",options="header",]
 |===
 |Key |Console |GUI
-|`,p` |`:Glow` — floating popup with rendered Markdown
+|`,p` |`:MarkdownPopup` — floating popup with rendered Markdown
 |`:MarkdownPreviewToggle` — opens in browser
 |===
 
 Press `q` or `++<++Esc++>++` to close the popup.
 
+There is nothing to install. Rendering needs no external binary, so there is no "not found on `$PATH`" warning and no way for the preview to fail for want of a tool.
+
+Two things the previous `glow`-based preview could not do, which come free with in-editor rendering:
+
+* *Prose wraps correctly.* Wrapping is performed by Neovim at display time rather than baked into pre-rendered output, so no word is ever stranded alone on a line.
+* *Content reflows on resize.* Resize the editor with the popup open and the text re-wraps to the new width.
+
+NOTE: The popup renders the *buffer*, not the file on disk, so unsaved changes are included. `glow` could only ever show the last saved version.
+
 === Closing an orphaned popup
 
-Occasionally the Glow popup is left open after navigating away.
-The popup is a regular floating window; use standard Neovim window
-commands to reach and close it.
+Occasionally the popup is left open after navigating away. It is a regular floating window; use standard Neovim window commands to reach and close it.
 
 *Normal close (focus the popup first):*
 
@@ -305,34 +312,16 @@ q         " or: :q<CR>  — close the focused window
 
 === Customising the popup
 
-Override the glow options in `lua/plugins/markdown.lua`:
+The popup is built by `open_float()` in `lua/config/cheatsheet.lua`, shared by this preview, the `++<++leader++>++?` cheatsheet and the mini-guides — so a change there affects all three consistently. Geometry is 70% of the editor, capped at 120x80.
+
+Rendering options belong to `render-markdown.nvim` in `lua/plugins/markdown.lua`:
 
 [source,lua]
 ----
 opts = {
-  border = "rounded",   -- "shadow", "none", "double", "solid", "single"
-  width  = 120,         -- max popup width in columns
-  height = 80,          -- max popup height in lines
-  pager  = false,
+  render_modes = { "n", "c", "i" },
+  file_types = { "markdown" },
 },
 ----
 
-=== Prerequisites — Installing glow
-
-[source,sh]
-----
-# Debian / Ubuntu (via Charmbracelet apt repo)
-sudo mkdir -p /etc/apt/keyrings
-curl -fsSL https://repo.charm.sh/apt/gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/charm.gpg
-echo "deb [signed-by=/etc/apt/keyrings/charm.gpg] https://repo.charm.sh/apt/ * *" \
-  | sudo tee /etc/apt/sources.list.d/charm.list
-sudo apt update && sudo apt install glow
-
-# macOS
-brew install glow
-
-# Other: https://github.com/charmbracelet/glow#installation
-----
-
-Neovim will emit a `WARN` notification at preview time if `glow` is not
-found on `$PATH` — it will not crash.
+CAUTION: A table wider than the popup will wrap, because Neovim cannot wrap prose and scroll tables in the same window and correct prose wrapping is the point. The widest cheatsheet table is 82 columns against a 120-column popup, so this only bites on narrow terminals or on files with unusually wide tables.

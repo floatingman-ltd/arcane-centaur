@@ -245,7 +245,7 @@ haskell-tools.nvim auto-discovers Haskell DAP configurations once nvim-dap is pr
 |https://github.com/habamax/vim-asciidoctor[vim-asciidoctor] |AsciiDoc syntax, section folding, and fenced-code-block highlighting under the canonical `asciidoctor` filetype (`*.adoc`/`*.asciidoc` → `asciidoctor` via `vim.filetype.add`).
 |https://github.com/OXY2DEV/markview.nvim[markview.nvim] |_(deferred)_ In-buffer AsciiDoc rendering requires the `cathaysia/tree-sitter-asciidoc` treesitter grammar, which is not in nvim-treesitter's parser list (`master` or `main`). Re-enable when the grammar stabilises.
 |https://github.com/iamcco/markdown-preview.nvim[markdown-preview.nvim] |Live Markdown preview in browser (GUI)
-|https://github.com/ellisonleao/glow.nvim[glow.nvim] |Terminal Markdown preview via glow (console)
+|https://github.com/MeanderingProgrammer/render-markdown.nvim[render-markdown.nvim] |In-editor Markdown rendering; powers the popup preview and the cheatsheet float
 |https://github.com/aklt/plantuml-syntax[plantuml-syntax] |PlantUML syntax highlighting
 |https://github.com/mistweaverco/kulala.nvim[kulala.nvim] |HTTP/REST client for `.http` files
 |https://github.com/turbio/bracey.vim[bracey.vim] |Live HTML preview in browser
@@ -355,7 +355,7 @@ variants
 |`lisp.lua` |Conjure, vim-sexp, parinfer, rainbow-delimiters (all Lisp
 dialects)
 
-|`markdown.lua` |markdown-preview.nvim (GUI) {plus} glow.nvim (console
+|`markdown.lua` |markdown-preview.nvim (GUI) {plus} render-markdown.nvim (console
 terminal)
 
 |`blink.lua` |blink.cmp completion engine (v1); blink.compat bridges for cmp-spell and cmp-conjure
@@ -447,7 +447,7 @@ modules
 [width="100%",cols="34%,33%,33%",options="header",]
 |===
 |File |Filetype |Key things it does
-|`markdown.lua` |`markdown` |`,p` preview (glow/markdown-preview);
+|`markdown.lua` |`markdown` |`,p` preview (in-editor popup / markdown-preview);
 Confluence, Jira, MARP, PDF commands
 
 |`plantuml.lua` |`plantuml` |`,p` / `++<++leader++>++pa` diagram preview

@@ -56,6 +56,14 @@ use before deciding.
 
   Found during `fix-tree-terminal-keymaps` validation (TEST_PLAN TK.3/TK.4) and deliberately **not fixed there**: the terminal panel's split approach is itself under review (see the full-screen panel idea above), so effort spent on the current geometry may be wasted. Revisit if the panel survives in its present form.
 
+- **three capability specs still reference `glow.nvim`, which no longer exists.** Found while implementing `replace-glow-renderer` (task 5.9) and deliberately *not* edited there: changing a spec outside a delta is how specs drift from the changes that are supposed to govern them. Each needs its own judgement:
+
+  * `openspec/specs/asciidoc-inbuffer-preview/spec.md:30` — **wrong, needs a delta.** A normative scenario requires that "markdown-preview.nvim / glow.nvim SHALL behave exactly as before this change". glow.nvim is removed, so the scenario is unsatisfiable as written.
+  * `openspec/specs/ide-layout/spec.md:70,73` — **wrong, needs a delta.** Names "Glow previews" among the floats the layout must not disturb, and a scenario begins "WHEN a Glow preview ... is triggered". That trigger no longer exists; the intent (floats are unaffected by the layout) is still valid and should be restated against the in-editor popup.
+  * `openspec/specs/code-folding/spec.md:48` — **cosmetic only.** glow appears as an illustrative example of a special buffer where treesitter folding errors. The requirement itself (do not use treesitter folding) is unaffected, and the replacement float was checked and does not reproduce the problem. Safe to leave; worth correcting opportunistically.
+
+  Best handled as one small follow-up change covering the two real ones, rather than folded into an unrelated branch.
+
 - snippet placeholders cannot be navigated. `snippets` is an active completion source
   (`lua/plugins/blink.lua:26`), so snippet completions are offered and expand — but
   `snippet_forward` / `snippet_backward` are bound nowhere in the config, and the insert-mode

@@ -147,7 +147,7 @@ automatically. Undercurl is rendered as a plain underline.
 The configuration detects console mode automatically (no `$DISPLAY` and
 no `$WAYLAND++_++DISPLAY`) and adjusts tool behaviour accordingly — see
 *docs/guides/cli-console-mode.md* for details on Markdown preview
-(glow), PlantUML ASCII output, URL notification, and the avante AI
+(in-editor popup), PlantUML ASCII output, URL notification, and the avante AI
 assistant.
 
 ____
@@ -633,7 +633,7 @@ link:docs/cheatsheets/unimpaired.md[unimpaired.md]
 |link:docs/cheatsheets/lisp.md[lisp.md] ·
 link:docs/cheatsheets/janet.md[janet.md]
 
-|`markdown.lua` |markdown-preview.nvim (GUI) {plus} glow.nvim (console)
+|`markdown.lua` |markdown-preview.nvim (GUI) {plus} render-markdown.nvim (console)
 browser/terminal preview; `:MdToPdf` PDF export; `:MdToConfluence` /
 `:MdFromConfluence` / `:MdConfluenceComments`; `:JiraCreateIssue` /
 `:JiraCreateStory` |link:docs/cheatsheets/markdown.md[markdown.md]
@@ -693,7 +693,7 @@ lua/
     html.lua                # Bracey HTML live preview
     init.lua                # Bare-string plugins (tpope, airline, lspconfig)
     lisp.lua                # Lisp ecosystem plugins
-    markdown.lua            # markdown-preview.nvim (GUI) + glow.nvim (console)
+    markdown.lua            # markdown-preview.nvim (GUI) + render-markdown.nvim (console)
     mkdnflow.lua            # mkdnflow.nvim (cross-page link navigation)
     nvim-cmp.lua            # Completion engine + sources
     nvim-tree.lua           # File tree

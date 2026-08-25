@@ -66,17 +66,35 @@
 
 ## 5. Update the documentation
 
-- [ ] 5.1 `docs/modules/ROOT/pages/content/markdown.adoc` — replace the glow section with in-editor rendering; remove `glow` from prerequisites; document `:MarkdownPopup`.
-- [ ] 5.2 `docs/modules/ROOT/pages/content/markdown-cheatsheet.adoc` — same, and update any `:Glow` rows.
-- [ ] 5.3 `docs/modules/ROOT/pages/getting-started.adoc` — remove `glow` from the prerequisite list.
-- [ ] 5.4 `docs/modules/ROOT/pages/other/architecture.adoc` — replace the `glow.nvim` entry with the new renderer.
-- [ ] 5.5 `docs/modules/ROOT/pages/editor/keybindings.adoc` and `cheatsheets/markdown.md` — update `:Glow` keybinding rows.
-- [ ] 5.6 `_readme.adoc` and `TODO.md` — check and update their glow mentions.
-- [ ] 5.7 `testdocs/ide-layout-verification.md` — a still-runnable checklist that names `:Glow`; update so it stays runnable, as was done for `<leader>T`.
-- [ ] 5.8 **Call the `:Glow` removal out prominently**, not as a table row — it is BREAKING and breaks muscle memory. Same treatment the `<leader>t` move got.
-- [ ] 5.9 Review the live specs that mention glow incidentally and are **not** covered by this change's deltas: `openspec/specs/asciidoc-inbuffer-preview/spec.md`, `code-folding/spec.md`, `ide-layout/spec.md`. Decide per case whether the mention is now wrong or merely historical; raise a follow-up if any needs a delta of its own rather than editing them here.
-- [ ] 5.10 `grep -rn -i 'glow' --include='*.lua' --include='*.md' --include='*.adoc' .` excluding `build/` and `openspec/changes/archive/` — confirm every remaining hit is intentional.
-- [ ] 5.11 Rebuild the site: `rm -rf build/site && ./docker/antora/run.sh antora-playbook.yml`. Expect exit 0 and only the five known pre-existing `{name}`/`{pat}`/`{feed}` attribute warnings.
+- [x] 5.1 `docs/modules/ROOT/pages/content/markdown.adoc` — replace the glow section with in-editor rendering; remove `glow` from prerequisites; document `:MarkdownPopup`.
+- [x] 5.2 `docs/modules/ROOT/pages/content/markdown-cheatsheet.adoc` — same, and update any `:Glow` rows.
+- [x] 5.3 `docs/modules/ROOT/pages/getting-started.adoc` — remove `glow` from the prerequisite list.
+- [x] 5.4 `docs/modules/ROOT/pages/other/architecture.adoc` — replace the `glow.nvim` entry with the new renderer.
+- [x] 5.5 `docs/modules/ROOT/pages/editor/keybindings.adoc` and `cheatsheets/markdown.md` — update `:Glow` keybinding rows.
+- [x] 5.6 `_readme.adoc` and `TODO.md` — check and update their glow mentions.
+- [x] 5.7 `testdocs/ide-layout-verification.md` — a still-runnable checklist that names `:Glow`; update so it stays runnable, as was done for `<leader>T`.
+- [x] 5.8 **Call the `:Glow` removal out prominently**, not as a table row — it is BREAKING and breaks muscle memory. Same treatment the `<leader>t` move got.
+- [x] 5.9 Review the live specs that mention glow incidentally and are **not** covered by this change's deltas: `openspec/specs/asciidoc-inbuffer-preview/spec.md`, `code-folding/spec.md`, `ide-layout/spec.md`. Decide per case whether the mention is now wrong or merely historical; raise a follow-up if any needs a delta of its own rather than editing them here.
+- [x] 5.10 `grep -rn -i 'glow' --include='*.lua' --include='*.md' --include='*.adoc' .` excluding `build/` and `openspec/changes/archive/` — confirm every remaining hit is intentional.
+- [x] 5.11 Rebuild the site: `rm -rf build/site && ./docker/antora/run.sh antora-playbook.yml`. Expect exit 0 and only the five known pre-existing `{name}`/`{pat}`/`{feed}` attribute warnings.
+
+> **5.9 outcome — judged, not edited.** Three live specs reference glow and none are covered by this
+> change's deltas. Editing them here would be spec drift, so the verdicts are logged in
+> `recommendations/ideas.md` as one small follow-up: `asciidoc-inbuffer-preview:30` and
+> `ide-layout:70,73` are **wrong** (both put glow in normative scenarios that can no longer hold) and
+> need deltas; `code-folding:48` is **cosmetic** (glow appears only as an illustrative example, and
+> the requirement stands).
+>
+> **Two files were stale beyond this change and only partly repaired.** `_readme.adoc` still
+> describes a pre-Antora `docs/guides/` tree that no longer exists; its two plugin rows and one
+> console-mode mention were corrected, the rest left. `recommendations/best-of-breed-evaluation.md`
+> listed glow.nvim as "KEEP" — annotated as superseded rather than rewritten, since it is a dated
+> evaluation record.
+>
+> Site rebuild verified: exit 0, only the five known pre-existing attribute warnings; the renamed
+> `popup-preview` anchor resolves; no `glow-preview` xref remains; `MarkdownPopup` appears in the
+> markdown guide, its cheatsheet and the keybindings page; `getting-started.html` has no glow at all.
+> The only glow left in the entire built site is the three intentional mentions in the markdown guide.
 
 ## 6. Manual validation (required — this is a runtime change)
 

@@ -362,7 +362,6 @@ leaves the rest of the config fully functional.
 |`make` |avante.nvim's build step |`sudo apt install -y make` (included in `build-essential`)
 |`claude` |All three AI features |xref:#claude-cli[see below]
 |`python3` |PlantUML diagram encoding |`sudo apt install -y python3`
-|`glow` |Console (no-browser) Markdown preview |xref:#glow[see below]
 |`docker` |Nine containerized features |xref:#docker[see above]
 |===
 
@@ -389,20 +388,6 @@ These features authenticate through Claude Code itself. They do *not* use `ANTHR
 and a stray `ANTHROPIC_API_KEY` in your environment actively breaks `claude_cli`. Unset it if the
 commands start failing.
 ====
-
-[[glow]]
-=== glow (console Markdown preview)
-
-`glow` renders Markdown in a floating window, which is how preview works when there is no browser
-available (a TTY, an SSH session, tmux on a headless box). In a GUI session the preview keymap
-uses `markdown-preview.nvim` in a browser instead, so `glow` is only required for the console path.
-
-[source,sh]
-----
-sudo apt install -y glow      # or: brew install glow
-----
-
-Without it, the preview keymap emits a warning with install instructions rather than failing.
 
 [[nodejs]]
 === Node.js and npm
