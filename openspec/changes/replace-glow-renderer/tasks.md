@@ -1,30 +1,68 @@
 ## 1. Settle the load-bearing unknown first
 
-- [ ] 1.1 Add `render-markdown.nvim` to `lua/plugins/markdown.lua` alongside `glow.nvim` — do **not** remove glow yet. Lazy-load on `ft = markdown` plus the commands that will need it, mirroring how `glow.nvim` is specced.
-- [ ] 1.2 **Verify the renderer attaches to an unnamed scratch buffer.** Create a scratch buffer, set `filetype=markdown`, put cheatsheet content in it, show it in a float, and confirm it renders. This decides the shape of everything below and is the one thing that could invalidate the design (design.md, first risk).
-- [ ] 1.3 If 1.2 fails, fall back to opening the cache file (`stdpath("cache")/cheatsheet_preview.md`) as a **named** buffer in the float — `cheatsheet.lua` already writes it. Record which path was taken and why, in the change record.
+- [x] 1.1 Add `render-markdown.nvim` to `lua/plugins/markdown.lua` alongside `glow.nvim` — do **not** remove glow yet. Lazy-load on `ft = markdown` plus the commands that will need it, mirroring how `glow.nvim` is specced.
+- [x] 1.2 **Verify the renderer attaches to an unnamed scratch buffer.** Create a scratch buffer, set `filetype=markdown`, put cheatsheet content in it, show it in a float, and confirm it renders. This decides the shape of everything below and is the one thing that could invalidate the design (design.md, first risk).
+- [x] 1.3 ~~If 1.2 fails, fall back to opening the cache file as a **named** buffer.~~ **Not needed — 1.2 passed.** The unnamed scratch buffer renders: 166 extmarks in the `render-markdown.nvim` namespace on a `buftype=nofile`, unnamed buffer. `nofile` is supported by the plugin's own defaults (`overrides.buftype.nofile` sets `render_modes = true` and disables signs).
 - [ ] 1.4 Compare side by side against glow while both are installed: cheatsheet tables, headings, inline code, and a long prose paragraph. Confirm the paragraph wraps with **no orphaned words** — the defect this change exists to fix.
+
+> **Implementation constraint found in 1.2 — attach order matters.** Setting `filetype=markdown`
+> *before* the buffer is displayed in a window leaves the renderer **unattached** (0 extmarks). It
+> attaches only when the filetype is set *after* `nvim_open_win`, followed by
+> `require("render-markdown.api").buf_enable()`. `open_float()` must do it in that order, and the
+> order needs a comment saying why — it reads like an arbitrary sequence and will otherwise be
+> "tidied" back into a silent failure.
 
 ## 2. Build the shared float
 
-- [ ] 2.1 Add `open_float(path)` to `lua/config/cheatsheet.lua`: scratch (or named, per 1.3) buffer, `filetype=markdown`, centred `nvim_open_win`, rounded border, geometry matching today's `min(0.7 * columns, 120)` by `min(0.7 * lines, 80)` so nothing moves on screen.
-- [ ] 2.2 Set `wrap`, `linebreak` and `breakindent` on the float (design D3). Set `bufhidden=wipe` and a distinct filetype or buffer-local marker so other plugins can identify it.
-- [ ] 2.3 Map `q` and `<Esc>` to close, and confirm focus returns to the previous window — both are existing `context-aware-cheatsheet` requirements.
-- [ ] 2.4 Point `open_cheatsheet()` and `open_guide()` at `open_float()`; delete `glow_open()`. All three surfaces share one entry point (design D4).
+- [x] 2.1 Add `open_float(path)` to `lua/config/cheatsheet.lua`: scratch (or named, per 1.3) buffer, `filetype=markdown`, centred `nvim_open_win`, rounded border, geometry matching today's `min(0.7 * columns, 120)` by `min(0.7 * lines, 80)` so nothing moves on screen.
+- [x] 2.2 Set `wrap`, `linebreak` and `breakindent` on the float (design D3). Set `bufhidden=wipe` and a distinct filetype or buffer-local marker so other plugins can identify it.
+- [x] 2.3 Map `q` and `<Esc>` to close, and confirm focus returns to the previous window — both are existing `context-aware-cheatsheet` requirements.
+- [x] 2.4 Point `open_cheatsheet()` and `open_guide()` at `open_float()`; delete `glow_open()`. All three surfaces share one entry point (design D4).
+
+> **Two deliberate deviations from the task text, both simplifications.**
+>
+> `open_float` takes **lines, not a path**. The cheatsheet already holds its combined content in
+> memory, and taking lines means `:MarkdownPopup` can render an **unsaved** buffer — something glow
+> could never do, since it needed a file on disk.
+>
+> Consequently the `stdpath("cache")/cheatsheet_preview.md` temp file is **gone**. It existed only to
+> give glow a path to read. Nothing else referenced it.
+>
+> Verified end to end: float 120x35 rounded, `filetype=markdown`, `buftype=nofile`,
+> `modifiable=false`, `wrap`/`linebreak`/`breakindent` on, 166 render extmarks attached, `q` mapped
+> buffer-locally.
 
 ## 3. Re-point the preview keymaps
 
-- [ ] 3.1 Add a `:MarkdownPopup` user command that renders the current buffer's file through `open_float()` (design D5).
-- [ ] 3.2 Re-point `<localleader>pp` in `after/ftplugin/markdown.lua` at the new popup, and **delete its `vim.fn.executable("glow")` guard and install-instruction notification**.
-- [ ] 3.3 Re-point the console branch of `<localleader>p` at the new popup and delete its `executable("glow")` guard. Leave the GUI branch (`MarkdownPreviewToggle`) untouched — explicitly a non-goal.
-- [ ] 3.4 Leave `<localleader>sp` (markserv/Docker) untouched.
+- [x] 3.1 Add a `:MarkdownPopup` user command that renders the current buffer's file through `open_float()` (design D5).
+- [x] 3.2 Re-point `<localleader>pp` in `after/ftplugin/markdown.lua` at the new popup, and **delete its `vim.fn.executable("glow")` guard and install-instruction notification**.
+- [x] 3.3 Re-point the console branch of `<localleader>p` at the new popup and delete its `executable("glow")` guard. Leave the GUI branch (`MarkdownPreviewToggle`) untouched — explicitly a non-goal.
+- [x] 3.4 Leave `<localleader>sp` (markserv/Docker) untouched.
+
+> **Bug found and fixed while implementing 3.1.** The command was first registered at module level
+> in `lua/config/cheatsheet.lua` — but that module is only `require`d lazily from the `<leader>?`
+> callback, so `:MarkdownPopup` did not exist until the cheatsheet had been opened once, and
+> `<localleader>pp` failed with `E492: Not an editor command`. Moved to `lua/keymaps.lua`, which
+> loads at startup and already hosts `:Bd`; the `require` stays inside the callback so the module
+> itself remains lazily loaded. Worth noting because `:Glow` came from a `cmd`-lazy plugin spec and
+> was therefore always defined — the lazy-loading guarantee did not survive the move, and nothing
+> would have caught it except trying the command from a fresh session.
 
 ## 4. Remove glow
 
-- [ ] 4.1 Remove the `glow.nvim` spec from `lua/plugins/markdown.lua`.
-- [ ] 4.2 Fix the stale comments in `lua/plugins/plantuml.lua:40,60` that describe mirroring "glow.nvim popup geometry". The PlantUML preview must keep its **current** geometry — only the wording changes.
-- [ ] 4.3 Check `lua/plugins/ufo.lua:8`, which cites glow as an example of a special buffer where treesitter folding errors. Confirm the new float does not reproduce that problem, then correct the comment.
-- [ ] 4.4 `find . -name '*.lua' -print0 | xargs -0 luac -p` and `stylua --check` on every touched file.
+- [x] 4.1 Remove the `glow.nvim` spec from `lua/plugins/markdown.lua`.
+- [x] 4.2 Fix the stale comments in `lua/plugins/plantuml.lua:40,60` that describe mirroring "glow.nvim popup geometry". The PlantUML preview must keep its **current** geometry — only the wording changes.
+- [x] 4.3 Check `lua/plugins/ufo.lua:8`, which cites glow as an example of a special buffer where treesitter folding errors. Confirm the new float does not reproduce that problem, then correct the comment.
+- [x] 4.4 `find . -name '*.lua' -print0 | xargs -0 luac -p` and `stylua --check` on every touched file.
+
+> 4.3 verified rather than assumed: the new float is `foldmethod=manual`, fold commands run without
+> error, and `:messages` stays clean while it is open — so it does not reproduce the special-buffer
+> folding problem the comment described. The indent provider is kept for ordinary markdown buffers.
+>
+> `lazy-lock.json` carries exactly two edits — `glow.nvim` removed, `render-markdown.nvim` added.
+> `:Lazy! sync` twice tried to fold in four unrelated plugin bumps (easy-dotnet, nui, nvim-lspconfig,
+> nvim-treesitter); both times they were reverted, since they belong to a lock-sync change. Those
+> three-plus updates are still pending and still want their own change.
 
 ## 5. Update the documentation
 

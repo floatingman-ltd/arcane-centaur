@@ -2,39 +2,29 @@ vim.b.maplocalleader = ","
 
 -- nvim-treesitter's master branch caused a nil-range crash in languagetree.lua
 -- for the markdown_inline injection; main (core treesitter APIs) does not
--- reproduce it, so highlight is enabled normally. glow/markdown-preview/marksman
--- are unaffected either way (they don't use treesitter).
+-- reproduce it, so highlight is enabled normally. markdown-preview/marksman are
+-- unaffected either way (they don't use treesitter). The in-editor renderer does
+-- use treesitter, and needs this highlight active.
 vim.treesitter.start()
 vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
 
--- Route preview keymap to glow (console) or markdown-preview (GUI).
+-- Route preview keymap to the in-editor popup (console) or the browser (GUI).
+-- The console branch used to shell out to glow via :Glow, guarded by an
+-- executable() check with install instructions. Both the check and the guard are
+-- gone: rendering is in-editor now, so there is no binary that can be missing.
 local term = require("config.terminal")
 
 vim.keymap.set("n", "<localleader>p", function()
   if term.is_console then
-    if vim.fn.executable("glow") ~= 1 then
-      vim.notify(
-        "glow not found — see docs/modules/ROOT/pages/content/markdown.adoc for installation instructions",
-        vim.log.levels.WARN
-      )
-      return
-    end
-    vim.cmd("Glow")
+    vim.cmd("MarkdownPopup")
   else
     vim.cmd("MarkdownPreviewToggle")
   end
 end, { buffer = true, desc = "Toggle markdown preview" })
 
 vim.keymap.set("n", "<localleader>pp", function()
-  if vim.fn.executable("glow") ~= 1 then
-    vim.notify(
-      "glow not found — see docs/modules/ROOT/pages/content/markdown.adoc for installation instructions",
-      vim.log.levels.WARN
-    )
-    return
-  end
-  vim.cmd("Glow")
-end, { buffer = true, desc = "Popup preview (glow, always)" })
+  vim.cmd("MarkdownPopup")
+end, { buffer = true, desc = "Popup preview (always)" })
 
 -- Markserv server preview (requires Docker; see docs/modules/ROOT/pages/content/markdown.adoc)
 require("config.mdpreview").setup()

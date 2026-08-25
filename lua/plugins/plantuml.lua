@@ -37,7 +37,7 @@ local function puml_preview()
 end
 
 --- Fetch ASCII art from the PlantUML server's /txt/ endpoint and display the
---- result in a centered floating window matching the glow.nvim popup geometry.
+--- result in a centered floating window matching the markdown popup geometry.
 local function puml_preview_ascii()
   local encoded = encode_puml()
   if not encoded then
@@ -57,7 +57,9 @@ local function puml_preview_ascii()
     return
   end
 
-  -- Mirror glow.nvim sizing: 70% of editor dimensions, capped at 120×80.
+  -- Mirror the markdown popup sizing: 70% of editor dimensions, capped at 120x80.
+  -- Kept identical to lua/config/cheatsheet.lua's open_float so the two previews
+  -- sit in the same place on screen. Originally copied from glow.nvim, which is gone.
   local editor_w = vim.o.columns
   local editor_h = vim.o.lines
   local win_w = math.min(math.ceil(editor_w * 0.7), 120)
