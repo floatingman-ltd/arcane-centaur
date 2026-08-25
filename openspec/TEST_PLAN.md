@@ -2395,14 +2395,28 @@ This caught a real bug during implementation, so test it in the state that expos
 
 #### RG.9 — Nothing else regressed
 
-1. `<localleader>sp` (markserv/Docker preview) still behaves as before — explicitly untouched.
-2. Open a PlantUML file and trigger its preview — geometry must be unchanged; only a stale comment
-   about "glow.nvim popup geometry" was edited.
-3. Open a markdown buffer and use `zR`/`zM` — folding still works and `:messages` stays clean. The
-   `ufo.lua` comment about glow buffers was corrected, and the new float was verified not to
-   reproduce that problem.
+The original wording here was too vague to act on — it did not say what to open or that two of the
+three need Docker. Restated:
 
-- [ ] `,sp`, PlantUML preview geometry, and markdown folding all unaffected
+**9a — PlantUML geometry. No Docker, no file needed: this is a diff check.** The only risk was a stray
+value change while rewording two comments, and that is settled statically:
+`git diff main...HEAD -- lua/plugins/plantuml.lua` — every changed line must be a comment, and
+`0.7` / `120` / `80` must be untouched. *(Already verified: comment-only.)* Running the preview live
+would need the PlantUML Docker server on `localhost:8080` plus `python3`; unnecessary for this.
+
+**9b — `<localleader>sp` (markserv). Needs Docker; skippable.** Open any markdown file and press
+`,sp`. The container must be running first:
+`docker compose -f ~/.config/nvim/docker/markserv/docker-compose.yml up -d` (serves on `:8090`).
+This change did not touch `,sp` or `config/mdpreview.lua` — only the neighbouring `,p`/`,pp` maps in
+the same ftplugin file. If Docker is not up, record **N/A** and confirm by diff instead: the `,sp`
+keymap block must be unchanged.
+
+**9c — Markdown folding. No Docker.** Open a markdown file with several headings — `cheatsheets/core.md`
+or `testdocs/test.md` — then press `zM` (close all folds) and `zR` (open all). Folds must work and
+`:messages` must show no error. This exercises the *ordinary* markdown path that `ufo.lua`'s indent
+provider serves; the float itself was already checked separately and is `foldmethod=manual`.
+
+- [ ] `,sp` (or N/A), PlantUML geometry (diff-verified), and markdown folding all unaffected
 
 #### RG.10 — Clean startup and syntax
 
