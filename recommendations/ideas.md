@@ -66,6 +66,19 @@ use before deciding.
 
   Best handled as one small follow-up change covering the two real ones, rather than folded into an unrelated branch.
 
+- **newline drops the cursor to column 0 in most languages — treesitter `indentexpr` is set without a query behind it.** Reported in C#: pressing Enter on an indented line puts the cursor at the left margin instead of aligning with the line above. Markdown behaves correctly, which is the clue.
+
+  `lua/plugins/treesitter.lua:50-55` sets `vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"` for **every** filetype in `HIGHLIGHT_FILETYPES`, unconditionally. But nvim-treesitter only ships an `indents.scm` for two of them:
+
+  * **has a query:** `lua`, `markdown`
+  * **no query at all:** `commonlisp`, `clojure`, `scheme`, `fennel`, `janet_simple`, `fsharp`, `vim`, `markdown_inline`, `http`, `c_sharp`, `haskell`
+
+  With no query the expression returns 0, and because `indentexpr` **overrides** `autoindent`/`smartindent`, the result is worse than not setting it: Vim's own indent handling is suppressed in favour of something that always answers zero. Verified by `nvim_get_runtime_file("queries/<lang>/indents.scm")` returning 0 files for all eleven.
+
+  Likely fix: set `indentexpr` only when a query exists for the buffer's language — resolve with `vim.treesitter.language.get_lang(ft)` and check `nvim_get_runtime_file` before assigning, letting `autoindent`/`smartindent` (or `cindent` for the C-like ones) handle the rest. Worth checking the Lisp family separately, since `nvim-parinfer` and vim-sexp may already be compensating there.
+
+  Surfaced as an aside during `replace-glow-renderer` validation; unrelated to that change and deliberately not fixed there.
+
 - **`,sp` looks like it does nothing.** `MdServerPreview` builds the markserv URL and hands it to `util.open_url`, which deliberately skips the browser when `term.is_console` and emits an INFO notification instead (`lua/config/util.lua:51-58`). The reasoning is sound — there is no graphical browser in a console — but an INFO notify is easy to miss entirely, so the command reads as broken when it has in fact worked. Mistaken for a defect during `replace-glow-renderer` validation (RG.9b). Options: put the URL on the clipboard as well, echo it on the command line where it persists, or offer to open it via `wslview`/`explorer.exe` even in console mode, since under WSL a Windows browser *is* usually reachable. Affects any `open_url` caller, not just `,sp`.
 
 - snippet placeholders cannot be navigated. `snippets` is an active completion source
