@@ -2536,5 +2536,23 @@ proposal did not ask for.
 > not fixed inline — editing a spec outside a delta is how specs drift.
       still reference glow (`asciidoc-inbuffer-preview`, `ide-layout` need deltas; `code-folding` is
       cosmetic)
-- [ ] Change archived and the deltas promoted. **Watch this one**: it removes *every* requirement from
+- [X] Change archived and the deltas promoted. **Watch this one**: it removes *every* requirement from
       `markdown-preview-glow`, retiring the capability. Commit first — archiving is not atomic here.
+
+> **Archived as `2026-08-25-replace-glow-renderer`, but not on the first attempt.** The warning in
+> this box was correct: retiring every requirement in `markdown-preview-glow` produces an empty spec,
+> and `openspec archive` rebuilds each spec from its deltas then rejects the result with *"Spec must
+> have at least one requirement"*. The delta model has no way to say "this capability no longer
+> exists".
+>
+> Worse, the failed run printed **"Aborted. No files were changed"** while having already written
+> three other specs to disk — `context-aware-cheatsheet`, `markdown-popup-preview`, and a new
+> `markdown-native-rendering`. The abort message is not trustworthy; committing beforehand is what
+> made it recoverable, and is why this box carried that instruction.
+>
+> Resolution: the live `openspec/specs/markdown-preview-glow/` directory was deleted directly, and its
+> delta moved to `RETIRED-markdown-preview-glow.md` outside `specs/` so the record of why each
+> requirement went survives in the archive without the tooling trying to apply it. The other three
+> capabilities promoted normally: `markdown-native-rendering` created with 4 requirements,
+> `context-aware-cheatsheet` and `markdown-popup-preview` updated. `openspec validate --all --strict`
+> passes 40/40 and no active changes remain.

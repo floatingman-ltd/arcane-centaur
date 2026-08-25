@@ -4,39 +4,34 @@
 Define markdown preview behavior so markdown buffers always provide a forced popup preview via `,pp`, ensure `glow.nvim` loads in all environments, and preserve the existing smart-routing behavior of `,p`.
 ## Requirements
 ### Requirement: Forced popup preview keymap always available
-The config SHALL provide a `,pp` keymap in markdown buffers that opens the glow.nvim floating popup preview unconditionally, regardless of whether a graphical display is available.
+Because markdown is rendered in the buffer itself, a popup showing the same content is redundant. `,pp` SHALL instead toggle in-buffer rendering, flipping between rendered output and the raw markup, so the source can be read and edited on demand. A floating popup SHALL remain reachable — via `,p` in console environments and via the `:MarkdownPopup` command in any environment — and SHALL NOT depend on any external binary, so it can never fail for want of one.
 
-#### Scenario: Popup preview in GUI terminal
-- **WHEN** the user presses `,pp` in a markdown buffer inside a GUI-capable terminal (e.g. GNOME Terminal, WSL Terminal)
-- **THEN** the glow.nvim floating popup opens displaying the rendered markdown
+#### Scenario: Toggling rendering off reveals the raw source
+- **WHEN** the user presses `,pp` in a markdown buffer that is currently rendered
+- **THEN** rendering SHALL be disabled for that buffer and the raw markup SHALL be shown
 
-#### Scenario: Popup preview in console mode
-- **WHEN** the user presses `,pp` in a markdown buffer in a headless/TTY environment
-- **THEN** the glow.nvim floating popup opens (same behaviour as `,p` in that environment)
+#### Scenario: Toggling rendering back on
+- **WHEN** the user presses `,pp` again in the same buffer
+- **THEN** rendering SHALL be restored
 
-#### Scenario: glow binary absent
-- **WHEN** the user presses `,pp` and the `glow` binary is not installed
-- **THEN** a warning notification is shown and no popup is opened
+#### Scenario: The popup remains available
+- **WHEN** the user runs `:MarkdownPopup` in a markdown buffer
+- **THEN** the floating popup SHALL open displaying the rendered markdown
+- **AND** it SHALL work in both GUI and console environments
 
-### Requirement: glow.nvim loads in all environments
-`glow.nvim` SHALL be loaded by lazy.nvim whenever a markdown buffer is opened, regardless of whether `$DISPLAY` or `$WAYLAND_DISPLAY` is set.
-
-#### Scenario: glow available in GUI terminal
-- **WHEN** Neovim is running in a GUI-capable terminal with `$DISPLAY` set
-- **THEN** `:Glow` is a valid command (glow.nvim is loaded)
-
-#### Scenario: glow available in console mode
-- **WHEN** Neovim is running in a headless/TTY environment
-- **THEN** `:Glow` is a valid command (unchanged from current behaviour)
+#### Scenario: No external binary required
+- **WHEN** either the toggle or the popup is used on a machine with no markdown-rendering binary installed
+- **THEN** it SHALL work normally
+- **AND** no warning notification about a missing binary SHALL be shown
 
 ### Requirement: Existing ,p smart-routing unchanged
-The `,p` keymap SHALL continue to route to `MarkdownPreviewToggle` in GUI environments and to `Glow` in console environments, exactly as before this change.
+The `,p` keymap SHALL continue to route by environment: `MarkdownPreviewToggle` in GUI environments, and the in-editor popup preview in console environments. The routing behaviour is unchanged; only the console-side renderer differs.
 
 #### Scenario: ,p in GUI environment routes to browser
 - **WHEN** the user presses `,p` in a GUI-capable terminal
 - **THEN** `MarkdownPreviewToggle` is invoked (browser preview)
 
-#### Scenario: ,p in console routes to glow
+#### Scenario: ,p in console routes to the in-editor popup
 - **WHEN** the user presses `,p` in a headless/TTY environment
-- **THEN** `Glow` is invoked (popup preview)
+- **THEN** the in-editor floating popup preview is opened
 

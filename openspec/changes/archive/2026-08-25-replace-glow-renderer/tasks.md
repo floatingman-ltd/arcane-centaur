@@ -114,4 +114,4 @@
 
 - [x] 7.1 Only once every validation step is ticked, push the branch and raise the PR.
 - [x] 7.2 Confirm `openspec validate replace-glow-renderer --strict` passes, and `--all --strict` alongside it.
-- [ ] 7.3 At archive time, watch the `markdown-preview-glow` retirement: this change removes **every** requirement from that capability. Commit before archiving so a partial spec write can be recovered — archiving is known not to be atomic in this repo.
+- [x] 7.3 At archive time, watch the `markdown-preview-glow` retirement: this change removes **every** requirement from that capability. Commit before archiving so a partial spec write can be recovered — archiving is known not to be atomic in this repo.
