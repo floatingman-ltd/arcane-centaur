@@ -2219,3 +2219,173 @@ These are `ide-layout` requirements this change must not regress.
 > SHALL NOT toggle the terminal, and a new *File tree keymaps* requirement records that `<leader>t`
 > is the only toggle and that no global `<C-t>` binding is provided, with the reason.
 > `openspec validate --all --strict`: 40 passed, 0 failed.
+
+## Change · replace-glow-renderer
+
+**Branch:** `fix/replace-glow-renderer`
+
+Replaces `glow.nvim` and the external `glow` binary with in-editor rendering via
+`render-markdown.nvim`. glow pre-wrapped its output before it ever reached a buffer, and its
+word-wrap orphans single words onto their own lines at essentially any width — reproduced at 70, 80,
+90, 110, 115, 118, 120 and 140 columns, with no markup involved and no configuration that avoids it.
+The buffer now holds the source markdown unwrapped and Neovim wraps at display time, so **there is
+no re-wrap step that can go wrong** — the defect is structurally impossible rather than merely fixed.
+
+One **BREAKING** change: **`:Glow` is removed. The replacement is `:MarkdownPopup`.**
+
+Also gone: the `glow` binary as a runtime dependency, both `vim.fn.executable("glow")` guards and
+their "install glow" notifications, and the `stdpath("cache")/cheatsheet_preview.md` temp file (it
+existed only to give glow a path to read).
+
+**Prerequisites** (confirm before validating):
+- `:Lazy sync` — `render-markdown.nvim` installed, `glow.nvim` cleaned.
+- A markdown file with a **long prose paragraph**; `cheatsheets/core.md`'s Auto-Completion section has
+  two. Everything else in the cheatsheets is tables and short headers, which is why this defect went
+  unnoticed for so long.
+- `testdocs/test.md` for the popup preview, and any Lisp/F#/Haskell file to exercise a language sheet.
+- Nothing to install. If `glow` is still on `$PATH` that is now irrelevant — nothing calls it.
+
+### Prepare
+
+1. `git fetch origin && git checkout fix/replace-glow-renderer`
+2. Launch Neovim: `:Lazy sync` — confirm `render-markdown.nvim` installs and `glow.nvim` is removed.
+3. `:messages` — no plugin, LSP or keymap **errors**. It will not be empty: lazy.nvim's update checker
+   reports available updates at every startup, which is expected.
+
+- [ ] Branch checked out, `:Lazy sync` clean, no errors in `:messages`
+
+### Validate
+
+#### RG.1 — The wrapping defect is gone
+
+The whole point of the change.
+
+1. Open any Lua file and press `<leader>?`.
+2. Scroll to **Auto-Completion (blink.cmp)** — the only cheatsheet section with real prose paragraphs.
+3. Read both paragraphs under the keymap table. Confirm **no line holds a single orphaned word**, and
+   each line is filled to the available width before wrapping.
+4. For contrast, recall the old behaviour: glow orphaned a word in these exact paragraphs at every
+   width tried except two.
+
+- [ ] Cheatsheet prose wraps with no orphaned words
+
+#### RG.2 — Content reflows on resize
+
+New behaviour. glow could never do this, because its output was wrapped before reaching the buffer.
+
+1. Open `<leader>?` and leave it open.
+2. Resize the terminal window (or `:vertical resize` the surrounding editor).
+3. Confirm the float's text **re-wraps to the new width** rather than keeping its original line breaks.
+
+- [ ] Content reflows on resize
+
+#### RG.3 — Tables still render as tables
+
+1. With the cheatsheet open at a normal terminal width, confirm the keybinding tables render with
+   visible column structure — **not** as raw `| key | action |` pipe text.
+2. Confirm no table is truncated or wrapped mid-cell.
+
+- [ ] Tables render with visible column structure, none truncated or wrapped mid-cell
+
+#### RG.4 — Narrow terminal: the accepted trade-off
+
+`wrap` is what fixes prose, but Vim cannot wrap prose and scroll tables in one window. The widest
+cheatsheet table is 82 columns against a float of `min(0.7 × columns, 120)`, so tables only wrap when
+the float drops below 82 — roughly a terminal under 118 columns.
+
+1. Resize to roughly 100 columns and open `<leader>?`.
+2. Observe the tables. Wrapping here is **expected**, not a failure.
+3. **Record a verdict**, and answer the design's open question: is this acceptable as-is, or is a
+   `nowrap` toggle bound inside the float worth adding?
+
+- [ ] Narrow-terminal behaviour observed and verdict recorded
+
+#### RG.5 — Language sheets and mini-guides
+
+1. `<leader>?` from a Lisp, F#, or Haskell buffer — confirm the language section still appears below
+   the core sheet, separated by a rule.
+2. `<leader>?g` — confirm the guide picker opens and a chosen guide renders.
+
+- [ ] Language sheet appended correctly; mini-guides open and render
+
+#### RG.6 — Dismissal
+
+1. With the float focused, press `q` — it closes and focus returns to the previous window.
+2. Re-open and press `<Esc>` — same.
+
+- [ ] `q` and `<Esc>` both dismiss the float and restore focus
+
+#### RG.7 — The preview surfaces
+
+1. `:e testdocs/test.md`, press `<localleader>pp` — the popup opens with rendered markdown.
+2. Press `<localleader>p` — in a console this opens the same popup; in a GUI it opens the browser
+   preview. Only the console branch changed.
+3. Run `:MarkdownPopup` directly — works from a markdown buffer.
+4. **Type something without saving, then `<localleader>pp`** — the unsaved text SHALL appear. The popup
+   renders the buffer, not the file; glow could only ever show the last saved version.
+5. Confirm **no** "glow not found" notification can appear on any of these paths.
+
+- [ ] `,pp`, console `,p` and `:MarkdownPopup` all work; unsaved changes are rendered; no glow warning
+
+#### RG.8 — `:MarkdownPopup` exists from a cold start
+
+This caught a real bug during implementation, so test it in the state that exposed it.
+
+1. Start a **fresh** Neovim and do **not** press `<leader>?`.
+2. Open a markdown file and run `:MarkdownPopup` immediately.
+3. It must work. If it reports `E492: Not an editor command`, the command has regressed to being
+   registered inside the lazily-required `config.cheatsheet` module instead of `lua/keymaps.lua`.
+
+- [ ] `:MarkdownPopup` is defined without the cheatsheet having been opened first
+
+#### RG.9 — Nothing else regressed
+
+1. `<localleader>sp` (markserv/Docker preview) still behaves as before — explicitly untouched.
+2. Open a PlantUML file and trigger its preview — geometry must be unchanged; only a stale comment
+   about "glow.nvim popup geometry" was edited.
+3. Open a markdown buffer and use `zR`/`zM` — folding still works and `:messages` stays clean. The
+   `ufo.lua` comment about glow buffers was corrected, and the new float was verified not to
+   reproduce that problem.
+
+- [ ] `,sp`, PlantUML preview geometry, and markdown folding all unaffected
+
+#### RG.10 — Clean startup and syntax
+
+1. Fresh `nvim` (no args) — `:messages` shows no plugin, LSP or keymap **errors** (lazy update notices
+   excepted, as above).
+2. `find . -name '*.lua' -not -path './.git/*' -not -path './build/*' -print0 | xargs -0 luac -p`
+3. `stylua --check lua/ after/`
+4. `openspec validate replace-glow-renderer --strict` and `openspec validate --all --strict`
+
+- [ ] No errors in `:messages`; `luac -p`, `stylua --check` and `openspec validate` all pass
+
+#### RG.11 — Open question: does `,pp` still earn its keep?
+
+With rendering available in-buffer, a popup showing the same file is arguably redundant — the honest
+alternative is "toggle rendering on this buffer". Kept as a popup so far to avoid a spec change the
+proposal did not ask for.
+
+1. Use both for a few minutes: `<localleader>pp` for the popup, and simply editing a markdown buffer
+   with the renderer active.
+2. **Record a verdict:** keep the popup, replace it with a render toggle, or keep both.
+
+- [ ] Verdict recorded on whether `,pp` remains a popup
+
+### Raise PR & merge
+
+- [ ] All validation steps pass (RG.1–RG.11), with any defect and its fix logged inline as a
+      blockquote note
+- [ ] Raise PR: `fix/replace-glow-renderer` → `main`
+- [ ] Review and approve PR
+- [ ] Merge PR
+
+### Post-merge
+
+- [ ] `git checkout main && git pull origin main`
+- [ ] Re-confirm RG.1 and RG.7 on the merged config
+- [ ] Rebuild the docs site and confirm the renamed `popup-preview` anchor resolves
+- [ ] Raise the follow-up logged in `recommendations/ideas.md` for the three capability specs that
+      still reference glow (`asciidoc-inbuffer-preview`, `ide-layout` need deltas; `code-folding` is
+      cosmetic)
+- [ ] Change archived and the deltas promoted. **Watch this one**: it removes *every* requirement from
+      `markdown-preview-glow`, retiring the capability. Commit first — archiving is not atomic here.

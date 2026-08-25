@@ -98,7 +98,7 @@
 
 ## 6. Manual validation (required — this is a runtime change)
 
-- [ ] 6.1 Add a `## Change · replace-glow-renderer` section to `openspec/TEST_PLAN.md`, following the existing sections' structure (branch, prerequisites, then numbered Prepare / Validate / Raise PR & merge / Post-merge).
+- [x] 6.1 Add a `## Change · replace-glow-renderer` section to `openspec/TEST_PLAN.md`, following the existing sections' structure (branch, prerequisites, then numbered Prepare / Validate / Raise PR & merge / Post-merge).
 - [ ] 6.2 Validate the wrapping fix directly: open `<leader>?` and read the Auto-Completion prose paragraphs. **No orphaned single words.** This is the whole point — compare against the pre-change behaviour if in doubt.
 - [ ] 6.3 Resize the editor with the float open — confirm the content reflows. glow could never do this, so it is new behaviour, not a regression check.
 - [ ] 6.4 Confirm cheatsheet tables render with visible column structure and are not truncated or wrapped mid-cell at a normal terminal width.
