@@ -1,3 +1,16 @@
+# Ideas, defects and things to keep an eye on
+
+## Priority order — what to pick up next
+
+Agreed running order. Details live in the sections below; this is just the queue.
+
+1. **`indentexpr` set without a query** — *Things that seem broken*. Highest impact: eleven filetypes (C#, F#, Haskell, the whole Lisp family) get a treesitter `indentexpr` with no `indents.scm` behind it, so newline drops the cursor to column 0. Actively worse than not setting it, because `indentexpr` suppresses `autoindent`/`smartindent`.
+2. **Markdown folding on headings** — *Things we'd like to add*, item 3. Newly unblocked: glow's buffers were the stated reason treesitter folding is disabled for markdown, and glow is gone. Related to item 1 — both are treesitter-provider decisions in the same file.
+3. **Three capability specs still reference `glow.nvim`** — *Things that seem broken*. Two need deltas, one is cosmetic. Small, and it stops the specs describing a plugin that no longer exists.
+4. **`open_url` silently notifies** — *Things that seem broken*. Makes `,sp` look broken when it has worked. Affects every `open_url` caller, not just `,sp`.
+
+Everything else in this file is unranked and can be picked up opportunistically.
+
 # Things we'd like to add
 
 1. Additional language support

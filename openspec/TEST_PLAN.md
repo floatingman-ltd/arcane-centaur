@@ -2252,7 +2252,10 @@ existed only to give glow a path to read).
 3. `:messages` — no plugin, LSP or keymap **errors**. It will not be empty: lazy.nvim's update checker
    reports available updates at every startup, which is expected.
 
-- [ ] Branch checked out, `:Lazy sync` clean, no errors in `:messages`
+- [X] Branch checked out, `:Lazy sync` clean, no errors in `:messages`
+
+> Evidenced by the validation walk: RG.1-RG.11 all ran in live sessions on this branch, and RG.10
+> confirmed a fresh startup with `:messages` entirely empty.
 
 ### Validate
 
@@ -2509,16 +2512,47 @@ proposal did not ask for.
 > reason treesitter folding is disabled for markdown), and `open_url` silently notifying makes `,sp`
 > look broken.
 - [X] Raise PR: `fix/replace-glow-renderer` → `main` (PR #175)
-- [ ] Review and approve PR
-- [ ] Merge PR
+- [X] Review and approve PR
+- [X] Merge PR (PR #175)
 
 ### Post-merge
 
-- [ ] `git checkout main && git pull origin main`
-- [ ] Re-confirm RG.1 and RG.7 on the merged config
-- [ ] Rebuild the docs site and confirm the renamed `popup-preview` anchor resolves
-- [ ] Raise the follow-up logged in `recommendations/ideas.md` for the three capability specs that
+- [X] `git checkout main && git pull origin main` (`main` at `a7a3310`)
+- [X] Re-confirm RG.1 and RG.7 on the merged config
+
+> Confirmed on merged `main`. Worth having done rather than assumed: `,pp` changed meaning from
+> "force popup" to "toggle rendered/raw" *after* most of the validation walk, so this was its first
+> check outside the branch it was built on.
+- [X] Rebuild the docs site and confirm the renamed `popup-preview` anchor resolves
+
+> Rebuilt on merged `main`: exit 0 with only the five known pre-existing attribute warnings. The
+> renamed `popup-preview` anchor resolves (1 `id`, 2 `href`s) and no `glow-preview` reference
+> remains anywhere in the rendered page.
+- [X] Raise the follow-up logged in `recommendations/ideas.md` for the three capability specs that
+
+> Logged and now explicitly queued: `recommendations/ideas.md` gained a **Priority order** section,
+> with the three glow-referencing specs at **#3**. The two that need deltas are
+> `asciidoc-inbuffer-preview:30` and `ide-layout:70,73`; `code-folding:48` is cosmetic. Deliberately
+> not fixed inline — editing a spec outside a delta is how specs drift.
       still reference glow (`asciidoc-inbuffer-preview`, `ide-layout` need deltas; `code-folding` is
       cosmetic)
-- [ ] Change archived and the deltas promoted. **Watch this one**: it removes *every* requirement from
+- [X] Change archived and the deltas promoted. **Watch this one**: it removes *every* requirement from
       `markdown-preview-glow`, retiring the capability. Commit first — archiving is not atomic here.
+
+> **Archived as `2026-08-25-replace-glow-renderer`, but not on the first attempt.** The warning in
+> this box was correct: retiring every requirement in `markdown-preview-glow` produces an empty spec,
+> and `openspec archive` rebuilds each spec from its deltas then rejects the result with *"Spec must
+> have at least one requirement"*. The delta model has no way to say "this capability no longer
+> exists".
+>
+> Worse, the failed run printed **"Aborted. No files were changed"** while having already written
+> three other specs to disk — `context-aware-cheatsheet`, `markdown-popup-preview`, and a new
+> `markdown-native-rendering`. The abort message is not trustworthy; committing beforehand is what
+> made it recoverable, and is why this box carried that instruction.
+>
+> Resolution: the live `openspec/specs/markdown-preview-glow/` directory was deleted directly, and its
+> delta moved to `RETIRED-markdown-preview-glow.md` outside `specs/` so the record of why each
+> requirement went survives in the archive without the tooling trying to apply it. The other three
+> capabilities promoted normally: `markdown-native-rendering` created with 4 requirements,
+> `context-aware-cheatsheet` and `markdown-popup-preview` updated. `openspec validate --all --strict`
+> passes 40/40 and no active changes remain.

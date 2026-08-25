@@ -1,3 +1,22 @@
+# Retired capability: markdown-preview-glow
+
+**This is not a delta spec.** It is kept here as the record of why the `markdown-preview-glow`
+capability was retired, and it deliberately sits outside `specs/` so the OpenSpec tooling does not
+try to apply it.
+
+**Why it is not a delta:** every requirement in the capability was glow-specific, so retiring it
+means removing all five. `openspec archive` rebuilds the spec from the deltas and then validates the
+result, which fails with *"Spec must have at least one requirement"* — the delta model has no way to
+express "this capability no longer exists". The live spec directory `openspec/specs/markdown-preview-glow/`
+was therefore deleted directly as part of this change, and the reasoning for each removed requirement
+is preserved below.
+
+**Note for the next person to hit this:** the archive command reported *"Aborted. No files were
+changed"* while having already written three other specs to disk. It is not atomic and its abort
+message is not trustworthy — commit before archiving.
+
+---
+
 ## REMOVED Requirements
 
 ### Requirement: Glow documentation lives in the Markdown guide
