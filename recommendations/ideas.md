@@ -9,6 +9,8 @@ Agreed running order. Details live in the sections below; this is just the queue
 3. **Three capability specs still reference `glow.nvim`** — *Things that seem broken*. Two need deltas, one is cosmetic. Small, and it stops the specs describing a plugin that no longer exists.
 4. **`open_url` silently notifies** — *Things that seem broken*. Makes `,sp` look broken when it has worked. Affects every `open_url` caller, not just `,sp`.
 
+5. **`marksman` and `fsautocomplete` are configured but not installed** — *Things that seem broken*. Both are `vim.lsp.enable`d and fail silently, so markdown and F# have no LSP at all: no hover, references, folding ranges or real completion. Three documentation defects compound it, including an install command naming a package that does not exist. Ranked last of the five only because it is a machine-and-docs fix rather than a config defect — but note it is what blocks F# from benefiting from item 1's sweep at all.
+
 Everything else in this file is unranked and can be picked up opportunistically.
 
 # Things we'd like to add
