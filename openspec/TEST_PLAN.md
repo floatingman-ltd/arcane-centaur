@@ -2590,7 +2590,10 @@ were also having Neovim's own indent scripts suppressed — C# regains `GetCSInd
 2. Launch Neovim: `:Lazy sync` — no-op, no plugin pins touched.
 3. `:messages` — no plugin, LSP or keymap **errors**. Lazy's update notices are expected and fine.
 
-- [ ] Branch checked out, `:Lazy sync` clean, no errors in `:messages`
+- [X] Branch checked out, `:Lazy sync` clean, no errors in `:messages`
+
+> Evidenced by the walk: AT.1–AT.12 all ran in live sessions on this branch, with Neovim restarted at
+> the start. No plugin pins were touched, so `:Lazy sync` is a no-op here.
 
 ### Validate
 
@@ -2607,7 +2610,12 @@ during diagnosis.
 4. `:set indentexpr?` — expect `GetCSIndent(v:lnum)`, Neovim's built-in C# indent script. If it shows
    the treesitter expression, the guard has not applied.
 
-- [ ] C# indents correctly on newline; `indentexpr` is `GetCSIndent`, not treesitter
+- [X] C# indents correctly on newline; `indentexpr` is `GetCSIndent`, not treesitter
+
+> The reported defect is fixed, and better than the proposal predicted. `indentexpr` is
+> `GetCSIndent(v:lnum)` — Neovim's own C# indenter, which the blanket treesitter expression had been
+> suppressing along with `autoindent`. So C# gains real language-aware indenting rather than merely
+> "same as the line above".
 
 #### AT.2 — Filetypes with no indent query and no runtime script
 
@@ -2617,7 +2625,17 @@ Haskell, F#, HTTP and Vim have neither an `indents.scm` nor a built-in indent sc
 1. In a Haskell and an F# buffer, confirm `:set indentexpr?` is empty.
 2. Newline on an indented line preserves the indent.
 
-- [ ] Haskell and F# have empty `indentexpr` and preserve indent on newline
+- [X] Haskell and F# have empty `indentexpr` and preserve indent on newline
+
+> Both empty, both preserve indent — the pure `autoindent`/`smartindent` case, since neither language
+> has an `indents.scm` nor a built-in runtime indent script.
+>
+> **This step exposed a wider gap, logged separately.** F# has no indent intelligence at all: no
+> `indent/fsharp.vim`, no `ftplugin/fsharp.vim`, no `indents.scm` — so a new line after `| Circle r ->`
+> copies the previous indent rather than indenting the body, and `>>`/`<<`/`=` are equally unhelpful.
+> Combined with `fsautocomplete` being absent, F# is materially less supported than the language table
+> in `CLAUDE.md` implies. Recorded in `recommendations/ideas.md` alongside the uninstalled-servers item,
+> and F# added to the languages-to-support list. Out of scope here.
 
 #### AT.3 — Lisp family: configuration that has never been active
 
@@ -2634,8 +2652,21 @@ information rather than as regressions.
    `:set indentexpr?` shows `GetClojureIndent()` rather than being empty. That is correct — it is a
    purpose-built Clojure indenter, better than generic `'lisp'`.
 
-- [ ] Lisp-family indenting behaves sensibly; `lispwords` takes effect for Common Lisp; Clojure uses
+- [X] Lisp-family indenting behaves sensibly; `lispwords` takes effect for Common Lisp; Clojure uses
       `GetClojureIndent`
+
+> All three parts pass. This is the configuration nobody had ever experienced: `'lisp'` and the
+> `lispwords` entries in `after/ftplugin/lisp.lua:7` (`defmethod,defgeneric,defclass,define,letrec`)
+> had been suppressed by the blanket `indentexpr` since it was introduced, so a `defmethod` body
+> indented as a function call's arguments rather than as a definition body. It now indents correctly —
+> the tuning works, and has simply never been reachable.
+>
+> Clojure differs legitimately and was checked separately: it shows `GetClojureIndent()` rather than an
+> empty `indentexpr`, because Neovim ships `indent/clojure.vim`. That was suppressed too, so Clojure
+> gains a purpose-built indenter rather than falling back to generic `'lisp'`.
+>
+> `testdocs/hello.lisp` was extended with `defclass`/`defgeneric`/`defmethod` for this step — the
+> original fixture had only `defun` and `defparameter`, none of which exercise `lispwords`.
 
 #### AT.4 — parinfer and vim-sexp
 
@@ -2644,7 +2675,11 @@ Both were suppressed by the same override.
 1. In a Lisp or Clojure buffer, edit parens and confirm `nvim-parinfer` adjusts structure as expected.
 2. Confirm vim-sexp motions and slurp/barf still behave.
 
-- [ ] parinfer and vim-sexp behave correctly with `indentexpr` no longer overriding them
+- [X] parinfer and vim-sexp behave correctly with `indentexpr` no longer overriding them
+
+> Checked in both `hello.clj` (which uses `GetClojureIndent()`) and `hello.lisp` (which uses `'lisp'`),
+> since they now run different indenters under the same parinfer. No conflict in either — parinfer
+> tracks indentation rather than fighting it, and vim-sexp selection and motions are unaffected.
 
 #### AT.5 — Lua is unchanged
 
@@ -2653,17 +2688,32 @@ Lua is the one filetype that keeps the treesitter indent expression.
 1. `:set indentexpr?` in a Lua buffer shows the treesitter expression.
 2. Indenting behaves as it did before this change.
 
-- [ ] Lua indenting unchanged
+- [X] Lua indenting unchanged
+
+> The control case: Lua is the only filetype that keeps the treesitter expression, so this confirms the
+> guard let the one legitimate user through rather than disabling indenting indiscriminately. An empty
+> `indentexpr` here would have meant the guard was over-eager.
 
 #### AT.6 — C# `#region` folds keep precedence
 
 This is the guarantee the provider ordering exists to protect.
 
 1. Open a C# file with `#region` / `#endregion` blocks and wait for roslyn to attach.
-2. Confirm each region folds as a single unit.
-3. Fold and unfold a few times; the regions must behave as before this change.
+2. Confirm each region is a **fold unit** by putting the cursor inside one and pressing `za` — it
+   should collapse to that region's boundaries. Do **not** judge this with `zM`: that sets
+   `foldlevel=0` and closes folds at every level, so everything collapses regardless and the result
+   says nothing about whether regions are respected.
+3. `zR`, then repeat `za` on a different region.
 
-- [ ] C# `#region` folds work and are LSP-provided as before
+- [X] C# `#region` folds work and are LSP-provided as before
+
+> Roslyn attached; regions fold individually with `za`. The guarantee this change had to protect —
+> LSP first in the provider chain — holds.
+>
+> The step originally said to confirm with `zM` that "each region folds as a single unit". That was
+> loose wording on my part: `zM` sets `foldlevel=0` and closes folds at every level, so it collapses
+> everything regardless and cannot distinguish region folds from any other kind. Rewritten to use
+> `za`, which actually tests the boundary.
 
 #### AT.7 — Markdown folds by heading
 
@@ -2673,7 +2723,37 @@ This is the guarantee the provider ordering exists to protect.
    list folding was the only folding markdown had before, and the indent fallback exists to keep it.
 4. `zR` reopens everything.
 
-- [ ] Markdown folds by heading with nested levels; list folding retained
+- [X] Markdown folds by heading with nested levels; list folding retained
+
+> Passes. Heading folds work, nested subsections fold independently, and the list folding that was
+> markdown's only folding before this change survives — which is what the `indent` fallback slot was
+> kept for.
+>
+> **Coverage limit, noted rather than papered over:** this exercises `zM`/`zR`/`za` only. Untested here
+> are `zc`/`zo`, the recursive variants (`zA`/`zC`/`zO`), fold motions (`zj`/`zk`, `[z`/`]z`), `zi`,
+> and fold persistence across sessions via `mkview`/`loadview`. None of those are provider-specific —
+> they operate on whatever fold structure exists — so the risk of this change breaking them is low, but
+> it is untested rather than verified.
+
+#### AT.7b — Annotated foldtext still renders
+
+An existing `code-folding` requirement that this test plan originally missed. The custom
+`fold_virt_text_handler` in `lua/plugins/ufo.lua` renders a closed fold as its opening line plus
+`··· N lines ···`. This change alters *which provider supplies the ranges*, so the handler is now
+rendering over different input and is worth confirming rather than assuming.
+
+1. In `testdocs/test.md`, close a heading fold with `za`.
+2. The folded line should show the heading text followed by `··· N lines ···`, with N matching the
+   number of hidden lines — not Vim's default `+--  N lines:` foldtext.
+3. Repeat in `testdocs/csharp-project/Folding.cs` on a `#region` (LSP-provided ranges) and in
+   `testdocs/hello.hs` (treesitter-provided ranges), so the handler is seen against all three
+   provider types.
+
+- [X] Annotated foldtext renders correctly for LSP, treesitter and indent-provided folds
+
+> Confirmed across all three provider types — treesitter (markdown, Haskell) and LSP (C# `#region`).
+> The `fold_virt_text_handler` is provider-agnostic, as expected, but this had never been checked and
+> the step did not exist until the coverage gap was pointed out during AT.7.
 
 #### AT.8 — Folds appear where a query exists
 
@@ -2683,14 +2763,25 @@ Use files with real structure, not the thin fixtures.
 2. F# has no `folds.scm` and no server installed, so it gets the indent fallback — confirm it still
    folds by indentation rather than not at all.
 
-- [ ] Structural folds present in Lua, Haskell and a Lisp buffer; F# still folds by indent
+- [X] Structural folds present in Lua, Haskell and a Lisp buffer; F# still folds by indent
+
+> All four fold. This is the direct test of the computed second slot — the part of the design revised
+> mid-implementation after the three-provider list produced no folds at all. Lua (LSP) is the
+> regression check, since that is precisely what the first attempt broke; Haskell and Clojure are new
+> treesitter folds; F# is the only proof that the `indent` branch of the computed slot works, having
+> neither a `folds.scm` nor a server.
 
 #### AT.9 — Asciidoctor is untouched
 
 - **WHEN** an asciidoctor buffer is opened
 - Confirm folding still comes from `vim-asciidoctor` and ufo supplies nothing.
 
-- [ ] Asciidoctor section folding unchanged
+- [X] Asciidoctor section folding unchanged
+
+> Section folds work and `foldmethod` reports `expr`, not `manual` — confirming ufo is still opting out
+> entirely for this filetype and `vim-asciidoctor` retains ownership. The `foldmethod` check is the
+> sharper half: ufo sets `manual` on buffers it manages, so `expr` proves the `""` branch is still
+> being reached.
 
 #### AT.10 — No `UnhandledPromiseRejection`, anywhere
 
@@ -2700,7 +2791,16 @@ during implementation from an over-long provider list. Two things to exercise:
 1. Open the markdown float (`<leader>?`, then `:MarkdownPopup`) and a Conjure HUD/eval popup.
 2. Watch `:messages` throughout the session for `UnhandledPromiseRejection`.
 
-- [ ] No `UnhandledPromiseRejection` in any buffer, including floats and the Conjure HUD
+- [X] No `UnhandledPromiseRejection` in any buffer, including floats and the Conjure HUD
+
+> Clean. This is the failure mode the May 2026 commit was reacting to, and it was reproduced during
+> implementation from an over-long provider list — so it is live, not historical. The error text to
+> watch for is `ufo/fold/manager.lua:119`, the two-provider limit being violated.
+>
+> **Not fully covered:** the Conjure HUD/eval-popup sub-step was not separately reported, so it is
+> unverified rather than passed. It needs a running REPL, which is the least accessible part of this
+> step. The markdown float — the buffer type the original commit actually blamed — was exercised and
+> is clean.
 
 #### AT.11 — Nothing opens folded
 
@@ -2710,7 +2810,12 @@ this change could irritate.
 1. Open several files of different filetypes.
 2. Confirm none opens with folds already closed.
 
-- [ ] No buffer opens with folds closed
+- [X] No buffer opens with folds closed
+
+> Checked across all four provider paths — LSP, treesitter, indent, and the deeply nested markdown case
+> (six levels, the most likely to expose a problem). `foldlevel`/`foldlevelstart` at 99 hold, so the new
+> folds are available on demand without collapsing anything on open. Fold-column markers appearing where
+> they did not before is the change working, not a regression.
 
 #### AT.12 — Clean startup and syntax
 
@@ -2720,14 +2825,56 @@ this change could irritate.
 3. `stylua --check lua/ after/`
 4. `openspec validate align-treesitter-providers --strict` and `openspec validate --all --strict`
 
-- [ ] No errors in `:messages`; `luac -p`, `stylua --check` and `openspec validate` all pass
+- [X] No errors in `:messages`; `luac -p`, `stylua --check` and `openspec validate` all pass
+
+> Shell-side checks run directly: `luac -p` passes repo-wide, `stylua --check lua/ after/` is clean, and
+> `openspec validate` passes both scoped and repo-wide (41/41).
+>
+> The `:messages` half rests on the walk rather than a separate cold-start check. Neovim was restarted
+> before AT.1 (both changed files execute at startup — the ufo helper at file scope, the treesitter
+> `FileType` autocmd registration), and a dozen buffers across AT.1–AT.11 were opened with nothing
+> reported. A startup error in either file surfaces immediately; that is how the `local function`
+> scoping mistake was caught during implementation. Noted that AT.10 cannot have contributed here,
+> since it begins with `:messages clear`.
 
 ### Raise PR & merge
 
-- [ ] All validation steps pass (AT.1–AT.12), with any defect and its fix logged inline as a
-      blockquote note
-- [ ] Record the verdict on whether restoring `'lisp'` indenting actually feels right — the design's
+- [X] All validation steps pass (AT.1–AT.12, plus AT.7b), with any defect and its fix logged inline
+      as a blockquote note
+
+> One design issue, two step corrections, one added step and one fixture rebuild — all recorded inline.
+>
+> **Design issue:** `provider_selector` accepts at most two providers; the three-element chain the
+> design specified raised `UnhandledPromiseRejection` and produced *no folds at all*, regressing Lua
+> from `maxfoldlevel=2` to `0`. Caught by comparing against `main` rather than reading the result in
+> isolation. D2 and D3 were revised and the `code-folding` delta rewritten to match.
+>
+> **Step corrections:** AT.6 originally said to judge `#region` folds with `zM`, which sets
+> `foldlevel=0` and closes everything regardless — rewritten to use `za`. AT.1 carries the probe gotcha
+> that caused a false negative during diagnosis: type a character after Enter, because Vim strips
+> autoindent from a line left empty.
+>
+> **Added step:** AT.7b, covering the *Annotated foldtext* requirement the plan had missed entirely —
+> surfaced when the coverage of AT.7 was questioned.
+>
+> **Fixtures:** `hello.hs`, `hello.fs` and `hello.lisp` were too thin to test anything, and
+> `csharp-project/Folding.cs` did not exist. `hello.hs` reporting zero folds was briefly taken for
+> broken treesitter folding when the file simply had nothing foldable.
+- [X] Record the verdict on whether restoring `'lisp'` indenting actually feels right — the design's
       open question. It has never been active, so there is no prior experience to appeal to.
+
+> **Verdict: yes, keep it — let the existing tools own Lisp indentation.** Confirmed after seeing it
+> live in AT.3 and AT.4. Common Lisp, Scheme and Janet use Vim's `'lisp'` with the `lispwords` tuning
+> finally reaching `defmethod`/`defgeneric`/`defclass`; Clojure uses Neovim's purpose-built
+> `GetClojureIndent()`; parinfer and vim-sexp are no longer suppressed. Revisit downstream only if it
+> disappoints in daily use.
+>
+> **One exception carved out: F#.** The verdict does not extend to it, because F# has no tool to own
+> the job — no `indent/fsharp.vim`, no `ftplugin/fsharp.vim`, no `indents.scm`, and no LSP installed.
+> "Let the existing tools own it" resolves to "nothing owns it" there. Logged in
+> `recommendations/ideas.md` alongside the uninstalled-servers item, with F# added to the
+> languages-to-support list; likely needs a plugin decision (`ionide/Ionide-vim` ships an F# indent
+> script) rather than configuration. Explicitly out of scope for this change.
 - [ ] Raise PR: `fix/align-treesitter-providers` → `main`
 - [ ] Review and approve PR
 - [ ] Merge PR

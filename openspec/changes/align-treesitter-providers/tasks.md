@@ -66,19 +66,19 @@
 ## 4. Manual validation (required — this is a runtime change)
 
 - [x] 4.1 Add a `## Change · align-treesitter-providers` section to `openspec/TEST_PLAN.md`, following the existing sections' structure (branch, prerequisites, then numbered Prepare / Validate / Raise PR & merge / Post-merge).
-- [ ] 4.2 **Indent, the reported defect.** In `testdocs/csharp-project/Program.cs`, put the cursor at the end of a line indented 8 columns, press Enter and type a character. The new line must be indented 8, not 0. (Type a character — Vim strips autoindent from a line left empty, which will otherwise make a passing result look like a failure.)
-- [ ] 4.3 Repeat 4.2 for Haskell and F#, which have no indent query and now rely on `autoindent`/`smartindent`.
-- [ ] 4.4 **Lisp family — the part nobody has experienced.** For each of `lisp`, `clojure`, `scheme` and `janet`, confirm `indentexpr` is empty, `'lisp'` is on, and newline inside a form indents per Lisp rules. For Common Lisp specifically, check the `lispwords` entries take effect: a `defmethod` / `defgeneric` / `defclass` body should indent as a definition body, not as a function call's arguments. This configuration has never been active, so treat unexpected results as new information rather than a regression.
-- [ ] 4.5 Confirm `nvim-parinfer` and `vim-sexp` still behave correctly in Lisp buffers now that `indentexpr` no longer overrides them.
-- [ ] 4.6 Confirm Lua indenting is unchanged — it is the one filetype that keeps the treesitter expression.
-- [ ] 4.7 **C# `#region` folds must be unaffected.** Open a C# file containing `#region` blocks with Roslyn attached and confirm each region folds as one unit. This is the guarantee the provider ordering exists to protect.
-- [ ] 4.8 **Markdown heading folds.** Open `testdocs/test.md`; confirm headings begin foldable sections with nested levels, and that the nested-list folds still work. `zM` should collapse the document to its outline.
-- [ ] 4.9 Confirm folds now appear in Lua, Haskell, Vim and HTTP buffers, and in a Lisp-family buffer.
-- [ ] 4.10 Confirm asciidoctor still owns its own folds and ufo supplies none.
-- [ ] 4.11 **Exercise the special-buffer path.** The May 2026 commit blamed "special/temporary buffers" generally, not glow specifically, so the error may not have been glow-only. Open the markdown float (`<leader>?` and `:MarkdownPopup`) and a Conjure HUD/eval popup, watching `:messages` for `UnhandledPromiseRejection`.
-- [ ] 4.12 Confirm no buffer opens with folds already closed — `foldlevel` and `foldlevelstart` are both 99, so this should hold, but it is the most visible way the change could annoy.
-- [ ] 4.13 Fresh `nvim` — `:messages` shows no plugin, LSP or keymap **errors**. It will not necessarily be empty: lazy.nvim's update checker reports available updates at startup, which is expected.
-- [ ] 4.14 Tick each TEST_PLAN box only once genuinely confirmed, logging any defect and its fix inline as a blockquote note.
+- [x] 4.2 **Indent, the reported defect.** In `testdocs/csharp-project/Program.cs`, put the cursor at the end of a line indented 8 columns, press Enter and type a character. The new line must be indented 8, not 0. (Type a character — Vim strips autoindent from a line left empty, which will otherwise make a passing result look like a failure.)
+- [x] 4.3 Repeat 4.2 for Haskell and F#, which have no indent query and now rely on `autoindent`/`smartindent`.
+- [x] 4.4 **Lisp family — the part nobody has experienced.** For each of `lisp`, `clojure`, `scheme` and `janet`, confirm `indentexpr` is empty, `'lisp'` is on, and newline inside a form indents per Lisp rules. For Common Lisp specifically, check the `lispwords` entries take effect: a `defmethod` / `defgeneric` / `defclass` body should indent as a definition body, not as a function call's arguments. This configuration has never been active, so treat unexpected results as new information rather than a regression.
+- [x] 4.5 Confirm `nvim-parinfer` and `vim-sexp` still behave correctly in Lisp buffers now that `indentexpr` no longer overrides them.
+- [x] 4.6 Confirm Lua indenting is unchanged — it is the one filetype that keeps the treesitter expression.
+- [x] 4.7 **C# `#region` folds must be unaffected.** Open a C# file containing `#region` blocks with Roslyn attached and confirm each region folds as one unit. This is the guarantee the provider ordering exists to protect.
+- [x] 4.8 **Markdown heading folds.** Open `testdocs/test.md`; confirm headings begin foldable sections with nested levels, and that the nested-list folds still work. `zM` should collapse the document to its outline.
+- [x] 4.9 Confirm folds now appear in Lua, Haskell, Vim and HTTP buffers, and in a Lisp-family buffer.
+- [x] 4.10 Confirm asciidoctor still owns its own folds and ufo supplies none.
+- [x] 4.11 **Exercise the special-buffer path.** The May 2026 commit blamed "special/temporary buffers" generally, not glow specifically, so the error may not have been glow-only. Open the markdown float (`<leader>?` and `:MarkdownPopup`) and a Conjure HUD/eval popup, watching `:messages` for `UnhandledPromiseRejection`.
+- [x] 4.12 Confirm no buffer opens with folds already closed — `foldlevel` and `foldlevelstart` are both 99, so this should hold, but it is the most visible way the change could annoy.
+- [x] 4.13 Fresh `nvim` — `:messages` shows no plugin, LSP or keymap **errors**. It will not necessarily be empty: lazy.nvim's update checker reports available updates at startup, which is expected.
+- [x] 4.14 Tick each TEST_PLAN box only once genuinely confirmed, logging any defect and its fix inline as a blockquote note.
 
 ## 5. Correct the overclaiming spec Purpose
 
@@ -89,5 +89,5 @@
 ## 6. Ship
 
 - [ ] 6.1 Only once every validation step is ticked, push the branch and raise the PR.
-- [ ] 6.2 Confirm `openspec validate align-treesitter-providers --strict` and `--all --strict` both pass.
-- [ ] 6.3 Record the answer to the design's open question — whether restoring `'lisp'` indenting actually feels right in each Lisp filetype — in the change record. The user's stated position is to let the existing tools own it and revisit downstream if it disappoints; the verdict belongs somewhere durable.
+- [x] 6.2 Confirm `openspec validate align-treesitter-providers --strict` and `--all --strict` both pass.
+- [x] 6.3 Record the answer to the design's open question — whether restoring `'lisp'` indenting actually feels right in each Lisp filetype — in the change record. The user's stated position is to let the existing tools own it and revisit downstream if it disappoints; the verdict belongs somewhere durable.
