@@ -4,12 +4,14 @@
 
 Agreed running order. Details live in the sections below; this is just the queue.
 
-1. **`indentexpr` set without a query** — *Things that seem broken*. Highest impact: eleven filetypes (C#, F#, Haskell, the whole Lisp family) get a treesitter `indentexpr` with no `indents.scm` behind it, so newline drops the cursor to column 0. Actively worse than not setting it, because `indentexpr` suppresses `autoindent`/`smartindent`.
-2. **Markdown folding on headings** — *Things we'd like to add*, item 3. Newly unblocked: glow's buffers were the stated reason treesitter folding is disabled for markdown, and glow is gone. Related to item 1 — both are treesitter-provider decisions in the same file.
-3. **Three capability specs still reference `glow.nvim`** — *Things that seem broken*. Two need deltas, one is cosmetic. Small, and it stops the specs describing a plugin that no longer exists.
-4. **`open_url` silently notifies** — *Things that seem broken*. Makes `,sp` look broken when it has worked. Affects every `open_url` caller, not just `,sp`.
+1. **`open_url` silently notifies** — *Things that seem broken*. Makes `,sp` look broken when it has worked. Affects every `open_url` caller, not just `,sp`.
+2. **`marksman` and `fsautocomplete` are configured but not installed** — *Things that seem broken*. Both are `vim.lsp.enable`d and fail silently, so markdown and F# have no LSP at all: no hover, references, folding ranges or real completion. Three documentation defects compound it, including an install command naming a package that does not exist. Now also carries the F# support gap: F# has no indent support of any kind and no fold query either, making it the least capable of the "supported" languages.
+3. **Fourteen capability specs have placeholder Purposes** — *Things that seem broken*. Mechanical but wide; best done as one pass.
 
-5. **`marksman` and `fsautocomplete` are configured but not installed** — *Things that seem broken*. Both are `vim.lsp.enable`d and fail silently, so markdown and F# have no LSP at all: no hover, references, folding ranges or real completion. Three documentation defects compound it, including an install command naming a package that does not exist. Ranked last of the five only because it is a machine-and-docs fix rather than a config defect — but note it is what blocks F# from benefiting from item 1's sweep at all.
+**Shipped** (2026-08-25 / 26), kept briefly for context:
+
+- ~~`indentexpr` set without a query~~ and ~~markdown folding on headings~~ — both fixed by `align-treesitter-providers`. C# and Clojure also regained Neovim's own indent scripts, which the blanket override had been suppressing.
+- ~~Three capability specs still reference `glow.nvim`~~ — `code-folding` was resolved by `align-treesitter-providers`; the remaining two by `retire-glow-spec-references`.
 
 Everything else in this file is unranked and can be picked up opportunistically.
 
@@ -78,14 +80,6 @@ use before deciding.
 
   Found during `fix-tree-terminal-keymaps` validation (TEST_PLAN TK.3/TK.4) and deliberately **not fixed there**: the terminal panel's split approach is itself under review (see the full-screen panel idea above), so effort spent on the current geometry may be wasted. Revisit if the panel survives in its present form.
 
-- **three capability specs still reference `glow.nvim`, which no longer exists.** Found while implementing `replace-glow-renderer` (task 5.9) and deliberately *not* edited there: changing a spec outside a delta is how specs drift from the changes that are supposed to govern them. Each needs its own judgement:
-
-  * `openspec/specs/asciidoc-inbuffer-preview/spec.md:30` — **wrong, needs a delta.** A normative scenario requires that "markdown-preview.nvim / glow.nvim SHALL behave exactly as before this change". glow.nvim is removed, so the scenario is unsatisfiable as written.
-  * `openspec/specs/ide-layout/spec.md:70,73` — **wrong, needs a delta.** Names "Glow previews" among the floats the layout must not disturb, and a scenario begins "WHEN a Glow preview ... is triggered". That trigger no longer exists; the intent (floats are unaffected by the layout) is still valid and should be restated against the in-editor popup.
-  * `openspec/specs/code-folding/spec.md:48` — **cosmetic only.** glow appears as an illustrative example of a special buffer where treesitter folding errors. The requirement itself (do not use treesitter folding) is unaffected, and the replacement float was checked and does not reproduce the problem. Safe to leave; worth correcting opportunistically.
-
-  Best handled as one small follow-up change covering the two real ones, rather than folded into an unrelated branch.
-
 - **two language servers are configured and enabled but not installed, and their documentation is wrong.** `lua/config/lsp.lua` calls `vim.lsp.enable` for `marksman` (markdown) and `fsautocomplete` (F#), but neither binary is on `$PATH`. Both fail silently — the filetype simply gets no LSP, so no hover, no references, no folding ranges, and no completion beyond buffer words.
 
   Three documentation defects compound it:
@@ -120,6 +114,12 @@ use before deciding.
   Likely fix: set `indentexpr` only when a query exists for the buffer's language — resolve with `vim.treesitter.language.get_lang(ft)` and check `nvim_get_runtime_file` before assigning, letting `autoindent`/`smartindent` (or `cindent` for the C-like ones) handle the rest. Worth checking the Lisp family separately, since `nvim-parinfer` and vim-sexp may already be compensating there.
 
   Surfaced as an aside during `replace-glow-renderer` validation; unrelated to that change and deliberately not fixed there.
+
+- **fourteen capability specs have placeholder Purposes.** `openspec archive` writes `TBD - created by archiving change <name>. Update Purpose after archive.` whenever a change creates a new capability, and relies on someone circling back. Nobody has, going back to changes 01-08: `asciidoc-inbuffer-preview`, `asciidoc-syntax`, `avante-runtime`, `claudecode-session`, `completion-engine`, `diagnostics-panel`, `dotnet-debugging`, `dotnet-test-runner`, `editor-commenting`, `markdown-native-rendering`, `statusline`, `surround-text-objects`, `todo-comments`, `treesitter-textobjects`.
+
+  The Purpose is the one part of a spec that says *what the capability is for*, so anyone arriving at these gets requirements with no framing. It also cannot be fixed by a delta — deltas operate on requirements, not Purpose prose — so `openspec archive` will never resolve it and each needs a direct edit.
+
+  Best as a single pass rather than piecemeal: fourteen short paragraphs, each derivable from the requirements already in the spec, and the context is cheapest read together. Surfaced during `retire-glow-spec-references`, where `markdown-native-rendering` was deliberately left in this state rather than becoming the one exception.
 
 - **`,sp` looks like it does nothing.** `MdServerPreview` builds the markserv URL and hands it to `util.open_url`, which deliberately skips the browser when `term.is_console` and emits an INFO notification instead (`lua/config/util.lua:51-58`). The reasoning is sound — there is no graphical browser in a console — but an INFO notify is easy to miss entirely, so the command reads as broken when it has in fact worked. Mistaken for a defect during `replace-glow-renderer` validation (RG.9b). Options: put the URL on the clipboard as well, echo it on the command line where it persists, or offer to open it via `wslview`/`explorer.exe` even in console mode, since under WSL a Windows browser *is* usually reachable. Affects any `open_url` caller, not just `,sp`.
 

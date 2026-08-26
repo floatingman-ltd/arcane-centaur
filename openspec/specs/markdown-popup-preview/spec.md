@@ -1,7 +1,7 @@
 # markdown-popup-preview Specification
 
 ## Purpose
-Define markdown preview behavior so markdown buffers always provide a forced popup preview via `,pp`, ensure `glow.nvim` loads in all environments, and preserve the existing smart-routing behavior of `,p`.
+Define markdown preview behavior: `,pp` toggles in-buffer rendering so the raw markup can be read and edited, a floating popup remains reachable via `,p` in console environments and the `:MarkdownPopup` command anywhere, and `,p` keeps its smart-routing between the browser preview and the popup. Rendering is in-editor and depends on no external binary.
 ## Requirements
 ### Requirement: Forced popup preview keymap always available
 Because markdown is rendered in the buffer itself, a popup showing the same content is redundant. `,pp` SHALL instead toggle in-buffer rendering, flipping between rendered output and the raw markup, so the source can be read and edited on demand. A floating popup SHALL remain reachable — via `,p` in console environments and via the `:MarkdownPopup` command in any environment — and SHALL NOT depend on any external binary, so it can never fail for want of one.
