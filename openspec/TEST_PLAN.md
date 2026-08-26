@@ -2875,12 +2875,12 @@ this change could irritate.
 > `recommendations/ideas.md` alongside the uninstalled-servers item, with F# added to the
 > languages-to-support list; likely needs a plugin decision (`ionide/Ionide-vim` ships an F# indent
 > script) rather than configuration. Explicitly out of scope for this change.
-- [ ] Raise PR: `fix/align-treesitter-providers` → `main`
-- [ ] Review and approve PR
-- [ ] Merge PR
+- [X] Raise PR: `fix/align-treesitter-providers` → `main` (PR #178)
+- [X] Review and approve PR
+- [X] Merge PR
 
 ### Post-merge
 
-- [ ] `git checkout main && git pull origin main`
+- [X] `git checkout main && git pull origin main` (`main` at `df83499`)
 - [ ] Re-confirm AT.1 and AT.7 on the merged config
 - [ ] Change archived and the deltas promoted
