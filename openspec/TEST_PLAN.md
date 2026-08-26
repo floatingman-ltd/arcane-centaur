@@ -2882,7 +2882,11 @@ this change could irritate.
 ### Post-merge
 
 - [X] `git checkout main && git pull origin main` (`main` at `df83499`)
-- [ ] Re-confirm AT.1 and AT.7 on the merged config
+- [X] Re-confirm AT.1 and AT.7 on the merged config
+
+> Confirmed on merged `main` (`776d6e8`). Headless resolution matched: `GetCSIndent(v:lnum)` for C#,
+> the treesitter expression for Lua only, empty for Haskell and Lisp, `GetClojureIndent()` for Clojure,
+> markdown folding six levels deep, no `UnhandledPromiseRejection`.
 - [X] Change archived and the deltas promoted
 
 > Archived as `2026-08-26-align-treesitter-providers`. Promoted: `treesitter-editing` gained
