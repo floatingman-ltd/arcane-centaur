@@ -26,6 +26,9 @@
 
 ## 4. Ship
 
-- [ ] 4.1 Push the branch and raise the PR. **No `TEST_PLAN.md` section and no live validation walk**: this changes spec text only, touches no runtime file, and CLAUDE.md's manual-verification requirement is scoped to changes that touch runtime behaviour. Say so in the PR body so the omission reads as deliberate rather than skipped.
+- [x] 4.1 Push the branch and raise the PR. **No `TEST_PLAN.md` section and no live validation walk**: this changes spec text only, touches no runtime file, and CLAUDE.md's manual-verification requirement is scoped to changes that touch runtime behaviour. Say so in the PR body so the omission reads as deliberate rather than skipped.
 - [ ] 4.2 After merge: archive, and confirm both deltas promote cleanly. Commit before archiving — the archive is not atomic and has partial-written specs before aborting on two occasions.
-- [ ] 4.3 Watch for the rename trap at archive time: neither delta renames a requirement, so `## RENAMED Requirements` should not be needed — but a MODIFIED header that does not match the live spec exactly will abort with "not found".
+- [x] 4.3 Watch for the rename trap at archive time: neither delta renames a requirement, so `## RENAMED Requirements` should not be needed — but a MODIFIED header that does not match the live spec exactly will abort with "not found".
+
+> Checked before archiving rather than discovering it mid-abort: both MODIFIED headers were compared
+> against the live specs and match exactly. No `RENAMED` section needed.
