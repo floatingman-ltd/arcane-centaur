@@ -2883,4 +2883,18 @@ this change could irritate.
 
 - [X] `git checkout main && git pull origin main` (`main` at `df83499`)
 - [ ] Re-confirm AT.1 and AT.7 on the merged config
-- [ ] Change archived and the deltas promoted
+- [X] Change archived and the deltas promoted
+
+> Archived as `2026-08-26-align-treesitter-providers`. Promoted: `treesitter-editing` gained
+> *Treesitter indentation only where a query exists*; `code-folding` had three requirements modified
+> and one renamed. `openspec validate --all --strict` passes 40/40, no active changes remain.
+>
+> **Needed a second attempt, for a new reason.** The first aborted with
+> *"MODIFIED failed for header ... not found"* — the delta had renamed a requirement, and MODIFIED
+> matches on header text, so a rename must be expressed as a `## RENAMED Requirements` section with
+> FROM/TO. Worth keeping the rename rather than reverting it: the fallback is no longer always indent,
+> so *"LSP folds with indent fallback elsewhere"* had become actively misleading.
+>
+> Unlike the `replace-glow-renderer` archive, this abort left **no partial write** — `git status` was
+> clean afterwards. So the non-atomicity is real but not universal; committing first remains the right
+> precaution rather than something to rely on being unnecessary.

@@ -3,9 +3,7 @@
 ## Purpose
 
 Provides Treesitter-based syntax highlighting and semantic text objects/motions for non-Lisp languages (F#, C#, Haskell, Lua), delivered via the maintained `main` branch of `nvim-treesitter` (and `nvim-treesitter-textobjects`) through Neovim's core treesitter APIs. Treesitter indentation is applied only where `nvim-treesitter` ships an `indents.scm` for the language — among these, Lua alone — so that filetypes without a query keep their own indent handling rather than having it suppressed. Text objects and motions (`af`/`if`, `ac`/`ic`, `aa`/`ia`, `]f`/`[f`, `]F`/`[F`) are gated off for Lisp-family filetypes so vim-sexp retains structural editing there, and no bracket mappings owned by other plugins (gitsigns, vim-unimpaired, diff mode) are overridden.
-
 ## Requirements
-
 ### Requirement: Treesitter provided via the maintained `main` branch
 
 The configuration SHALL use the `main` branch of `nvim-treesitter` (and `nvim-treesitter-textobjects`), configured through Neovim's core treesitter APIs, and MUST NOT depend on the frozen `master` branch's module system.
@@ -73,3 +71,33 @@ The configuration SHALL NOT override existing bracket mappings owned by other pl
 #### Scenario: gitsigns hunk motion still works
 - **WHEN** the user presses `]h` in a buffer with unstaged hunks
 - **THEN** the cursor jumps to the next hunk (gitsigns), unaffected by treesitter motions
+
+### Requirement: Treesitter indentation only where a query exists
+
+Treesitter indentation SHALL be enabled for a filetype only when `nvim-treesitter` ships an `indents.scm` query for that filetype's language. Where no query exists, `indentexpr` SHALL be left unset so the filetype's own indent handling applies — `'lisp'` and `lispwords` in the Lisp-family ftplugins, and `autoindent`/`smartindent` elsewhere.
+
+The check SHALL be performed at runtime against the queries actually present, rather than against a hardcoded list of filetypes, so it remains correct as queries are added or removed upstream. Because filetype and treesitter language names differ (`lisp` is `commonlisp`, `janet` is `janet_simple`, `cs` is `c_sharp`), the filetype SHALL be resolved to its language before the query is looked up.
+
+#### Scenario: A filetype with an indent query gets treesitter indenting
+- **WHEN** a Lua buffer is opened
+- **THEN** `indentexpr` SHALL be set to the treesitter indent expression
+
+#### Scenario: A filetype without an indent query is left alone
+- **WHEN** a C# or Haskell buffer is opened
+- **THEN** `indentexpr` SHALL be empty
+- **AND** pressing Enter on an indented line SHALL produce a new line at the same indent, via `autoindent`/`smartindent`
+
+#### Scenario: Lisp-family indent configuration is not suppressed
+- **WHEN** a Common Lisp, Clojure, Scheme or Janet buffer is opened
+- **THEN** `indentexpr` SHALL be empty
+- **AND** the `'lisp'` option set by that filetype's ftplugin SHALL govern indentation
+- **AND** the `lispwords` entries added for Common Lisp SHALL take effect
+
+#### Scenario: Filetype names are resolved to language names
+- **WHEN** the query lookup is performed for the `lisp`, `janet` or `cs` filetypes
+- **THEN** it SHALL resolve them to `commonlisp`, `janet_simple` and `c_sharp` respectively before checking for a query
+
+#### Scenario: The rule follows upstream rather than a fixed list
+- **WHEN** `nvim-treesitter` adds an `indents.scm` for a language already in use
+- **THEN** that filetype SHALL gain treesitter indenting with no configuration change
+
