@@ -88,6 +88,6 @@
 
 ## 6. Ship
 
-- [ ] 6.1 Only once every validation step is ticked, push the branch and raise the PR.
+- [x] 6.1 Only once every validation step is ticked, push the branch and raise the PR.
 - [x] 6.2 Confirm `openspec validate align-treesitter-providers --strict` and `--all --strict` both pass.
 - [x] 6.3 Record the answer to the design's open question — whether restoring `'lisp'` indenting actually feels right in each Lisp filetype — in the change record. The user's stated position is to let the existing tools own it and revisit downstream if it disappoints; the verdict belongs somewhere durable.

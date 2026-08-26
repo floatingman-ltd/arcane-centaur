@@ -1,3 +1,8 @@
+## RENAMED Requirements
+
+- FROM: `### Requirement: LSP folds with indent fallback elsewhere`
+- TO: `### Requirement: LSP folds with a query-appropriate fallback elsewhere`
+
 ## MODIFIED Requirements
 
 ### Requirement: LSP folds with a query-appropriate fallback elsewhere
