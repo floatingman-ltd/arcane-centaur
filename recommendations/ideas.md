@@ -9,6 +9,8 @@ Agreed running order. Details live in the sections below; this is just the queue
 3. **Three capability specs still reference `glow.nvim`** — *Things that seem broken*. Two need deltas, one is cosmetic. Small, and it stops the specs describing a plugin that no longer exists.
 4. **`open_url` silently notifies** — *Things that seem broken*. Makes `,sp` look broken when it has worked. Affects every `open_url` caller, not just `,sp`.
 
+5. **`marksman` and `fsautocomplete` are configured but not installed** — *Things that seem broken*. Both are `vim.lsp.enable`d and fail silently, so markdown and F# have no LSP at all: no hover, references, folding ranges or real completion. Three documentation defects compound it, including an install command naming a package that does not exist. Ranked last of the five only because it is a machine-and-docs fix rather than a config defect — but note it is what blocks F# from benefiting from item 1's sweep at all.
+
 Everything else in this file is unranked and can be picked up opportunistically.
 
 # Things we'd like to add
@@ -19,6 +21,11 @@ Everything else in this file is unranked and can be picked up opportunistically.
    - assembler
    - terraform
    - lua
+   - **F# — bring the existing support up to the level the docs claim.** Unlike the others this is
+     not a new language: it is already listed as supported, with a parser, a REPL and easy-dotnet
+     integration. But it has no LSP installed, no indent support of any kind, and no fold query, so
+     it is the least capable of the "supported" languages in practice. See the entry under *Things
+     that seem broken* for the full inventory.
 2. some sort of visual buffer tabbing:
    - the sidebar panels for claude.cli and avanate.nvim are awkward to read, it seems both would like to be "full screen" 
    - the terminal at the bottom of the screen requires scrolling, it too would like a "full screen"
@@ -78,6 +85,28 @@ use before deciding.
   * `openspec/specs/code-folding/spec.md:48` — **cosmetic only.** glow appears as an illustrative example of a special buffer where treesitter folding errors. The requirement itself (do not use treesitter folding) is unaffected, and the replacement float was checked and does not reproduce the problem. Safe to leave; worth correcting opportunistically.
 
   Best handled as one small follow-up change covering the two real ones, rather than folded into an unrelated branch.
+
+- **two language servers are configured and enabled but not installed, and their documentation is wrong.** `lua/config/lsp.lua` calls `vim.lsp.enable` for `marksman` (markdown) and `fsautocomplete` (F#), but neither binary is on `$PATH`. Both fail silently — the filetype simply gets no LSP, so no hover, no references, no folding ranges, and no completion beyond buffer words.
+
+  Three documentation defects compound it:
+
+  * `docs/.../editor/code-intelligence.adoc:32` and `docs/.../content/diagrams.adoc:394` both say `sudo apt install marksman`. **That package does not exist** in the configured repos — `apt-cache policy marksman` returns nothing. Following the instruction produces "unable to locate package".
+  * `docs/.../other/architecture.adoc:100` lists **✅ marksman**, implying it is active. It is not installed.
+  * Neither server appears in `getting-started.adoc`'s prerequisite table, though every other required binary does. Same class as the ripgrep/fzf gap.
+
+  Fix direction: install both from their GitHub release binaries, matching how every other language server here is installed (`lua-language-server` in `~/.local/bin`, `janet-lsp` in `/usr/local/bin`, roslyn under `~/.local/share/roslyn`). Note LSP servers are the deliberate exception to keeping dependencies in Docker — they are editor subprocesses over stdio with direct filesystem access, and containerising them fights the design. Then correct the install instructions, drop or qualify the ✅, and add both to the prerequisite table.
+
+  Surfaced while exploring the treesitter provider sweep: markdown's fold provider list excludes `lsp`, and checking whether marksman could supply heading folds revealed it was never installed.
+
+  **F# is materially less supported than it looks, and `fsautocomplete` is only part of it.** The language table in `CLAUDE.md` lists F# with an LSP and a REPL, which reads as full support. What actually works today is treesitter highlighting, the iron.nvim REPL (`dotnet fsi`), easy-dotnet's test/run/build, and the `tabstop`/`shiftwidth` settings in `after/ftplugin/fsharp.lua`. What does **not** work:
+
+  * **No LSP at all** — `fsautocomplete` is absent, so no hover, completion, references, rename, diagnostics or formatting. `lua/plugins/conform.lua:10` sets `fsharp = { lsp_format = "prefer" }`, which is inert without the server.
+  * **No indent support whatsoever.** There is no `indent/fsharp.vim`, no `ftplugin/fsharp.vim`, and nvim-treesitter ships no `indents.scm` for F#. Indenting is plain `autoindent`, so a new line after `| Circle r ->` copies the previous indent rather than indenting the body. `smartindent` cannot help — it keys off `{`, `}` and `cinwords`, none of which F# uses. This also makes `>>`, `<<` and `=` unhelpful as reindent operators.
+  * **No fold query either** (`folds.scm` is absent), so F# folds by indentation only — the one language in the sweep that gains nothing from it.
+
+  Fixing the indent half probably means a plugin decision rather than configuration: `ionide/Ionide-vim` ships an `indent/fsharp.vim` that understands the offside rule and constructs like `->`, `=` and `let`. It overlaps with `fsautocomplete` (Ionide bundles its own LSP integration), so the two need reconciling rather than both being added blindly. Installing `fsautocomplete` alone buys formatting on save, not indent-as-you-type.
+
+  Surfaced during `align-treesitter-providers` validation (AT.2), when the expectation that F# was a fully supported language turned out not to hold.
 
 - **newline drops the cursor to column 0 in most languages — treesitter `indentexpr` is set without a query behind it.** Reported in C#: pressing Enter on an indented line puts the cursor at the left margin instead of aligning with the line above. Markdown behaves correctly, which is the clue.
 

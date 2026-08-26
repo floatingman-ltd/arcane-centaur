@@ -21,3 +21,30 @@
 ;;   (add 2 3)
 ;;   (sum *numbers*)
 (format t "~a~%" (greet "World"))
+
+;;; --- Indent fixture -------------------------------------------------------
+;;; Exercises the `lispwords` entries added in after/ftplugin/lisp.lua
+;;; (defmethod, defgeneric, defclass, define, letrec). The body of each of
+;;; these should indent as a definition body, not as a function call's
+;;; arguments. See openspec TEST_PLAN, change align-treesitter-providers, AT.3.
+
+(defclass shape ()
+  ((name :initarg :name :accessor shape-name)
+   (area :initarg :area :accessor shape-area)))
+
+(defgeneric describe-shape (shape)
+  (:documentation "Return a human-readable description of SHAPE."))
+
+(defmethod describe-shape ((s shape))
+  (format nil "~a has area ~a"
+          (shape-name s)
+          (shape-area s)))
+
+(defun classify (shapes)
+  (let ((large '())
+        (small '()))
+    (dolist (s shapes)
+      (if (> (shape-area s) 100)
+          (push s large)
+          (push s small)))
+    (values large small)))

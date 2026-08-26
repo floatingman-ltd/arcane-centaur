@@ -47,11 +47,35 @@ return {
         "haskell",
       })
 
+      -- Treesitter indenting is only usable where nvim-treesitter ships an
+      -- indents.scm for the language. Setting indentexpr without one is worse
+      -- than leaving it alone: the expression answers 0, and indentexpr
+      -- outranks 'lisp', cindent, smartindent and autoindent -- so it does not
+      -- add treesitter indenting, it *removes* whatever the filetype had
+      -- arranged. That is how newline came to drop the cursor to column 0 in
+      -- C#, and how the Lisp ftplugins' 'lisp' + lispwords tuning was silently
+      -- discarded.
+      --
+      -- The check is computed rather than a hardcoded { lua, markdown } list:
+      -- a list is correct today and silently wrong the moment upstream adds a
+      -- query, which is the exact failure mode that produced the defect.
+      -- Filetype and language names differ (lisp -> commonlisp, janet ->
+      -- janet_simple, cs -> c_sharp), so resolve before looking up.
+      local function has_indent_query(ft)
+        local ok, lang = pcall(vim.treesitter.language.get_lang, ft)
+        if not ok or not lang then
+          return false
+        end
+        return #vim.api.nvim_get_runtime_file("queries/" .. lang .. "/indents.scm", true) > 0
+      end
+
       vim.api.nvim_create_autocmd("FileType", {
         pattern = HIGHLIGHT_FILETYPES,
-        callback = function()
+        callback = function(args)
           vim.treesitter.start()
-          vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+          if has_indent_query(vim.bo[args.buf].filetype) then
+            vim.bo[args.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+          end
         end,
       })
     end,
