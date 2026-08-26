@@ -2556,3 +2556,184 @@ proposal did not ask for.
 > capabilities promoted normally: `markdown-native-rendering` created with 4 requirements,
 > `context-aware-cheatsheet` and `markdown-popup-preview` updated. `openspec validate --all --strict`
 > passes 40/40 and no active changes remain.
+
+## Change · align-treesitter-providers
+
+**Branch:** `fix/align-treesitter-providers`
+
+Aligns treesitter provider usage with which queries `nvim-treesitter` actually ships. The config had
+it backwards on both axes: `indents.scm` exists for 2 of 13 filetypes and was enabled for all 13;
+`folds.scm` exists for 11 of 13 and was enabled for none.
+
+**Two behavioural changes, both intended:**
+
+- **Newline indenting changes in eleven filetypes.** `indentexpr` is no longer set where no query
+  exists. It outranks `'lisp'`, `cindent`, `smartindent` and `autoindent`, so setting it without a
+  query removed indenting rather than adding it.
+- **Structural folds appear where there were none.** The treesitter fold provider is restored.
+
+**Better than the proposal predicted:** the fallback is not merely `autoindent`. Several filetypes
+were also having Neovim's own indent scripts suppressed — C# regains `GetCSIndent`, Clojure regains
+`GetClojureIndent`. So validation should expect *correct* indenting, not just non-zero indenting.
+
+**Prerequisites** (confirm before validating):
+- Nothing to install. Two config files plus a spec Purpose correction; no plugin added or re-pinned.
+- Files with **real nested structure**. `testdocs/hello.hs` is seven lines of one-liners with nothing
+  foldable and will report zero folds — that is the fixture, not a defect. It caused exactly that
+  misreading during implementation. `testdocs/test.md` and `testdocs/csharp-project/Program.cs` are
+  substantial enough; write a scratch file for any language whose fixture is thin.
+- A C# file containing `#region` blocks, with roslyn attached, for the fold-precedence check.
+
+### Prepare
+
+1. `git fetch origin && git checkout fix/align-treesitter-providers`
+2. Launch Neovim: `:Lazy sync` — no-op, no plugin pins touched.
+3. `:messages` — no plugin, LSP or keymap **errors**. Lazy's update notices are expected and fine.
+
+- [ ] Branch checked out, `:Lazy sync` clean, no errors in `:messages`
+
+### Validate
+
+#### AT.1 — The reported defect: C# newline indenting
+
+1. Open `testdocs/csharp-project/Program.cs`.
+2. Put the cursor at the end of a line indented 8 columns, press Enter, and **type a character**.
+3. The new line must be indented — not at column 0.
+
+**Type a character.** Vim strips the autoindent from a line left empty when you leave insert mode, so
+`o` followed by `<Esc>` always shows zero indent whatever the setting. That produced a false negative
+during diagnosis.
+
+4. `:set indentexpr?` — expect `GetCSIndent(v:lnum)`, Neovim's built-in C# indent script. If it shows
+   the treesitter expression, the guard has not applied.
+
+- [ ] C# indents correctly on newline; `indentexpr` is `GetCSIndent`, not treesitter
+
+#### AT.2 — Filetypes with no indent query and no runtime script
+
+Haskell, F#, HTTP and Vim have neither an `indents.scm` nor a built-in indent script, so they fall to
+`autoindent`/`smartindent`.
+
+1. In a Haskell and an F# buffer, confirm `:set indentexpr?` is empty.
+2. Newline on an indented line preserves the indent.
+
+- [ ] Haskell and F# have empty `indentexpr` and preserve indent on newline
+
+#### AT.3 — Lisp family: configuration that has never been active
+
+`'lisp'` and the `lispwords` tuning in `after/ftplugin/lisp.lua` have been suppressed by the blanket
+`indentexpr` since it was introduced. Nobody has experienced this behaviour, so treat surprises as new
+information rather than as regressions.
+
+1. For `lisp`, `scheme`, `fennel` and `janet`: `:set indentexpr?` is empty and `:set lisp?` is on.
+2. Newline inside a form indents per Lisp rules rather than to column 0.
+3. **Common Lisp specifically**: write a `defmethod`, `defgeneric` or `defclass` and confirm the body
+   indents as a definition body, not as a function call's arguments. That is what the `lispwords`
+   entries exist for.
+4. Clojure is different and worth checking separately: it has Neovim's own `indent/clojure.vim`, so
+   `:set indentexpr?` shows `GetClojureIndent()` rather than being empty. That is correct — it is a
+   purpose-built Clojure indenter, better than generic `'lisp'`.
+
+- [ ] Lisp-family indenting behaves sensibly; `lispwords` takes effect for Common Lisp; Clojure uses
+      `GetClojureIndent`
+
+#### AT.4 — parinfer and vim-sexp
+
+Both were suppressed by the same override.
+
+1. In a Lisp or Clojure buffer, edit parens and confirm `nvim-parinfer` adjusts structure as expected.
+2. Confirm vim-sexp motions and slurp/barf still behave.
+
+- [ ] parinfer and vim-sexp behave correctly with `indentexpr` no longer overriding them
+
+#### AT.5 — Lua is unchanged
+
+Lua is the one filetype that keeps the treesitter indent expression.
+
+1. `:set indentexpr?` in a Lua buffer shows the treesitter expression.
+2. Indenting behaves as it did before this change.
+
+- [ ] Lua indenting unchanged
+
+#### AT.6 — C# `#region` folds keep precedence
+
+This is the guarantee the provider ordering exists to protect.
+
+1. Open a C# file with `#region` / `#endregion` blocks and wait for roslyn to attach.
+2. Confirm each region folds as a single unit.
+3. Fold and unfold a few times; the regions must behave as before this change.
+
+- [ ] C# `#region` folds work and are LSP-provided as before
+
+#### AT.7 — Markdown folds by heading
+
+1. Open `testdocs/test.md`.
+2. `zM` — the document collapses to its heading outline.
+3. Confirm nested headings produce nested levels, and that the **nested-list folds still work** —
+   list folding was the only folding markdown had before, and the indent fallback exists to keep it.
+4. `zR` reopens everything.
+
+- [ ] Markdown folds by heading with nested levels; list folding retained
+
+#### AT.8 — Folds appear where a query exists
+
+Use files with real structure, not the thin fixtures.
+
+1. Lua, Haskell and a Lisp-family buffer: confirm structural folds exist (`zM` closes something).
+2. F# has no `folds.scm` and no server installed, so it gets the indent fallback — confirm it still
+   folds by indentation rather than not at all.
+
+- [ ] Structural folds present in Lua, Haskell and a Lisp buffer; F# still folds by indent
+
+#### AT.9 — Asciidoctor is untouched
+
+- **WHEN** an asciidoctor buffer is opened
+- Confirm folding still comes from `vim-asciidoctor` and ufo supplies nothing.
+
+- [ ] Asciidoctor section folding unchanged
+
+#### AT.10 — No `UnhandledPromiseRejection`, anywhere
+
+The May 2026 commit this change reverses was reacting to exactly this error, and it was reproduced
+during implementation from an over-long provider list. Two things to exercise:
+
+1. Open the markdown float (`<leader>?`, then `:MarkdownPopup`) and a Conjure HUD/eval popup.
+2. Watch `:messages` throughout the session for `UnhandledPromiseRejection`.
+
+- [ ] No `UnhandledPromiseRejection` in any buffer, including floats and the Conjure HUD
+
+#### AT.11 — Nothing opens folded
+
+`foldlevel` and `foldlevelstart` are both 99, so this should hold — but it is the most visible way
+this change could irritate.
+
+1. Open several files of different filetypes.
+2. Confirm none opens with folds already closed.
+
+- [ ] No buffer opens with folds closed
+
+#### AT.12 — Clean startup and syntax
+
+1. Fresh `nvim` (no args) — `:messages` shows no plugin, LSP or keymap **errors**. Lazy's update
+   notices are expected.
+2. `find . -name '*.lua' -not -path './.git/*' -not -path './build/*' -print0 | xargs -0 luac -p`
+3. `stylua --check lua/ after/`
+4. `openspec validate align-treesitter-providers --strict` and `openspec validate --all --strict`
+
+- [ ] No errors in `:messages`; `luac -p`, `stylua --check` and `openspec validate` all pass
+
+### Raise PR & merge
+
+- [ ] All validation steps pass (AT.1–AT.12), with any defect and its fix logged inline as a
+      blockquote note
+- [ ] Record the verdict on whether restoring `'lisp'` indenting actually feels right — the design's
+      open question. It has never been active, so there is no prior experience to appeal to.
+- [ ] Raise PR: `fix/align-treesitter-providers` → `main`
+- [ ] Review and approve PR
+- [ ] Merge PR
+
+### Post-merge
+
+- [ ] `git checkout main && git pull origin main`
+- [ ] Re-confirm AT.1 and AT.7 on the merged config
+- [ ] Change archived and the deltas promoted

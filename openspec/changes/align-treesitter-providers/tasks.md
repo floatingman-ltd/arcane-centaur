@@ -65,7 +65,7 @@
 
 ## 4. Manual validation (required — this is a runtime change)
 
-- [ ] 4.1 Add a `## Change · align-treesitter-providers` section to `openspec/TEST_PLAN.md`, following the existing sections' structure (branch, prerequisites, then numbered Prepare / Validate / Raise PR & merge / Post-merge).
+- [x] 4.1 Add a `## Change · align-treesitter-providers` section to `openspec/TEST_PLAN.md`, following the existing sections' structure (branch, prerequisites, then numbered Prepare / Validate / Raise PR & merge / Post-merge).
 - [ ] 4.2 **Indent, the reported defect.** In `testdocs/csharp-project/Program.cs`, put the cursor at the end of a line indented 8 columns, press Enter and type a character. The new line must be indented 8, not 0. (Type a character — Vim strips autoindent from a line left empty, which will otherwise make a passing result look like a failure.)
 - [ ] 4.3 Repeat 4.2 for Haskell and F#, which have no indent query and now rely on `autoindent`/`smartindent`.
 - [ ] 4.4 **Lisp family — the part nobody has experienced.** For each of `lisp`, `clojure`, `scheme` and `janet`, confirm `indentexpr` is empty, `'lisp'` is on, and newline inside a form indents per Lisp rules. For Common Lisp specifically, check the `lispwords` entries take effect: a `defmethod` / `defgeneric` / `defclass` body should indent as a definition body, not as a function call's arguments. This configuration has never been active, so treat unexpected results as new information rather than a regression.
