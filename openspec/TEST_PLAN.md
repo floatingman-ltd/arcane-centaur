@@ -2902,3 +2902,157 @@ this change could irritate.
 > Unlike the `replace-glow-renderer` archive, this abort left **no partial write** — `git status` was
 > clean afterwards. So the non-atomicity is real but not universal; committing first remains the right
 > precaution rather than something to rely on being unnecessary.
+
+---
+
+## Change · fix-open-url-wsl-opener
+
+**Branch:** `fix/open-url-wsl-opener`
+
+Fixes `util.open_url` doing nothing visible under WSL, and makes the URL recoverable when an opener silently no-ops.
+
+**The recorded diagnosis was wrong, and that matters for how this is validated.** `recommendations/ideas.md` blamed the console INFO notification being easy to miss. That branch is unreachable here: WSLg exports `DISPLAY=:0` and `WAYLAND_DISPLAY=wayland-0`, so `term.is_console` is `false`. The real cause is opener ordering — `xdg-open` is first in the list and executable, finds no Linux browser, falls through to `w3m` in a detached job with no tty, shows nothing, and exits `0`. So do not validate this by looking for a notification that never fired.
+
+**Two behavioural changes, both intended:**
+
+- **The opener order is now platform-dependent.** Under WSL: `wslview`, `explorer.exe`, `xdg-open`, `open`. Everywhere else the existing order is unchanged.
+- **The URL is surfaced on every call.** It goes to the `+` register always, and is echoed to the command line (through the message history) on the non-console path. This deliberately clobbers the clipboard; the echo says so.
+
+**Prerequisites** (confirm before validating):
+- Nothing to install. One Lua function plus four documentation pages; no plugin added or re-pinned.
+- `wslview` is *not* installed on this machine, which is the interesting case — validation should land on `explorer.exe`. If you install `wslu` first you will be testing the other branch.
+- The Docker preview services these commands target, running: `markserv` on 8090, `plantuml-server` on 8080, `marp` on 8880. All three were up when this section was written.
+- A Windows browser reachable from WSL, since success is "a browser window appears on the Windows desktop".
+
+### Prepare
+
+1. `git fetch origin && git checkout fix/open-url-wsl-opener`
+2. Launch Neovim: `:Lazy sync` — no-op, no plugin pins touched.
+3. `:messages` — no plugin, LSP or keymap **errors**. Lazy's update notices are expected and fine.
+
+- [ ] Branch checked out, `:Lazy sync` clean, no errors in `:messages`
+
+### Validate
+
+#### OU.1 — The reported defect: `,sp` opens a browser
+
+1. Confirm markserv is up: `docker ps --filter name=markserv` shows `127.0.0.1:8090->8080/tcp`.
+2. Open `testdocs/test.md` from the repo root.
+3. Press `,sp`.
+4. A browser window or tab must appear **on the Windows desktop** showing the rendered document at `http://localhost:8090/testdocs/test.md`.
+
+Before this change, this produced no visible result at all.
+
+- [ ] `,sp` opens the rendered markdown in the Windows browser
+
+#### OU.2 — The URL reaches the clipboard
+
+1. Put something identifiable on the clipboard first, so a stale value cannot be mistaken for success — in Neovim, yank a line of text with `yy`.
+2. Confirm it is there: `:echo getreg('+')` shows that line.
+3. Press `,sp`.
+4. `:echo getreg('+')` — expect `http://localhost:8090/testdocs/test.md`.
+
+Step 1 is the point of the case. Without it a clipboard that already happened to hold the URL would pass.
+
+- [ ] The `+` register holds the preview URL after `,sp`, replacing what was there before
+
+#### OU.3 — The URL survives in `:messages`
+
+1. Press `,sp`.
+2. Note the echo on the command line: `open_url: http://localhost:8090/testdocs/test.md (copied to clipboard)`.
+3. Do something that would clear a transient message — press `j` a few times, then `:` and `<Esc>`.
+4. `:messages` — the same `open_url: …` line must still be listed.
+
+This is what makes a silent opener failure recoverable, so it is the case that matters most if the ordering ever regresses.
+
+- [ ] The `open_url:` line appears on the command line and is still present in `:messages` afterwards
+
+#### OU.4 — The opener actually chosen is the Windows one
+
+1. In Neovim: `:lua local t = require("config.terminal") print(t.is_wsl, t.is_console)` — expect `true false`.
+2. `:lua print(vim.fn.executable("wslview"), vim.fn.executable("explorer.exe"), vim.fn.executable("xdg-open"))` — expect `0 1 1`.
+3. Given those three values, the first executable opener in the WSL order is `explorer.exe`. `xdg-open` is executable but must now come after it.
+
+Step 2 is the discriminator: `xdg-open` being executable is exactly why the old fixed order never reached `explorer.exe`.
+
+- [ ] `is_wsl` is true, `is_console` is false, `wslview` absent, `explorer.exe` and `xdg-open` both present
+
+#### OU.5 — A second caller: PlantUML
+
+1. Confirm the server is up: `docker ps --filter name=plantuml`.
+2. Open a `.puml` file, or write a scratch one containing `@startuml` / `Alice -> Bob: hello` / `@enduml`.
+3. Run `:PumlPreview`.
+4. A browser tab must appear on the Windows desktop showing the rendered PNG.
+5. `:echo getreg('+')` — expect a `http://localhost:8080/png/…` URL.
+
+- [ ] `:PumlPreview` opens the diagram in the Windows browser and leaves its URL on the clipboard
+
+#### OU.6 — A third caller: Marp
+
+1. Confirm the server is up: `docker ps --filter name=marp`.
+2. Open a Markdown file under the directory the marp service mounts.
+3. Run `:MarpPreview`.
+4. A browser tab must appear showing the slide deck at `http://localhost:8880/…`.
+
+If the marp service is not mounting a directory containing a usable deck, record that and skip — it tests the same code path as OU.1 and OU.5.
+
+- [ ] `:MarpPreview` opens the slide deck in the Windows browser
+
+#### OU.7 — Console path unchanged
+
+1. From a shell, launch Neovim with no display: `env -u DISPLAY -u WAYLAND_DISPLAY ~/nvim-linux-x86_64.appimage testdocs/test.md`
+2. Confirm the branch is active: `:lua print(require("config.terminal").is_console)` — expect `true`.
+3. Press `,sp`.
+4. Expect an INFO notification containing the full URL. Expect **no** `(copied to clipboard)` echo — the console path deliberately does not echo, because the notification already carries the URL.
+5. `:echo getreg('+')` — the URL must still be there. The clipboard write is unconditional.
+6. No browser should open.
+
+Note that with `DISPLAY` unset the clipboard provider falls back to OSC 52, so step 5 confirms the register was written rather than confirming the Windows clipboard received it.
+
+- [ ] Console mode notifies with the URL, does not echo, does not open a browser, and still sets the register
+
+#### OU.8 — The "no opener found" WARN still fires
+
+1. In a scratch Neovim session, stub out every opener before calling:
+
+```
+:lua Real = vim.fn.executable
+:lua vim.fn.executable = function(c) if c == "wslview" or c == "explorer.exe" or c == "xdg-open" or c == "open" then return 0 end return Real(c) end
+:lua require("config.util").open_url("http://example.invalid/probe")
+```
+
+2. Expect a WARN notification naming the openers that were tried and the URL, prefixed `open_url: no browser opener found`.
+3. Under WSL the list in that message must read `wslview, explorer.exe, xdg-open, open` — it is generated from the same table the loop walks, so a wrong order here means a wrong order everywhere.
+4. Quit this session without saving; the stub is deliberately destructive to `vim.fn.executable`.
+
+- [ ] The WARN fires, names all four openers in WSL order, and includes the URL
+
+#### OU.9 — No errors introduced
+
+1. In a normal session, exercise `,sp` once.
+2. `:messages` — shows no errors. The `open_url:` echo lines are expected content, not errors.
+
+- [ ] `:messages` shows no errors after exercising the command
+
+#### OU.10 — Documentation renders
+
+1. `./docker/antora/run.sh antora-playbook.yml`
+2. Open `build/site/arcane-centaur/other/architecture.html` — the *Open URL Behaviour* section must show the two-row platform/opener-priority table.
+3. Check `content/diagrams.html`, `content/presentations.html` and `getting-started.html` for the corrected opener order, and that `wslview` now reads as optional.
+
+- [ ] The docs build and the four changed pages render the new opener order
+
+### Raise PR & merge
+
+- [ ] Every OU box above ticked
+- [ ] `recommendations/ideas.md` updated — entry removed from the queue and the wrong diagnosis corrected rather than silently dropped
+- [ ] Raise PR: `fix/open-url-wsl-opener` → `main`
+- [ ] Review and approve PR
+- [ ] Merge PR
+
+### Post-merge
+
+- [ ] `git checkout main && git pull origin main`
+- [ ] Re-confirm OU.1 and OU.3 on the merged config
+- [ ] Change archived and the deltas promoted
+- [ ] Purpose paragraph of `openspec/specs/open-url/spec.md` corrected by hand — it names the old fixed opener order and `openspec archive` does not touch Purpose prose

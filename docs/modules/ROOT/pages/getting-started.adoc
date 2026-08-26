@@ -457,13 +457,12 @@ both affect everyday use.
 |===
 |Binary |Purpose |Install
 |`win32yank.exe` |Clipboard integration — yanking to and from the Windows clipboard |https://github.com/equalsraf/win32yank/releases[GitHub release]; put it on your `$PATH` inside WSL
-|`wslview` |Opens URLs in your Windows browser |`sudo apt install -y wslu`
+|`wslview` |Opens URLs in your Windows browser |`sudo apt install -y wslu` — optional
 |===
 
-Without `wslview`, `util.open_url` falls back to printing the URL as a notification so you can copy
-it manually — the same behaviour the config uses on a headless console. Without `win32yank.exe`,
-Neovim's clipboard provider has nothing to bridge to Windows; see
-xref:editor/clipboard.adoc[the Clipboard guide] for the per-environment provider setup.
+`wslview` is a convenience rather than a requirement. `util.open_url` tries it first under WSL, then falls back to `explorer.exe`, which is always present and reaches the same Windows browser. Either way the URL is also copied to the clipboard and echoed to the command line, so it stays recoverable from `:messages`.
+
+Without `win32yank.exe`, Neovim's clipboard provider has nothing to bridge to Windows; see xref:editor/clipboard.adoc[the Clipboard guide] for the per-environment provider setup.
 
 ---
 
