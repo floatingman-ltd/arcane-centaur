@@ -6,6 +6,16 @@ vim.b.maplocalleader = ","
 -- unaffected either way (they don't use treesitter). The in-editor renderer does
 -- use treesitter, and needs this highlight active.
 vim.treesitter.start()
+-- Deliberately exempt from the indents.scm guard in lua/plugins/treesitter.lua:
+-- markdown is not in HIGHLIGHT_FILETYPES (it is handled here so preview tooling
+-- can override it), and it is one of only two languages that actually ships an
+-- indents.scm -- so this assignment is correct rather than the harmful
+-- unguarded case the guard exists to prevent.
+--
+-- If upstream ever drops markdown/indents.scm this line becomes the same defect:
+-- indentexpr answering 0 while outranking autoindent. Check with
+--   :lua =#vim.api.nvim_get_runtime_file("queries/markdown/indents.scm", true)
+-- and delete this line if it returns 0.
 vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
 
 -- Route preview keymap to the in-editor popup (console) or the browser (GUI).

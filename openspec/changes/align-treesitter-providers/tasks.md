@@ -1,23 +1,67 @@
 ## 1. Guard the indent expression
 
-- [ ] 1.1 In the `FileType` autocmd at `lua/plugins/treesitter.lua:50-55`, resolve the buffer's filetype to a treesitter language with `vim.treesitter.language.get_lang(ft)` and set `indentexpr` only when `nvim_get_runtime_file("queries/<lang>/indents.scm", true)` is non-empty. Leave `vim.treesitter.start()` unconditional — highlighting is unaffected and every filetype in the list has a `highlights.scm`.
-- [ ] 1.2 Compute the check rather than hardcoding `{ lua, markdown }` (design D1). A list would be correct today and silently wrong the moment upstream ships another query — the exact failure mode that produced this defect.
-- [ ] 1.3 Comment *why* the guard exists, naming the precedence that makes an unguarded `indentexpr` harmful: it outranks `'lisp'`, `cindent`, `smartindent` and `autoindent`, so setting it without a query removes indenting rather than adding it.
-- [ ] 1.4 Verify per filetype that `indentexpr` is now empty for `lisp`, `clojure`, `scheme`, `fennel`, `janet`, `fsharp`, `vim`, `http`, `cs` and `haskell`, and still set for `lua`.
-- [ ] 1.5 `after/ftplugin/markdown.lua:9` sets `indentexpr` directly and markdown *does* ship a query, so the assignment stays (design D5). Add a comment recording that it is deliberately exempt from the guard, and what would have to change if upstream ever dropped `markdown/indents.scm`.
+- [x] 1.1 In the `FileType` autocmd at `lua/plugins/treesitter.lua:50-55`, resolve the buffer's filetype to a treesitter language with `vim.treesitter.language.get_lang(ft)` and set `indentexpr` only when `nvim_get_runtime_file("queries/<lang>/indents.scm", true)` is non-empty. Leave `vim.treesitter.start()` unconditional — highlighting is unaffected and every filetype in the list has a `highlights.scm`.
+- [x] 1.2 Compute the check rather than hardcoding `{ lua, markdown }` (design D1). A list would be correct today and silently wrong the moment upstream ships another query — the exact failure mode that produced this defect.
+- [x] 1.3 Comment *why* the guard exists, naming the precedence that makes an unguarded `indentexpr` harmful: it outranks `'lisp'`, `cindent`, `smartindent` and `autoindent`, so setting it without a query removes indenting rather than adding it.
+- [x] 1.4 Verify per filetype that `indentexpr` is now empty for `lisp`, `clojure`, `scheme`, `fennel`, `janet`, `fsharp`, `vim`, `http`, `cs` and `haskell`, and still set for `lua`.
+- [x] 1.5 `after/ftplugin/markdown.lua:9` sets `indentexpr` directly and markdown *does* ship a query, so the assignment stays (design D5). Add a comment recording that it is deliberately exempt from the guard, and what would have to change if upstream ever dropped `markdown/indents.scm`.
+
+> **Finding — the fallback is better than the proposal assumed.** The design said filetypes without an
+> indent query would fall back to `autoindent`/`smartindent`, or `'lisp'` for the Lisp family. In fact
+> several fall back to **Neovim's own built-in filetype indent scripts**, which the blanket
+> `indentexpr` was also suppressing:
+>
+> | filetype | indentexpr after the guard | source |
+> |---|---|---|
+> | `cs` | `GetCSIndent(v:lnum)` | `indent/cs.vim` — purpose-built C# indenting |
+> | `clojure` | `GetClojureIndent()` | `indent/clojure.vim` — purpose-built Clojure indenting |
+> | `lua` | treesitter | has an `indents.scm`, correct |
+> | `haskell`, `fsharp`, `http`, `vim` | *(none)* | no runtime script; `autoindent`/`smartindent` |
+> | `lisp`, `scheme`, `fennel`, `janet` | *(none)* | `'lisp'` + `lispwords` from the ftplugins |
+>
+> Measured after the guard: C# `src=4 -> new=4` via `GetCSIndent`; Clojure `src=7 -> new=7` via
+> `GetClojureIndent`. So C# gains real C# indenting rather than merely "same as the line above", and
+> Clojure gains real Clojure indenting rather than generic `'lisp'`. Validation in group 4 should
+> expect *correct* indenting, not just non-zero indenting.
 
 ## 2. Restore the fold providers
 
-- [ ] 2.1 In `lua/plugins/ufo.lua`, change the default return from `{ "lsp", "indent" }` to `{ "lsp", "treesitter", "indent" }`. LSP stays first so Roslyn's C# `#region` folds keep precedence.
-- [ ] 2.2 Change the markdown branch from `{ "indent" }` to `{ "lsp", "treesitter", "indent" }`. Include `lsp` deliberately even though `marksman` is not installed — inert now, automatic later (design D3).
-- [ ] 2.3 Leave the asciidoctor branch returning `""`; `vim-asciidoctor` keeps owning section folds.
-- [ ] 2.4 Rewrite the glow comment as **history**, not deletion (design D4): treesitter folding was disabled in May 2026 (commit `1912875`) because of `UnhandledPromiseRejection` errors in glow's preview buffer; glow is gone, its replacement float does not reproduce it, and ufo now checks for a fold query itself at `provider/treesitter.lua:160`. Without this, someone rediscovers the folklore and re-disables the provider.
-- [ ] 2.5 Do **not** add a query-existence guard for folds — ufo already does it. Duplicating it would drift from ufo's own behaviour (design D2).
+- [x] 2.1 In `lua/plugins/ufo.lua`, change the default return from `{ "lsp", "indent" }` to `{ "lsp", <second> }`, where the second slot is `treesitter` when the language ships a `folds.scm` and `indent` when it does not. LSP stays first so Roslyn's C# `#region` folds keep precedence. **(Revised — see the note below; the original three-element list is not a valid value.)**
+- [x] 2.2 Change the markdown branch from `{ "indent" }` to `{ "treesitter", "indent" }`. **(Revised — `lsp` deliberately omitted; with two slots it would displace the indent fallback that list folding needs, in exchange for a client that is not installed.)**
+- [x] 2.3 Leave the asciidoctor branch returning `""`; `vim-asciidoctor` keeps owning section folds.
+- [x] 2.4 Rewrite the glow comment as **history**, not deletion (design D4): treesitter folding was disabled in May 2026 (commit `1912875`) because of `UnhandledPromiseRejection` errors in glow's preview buffer; glow is gone, its replacement float does not reproduce it, and ufo now checks for a fold query itself at `provider/treesitter.lua:160`.
+- [x] 2.5 ~~Do **not** add a query-existence guard for folds — ufo already does it.~~ **Reversed.** ufo's guard prevents an *error* when a query is missing; it does not choose a fallback. With only two slots, choosing is the configuration's job, so `has_fold_query()` now mirrors the indent guard in `treesitter.lua`.
+
+> **Design issue found during implementation — D2 and D3 revised.** `provider_selector` accepts at most
+> **two** providers, a main and a fallback (`ufo/fold/manager.lua:110-121`). A third raises
+> `UnhandledPromiseRejection` and ufo then produces **no folds at all** — it does not degrade.
+> Measured: Lua had `maxfoldlevel=2` before the change and `0` with `{ "lsp", "treesitter", "indent" }`,
+> so the first attempt made folding strictly worse than the state it was fixing. Caught by comparing
+> against `main` rather than by reading the result in isolation.
+>
+> Note this is the **same error class** the May 2026 commit was reacting to. If it ever reappears,
+> suspect the provider list shape before suspecting buffer types.
+>
+> **A trivial fixture briefly looked like a broken provider.** `testdocs/hello.hs` is seven lines of
+> one-liners with nothing foldable and reported `maxfoldlevel=0`, which read as "Haskell folding is
+> broken". It folds correctly (`maxfoldlevel=1`) on a file with real structure. Same trap that made the
+> old `testdocs/test.md` useless for fold testing — fold checks need files with nested constructs.
+>
+> Verified after the revision, with no errors and nothing collapsed on open:
+>
+> | filetype | maxfoldlevel | provider |
+> |---|---|---|
+> | lua | 2 | lsp (`lua_ls`) — matches the pre-change baseline |
+> | markdown | 6 | treesitter (heading hierarchy) |
+> | haskell | 1 | treesitter |
+> | clojure | 1 | treesitter |
+> | fsharp | 1 | indent — no `folds.scm`, no server |
+> | asciidoctor | 3 | `vim-asciidoctor`, untouched |
 
 ## 3. Syntax and formatting
 
-- [ ] 3.1 `find . -name '*.lua' -not -path './.git/*' -not -path './build/*' -print0 | xargs -0 luac -p`
-- [ ] 3.2 `stylua --check lua/ after/`
+- [x] 3.1 `find . -name '*.lua' -not -path './.git/*' -not -path './build/*' -print0 | xargs -0 luac -p`
+- [x] 3.2 `stylua --check lua/ after/`
 
 ## 4. Manual validation (required — this is a runtime change)
 
@@ -38,9 +82,9 @@
 
 ## 5. Correct the overclaiming spec Purpose
 
-- [ ] 5.1 `openspec/specs/treesitter-editing/spec.md` opens by claiming treesitter provides "syntax highlighting, indentation, and semantic text objects/motions for non-Lisp languages (F#, C#, Haskell, Lua)". The indentation half is false for three of those four — only Lua ships an `indents.scm`. Correct the Purpose to say indentation applies only where a query exists.
-- [ ] 5.2 This **cannot** be done by a delta: deltas operate on requirements, not Purpose prose, so `openspec archive` will not do it. Edit the spec directly as part of this change and note in the commit that it accompanies the `treesitter-editing` delta, so it does not read as unexplained spec drift.
-- [ ] 5.3 Re-run `openspec validate --all --strict` after the edit.
+- [x] 5.1 `openspec/specs/treesitter-editing/spec.md` opens by claiming treesitter provides "syntax highlighting, indentation, and semantic text objects/motions for non-Lisp languages (F#, C#, Haskell, Lua)". The indentation half is false for three of those four — only Lua ships an `indents.scm`. Correct the Purpose to say indentation applies only where a query exists.
+- [x] 5.2 This **cannot** be done by a delta: deltas operate on requirements, not Purpose prose, so `openspec archive` will not do it. Edit the spec directly as part of this change and note in the commit that it accompanies the `treesitter-editing` delta, so it does not read as unexplained spec drift.
+- [x] 5.3 Re-run `openspec validate --all --strict` after the edit.
 
 ## 6. Ship
 

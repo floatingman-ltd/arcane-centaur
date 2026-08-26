@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Provides Treesitter-based syntax highlighting, indentation, and semantic text objects/motions for non-Lisp languages (F#, C#, Haskell, Lua), delivered via the maintained `main` branch of `nvim-treesitter` (and `nvim-treesitter-textobjects`) through Neovim's core treesitter APIs. Text objects and motions (`af`/`if`, `ac`/`ic`, `aa`/`ia`, `]f`/`[f`, `]F`/`[F`) are gated off for Lisp-family filetypes so vim-sexp retains structural editing there, and no bracket mappings owned by other plugins (gitsigns, vim-unimpaired, diff mode) are overridden.
+Provides Treesitter-based syntax highlighting and semantic text objects/motions for non-Lisp languages (F#, C#, Haskell, Lua), delivered via the maintained `main` branch of `nvim-treesitter` (and `nvim-treesitter-textobjects`) through Neovim's core treesitter APIs. Treesitter indentation is applied only where `nvim-treesitter` ships an `indents.scm` for the language — among these, Lua alone — so that filetypes without a query keep their own indent handling rather than having it suppressed. Text objects and motions (`af`/`if`, `ac`/`ic`, `aa`/`ia`, `]f`/`[f`, `]F`/`[F`) are gated off for Lisp-family filetypes so vim-sexp retains structural editing there, and no bracket mappings owned by other plugins (gitsigns, vim-unimpaired, diff mode) are overridden.
 
 ## Requirements
 

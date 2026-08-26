@@ -1,7 +1,9 @@
 ## MODIFIED Requirements
 
-### Requirement: LSP folds with indent fallback elsewhere
-All other filetypes SHALL use a fold provider chain of LSP, then treesitter, then indent. The LSP provider SHALL be consulted first so server-supplied folds take precedence where a language server is attached. Treesitter folding SHALL be used where the language ships a `folds.scm` query and no LSP folds are available; where no such query exists the provider SHALL degrade to the next in the chain rather than erroring.
+### Requirement: LSP folds with a query-appropriate fallback elsewhere
+All other filetypes SHALL use the LSP fold provider first, so server-supplied folds take precedence where a language server is attached. The fallback provider SHALL be treesitter where the language ships a `folds.scm` query, and indent where it does not. The fallback SHALL be selected by checking for the query rather than from a fixed list of filetypes, so it stays correct as queries are added or removed upstream.
+
+Exactly two providers SHALL be supplied. `nvim-ufo` accepts only a main and a fallback; supplying a third causes it to raise an error and produce no folds at all, so a three-stage LSP/treesitter/indent chain is not available.
 
 Treesitter folding was previously disabled for every filetype. The recorded reason was that it errored on special buffers such as the `glow` preview — a fix made broader than its cause, which removed structural folding from every language to resolve an error in one plugin's terminal buffer. `glow` has since been removed, its replacement float does not reproduce the problem, and `nvim-ufo` now checks for a fold query before using the provider. The exclusion is retained here as history so the reason for the original decision, and the reason it no longer applies, both remain discoverable.
 
@@ -13,19 +15,20 @@ Treesitter folding was previously disabled for every filetype. The recorded reas
 - **WHEN** a buffer's language ships a `folds.scm` query and no language server is attached
 - **THEN** treesitter SHALL supply structural folds
 
-#### Scenario: Languages without a fold query degrade quietly
+#### Scenario: Languages without a fold query fall back to indent
 - **WHEN** a buffer's language ships no `folds.scm` query
-- **THEN** the treesitter provider SHALL be skipped without error
-- **AND** indentation-based folding SHALL be used instead
+- **THEN** the indent provider SHALL be supplied as the fallback instead of treesitter
+- **AND** folding SHALL remain available for that filetype
 
-#### Scenario: Indent fallback
-- **WHEN** no language server is attached and no fold query exists for the filetype
-- **THEN** indentation-based folding SHALL be used as the fallback
+#### Scenario: No more than two providers are supplied
+- **WHEN** the fold provider list is produced for any filetype
+- **THEN** it SHALL contain at most two entries
+- **AND** no `UnhandledPromiseRejection` SHALL occur, and folds SHALL be produced
 
 ### Requirement: Per-filetype fold provider exceptions
 Markdown and asciidoctor buffers SHALL deviate from the default provider chain.
 
-Markdown SHALL use the LSP, treesitter and indent providers, so that document structure is foldable by heading. The LSP provider is included although no markdown language server is currently installed: it contributes nothing while absent, and folds improve automatically if one is added.
+Markdown SHALL use the treesitter provider with an indent fallback, so that document structure is foldable by heading while list folding is retained. The LSP provider is deliberately omitted: no markdown language server is currently installed, and with only two provider slots available including it would displace the indent fallback that list folding depends on.
 
 Asciidoctor SHALL continue to opt out of ufo entirely.
 
@@ -51,4 +54,4 @@ C# buffers SHALL fold using ranges supplied by the Roslyn language server, so th
 
 #### Scenario: Fallback before the server attaches
 - **WHEN** Roslyn is not yet attached (e.g. the file has just opened)
-- **THEN** treesitter or indent-based folds SHALL be used as the fallback
+- **THEN** treesitter folds SHALL be used as the fallback, C# having a `folds.scm` query

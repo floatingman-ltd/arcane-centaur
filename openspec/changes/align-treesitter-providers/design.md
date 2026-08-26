@@ -19,7 +19,8 @@ Constraints worth stating:
 
 - **Filetype ≠ language.** `lisp` → `commonlisp`, `janet` → `janet_simple`, `cs` → `c_sharp`. Any query-existence check must resolve the language first. Verified that `vim.treesitter.language.get_lang(ft)` handles all three correctly.
 - **`indentexpr` outranks everything.** Vim's precedence is `indentexpr` → `'lisp'` → `cindent` → `smartindent` → `autoindent`. Setting it unconditionally does not merely add treesitter indenting; it *removes* whatever the filetype had arranged.
-- **ufo already guards folds.** `ufo/provider/treesitter.lua:160` checks `#get_query_files(lang, 'folds', nil) > 0` before using the provider, so listing `treesitter` for a language without `folds.scm` degrades rather than errors. The indent side has no equivalent guard — that is the asymmetry this change corrects.
+- **ufo accepts at most two providers.** `provider_selector` takes a main and a fallback (`ufo/fold/manager.lua:110-121`); a third raises `UnhandledPromiseRejection` and ufo then produces no folds at all. This constraint was discovered during implementation and reshaped D2 and D3.
+- **ufo guards the treesitter provider against a missing query** (`provider/treesitter.lua:160`), so it will not *error* where no `folds.scm` exists — but it does not choose a fallback. With only two slots, selecting the second provider is the configuration's job.
 - **`foldlevel` and `foldlevelstart` are both 99** (`lua/options.lua:42-43`), so new folds never collapse a buffer on open.
 
 ## Goals / Non-Goals
@@ -51,17 +52,25 @@ In the `FileType` autocmd, resolve the buffer's language with `vim.treesitter.la
 - _Alternative rejected — set `cindent` for the C-like filetypes (`c_sharp`, `fsharp`)._ Tempting, but it is a *new* behaviour nobody asked for, and `smartindent` already covers the reported case. If C# indenting still disappoints once the override is gone, that is a separate, informed decision.
 - _Cost:_ one `nvim_get_runtime_file` call per `FileType` event. Negligible, and it can be memoised per language if it ever shows up.
 
-**D2 — Restore `treesitter` to the fold provider chain as `{ "lsp", "treesitter", "indent" }`.**
+**D2 — Restore `treesitter` to the fold providers, choosing the second slot by query availability.**
 
-- _Why this order:_ LSP first protects C# `#region` folds, which come from Roslyn and are covered by their own requirement in `code-folding`. Treesitter fills in where no server is attached — which, given `marksman` and `fsautocomplete` are missing, is most filetypes here. Indent remains the last resort.
-- _Why not guard it like D1:_ ufo already does (`provider/treesitter.lua:160`). Duplicating the check would be redundant and would drift from ufo's own behaviour.
-- _Alternative rejected — treesitter before LSP._ It would give more consistent folds across filetypes, but demotes Roslyn's `#region` folds, which is a stated requirement and a thing the user explicitly asked to keep.
+**Revised during implementation.** This decision originally specified `{ "lsp", "treesitter", "indent" }`. That is not a valid value: `provider_selector` accepts at most **two** providers, a main and a fallback (`ufo/fold/manager.lua:110-121`), and a third raises `UnhandledPromiseRejection` — after which ufo produces **no folds at all**. It does not degrade. Measured: Lua had `maxfoldlevel=2` before the change and `0` with a three-element list, so the first attempt made folding strictly worse.
 
-**D3 — Markdown becomes `{ "lsp", "treesitter", "indent" }`, not indent-only.**
+The chain is therefore `{ "lsp", <second> }`, where the second slot is `treesitter` when the language ships a `folds.scm` and `indent` when it does not.
 
-- _Why treesitter:_ it is the only thing that can produce heading folds here. Verified on `testdocs/test.md`: six fold levels tracking the heading hierarchy, 14 headings carrying levels, `zM` collapsing all 133 lines, no errors.
-- _Why include `lsp` when `marksman` is not installed:_ it is inert with no client attached, and it means installing marksman later improves folds with no config change. Costs nothing now, removes a future gotcha.
-- _Alternative rejected — `{ "treesitter", "indent" }`._ Marginally more honest about today's reality, but guarantees someone has to remember to edit this line when marksman appears.
+- _Why LSP first:_ it protects C# `#region` folds, which come from Roslyn and have their own requirement in `code-folding`.
+- _Why compute the second slot:_ with only two slots there is no room for a blanket third fallback, so the choice has to be made deliberately. This makes the fold side symmetric with D1's indent guard — both ask "does the query exist?" — which is a more coherent design than the original, not merely a workaround.
+- _This supersedes the original reasoning that no guard was needed_ because ufo self-guards at `provider/treesitter.lua:160`. That guard prevents an *error* when a query is missing; it does not choose a fallback. With two slots, choosing is our job.
+- _Alternative rejected — `{ "lsp", "treesitter" }` everywhere._ Simpler, but leaves any language with no server and no fold query — F# here — with no folds at all, losing the indent folding it has today.
+- _Alternative rejected — treesitter before LSP._ More consistent across filetypes, but demotes Roslyn's `#region` folds, which the user explicitly asked to keep.
+
+**D3 — Markdown becomes `{ "treesitter", "indent" }`, not indent-only.**
+
+**Revised during implementation**, for the same two-slot reason as D2. The original specified `{ "lsp", "treesitter", "indent" }`, reasoning that including `lsp` cost nothing while `marksman` was absent and would pay off if it were installed. With only two slots that is no longer free: including `lsp` would displace the `indent` fallback.
+
+- _Why treesitter first:_ it is the only thing that can produce heading folds here. Verified on `testdocs/test.md`: six fold levels tracking the heading hierarchy, `zM` collapsing the document to its outline, no errors.
+- _Why keep `indent` as the fallback rather than `lsp`:_ `marksman` is not installed, so the `lsp` slot would be dead today in exchange for losing the list folding markdown currently has — trading a real capability for a hypothetical one.
+- _Consequence to accept:_ if `marksman` is ever installed, this line must be revisited deliberately. That is a worse property than the original design claimed, and it is a genuine cost of the two-slot limit rather than a preference.
 
 **D4 — Keep the glow history in the `code-folding` spec, rewritten rather than deleted.**
 
@@ -81,7 +90,8 @@ Markdown *has* an indent query, so the assignment is correct. It is deliberately
 - **Lisp-family indenting changes for the first time.** `'lisp'`, `lispwords`, parinfer and vim-sexp have all been suppressed, so restoring them is a real behavioural shift in four filetypes — and one nobody has actually experienced. → Validate each Lisp filetype separately rather than assuming one result generalises. If `'lisp'` proves worse than the current always-zero behaviour, that is worth knowing, but it is hard to see how.
 - **C# `#region` folds could regress** if the provider ordering is wrong. → Explicit validation step; it is the one fold behaviour with a dedicated requirement.
 - **Treesitter folds may disagree with LSP folds** where both exist (Lua via `lua_ls`, C# via Roslyn). ufo takes the first provider that returns ranges, so LSP wins and treesitter is never consulted there. → Not a conflict in practice, but worth confirming rather than assuming.
-- **The May 2026 error might not have been glow-specific.** The commit blamed "special/temporary buffers"; if something else in the config still creates such buffers, the `UnhandledPromiseRejection` could return. → The obvious candidates are the new markdown float (`buftype=nofile`, already verified clean) and Conjure's HUD. Exercise both during validation.
+- **The May 2026 error might not have been glow-specific.** The commit blamed "special/temporary buffers"; if something else in the config still creates such buffers, the `UnhandledPromiseRejection` could return. → The obvious candidates are the new markdown float (`buftype=nofile`, already verified clean) and Conjure's HUD. Exercise both during validation. **Note this same error was reproduced during implementation from an over-long provider list** — so if it reappears, suspect the list shape before suspecting buffer types.
+- **A trivial fixture can look like a broken provider.** `testdocs/hello.hs` is seven lines of one-liners with nothing foldable, and reported `maxfoldlevel=0` — briefly mistaken for Haskell folding being broken. It folds correctly (`maxfoldlevel=1`) on a file with real structure. → Validate folds against files that actually contain nested constructs; the same trap previously made `testdocs/test.md` useless for fold testing.
 
 ## Migration Plan
 
