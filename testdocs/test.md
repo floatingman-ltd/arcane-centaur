@@ -12,6 +12,8 @@ Short paragraph, for contrast.
 
 Plain text, then **bold**, then _italic_, then **_bold italic_**, then ~~strikethrough~~, then `inline code`, then a [link](https://neovim.io), then a bare URL: https://github.com/MeanderingProgrammer/render-markdown.nvim
 
+A link to a sibling document: [the IDE layout fixture](ide-layout-verification.md). Marksman resolves internal references like this one — hover and go-to-definition work here, and nowhere else in this file.
+
 Inline code with awkward content: `min(0.7 * columns, 120)`, `<leader>?`, `:MarkdownPopup`, `vim.wo[win].linebreak = true`
 
 ## Headings at every level

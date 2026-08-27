@@ -11,6 +11,13 @@ The config SHALL register `marksman` via the native `vim.lsp.config`/`vim.lsp.en
 - **WHEN** the user opens a `.md` file and `marksman` is on `$PATH`
 - **THEN** `marksman` attaches to the buffer and the shared LSP keymaps (`gd`, `K`, `gr`, `<leader>rn`, `<leader>ca`, `<leader>e`, `[d`, `]d`) are active
 
+#### Scenario: Hover resolves internal references only
+
+- **WHEN** the cursor is inside a wiki link or a relative link to another document in the workspace
+- **THEN** hover SHALL show that document's content, and go-to-definition SHALL jump to it
+- **WHEN** the cursor is on a heading, plain prose, or an external URL
+- **THEN** hover SHALL return nothing and no window SHALL open, which is correct behaviour rather than a failure
+
 #### Scenario: Missing binary does not crash
 
 - **WHEN** `marksman` is not installed or not on `$PATH`

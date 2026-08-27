@@ -3164,12 +3164,15 @@ Nothing in the diff points at either. Validate them directly rather than inferri
 
 1. Open `testdocs/test.md`.
 2. `:lua print(vim.inspect(vim.tbl_map(function(c) return c.name end, vim.lsp.get_clients({ bufnr = 0 }))))` — expect `{ "marksman" }`.
-3. Put the cursor on a heading and press `K` — a hover window should appear.
-4. `:lua vim.lsp.buf.document_symbol()` — the document's headings should be listed.
+3. `:lua vim.lsp.buf.document_symbol()` — the document's headings should be listed.
+4. Put the cursor **inside the link text** on the "A link to a sibling document" line — the `[the IDE layout fixture](ide-layout-verification.md)` part — and press `K`. A hover window must appear showing the target document's content.
+5. With the cursor in the same place, press `gd` — it must jump to `testdocs/ide-layout-verification.md`.
+
+**Hover works only on internal references.** marksman resolves wiki links and relative links to other documents in the workspace; on a heading, plain prose, or an external `https://` link it returns nothing and no window opens. Confirmed by probing the server directly at four positions in this file, all of which returned `nil` before the sibling link was added. Do not read a missing window on a heading as a broken server — that is what happened on the first attempt at this case, and it is the same false-negative shape as the earlier lua_ls documentation-window confusion.
 
 Allow a second or two after opening; the server starts on first markdown buffer.
 
-- [ ] `marksman` attaches, hover responds, document symbols list the headings
+- [ ] `marksman` attaches, document symbols list the headings, and hover plus `gd` resolve the sibling-document link
 
 #### LS.2 — marksman offers no formatting
 
