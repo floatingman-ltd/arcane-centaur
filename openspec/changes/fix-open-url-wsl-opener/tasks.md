@@ -5,6 +5,7 @@
 - [x] 1.3 Make the opener list platform-dependent: `{ "wslview", "explorer.exe", "xdg-open", "open" }` when `term.is_wsl`, the existing order otherwise.
 - [x] 1.4 Update the function's doc comment to describe the WSL-first order and the clipboard/echo behaviour, and record *why* the order matters (`xdg-open` exits 0 after failing) so it is not "simplified" back later.
 - [x] 1.6 Exempt WSL from the console short-circuit: `if term.is_console and not term.is_wsl then`, with a comment recording why `is_console` is the wrong question under WSL.
+- [x] 1.7 Replace `explorer.exe` as the WSL primary with PowerShell `Start-Process`, and restructure the opener table to hold argv builders rather than bare command names. `explorer.exe` mangles any URL containing `=`; `cmd.exe /c start` truncates at the first `&`.
 - [x] 1.5 Syntax-check: `find . -name '*.lua' -print0 | xargs -0 luac -p`.
 
 ## 2. Documentation
@@ -19,6 +20,7 @@
 
 ## 3. Test plan
 
+- [x] 3.3 Add OU.5b as a regression guard for the `explorer.exe` URL-mangling defect, and re-open OU.1 and OU.4, which passed against the opener that turned out to be wrong.
 - [x] 3.1 Add a `## Change · fix-open-url-wsl-opener` section to `openspec/TEST_PLAN.md` with `Prepare` / `Validate` / `Raise PR & merge` / `Post-merge` subsections, following the structure of the existing sections.
 - [ ] 3.2 Walk every validation step live in a real Neovim session and tick each box only once genuinely confirmed.
 

@@ -43,18 +43,18 @@ The original entry in `recommendations/ideas.md` attributed the symptom to that 
 
 ### D1 — Platform-dependent opener order, not exit-code detection
 
-Under WSL, try `wslview` and `explorer.exe` first:
+Under WSL, try the Windows openers first:
 
-```lua
-local openers = term.is_wsl and { "wslview", "explorer.exe", "xdg-open", "open" }
-  or { "xdg-open", "open", "wslview", "explorer.exe" }
-```
+| Platform | Opener priority |
+|---|---|
+| WSL | `wslview`, `powershell.exe`, `explorer.exe`, `xdg-open`, `open` |
+| Everything else | `xdg-open`, `open`, `wslview`, `explorer.exe` |
 
 The obvious alternative — keep the order and fall through to the next opener when one fails — **does not work here**. `xdg-open` exits 0 after failing to display anything, so there is no failure to detect. Any exit-code scheme would still stop at `xdg-open` and still show nothing. Ordering is the only signal available.
 
 WSL is the one platform where the ordering is unambiguous: `explorer.exe` is always present and always reaches the user's real (Windows) browser, whereas `xdg-open` only works if a Linux browser was separately installed. On native Linux and macOS the current order is already correct, so it is left alone.
 
-`wslview` stays ahead of `explorer.exe` where it exists — it is the purpose-built tool and handles path translation — but is not a dependency, since `explorer.exe` covers every WSL install.
+`wslview` stays at the front where it exists — it is the purpose-built tool — but is not a dependency, because PowerShell covers every WSL install. See D6 for why `explorer.exe` is no longer the primary despite always being present.
 
 ### D2 — Surface the URL on every call
 
@@ -91,6 +91,33 @@ This is deliberately narrower than fixing `is_console` itself. That flag is read
 
 Surfacing happens first, unconditionally, rather than only on failure. There is no reliable failure signal to hang it off (D1), so "on failure" is not an implementable option.
 
+### D6 — PowerShell `Start-Process`, not `explorer.exe` or `cmd.exe`
+
+`explorer.exe` was the obvious WSL opener — always present, no dependency — and it is wrong. It refuses to treat a string containing `=` as a URL and opens a File Explorer window instead. Confirmed live on two shapes: a trailing `=` (`.../png/…0G0=`, the padding PlantUML URLs carry) and a mid-query `=` (`google.com/search?q=plantuml`). Both opened a folder.
+
+`cmd.exe /c start ""` is worse. Measured against a local HTTP listener, so the evidence is a logged request rather than an inference:
+
+| Invocation | URL sent | URL the server received |
+|---|---|---|
+| `explorer.exe` | `?q=plantuml` | *(no request — opened a folder)* |
+| `cmd.exe /c start ""` | `?q=a&hl=en&x=1` | `?q=a` |
+| `powershell.exe … Start-Process` | `?q=a&hl=en&x=1` | `?q=a&hl=en&x=1` |
+
+`cmd.exe` truncates at the first `&` and opens a **different page** without reporting anything — a silent-wrong-answer failure, the hardest kind to notice. It also tries to execute the remainder (`operable program or batch file`) and emits a UNC warning whenever the cwd is a Linux path.
+
+So the WSL primary is:
+
+```lua
+{ "powershell.exe", "-NoProfile", "-NonInteractive", "-Command",
+  "Start-Process '" .. url:gsub("'", "''") .. "'" }
+```
+
+PowerShell single-quoted strings escape a literal quote by doubling it, which is the only escaping the URL needs there.
+
+This forces the opener table to hold argv *builders* rather than bare command names, since the openers no longer share a single `{ cmd, url }` shape.
+
+`explorer.exe` is retained as a last resort under WSL rather than dropped. It is wrong for URLs containing `=` but correct for those without, and if PowerShell and `wslview` are both missing it is better than nothing — the alternative would fall through to `xdg-open`, which is broken here for a different reason.
+
 ## Risks / Trade-offs
 
 - **The clipboard is clobbered on every call.** Accepted, and announced in the echo. A dedicated named register would be non-destructive but nobody would think to look in it.
@@ -98,4 +125,6 @@ Surfacing happens first, unconditionally, rather than only on failure. There is 
 - **`explorer.exe` writes a "UNC paths are not supported" note to stderr when the cwd is a Linux path.** The job is detached and its stderr is not captured, so this is invisible in practice — but it means `explorer.exe` should never be used with a filesystem path here, only with the `http://` URLs these callers pass.
 - **If the user later installs a Linux browser, WSL will still prefer the Windows one.** Deliberate: under WSL the Windows browser is the one on the visible desktop. Anyone wanting the other order can reorder one table.
 - **The WSL exemption means a genuinely headless WSL session now opens a browser instead of notifying.** That is the intended behaviour — `explorer.exe` works there — but it does mean `open_url` no longer has any path that both declines to open and is reachable under WSL. A WSL user who wants the notification instead has no way to ask for it. Nobody has.
+- **PowerShell is slow to start** — a few hundred milliseconds against `explorer.exe`'s near-instant launch. The job is detached, so nothing blocks; the browser simply appears a moment later. Correctness is worth more than the latency here, and `wslview` still takes precedence where installed.
+- **`explorer.exe` stays in the list while being known-wrong for some URLs.** A user who has neither `wslview` nor PowerShell would get a folder window for a PlantUML URL and no explanation. Judged better than no attempt at all, but it is a degraded path, not a supported one.
 - **macOS remains broken and now visibly inconsistent**, since WSL got the exemption and macOS did not. Logged rather than guessed at.

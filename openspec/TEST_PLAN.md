@@ -2945,7 +2945,9 @@ Fixes `util.open_url` doing nothing visible under WSL, and makes the URL recover
 
 Before this change, this produced no visible result at all.
 
-- [X] `,sp` opens the rendered markdown in the Windows browser
+- [ ] `,sp` opens the rendered markdown in the Windows browser
+
+> **Passed on the first attempt, then invalidated by OU.5 and re-opened.** The opener that satisfied it was `explorer.exe`, which OU.5 then showed mangles any URL containing `=`. `,sp` only passed because its URL happens to have none. The WSL primary is now PowerShell `Start-Process`, so this has to be re-run against the opener that will actually ship.
 
 #### OU.2 — The URL reaches the clipboard
 
@@ -2956,7 +2958,7 @@ Before this change, this produced no visible result at all.
 
 Step 1 is the point of the case. Without it a clipboard that already happened to hold the URL would pass.
 
-- [ ] The `+` register holds the preview URL after `,sp`, replacing what was there before
+- [X] The `+` register holds the preview URL after `,sp`, replacing what was there before
 
 #### OU.3 — The URL survives in `:messages`
 
@@ -2967,17 +2969,21 @@ Step 1 is the point of the case. Without it a clipboard that already happened to
 
 This is what makes a silent opener failure recoverable, so it is the case that matters most if the ordering ever regresses.
 
-- [ ] The `open_url:` line appears on the command line and is still present in `:messages` afterwards
+- [X] The `open_url:` line appears on the command line and is still present in `:messages` afterwards
+
+> OU.2 and OU.3 stand despite the opener change. Both run before any opener is selected — `setreg` is the first statement in `open_url` and the echo immediately follows the console branch — so neither depends on which opener wins.
 
 #### OU.4 — The opener actually chosen is the Windows one
 
 1. In Neovim: `:lua local t = require("config.terminal") print(t.is_wsl, t.is_console)` — expect `true false`.
-2. `:lua print(vim.fn.executable("wslview"), vim.fn.executable("explorer.exe"), vim.fn.executable("xdg-open"))` — expect `0 1 1`.
-3. Given those three values, the first executable opener in the WSL order is `explorer.exe`. `xdg-open` is executable but must now come after it.
+2. `:lua print(vim.fn.executable("wslview"), vim.fn.executable("powershell.exe"), vim.fn.executable("explorer.exe"), vim.fn.executable("xdg-open"))` — expect `0 1 1 1`.
+3. Given those four values, the first executable opener in the WSL order is `powershell.exe`. `explorer.exe` and `xdg-open` are both executable but must now come after it.
 
-Step 2 is the discriminator: `xdg-open` being executable is exactly why the old fixed order never reached `explorer.exe`.
+Step 2 is the discriminator on two counts: `xdg-open` being executable is why the old fixed order never reached the Windows openers at all, and `explorer.exe` being executable is why the order among *those* matters too.
 
-- [ ] `is_wsl` is true, `is_console` is false, `wslview` absent, `explorer.exe` and `xdg-open` both present
+- [ ] `is_wsl` is true, `is_console` is false, `wslview` absent, `powershell.exe` / `explorer.exe` / `xdg-open` all present
+
+> **Rewritten after OU.5.** The original asserted `explorer.exe` would be chosen, which was correct for the code at the time and is now wrong. Re-run required.
 
 #### OU.5 — A second caller: PlantUML
 
@@ -2988,6 +2994,29 @@ Step 2 is the discriminator: `xdg-open` being executable is exactly why the old 
 5. `:echo getreg('+')` — expect a `http://localhost:8080/png/…` URL.
 
 - [ ] `:PumlPreview` opens the diagram in the Windows browser and leaves its URL on the clipboard
+
+> **Failed on the first attempt, and found the biggest defect in this change.** `:PumlPreview` opened a *Windows Explorer folder window*, not a browser.
+>
+> The URL was not at fault — the server returns `200 image/png` for it, with or without its trailing `=`. The opener was. `explorer.exe` refuses to treat a string containing `=` as a URL and falls back to opening a folder. Confirmed on two shapes: the trailing `=` that base64 padding leaves on every PlantUML URL, and a mid-query `=` in `google.com/search?q=plantuml`. Both opened a folder.
+>
+> `cmd.exe /c start ""` was measured as a replacement and rejected — it is worse. Against a local HTTP listener it delivered `?q=a` when sent `?q=a&hl=en&x=1`: truncated at the first `&`, opening a **different page**, reporting nothing. PowerShell `Start-Process` delivered the URL intact.
+>
+> Fixed by making PowerShell the WSL primary and demoting `explorer.exe` to last resort. `,sp` had passed OU.1 only because its URL contains no `=`, which is why OU.1 and OU.4 were re-opened.
+
+#### OU.5b — URL punctuation survives the opener
+
+The regression guard for the OU.5 defect. Run it in Neovim, on the real code path.
+
+1. `:lua vim.fn.jobstart = function(a) print(table.concat(a, " | ")) end`
+2. `:lua require("config.util").open_url("https://example.com/search?q=a&hl=en")`
+3. The printed argv must be `powershell.exe | -NoProfile | -NonInteractive | -Command | Start-Process 'https://example.com/search?q=a&hl=en'` — the URL whole, `=` and `&` intact, inside single quotes.
+4. `:lua require("config.util").open_url("http://x/it's")` — the argv must show `'http://x/it''s'`, the literal quote doubled. PowerShell single-quoted strings escape a quote that way; without it the argument would terminate early.
+5. Confirm `explorer.exe` appears nowhere in either argv.
+6. Quit this session without saving — `jobstart` is stubbed for its lifetime and no URL will actually open.
+
+Stubbing `jobstart` is what makes this checkable without opening a browser window per assertion.
+
+- [ ] Both argv lines are exactly as above, with `=`, `&` and the doubled quote preserved
 
 #### OU.6 — A third caller: Marp
 

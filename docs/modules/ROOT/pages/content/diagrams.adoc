@@ -265,7 +265,7 @@ encoding scheme via `python3`, then constructs the URL:
 http://localhost:8080/png/<encoded>
 ....
 
-This URL is opened with the first available browser opener — `wslview` then `explorer.exe` under WSL, `xdg-open` then `open` everywhere else. The URL is also copied to your clipboard and echoed on the command line, so you can open it by hand if no opener is available. The Docker server renders the diagram and serves it as a PNG directly in your browser.
+This URL is opened with the first available browser opener — `wslview` then PowerShell's `Start-Process` under WSL, `xdg-open` then `open` everywhere else. PowerShell is used rather than `explorer.exe` because the encoded diagram URL can end in `=`, which `explorer.exe` does not recognise as a URL. The URL is also copied to your clipboard and echoed on the command line, so you can open it by hand if no opener is available. The Docker server renders the diagram and serves it as a PNG directly in your browser.
 
 [[configuration]]
 == Configuration
@@ -385,7 +385,7 @@ link:#starting-the-plantuml-server[Docker setup] below
 |*python3* |Encode `.puml` buffers for the server API |Pre-installed on
 most Linux distros
 
-|*Browser opener* |Open rendered diagram URLs in the browser |`wslview`/`explorer.exe` (WSL), `xdg-open` (Linux), `open` (macOS) — auto-detected
+|*Browser opener* |Open rendered diagram URLs in the browser |`wslview`/`powershell.exe` (WSL), `xdg-open` (Linux), `open` (macOS) — auto-detected
 
 |*marksman* _(optional)_ |Markdown LSP |`sudo apt install marksman`
 |===

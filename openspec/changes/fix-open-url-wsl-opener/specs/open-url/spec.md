@@ -6,15 +6,23 @@
 
 On every call, regardless of environment or outcome, it SHALL write the URL to the `+` register.
 
-The opener priority SHALL depend on the platform. When `term.is_wsl` is `true` the order SHALL be `wslview`, `explorer.exe`, `xdg-open`, `open`. Otherwise it SHALL be `xdg-open`, `open`, `wslview`, `explorer.exe`. In both cases the first executable opener SHALL be used.
+The opener priority SHALL depend on the platform. When `term.is_wsl` is `true` the order SHALL be `wslview`, `powershell.exe`, `explorer.exe`, `xdg-open`, `open`. Otherwise it SHALL be `xdg-open`, `open`, `wslview`, `explorer.exe`. In both cases the first executable opener SHALL be used.
+
+The chosen opener SHALL receive the URL unaltered, including any `=` and `&` characters. `powershell.exe` SHALL be invoked through `Start-Process` with the URL in a single-quoted argument, any literal quote doubled.
 
 When `term.is_console` is `true` **and** `term.is_wsl` is `false`, it SHALL skip all opener attempts and instead emit a `vim.notify` at `INFO` level containing the URL. Under WSL the opener attempts SHALL be made regardless of `term.is_console`, because `explorer.exe` reaches the Windows browser whether or not a display is exported. In every case where openers are attempted, it SHALL echo the URL to the command line through the message history first. The existing WARN notification for "no opener found" in GUI environments SHALL be retained.
 
 #### Scenario: WSL prefers the Windows opener
 
 - **WHEN** `util.open_url(url)` is called, `term.is_console` is `false` and `term.is_wsl` is `true`
-- **THEN** `wslview` SHALL be tried first, and `explorer.exe` SHALL be tried before `xdg-open` and `open`
+- **THEN** `wslview` SHALL be tried first, followed by `powershell.exe`, then `explorer.exe`, and only then `xdg-open` and `open`
 - **THEN** the URL SHALL open in the Windows default browser even when no Linux browser is installed
+
+#### Scenario: URL punctuation survives the opener
+
+- **WHEN** `util.open_url(url)` is called under WSL with a URL containing `=` or `&`
+- **THEN** the browser SHALL be sent the complete URL, not a truncated or reinterpreted one
+- **THEN** `explorer.exe` SHALL NOT be the opener chosen while `wslview` or `powershell.exe` is available, because it does not treat a string containing `=` as a URL
 
 #### Scenario: Non-WSL keeps the Linux-first order
 
