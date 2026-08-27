@@ -536,7 +536,7 @@ Markdown buffers have `spell` on by default; code filetypes set `nospell` (see
 
 ### Post-merge
 
-- [X] `git checkout main && git pull origin main`
+- [X] `git checkout main && git pull origin main` (`main` at `9474590`)
 - [X] Launch Neovim: `:Lazy sync` — confirm clean with no errors
 
 ---
@@ -647,7 +647,7 @@ typing: `*` / `#` (next/previous occurrence of the word under the cursor) and `n
 
 ### Post-merge
 
-- [X] `git checkout main && git pull origin main`
+- [X] `git checkout main && git pull origin main` (`main` at `9474590`)
 - [X] Launch Neovim: `:Lazy sync` — confirm clean
 
 ---
@@ -769,7 +769,7 @@ command from Normal mode (type `:` then paste).
 
 ### Post-merge
 
-- [X] `git checkout main && git pull origin main`
+- [X] `git checkout main && git pull origin main` (`main` at `9474590`)
 - [X] Launch Neovim: `:Lazy sync` — confirm clean
 
 ---
@@ -939,7 +939,7 @@ definitions across `lua/config/`).
 
 ### Post-merge
 
-- [X] `git checkout main && git pull origin main`
+- [X] `git checkout main && git pull origin main` (`main` at `9474590`)
 - [X] Launch Neovim: `:Lazy sync` — confirm clean
 
 ---
@@ -1178,7 +1178,7 @@ and send code TO the REPL — they are not active inside the REPL terminal itsel
 
 ### Post-merge
 
-- [X] `git checkout main && git pull origin main`
+- [X] `git checkout main && git pull origin main` (`main` at `9474590`)
 - [X] Launch Neovim: `:Lazy sync` — confirm clean
 
 ---
@@ -1400,7 +1400,7 @@ two namespaces.
 
 ### Post-merge
 
-- [X] `git checkout main && git pull origin main`
+- [X] `git checkout main && git pull origin main` (`main` at `9474590`)
 - [X] Launch Neovim: `:Lazy sync` — confirm clean
 
 ---
@@ -1562,7 +1562,7 @@ separate, optional check you can run any time and isn't a blocker for this chang
 
 ### Post-merge
 
-- [X] `git checkout main && git pull origin main` (fast-forwarded cleanly to `6dae71d`, then `835a831`)
+- [X] `git checkout main && git pull origin main` (`main` at `9474590`) (fast-forwarded cleanly to `6dae71d`, then `835a831`)
 - [X] Launch Neovim: `:Lazy sync` — confirm clean
 - [X] TS.9 (deferred) — docs source review: `navigation.adoc`/`keybindings.adoc` Treesitter Text
       Objects sections read correctly (matched `|===` delimiters, valid `xref:` targets);
@@ -1960,7 +1960,7 @@ six-key table, then invalidated and redone against seven.
 
 ### Post-merge
 
-- [X] `git checkout main && git pull origin main` (`main` at `ae7a3de`)
+- [X] `git checkout main && git pull origin main` (`main` at `9474590`) (`main` at `ae7a3de`)
 - [X] Launch Neovim: `:Lazy sync` — confirm clean
 - [X] Remove the two fixed entries from `recommendations/ideas.md` ("Things that seem broken" — the
       `<M-Space>` trigger and the split accept key). The snippet-navigation entry added by this
@@ -2197,7 +2197,7 @@ These are `ide-layout` requirements this change must not regress.
 
 ### Post-merge
 
-- [X] `git checkout main && git pull origin main` (`main` at `7684430`)
+- [X] `git checkout main && git pull origin main` (`main` at `9474590`) (`main` at `7684430`)
 - [X] Launch Neovim from `main`, re-confirm TK.1 and TK.3 (the two keys that moved) on the merged
       config
 
@@ -2517,7 +2517,7 @@ proposal did not ask for.
 
 ### Post-merge
 
-- [X] `git checkout main && git pull origin main` (`main` at `a7a3310`)
+- [X] `git checkout main && git pull origin main` (`main` at `9474590`) (`main` at `a7a3310`)
 - [X] Re-confirm RG.1 and RG.7 on the merged config
 
 > Confirmed on merged `main`. Worth having done rather than assumed: `,pp` changed meaning from
@@ -2881,7 +2881,7 @@ this change could irritate.
 
 ### Post-merge
 
-- [X] `git checkout main && git pull origin main` (`main` at `df83499`)
+- [X] `git checkout main && git pull origin main` (`main` at `9474590`) (`main` at `df83499`)
 - [X] Re-confirm AT.1 and AT.7 on the merged config
 
 > Confirmed on merged `main` (`776d6e8`). Headless resolution matched: `GetCSIndent(v:lnum)` for C#,
@@ -3107,13 +3107,13 @@ This forces the flags rather than the environment, so it proves the branching lo
 
 - [X] Every OU box above ticked
 - [X] `recommendations/ideas.md` updated — entry removed from the queue and the wrong diagnosis corrected rather than silently dropped
-- [ ] Raise PR: `fix/open-url-wsl-opener` → `main`
-- [ ] Review and approve PR
-- [ ] Merge PR
+- [X] Raise PR: `fix/open-url-wsl-opener` → `main` (PR #183)
+- [X] Review and approve PR
+- [X] Merge PR
 
 ### Post-merge
 
-- [ ] `git checkout main && git pull origin main`
+- [X] `git checkout main && git pull origin main` (`main` at `9474590`)
 - [ ] Re-confirm OU.1 and OU.3 on the merged config
 - [ ] Change archived and the deltas promoted
 - [ ] Purpose paragraph of `openspec/specs/open-url/spec.md` corrected by hand — it names the old fixed opener order and `openspec archive` does not touch Purpose prose
