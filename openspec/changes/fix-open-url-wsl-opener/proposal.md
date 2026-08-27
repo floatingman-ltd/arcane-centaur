@@ -10,7 +10,8 @@ Checking the opener's exit status would not have caught it. `xdg-open` reports s
 
 - Try the Windows openers (`wslview`, `explorer.exe`) **before** the Linux ones when `term.is_wsl` is true. Non-WSL systems keep the existing order.
 - Put the URL on the system clipboard and echo it on the command line on **every** call, including the success paths. When an opener silently does nothing, the URL is still recoverable rather than lost.
-- Keep the console INFO notification and the "no opener found" WARN as they are.
+- Exempt WSL from the console short-circuit. `term.is_console` is derived only from `$DISPLAY`/`$WAYLAND_DISPLAY`, so WSL *without* WSLg would notify and never try `explorer.exe` — which works there regardless of any display.
+- Keep the console INFO notification and the "no opener found" WARN otherwise as they are.
 
 ## Capabilities
 

@@ -8,7 +8,7 @@ On every call, regardless of environment or outcome, it SHALL write the URL to t
 
 The opener priority SHALL depend on the platform. When `term.is_wsl` is `true` the order SHALL be `wslview`, `explorer.exe`, `xdg-open`, `open`. Otherwise it SHALL be `xdg-open`, `open`, `wslview`, `explorer.exe`. In both cases the first executable opener SHALL be used.
 
-When `term.is_console` is `true` it SHALL skip all opener attempts and instead emit a `vim.notify` at `INFO` level containing the URL. Otherwise it SHALL echo the URL to the command line through the message history before attempting any opener. The existing WARN notification for "no opener found" in GUI environments SHALL be retained.
+When `term.is_console` is `true` **and** `term.is_wsl` is `false`, it SHALL skip all opener attempts and instead emit a `vim.notify` at `INFO` level containing the URL. Under WSL the opener attempts SHALL be made regardless of `term.is_console`, because `explorer.exe` reaches the Windows browser whether or not a display is exported. In every case where openers are attempted, it SHALL echo the URL to the command line through the message history first. The existing WARN notification for "no opener found" in GUI environments SHALL be retained.
 
 #### Scenario: WSL prefers the Windows opener
 
@@ -36,10 +36,17 @@ When `term.is_console` is `true` it SHALL skip all opener attempts and instead e
 
 #### Scenario: Console environment notifies with URL
 
-- **WHEN** `util.open_url(url)` is called and `term.is_console` is `true`
+- **WHEN** `util.open_url(url)` is called, `term.is_console` is `true` and `term.is_wsl` is `false`
 - **THEN** a `vim.notify` at `INFO` level SHALL be emitted containing the full URL
 - **THEN** no opener command SHALL be attempted
 - **THEN** no additional command-line echo SHALL be emitted, the notification already carrying the URL
+
+#### Scenario: WSL without a display still opens the browser
+
+- **WHEN** `util.open_url(url)` is called, `term.is_console` is `true` and `term.is_wsl` is `true`
+- **THEN** the console short-circuit SHALL NOT apply
+- **THEN** the WSL opener priority SHALL be used, reaching `explorer.exe`
+- **THEN** the URL SHALL be echoed to the command line as in any other opener attempt
 
 #### Scenario: GUI environment with no opener found
 

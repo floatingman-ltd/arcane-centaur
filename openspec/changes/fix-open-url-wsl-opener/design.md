@@ -77,6 +77,16 @@ Clipboard support is already configured for this environment: `lua/options.lua:6
 
 The "no opener found" WARN is unchanged.
 
+### D5 — WSL is exempt from the console short-circuit
+
+`M.is_console` is derived solely from `$DISPLAY`/`$WAYLAND_DISPLAY` (`lua/config/terminal.lua:77`), which treats "no X11 display" as "no browser exists". Under WSL that inference is wrong: `explorer.exe` reaches the Windows browser whether or not WSLg is exporting a display. So WSL *without* WSLg — an ordinary configuration — would emit a notification and never open anything, which is the same class of failure this change exists to fix.
+
+The guard therefore becomes `if term.is_console and not term.is_wsl then`.
+
+This is deliberately narrower than fixing `is_console` itself. That flag is read by six other call sites (`lua/options.lua:81`, `lua/plugins/plantuml.lua:104`, `lua/plugins/markdown.lua:28`, `after/ftplugin/markdown.lua:28`, `after/ftplugin/asciidoctor.lua:13` and `:102`), where "no display" means something different in each case, so redefining it belongs in a change of its own against the `console-detection` capability.
+
+**macOS has the identical flaw and is not being fixed here.** macOS does not set `$DISPLAY` unless XQuartz is running, so `is_console` is `true` there and `open` — which sits in the opener list specifically for macOS — is never reached. The same one-line exemption (`vim.fn.has("mac") == 1`) would fix it, but there is no macOS available to validate against, and shipping an unverifiable behaviour change is worse than logging it. Recorded in `recommendations/ideas.md`.
+
 ### D4 — Ordering of the surface relative to the open attempt
 
 Surfacing happens first, unconditionally, rather than only on failure. There is no reliable failure signal to hang it off (D1), so "on failure" is not an implementable option.
@@ -87,3 +97,5 @@ Surfacing happens first, unconditionally, rather than only on failure. There is 
 - **The command line gains a message on every preview.** Minor noise; it is one line and it is the thing that makes the failure recoverable.
 - **`explorer.exe` writes a "UNC paths are not supported" note to stderr when the cwd is a Linux path.** The job is detached and its stderr is not captured, so this is invisible in practice — but it means `explorer.exe` should never be used with a filesystem path here, only with the `http://` URLs these callers pass.
 - **If the user later installs a Linux browser, WSL will still prefer the Windows one.** Deliberate: under WSL the Windows browser is the one on the visible desktop. Anyone wanting the other order can reorder one table.
+- **The WSL exemption means a genuinely headless WSL session now opens a browser instead of notifying.** That is the intended behaviour — `explorer.exe` works there — but it does mean `open_url` no longer has any path that both declines to open and is reachable under WSL. A WSL user who wants the notification instead has no way to ask for it. Nobody has.
+- **macOS remains broken and now visibly inconsistent**, since WSL got the exemption and macOS did not. Logged rather than guessed at.

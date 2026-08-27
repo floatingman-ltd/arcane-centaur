@@ -460,7 +460,7 @@ both affect everyday use.
 |`wslview` |Opens URLs in your Windows browser |`sudo apt install -y wslu` — optional
 |===
 
-`wslview` is a convenience rather than a requirement. `util.open_url` tries it first under WSL, then falls back to `explorer.exe`, which is always present and reaches the same Windows browser. Either way the URL is also copied to the clipboard and echoed to the command line, so it stays recoverable from `:messages`.
+`wslview` is a convenience rather than a requirement. `util.open_url` tries it first under WSL, then falls back to `explorer.exe`, which is always present and reaches the same Windows browser — including when WSLg is not running and no `$DISPLAY` is exported. Either way the URL is also copied to the clipboard and echoed to the command line, so it stays recoverable from `:messages`.
 
 Without `win32yank.exe`, Neovim's clipboard provider has nothing to bridge to Windows; see xref:editor/clipboard.adoc[the Clipboard guide] for the per-environment provider setup.
 

@@ -2930,7 +2930,9 @@ Fixes `util.open_url` doing nothing visible under WSL, and makes the URL recover
 2. Launch Neovim: `:Lazy sync` — no-op, no plugin pins touched.
 3. `:messages` — no plugin, LSP or keymap **errors**. Lazy's update notices are expected and fine.
 
-- [ ] Branch checked out, `:Lazy sync` clean, no errors in `:messages`
+- [X] Branch checked out, `:Lazy sync` clean, no errors in `:messages`
+
+> **The "no-op" prediction in step 2 was wrong.** `:Lazy sync` picked up an upstream `nvim-lspconfig` bump (`af9adce` → `3928e63`) and rewrote `lazy-lock.json`. Nothing to do with this change — lazy's own `checker` found it — but the step should not have promised a no-op, since `sync` updates by definition. Committed straight to `main` as `511fe52` under the standing lock-only rule, and this branch rebased onto it, so validation runs against the same pins that will be on `main`.
 
 ### Validate
 
@@ -2943,7 +2945,7 @@ Fixes `util.open_url` doing nothing visible under WSL, and makes the URL recover
 
 Before this change, this produced no visible result at all.
 
-- [ ] `,sp` opens the rendered markdown in the Windows browser
+- [X] `,sp` opens the rendered markdown in the Windows browser
 
 #### OU.2 — The URL reaches the clipboard
 
@@ -2998,18 +3000,42 @@ If the marp service is not mounting a directory containing a usable deck, record
 
 - [ ] `:MarpPreview` opens the slide deck in the Windows browser
 
-#### OU.7 — Console path unchanged
+#### OU.7 — WSL with no display still opens the browser
+
+This is the case the change grew to cover. `is_console` is derived only from `$DISPLAY`/`$WAYLAND_DISPLAY`, which reads "no X11 display" as "no browser" — false under WSL, where `explorer.exe` works regardless. Unsetting both variables simulates WSL without WSLg, which is an ordinary configuration.
 
 1. From a shell, launch Neovim with no display: `env -u DISPLAY -u WAYLAND_DISPLAY ~/nvim-linux-x86_64.appimage testdocs/test.md`
-2. Confirm the branch is active: `:lua print(require("config.terminal").is_console)` — expect `true`.
+2. Confirm the simulation took: `:lua local t = require("config.terminal") print(t.is_console, t.is_wsl)` — expect `true true`.
 3. Press `,sp`.
-4. Expect an INFO notification containing the full URL. Expect **no** `(copied to clipboard)` echo — the console path deliberately does not echo, because the notification already carries the URL.
-5. `:echo getreg('+')` — the URL must still be there. The clipboard write is unconditional.
-6. No browser should open.
+4. A browser window or tab must appear **on the Windows desktop**, exactly as in OU.1. The console short-circuit must not apply.
+5. Expect the `open_url: … (copied to clipboard)` echo on the command line — this is an opener attempt, so it echoes rather than notifying.
+6. Expect **no** INFO notification.
 
-Note that with `DISPLAY` unset the clipboard provider falls back to OSC 52, so step 5 confirms the register was written rather than confirming the Windows clipboard received it.
+Before the WSL exemption, this configuration emitted a notification and opened nothing.
 
-- [ ] Console mode notifies with the URL, does not echo, does not open a browser, and still sets the register
+- [ ] WSL with no display opens the browser, echoes, and does not notify
+
+#### OU.7b — Non-WSL console path unchanged
+
+The console branch still has to work where it is genuinely correct. There is no non-WSL machine here, so force the flag instead of the environment.
+
+1. In a scratch Neovim session, override the flag and call directly:
+
+```
+:lua require("config.terminal").is_wsl = false
+:lua require("config.terminal").is_console = true
+:lua require("config.util").open_url("http://localhost:8090/testdocs/test.md")
+```
+
+2. Expect an INFO notification containing the full URL.
+3. Expect **no** `(copied to clipboard)` echo — the console path deliberately does not echo, because the notification already carries the URL.
+4. `:echo getreg('+')` — the URL must still be there. The clipboard write is unconditional and happens before any branching.
+5. No browser should open.
+6. Quit this session without saving; the overridden flags persist for its lifetime and would skew any later case.
+
+This forces the flags rather than the environment, so it proves the branching logic, not the detection. OU.4 covers detection.
+
+- [ ] Non-WSL console mode notifies with the URL, does not echo, does not open a browser, and still sets the register
 
 #### OU.8 — The "no opener found" WARN still fires
 

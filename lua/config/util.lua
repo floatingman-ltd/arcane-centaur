@@ -67,8 +67,14 @@ function M.open_url(url)
   -- In a console environment there is no graphical browser; surface the URL
   -- as an INFO notification so the user can act on it (copy, open manually).
   -- No echo here — the notification already carries the URL.
+  --
+  -- WSL is exempt. `is_console` is derived solely from $DISPLAY/$WAYLAND_DISPLAY,
+  -- which reads "no X11 display" as "no browser" — false under WSL, where
+  -- explorer.exe reaches the Windows browser whether or not WSLg is exporting a
+  -- display. Without this exemption, WSL without WSLg would notify and never
+  -- open anything.
   local term = require("config.terminal")
-  if term.is_console then
+  if term.is_console and not term.is_wsl then
     vim.notify("open_url: " .. url, vim.log.levels.INFO)
     return
   end

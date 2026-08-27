@@ -673,6 +673,11 @@ which covers:
 No manual override flag is needed. If the detection is wrong for your
 setup, file an issue.
 
+[NOTE]
+====
+The flag answers "is a display exported?", which is not always the same question as "can a browser be reached?". Two environments differ: under WSL, `explorer.exe` opens the Windows browser whether or not WSLg is exporting a display; on macOS, `$DISPLAY` is unset unless XQuartz is running, yet `open` works. `util.open++_++url` carves out WSL explicitly for this reason. macOS is a known gap.
+====
+
 '''''
 
 [[open-url]]
@@ -682,7 +687,9 @@ Every call to `util.open++_++url` writes the URL to the `+` register before anyt
 
 In console mode, `util.open++_++url` then skips all browser-opener attempts and emits an `INFO` notification containing the full URL. Copy it and open it manually (e.g. in w3m, or paste it into a GUI browser on another machine).
 
-In GUI mode it echoes the URL to the command line — via the message history, so it stays readable in `:messages` — and then tries the browser openers in a platform-dependent order:
+WSL is exempt from that short-circuit. `explorer.exe` reaches the Windows browser whether or not WSLg is exporting a display, so a WSL session with no `$DISPLAY` still opens the browser rather than only notifying.
+
+Otherwise it echoes the URL to the command line — via the message history, so it stays readable in `:messages` — and then tries the browser openers in a platform-dependent order:
 
 [cols="1,3"]
 |===
