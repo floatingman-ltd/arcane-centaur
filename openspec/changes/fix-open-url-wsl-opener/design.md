@@ -118,6 +118,20 @@ This forces the opener table to hold argv *builders* rather than bare command na
 
 `explorer.exe` is retained as a last resort under WSL rather than dropped. It is wrong for URLs containing `=` but correct for those without, and if PowerShell and `wslview` are both missing it is better than nothing — the alternative would fall through to `xdg-open`, which is broken here for a different reason.
 
+### D7 — Non-WSL platforms are untouched, and `xdg-open` was checked for the same flaw
+
+On a pure Linux desktop the list is unchanged — `xdg-open`, `open`, `wslview`, `explorer.exe`, in the original order — so this change is a no-op there. The two WSL entries remain at the tail and are simply not executable.
+
+Given that `explorer.exe` and `cmd.exe` both mangled URLs, `xdg-open` was checked for the same defect rather than assumed clean. Pointing `$BROWSER` at a script that logs its argv, all three hostile shapes arrived whole as a single argument:
+
+```
+ARG: [http://localhost:9/search?q=a&hl=en&x=1]
+ARG: [http://localhost:9/png/SoWk0G0=]
+ARG: [http://localhost:9/it's]
+```
+
+This exercised `xdg-open`'s generic `$BROWSER` branch, not the `gio open` / desktop-entry branch a real GNOME or KDE session takes — there are no browser `.desktop` entries on this machine to trigger it. That branch substitutes the URL into the entry's `%u` field as an argv element, so the same reasoning applies, but it has not been run.
+
 ## Risks / Trade-offs
 
 - **The clipboard is clobbered on every call.** Accepted, and announced in the echo. A dedicated named register would be non-destructive but nobody would think to look in it.

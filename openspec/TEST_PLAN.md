@@ -3018,6 +3018,8 @@ Stubbing `jobstart` is what makes this checkable without opening a browser windo
 
 - [ ] Both argv lines are exactly as above, with `=`, `&` and the doubled quote preserved
 
+> `xdg-open` was checked for the same flaw rather than assumed clean, since it is the primary on every non-WSL platform. With `$BROWSER` pointed at a script logging its argv, `?q=a&hl=en&x=1`, a trailing `=` and a literal quote all arrived whole as a single argument. That exercised the generic `$BROWSER` branch, not the `gio open` / desktop-entry branch a real GNOME or KDE session takes — no browser `.desktop` entries exist here to trigger it.
+
 #### OU.6 — A third caller: Marp
 
 1. Confirm the server is up: `docker ps --filter name=marp`.
