@@ -4,11 +4,13 @@
 
 Agreed running order. Details live in the sections below; this is just the queue.
 
-1. **`open_url` silently notifies** — *Things that seem broken*. Makes `,sp` look broken when it has worked. Affects every `open_url` caller, not just `,sp`.
-2. **`marksman` and `fsautocomplete` are configured but not installed** — *Things that seem broken*. Both are `vim.lsp.enable`d and fail silently, so markdown and F# have no LSP at all: no hover, references, folding ranges or real completion. Three documentation defects compound it, including an install command naming a package that does not exist. Now also carries the F# support gap: F# has no indent support of any kind and no fold query either, making it the least capable of the "supported" languages.
-3. **Fourteen capability specs have placeholder Purposes** — *Things that seem broken*. Mechanical but wide; best done as one pass.
+1. **`marksman` and `fsautocomplete` are configured but not installed** — *Things that seem broken*. Both are `vim.lsp.enable`d and fail silently, so markdown and F# have no LSP at all: no hover, references, folding ranges or real completion. Three documentation defects compound it, including an install command naming a package that does not exist. Now also carries the F# support gap: F# has no indent support of any kind and no fold query either, making it the least capable of the "supported" languages.
+2. **Fourteen capability specs have placeholder Purposes** — *Things that seem broken*. Mechanical but wide; best done as one pass.
+3. **`open_url` never reaches `open` on macOS** — *Things that seem broken*. Small and well understood, but unverifiable without a Mac.
 
-**Shipped** (2026-08-25 / 26), kept briefly for context:
+**Shipped** (2026-08-25 / 27), kept briefly for context:
+
+- ~~`open_url` silently notifies~~ — fixed by `fix-open-url-wsl-opener`. **The diagnosis recorded here was wrong**, and worth remembering as a pattern: the INFO-notify branch it blamed was unreachable, because WSLg exports `DISPLAY=:0` and `is_console` was therefore `false`. The real cause was opener ordering — `xdg-open` won, found no Linux browser, fell through to `w3m` in a detached job with no tty, and exited `0`. Investigating turned up two further defects the entry had no inkling of: `explorer.exe` does not treat a URL containing `=` as a URL and opens a folder window instead (confirmed on a trailing `=` and a mid-query `=`; other positions untested), and WSL without WSLg would notify and open nothing.
 
 - ~~`indentexpr` set without a query~~ and ~~markdown folding on headings~~ — both fixed by `align-treesitter-providers`. C# and Clojure also regained Neovim's own indent scripts, which the blanket override had been suppressing.
 - ~~Three capability specs still reference `glow.nvim`~~ — `code-folding` was resolved by `align-treesitter-providers`; the remaining two by `retire-glow-spec-references`.
@@ -121,7 +123,9 @@ use before deciding.
 
   Best as a single pass rather than piecemeal: fourteen short paragraphs, each derivable from the requirements already in the spec, and the context is cheapest read together. Surfaced during `retire-glow-spec-references`, where `markdown-native-rendering` was deliberately left in this state rather than becoming the one exception.
 
-- **`,sp` looks like it does nothing.** `MdServerPreview` builds the markserv URL and hands it to `util.open_url`, which deliberately skips the browser when `term.is_console` and emits an INFO notification instead (`lua/config/util.lua:51-58`). The reasoning is sound — there is no graphical browser in a console — but an INFO notify is easy to miss entirely, so the command reads as broken when it has in fact worked. Mistaken for a defect during `replace-glow-renderer` validation (RG.9b). Options: put the URL on the clipboard as well, echo it on the command line where it persists, or offer to open it via `wslview`/`explorer.exe` even in console mode, since under WSL a Windows browser *is* usually reachable. Affects any `open_url` caller, not just `,sp`.
+- **`open_url` never reaches `open` on macOS.** `M.is_console` is derived solely from `$DISPLAY`/`$WAYLAND_DISPLAY` (`lua/config/terminal.lua:77`), and macOS sets neither unless XQuartz is running. So `is_console` is `true` there, the console branch short-circuits, and `open` — which sits in the opener list specifically for macOS — is never reached. The same one-line exemption that fixed the equivalent WSL case would fix it: `if term.is_console and not (term.is_wsl or vim.fn.has("mac") == 1)`. Deliberately not applied during `fix-open-url-wsl-opener`, because there is no macOS here to validate against and shipping an unverifiable behaviour change is worse than logging it. Anyone with a Mac can close this in minutes.
+
+  Worth noting the root cause is `is_console` answering "is a display exported?" when callers want "can a browser be reached?". Fixing the flag itself would touch six other call sites, where "no display" means something different in each — so the narrow exemptions are probably right, but the `console-detection` capability deserves a look eventually.
 
 - snippet placeholders cannot be navigated. `snippets` is an active completion source
   (`lua/plugins/blink.lua:26`), so snippet completions are offered and expand — but
