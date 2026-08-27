@@ -29,13 +29,20 @@ These keymaps are active in any buffer where an LSP server has attached
 |Server |Language |Install
 |`fsautocomplete` |F# |`dotnet tool install -g fsautocomplete`
 |`roslyn` |C# |See xref:languages/dotnet.adoc[.NET guide]
-|`marksman` |Markdown |`sudo apt install marksman`
+|`marksman` |Markdown |https://github.com/artempyanykh/marksman/releases[GitHub release binary] → `~/.local/bin`
 |`janet_lsp` |Janet |`jpm install janet-lsp`
 |`haskell-language-server` |Haskell |`ghcup install hls` (managed by haskell-tools.nvim)
 |`lua_ls` |Lua |See xref:languages/lua.adoc[Lua guide]
 |===
 
 _Keymaps defined in `lua/config/lsp.lua`._
+
+[NOTE]
+====
+`marksman` supplies hover, go-to-definition, references, rename, document symbols, code actions and completion — but *not* folding ranges or formatting. Markdown folds come from treesitter with an indent fallback (see xref:editor/navigation.adoc[Navigation]), and no LSP-backed markdown formatter is configured.
+
+`fsautocomplete` supplies all of the above *plus* folding ranges, signature help and formatting, so F# gains LSP folds and format-on-save. It does not supply indentation: F# has no indent script and no treesitter `indents.scm`, so pressing Enter copies the previous line's indent rather than indenting the body. That gap is tracked separately.
+====
 
 '''''
 

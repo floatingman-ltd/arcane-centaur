@@ -18,6 +18,7 @@ Base tools that *every* language needs — Neovim, git, curl, a C compiler, and 
 | xref:#haskell[Haskell] | ghcup, GHC, HLS, haskell-debug-adapter
 | xref:#lisp[Lisp family] | Common Lisp, Clojure, Scheme, Fennel
 | xref:#janet[Janet] | janet, janet-lsp
+| xref:#markdown[Markdown] | marksman
 | xref:#parsers[Treesitter parsers] | The C-compiler requirement
 |===
 
@@ -93,6 +94,13 @@ it is not a gap you need to fill.
 |—
 |—
 |`janet_simple`
+
+|xref:#markdown[Markdown]
+|`marksman`
+|—
+|—
+|—
+|`markdown`
 |===
 
 [NOTE]
@@ -245,6 +253,19 @@ Guide: xref:languages/janet.adoc#prerequisites[Janet Prerequisites]
 |*jpm* |Janet package manager, used to install janet-lsp |Ships with most janet builds — see xref:languages/janet.adoc#prerequisites[the Janet guide]
 |*janet-lsp* |LSP server |`jpm install janet-lsp`
 |===
+
+[[markdown]]
+== Markdown
+
+Guide: xref:editor/code-intelligence.adoc[Code Intelligence]
+
+[cols="1,1,2",options="header"]
+|===
+|Dependency |Purpose |Install
+|*marksman* _(optional)_ |LSP server — hover, go-to-definition, references, rename, document symbols, code actions, completion |https://github.com/artempyanykh/marksman/releases[GitHub release binary] → `~/.local/bin`
+|===
+
+`marksman` supplies no folding ranges and no formatting. Markdown folds come from treesitter with an indent fallback, and no LSP-backed markdown formatter is configured — installing the server deliberately changes neither.
 
 [[parsers]]
 == Treesitter parsers

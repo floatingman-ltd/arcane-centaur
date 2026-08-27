@@ -45,10 +45,12 @@ return {
           return ""
         end
 
-        -- markdown has no language server installed (marksman is configured but
-        -- absent), so the lsp slot would be dead weight -- and with only two slots
-        -- it would cost the indent fallback that keeps list folding working.
-        -- treesitter is what supplies heading folds here.
+        -- marksman is installed and attaches to markdown, but advertises no
+        -- foldingRangeProvider -- so the lsp slot would carry nothing, and with
+        -- only two slots it would cost the indent fallback that keeps list
+        -- folding working. treesitter is what supplies heading folds here.
+        -- (Checked against the running server, not its README: installing
+        -- marksman deliberately changes nothing about folding.)
         if filetype == "markdown" then
           return { "treesitter", "indent" }
         end

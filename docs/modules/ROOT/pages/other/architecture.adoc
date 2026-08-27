@@ -97,7 +97,7 @@ where it is, and how the pieces fit together at startup.
 
 |Markdown
 |✅
-|✅ marksman
+|✅ marksman _(no folds/format)_
 |—
 |—
 |xref:content/markdown.adoc[Markdown guide]
