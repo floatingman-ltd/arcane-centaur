@@ -3125,3 +3125,165 @@ This forces the flags rather than the environment, so it proves the branching lo
 > Rewritten around what the capability is actually for — making the URL *reach* the user, which is not the same as launching a process — with the two silent-failure modes named so the next person does not have to rediscover them.
 >
 > **The archive also promoted two stale clauses from my own delta**, written before the PowerShell finding: one said WSL is exempt from the console short-circuit "because `explorer.exe` reaches the Windows browser", and a scenario asserted the WSL priority reaches `explorer.exe`. Both directly contradicted the *URL punctuation survives the opener* requirement in the same spec, which says `explorer.exe` SHALL NOT be chosen while `wslview` or `powershell.exe` is available. Corrected in place. Worth noting the archive cannot catch this — it promotes delta prose verbatim, so a delta written before a mid-change discovery carries the stale reasoning straight into the live spec.
+
+---
+
+## Change · install-language-servers
+
+**Branch:** `fix/install-language-servers`
+
+Installs `marksman` and `fsautocomplete`, both of which were `vim.lsp.enable`d but absent, and corrects the documentation that made the gap hard to notice.
+
+**The unusual risk in this change is that its most significant effects have no diff.** Two pieces of configuration were already present and inert for want of the F# binary, and both go live purely because the server now exists:
+
+- `lua/plugins/conform.lua:10` — `fsharp = { lsp_format = "prefer" }`. Format-on-save begins rewriting `.fs` files on every write.
+- `lua/plugins/ufo.lua` — F# has no `folds.scm`, so the generic path already returned `{ "lsp", "indent" }`. The first slot stops being dead.
+
+Nothing in the diff points at either. Validate them directly rather than inferring from the code review.
+
+**What deliberately does not change:** markdown folding. `marksman` advertises no `foldingRangeProvider`, so the provider chain stays `treesitter` then `indent`. LS.3 exists to prove installing the server changed nothing, which is the opposite of the usual assertion and easy to skip.
+
+**Prerequisites** (confirm before validating):
+- Both binaries installed: `marksman` in `~/.local/bin` (release `2026-02-08`), `fsautocomplete` 0.83.0 in `~/.dotnet/tools`. Both directories are already on `$PATH`.
+- `testdocs/hello.fs` (a loose file, no project) and `testdocs/fsharp-project/` (with `HelloFs.fsproj`) — both are needed; they test different things.
+- `testdocs/test.md` for the markdown cases.
+- **Take a copy of any `.fs` file before writing to it.** LS.5 deliberately triggers format-on-save; if the formatter misbehaves, the buffer is rewritten.
+
+### Prepare
+
+1. `git fetch origin && git checkout fix/install-language-servers`
+2. `command -v marksman fsautocomplete` — both must resolve. If either does not, the whole section is invalid rather than failing.
+3. Launch Neovim: `:Lazy sync` — no plugin pins are touched by this change, though lazy's checker may still find upstream updates, as it did during `fix-open-url-wsl-opener`.
+4. `:messages` — no plugin, LSP or keymap **errors**.
+
+- [ ] Branch checked out, both binaries resolve, no errors in `:messages`
+
+### Validate
+
+#### LS.1 — marksman attaches to markdown
+
+1. Open `testdocs/test.md`.
+2. `:lua print(vim.inspect(vim.tbl_map(function(c) return c.name end, vim.lsp.get_clients({ bufnr = 0 }))))` — expect `{ "marksman" }`.
+3. Put the cursor on a heading and press `K` — a hover window should appear.
+4. `:lua vim.lsp.buf.document_symbol()` — the document's headings should be listed.
+
+Allow a second or two after opening; the server starts on first markdown buffer.
+
+- [ ] `marksman` attaches, hover responds, document symbols list the headings
+
+#### LS.2 — marksman offers no formatting
+
+1. In the same buffer, `:lua print(vim.lsp.get_clients({ bufnr = 0 })[1].server_capabilities.documentFormattingProvider)` — expect `nil`.
+2. Introduce ragged spacing on a line, then `:w`.
+3. The spacing must be left exactly as typed.
+
+`conform.lua` does not list markdown either, so two independent things would have to be wrong for this to fail. It is cheap and it pins the documented behaviour.
+
+- [ ] No formatting capability, and writing the buffer does not reformat it
+
+#### LS.3 — Markdown folding is unchanged
+
+The point of this case is that installing a language server changed **nothing**. Easy to skip because nothing is expected to happen, which is exactly why a regression here would go unnoticed.
+
+1. In `testdocs/test.md`, `:lua print(vim.inspect(require("ufo").getFolds and "ufo loaded" or "?"))` — just confirms ufo is present.
+2. `zR` to open everything, then `zM` to close everything.
+3. Headings must fold as sections, nested headings producing nested levels.
+4. `zR`, then put the cursor on a nested list item and press `za` — the list must fold.
+5. `:messages` — no `UnhandledPromiseRejection`. That is what a three-provider list would produce, and it yields **no folds at all** rather than degrading.
+
+- [ ] Headings fold, nested lists still fold, no `UnhandledPromiseRejection`
+
+#### LS.4 — fsautocomplete attaches to F#, with and without a project
+
+1. Open `testdocs/hello.fs` — a loose file with no project.
+2. `:lua print(vim.inspect(vim.tbl_map(function(c) return c.name end, vim.lsp.get_clients({ bufnr = 0 }))))` — expect `{ "fsautocomplete" }`.
+3. Press `K` on a function name — hover should respond.
+4. Now open `testdocs/fsharp-project/Program.fs` and repeat step 2.
+
+`fsautocomplete` is a .NET process and slower to start than marksman — give it up to 30 seconds on first launch. A timeout here is not the same as a failure to attach; retry once before recording a defect.
+
+- [ ] `fsautocomplete` attaches to both the loose file and the project file, and hover responds
+
+#### LS.5 — F# format-on-save, which activates with no code change
+
+**Copy the file first**: `cp testdocs/hello.fs /tmp/hello.fs.bak`
+
+1. Open `testdocs/hello.fs` and wait for the server to attach (LS.4 step 2).
+2. Introduce clearly wrong formatting — add three or four extra spaces of indent to a line inside a function, and a run of blank lines.
+3. `:w`
+4. The buffer must be reformatted: the indentation normalised and the blank-line run collapsed.
+5. `:messages` — no formatter errors.
+6. Restore: `cp /tmp/hello.fs.bak testdocs/hello.fs` if the result is not something you want committed.
+
+This is the change's most surprising effect. Nobody edited a formatter config, but `.fs` files are now rewritten on every write. If the result is unwelcome, that is a finding worth recording — the fix would be dropping `fsharp` from `conform.lua`, but it should be a deliberate decision rather than a discovery months later.
+
+- [ ] Writing an F# buffer reformats it, with no errors
+
+#### LS.6 — F# folds now come from the language server
+
+1. Open `testdocs/fsharp-project/Program.fs` and wait for attach.
+2. `zR`, then put the cursor inside a function body and press `za` — the function must fold as a unit.
+3. `zM` — everything foldable closes.
+
+Before this change the `lsp` slot was dead for F# and folding fell to `indent` alone. Structural folds that follow the *code* rather than the whitespace are the difference to look for.
+
+- [ ] F# folds structurally, not merely by indentation
+
+#### LS.7 — F# indentation is still broken, and that is expected
+
+Installing an LSP does not fix indentation, and this case exists so that is not misread as a regression introduced here.
+
+1. In an F# buffer, put the cursor at the end of a line ending in `->` or `=`.
+2. Press Enter and **type a character**. Vim strips autoindent from a line left empty, so `o` then `<Esc>` always shows zero indent whatever the setting — that produced a false negative during `align-treesitter-providers`.
+3. The new line will merely copy the previous line's indent rather than indenting the body.
+4. `:set indentexpr?` — expect it to be empty.
+
+That is the documented gap, tracked separately. A *changed* result here would be the surprise.
+
+- [ ] F# still copies the previous indent; `indentexpr` is empty — the known gap, unchanged
+
+#### LS.8 — A missing binary still degrades silently
+
+Proves the "missing binary does not crash" scenario in both new specs without uninstalling anything.
+
+1. From a shell: `env PATH=/usr/bin:/bin ~/nvim-linux-x86_64.appimage testdocs/test.md`
+2. `:lua print(#vim.lsp.get_clients({ bufnr = 0 }))` — expect `0`.
+3. `:messages` — no errors about a missing executable. Neovim must start clean.
+4. Quit. This session has a deliberately crippled `PATH` and is good for nothing else.
+
+- [ ] With both binaries off `PATH`, Neovim starts clean and simply attaches no client
+
+#### LS.9 — No errors introduced
+
+1. In a normal session, open `testdocs/test.md`, then `testdocs/hello.fs`, then `testdocs/csharp-project/Program.cs`.
+2. `:messages` — shows no errors.
+
+The criterion is *no errors*, not *empty*. Lazy's notices and LSP progress messages are expected content.
+
+- [ ] `:messages` shows no errors after exercising all three filetypes
+
+#### LS.10 — Documentation renders
+
+1. `./docker/antora/run.sh antora-playbook.yml`
+2. `languages/setup.html` — the *At a glance* matrix must show a Markdown row with `marksman`, and a Markdown section must exist with the GitHub-release install and the note that it supplies no folding or formatting.
+3. `editor/code-intelligence.html` — the LSP table must show the GitHub-release install for marksman, and the note below the table must render as a callout box.
+4. `content/diagrams.html` — same corrected install command.
+5. `other/architecture.html` — the Markdown row's LSP cell reads `✅ marksman (no folds/format)`.
+6. Confirm `sudo apt install marksman` appears nowhere on the site.
+
+- [ ] All four pages render the corrected install command, and the phantom apt package is gone
+
+### Raise PR & merge
+
+- [ ] Every LS box above ticked
+- [ ] `recommendations/ideas.md` updated — entry removed from the queue, F# indent gap retained as its own item, stale `indentexpr` entry deleted
+- [ ] Raise PR: `fix/install-language-servers` → `main`
+- [ ] Review and approve PR
+- [ ] Merge PR
+
+### Post-merge
+
+- [ ] `git checkout main && git pull origin main`
+- [ ] Re-confirm LS.4 and LS.5 on the merged config
+- [ ] Change archived and the deltas promoted
+- [ ] Purpose paragraph of `openspec/specs/code-folding/spec.md` corrected by hand — it still says treesitter folding is disabled and markdown uses indent only, which `align-treesitter-providers` overturned and which its own line 48 already contradicts

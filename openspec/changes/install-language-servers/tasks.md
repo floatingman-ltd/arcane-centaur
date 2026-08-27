@@ -21,7 +21,7 @@
 
 ## 4. Test plan
 
-- [ ] 4.1 Add a `## Change · install-language-servers` section to `openspec/TEST_PLAN.md` with `Prepare` / `Validate` / `Raise PR & merge` / `Post-merge` subsections, following the structure of the existing sections. Cover the two silent activations especially — F# format-on-save and F# LSP folds arrive with no edit, so nothing in the diff points at them.
+- [x] 4.1 Add a `## Change · install-language-servers` section to `openspec/TEST_PLAN.md` with `Prepare` / `Validate` / `Raise PR & merge` / `Post-merge` subsections, following the structure of the existing sections. Cover the two silent activations especially — F# format-on-save and F# LSP folds arrive with no edit, so nothing in the diff points at them.
 - [ ] 4.2 Walk every validation step live in a real Neovim session and tick each box only once genuinely confirmed.
 
 ## 5. Close out
