@@ -28,4 +28,4 @@
 
 - [x] 4.1 Remove the `open_url` entry from the priority queue and the *Things that seem broken* section of `recommendations/ideas.md`, correcting the recorded diagnosis so the wrong cause is not carried forward.
 - [x] 4.2 Log the macOS gap in `recommendations/ideas.md`: `is_console` is `true` on macOS because `$DISPLAY` is unset without XQuartz, so `open` is in the opener list but unreachable. Same one-line exemption as WSL, deliberately not applied here because there is no macOS to validate against.
-- [ ] 4.3 After archiving, update the Purpose paragraph of `openspec/specs/open-url/spec.md` by hand — it names the old fixed opener order, and `openspec archive` does not touch Purpose prose.
+- [x] 4.3 After archiving, update the Purpose paragraph of `openspec/specs/open-url/spec.md` by hand — it names the old fixed opener order, and `openspec archive` does not touch Purpose prose.

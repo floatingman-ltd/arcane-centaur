@@ -3117,5 +3117,11 @@ This forces the flags rather than the environment, so it proves the branching lo
 - [X] Re-confirm OU.1 and OU.3 on the merged config
 
 > Confirmed on merged `main` (`9474590`). `,sp` opened the Windows browser and the `open_url:` line survived in `:messages`. The argv resolution was also re-checked headlessly against the merged code: PowerShell `Start-Process` with the trailing `=` and the `&` both intact.
-- [ ] Change archived and the deltas promoted
-- [ ] Purpose paragraph of `openspec/specs/open-url/spec.md` corrected by hand — it names the old fixed opener order and `openspec archive` does not touch Purpose prose
+- [X] Change archived and the deltas promoted
+
+> Archived as `2026-08-27-fix-open-url-wsl-opener`. One requirement modified on `open-url`; `openspec validate --all --strict` passes 40/40, no active changes remain. Unlike the `replace-glow-renderer` archive this one neither aborted nor part-wrote.
+- [X] Purpose paragraph of `openspec/specs/open-url/spec.md` corrected by hand — it names the old fixed opener order and `openspec archive` does not touch Purpose prose
+
+> Rewritten around what the capability is actually for — making the URL *reach* the user, which is not the same as launching a process — with the two silent-failure modes named so the next person does not have to rediscover them.
+>
+> **The archive also promoted two stale clauses from my own delta**, written before the PowerShell finding: one said WSL is exempt from the console short-circuit "because `explorer.exe` reaches the Windows browser", and a scenario asserted the WSL priority reaches `explorer.exe`. Both directly contradicted the *URL punctuation survives the opener* requirement in the same spec, which says `explorer.exe` SHALL NOT be chosen while `wslview` or `powershell.exe` is available. Corrected in place. Worth noting the archive cannot catch this — it promotes delta prose verbatim, so a delta written before a mid-change discovery carries the stale reasoning straight into the live spec.
