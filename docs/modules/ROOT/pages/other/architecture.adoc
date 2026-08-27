@@ -20,7 +20,7 @@ where it is, and how the pieces fit together at startup.
 | xref:#github[.github/] | GitHub Actions (docs CI)
 | xref:#claude[.claude/] | Claude Code skills & settings
 | xref:#console-detection[Console Detection] | How is_console is determined
-| xref:#open-url[Open URL Behaviour] | Browser vs. notification
+| xref:#open-url[Open URL Behaviour] | Clipboard, echo and platform opener order
 |===
 
 '''''
@@ -673,16 +673,37 @@ which covers:
 No manual override flag is needed. If the detection is wrong for your
 setup, file an issue.
 
+[NOTE]
+====
+The flag answers "is a display exported?", which is not always the same question as "can a browser be reached?". Two environments differ: under WSL, the Windows openers reach the Windows browser whether or not WSLg is exporting a display; on macOS, `$DISPLAY` is unset unless XQuartz is running, yet `open` works. `util.open++_++url` carves out WSL explicitly for this reason. macOS is a known gap.
+====
+
 '''''
 
 [[open-url]]
 == Open URL Behaviour
 
-In console mode, `util.open++_++url` skips all browser-opener attempts
-and instead emits an `INFO` notification containing the full URL. Copy
-it and open it manually (e.g. in w3m, or paste it into a GUI browser on
-another machine).
+Every call to `util.open++_++url` writes the URL to the `+` register before anything else, so it is always one paste away even if the opener does nothing.
 
-In GUI mode, the existing behaviour is unchanged: `xdg-open` / `open` /
-`wslview` / `explorer.exe` are tried in order, and a `WARN` notification
-is emitted if none are found.
+In console mode, `util.open++_++url` then skips all browser-opener attempts and emits an `INFO` notification containing the full URL. Copy it and open it manually (e.g. in w3m, or paste it into a GUI browser on another machine).
+
+WSL is exempt from that short-circuit. The Windows openers reach the Windows browser whether or not WSLg is exporting a display, so a WSL session with no `$DISPLAY` still opens the browser rather than only notifying.
+
+Otherwise it echoes the URL to the command line — via the message history, so it stays readable in `:messages` — and then tries the browser openers in a platform-dependent order:
+
+[cols="1,3"]
+|===
+|Platform |Opener priority
+
+|WSL
+|`wslview`, `powershell.exe`, `explorer.exe`, `xdg-open`, `open`
+
+|Everything else
+|`xdg-open`, `open`, `wslview`, `explorer.exe`
+|===
+
+A `WARN` notification is emitted if none of them are found.
+
+WSL puts the Windows openers first deliberately. `xdg-open` ships on every Ubuntu install, so under the old fixed ordering it always won — but with no Linux browser installed it falls through to `w3m` in a detached job with no tty, displays nothing, and still exits `0`. Falling through on a non-zero exit status would not have caught it; only the ordering can.
+
+The Windows opener is PowerShell's `Start-Process`, not `explorer.exe`. `explorer.exe` is always present, but it refuses to treat a string containing `=` as a URL and opens a File Explorer window instead — so a PlantUML URL or any query string lands in the wrong place. `cmd.exe /c start` is worse: it truncates the URL at the first `&` and opens a different page without reporting anything. PowerShell delivers the URL intact. `wslview` stays ahead of it where installed, being the purpose-built tool, but is not required; `explorer.exe` is kept only as a last resort.
