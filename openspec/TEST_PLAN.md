@@ -3114,6 +3114,8 @@ This forces the flags rather than the environment, so it proves the branching lo
 ### Post-merge
 
 - [X] `git checkout main && git pull origin main` (`main` at `9474590`)
-- [ ] Re-confirm OU.1 and OU.3 on the merged config
+- [X] Re-confirm OU.1 and OU.3 on the merged config
+
+> Confirmed on merged `main` (`9474590`). `,sp` opened the Windows browser and the `open_url:` line survived in `:messages`. The argv resolution was also re-checked headlessly against the merged code: PowerShell `Start-Process` with the trailing `=` and the `&` both intact.
 - [ ] Change archived and the deltas promoted
 - [ ] Purpose paragraph of `openspec/specs/open-url/spec.md` corrected by hand — it names the old fixed opener order and `openspec archive` does not touch Purpose prose
