@@ -3172,7 +3172,9 @@ Nothing in the diff points at either. Validate them directly rather than inferri
 
 Allow a second or two after opening; the server starts on first markdown buffer.
 
-- [ ] `marksman` attaches, document symbols list the headings, and hover plus `gd` resolve the sibling-document link
+- [X] `marksman` attaches, document symbols list the headings, and hover plus `gd` resolve the sibling-document link
+
+> Failed on the first attempt against a heading, which was a defect in the case rather than the change — marksman returns nothing there by design. Re-run passed once the fixture gained a link to resolve.
 
 #### LS.2 — marksman offers no formatting
 
