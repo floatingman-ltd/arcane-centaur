@@ -4,9 +4,10 @@
 
 Agreed running order. Details live in the sections below; this is just the queue.
 
-1. **`marksman` and `fsautocomplete` are configured but not installed** — *Things that seem broken*. Both are `vim.lsp.enable`d and fail silently, so markdown and F# have no LSP at all: no hover, references, folding ranges or real completion. Three documentation defects compound it, including an install command naming a package that does not exist. Now also carries the F# support gap: F# has no indent support of any kind and no fold query either, making it the least capable of the "supported" languages.
-2. **Fourteen capability specs have placeholder Purposes** — *Things that seem broken*. Mechanical but wide; best done as one pass.
-3. **`open_url` never reaches `open` on macOS** — *Things that seem broken*. Small and well understood, but unverifiable without a Mac.
+1. **Spell suggestions never reach the blink menu** — *Things that seem broken*. **High priority to review.** The spell source is wired up and works, but every suggestion is filtered out before display, so completing a misspelled word silently does nothing. One-line fix with a real trade-off attached, so it needs a decision rather than just an edit.
+2. **`marksman` and `fsautocomplete` are configured but not installed** — *Things that seem broken*. Both are `vim.lsp.enable`d and fail silently, so markdown and F# have no LSP at all: no hover, references, folding ranges or real completion. Three documentation defects compound it, including an install command naming a package that does not exist. Now also carries the F# support gap: F# has no indent support of any kind and no fold query either, making it the least capable of the "supported" languages.
+3. **Fourteen capability specs have placeholder Purposes** — *Things that seem broken*. Mechanical but wide; best done as one pass.
+4. **`open_url` never reaches `open` on macOS** — *Things that seem broken*. Small and well understood, but unverifiable without a Mac.
 
 **Shipped** (2026-08-25 / 27), kept briefly for context:
 
@@ -81,6 +82,33 @@ use before deciding.
   `<leader>L` (IDE layout assembly) is **not** affected — it opens its terminal full-width through the same `botright split` code, which narrows the fault to `toggle_terminal` invoked with focus already in the tree window rather than to the split call itself.
 
   Found during `fix-tree-terminal-keymaps` validation (TEST_PLAN TK.3/TK.4) and deliberately **not fixed there**: the terminal panel's split approach is itself under review (see the full-screen panel idea above), so effort spent on the current geometry may be wasted. Revisit if the panel survives in its present form.
+
+- **spell suggestions never reach the blink menu, because blink filters them out.** Typing a misspelled word and pressing `<C-n>` shows nothing. Reported as "worked when the word was incomplete, does nothing once it is complete", which is exactly the shape of the bug.
+
+  The source is wired up correctly and does work: `f3fora/cmp-spell` is bridged through `blink.compat` as the `spell` provider (`lua/plugins/blink.lua:74-84`), enabled whenever `'spell'` is on, and `vim.fn.spellsuggest("recieve")` returns `{ receive, relieve, reserve, receiver, deceive }`. The suggestions are fetched and then discarded.
+
+  `cmp-spell` sets each suggestion's `filterText` to **the suggestion itself** when `keep_all_entries = false` (`cmp-spell/lua/cmp-spell/init.lua:67`), and blink filters candidates on `filterText` (`blink.cmp/lua/blink/cmp/fuzzy/lua/init.lua:56`). A correction is by definition not a fuzzy match of its own misspelling — `receive` is not a subsequence of `recieve`, the transposed `ie`/`ei` breaks the ordering — so every candidate is dropped and the menu closes with nothing in it.
+
+  Measured against blink's own matcher rather than reasoned about:
+
+  ```
+  spellsuggest: { "receive", "relieve", "reserve", "receiver", "deceive" }
+  keep_all_entries=false (current config)    typed=recieve   kept=0  {}
+  keep_all_entries=true  (filterText=input)  typed=recieve   kept=5  { "receive", "relieve", ... }
+  control: real prefix, filterText=label     typed=rec       kept=2  { "receive", "receiver" }
+  ```
+
+  The control line explains the "worked when incomplete" half: `rec` is a true prefix, so it survives filtering. Finishing the word into a misspelling breaks the match.
+
+  **Fix:** one line — `opts = { keep_all_entries = true }` at `lua/plugins/blink.lua:83`. The menu then opens on a misspelled word and is navigated with the keys that already work: `<C-n>`/`<C-p>` to move, `<C-y>` to accept, `<C-e>` to dismiss. It is the same menu, so no new keymap is needed and nothing has to be routed out of `z=`.
+
+  **The trade-off is why this needs review rather than just applying.** With `keep_all_entries = true`, spelling suggestions stop being filtered *at all*: every word of three or more characters offers the full `spellsuggest` list while `'spell'` is on, not only misspelled ones. That is the documented purpose of the option, but it is materially noisier in prose-heavy buffers. `score_offset = -3` keeps the entries below LSP items, which may or may not be enough. Worth trying live before committing to it.
+
+  **Not a defect, but the thing that made it look like one:** normal-mode `<C-n>` is `:NvimTreeOpen` (`lua/keymaps.lua:99`), and blink's keys are insert-mode and buffer-local (`preset = "none"`). Leave insert mode and `<C-n>` opens the file tree. `<C-t>` is not bound anywhere in the config at all — nvim-tree claims it buffer-locally inside the tree window for *Open: New Tab*. This is the same confusion as `fix-blink-completion-keymap`'s BC.1.
+
+  **Unverified, and left that way deliberately:** native `<C-x>s` (insert-mode spell completion) would give a navigable popup with no config change, and blink binds no `<C-x>`. Whether it coexists cleanly with blink's auto-show could not be tested here — headless Neovim will not drive insert-mode input, which defeated two end-to-end probes before the matcher was called directly instead. Worth thirty seconds in a live session before adopting the config change, since it may make it unnecessary.
+
+  Surfaced while validating `install-language-servers`, and entirely unrelated to it.
 
 - **two language servers are configured and enabled but not installed, and their documentation is wrong.** `lua/config/lsp.lua` calls `vim.lsp.enable` for `marksman` (markdown) and `fsautocomplete` (F#), but neither binary is on `$PATH`. Both fail silently — the filetype simply gets no LSP, so no hover, no references, no folding ranges, and no completion beyond buffer words.
 
