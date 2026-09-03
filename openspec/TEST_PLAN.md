@@ -3156,7 +3156,9 @@ Nothing in the diff points at either. Validate them directly rather than inferri
 3. Launch Neovim: `:Lazy sync` — no plugin pins are touched by this change, though lazy's checker may still find upstream updates, as it did during `fix-open-url-wsl-opener`.
 4. `:messages` — no plugin, LSP or keymap **errors**.
 
-- [ ] Branch checked out, both binaries resolve, no errors in `:messages`
+- [X] Branch checked out, both binaries resolve, no errors in `:messages`
+
+> Re-run after a reboot. Both binaries survived it at the recorded versions — `marksman` `2026-02-08`, `fsautocomplete` `0.83.0+96fabed`. `:messages` was empty, not merely error-free. Note that nine plugin pins were bumped and committed to `main` as `bb80d6e` immediately before this re-run, so `LS.2`–`LS.10` are validated against bumped `nvim-lspconfig` and `nvim-treesitter` — both of which bear directly on this change. That is the post-merge state anyway, but it makes the bump a live suspect if a later case fails.
 
 ### Validate
 
