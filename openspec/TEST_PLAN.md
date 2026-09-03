@@ -3197,9 +3197,11 @@ Ask **marksman by name**. Do not index the client list positionally: `get_client
 
 Two independent things guard this: markdown is absent from conform's `ft` list *and* from `formatters_by_ft`, and marksman advertises no formatting capability at all. Step 6 is what distinguishes them — it holds conform loaded while writing a markdown buffer, which is the only configuration in which the `formatters_by_ft` guard is the one doing the work.
 
-- [ ] All three formatting capabilities are `nil`, `lua_ls` returns `true` as a control, and writing the buffer does not reformat it — including with conform already loaded
+- [X] All three formatting capabilities are `nil`, `lua_ls` returns `true` as a control, and writing the buffer does not reformat it — including with conform already loaded
 
 > Rewritten after the original step 1 proved to be a defect in the case, the same shape as LS.1. `get_clients({ bufnr = 0 })[1]` was reported returning a full error stack in an empty buffer and `true` in a `.lua` file — both correct behaviour for a positional index, and neither a statement about marksman. Probing the server directly confirms all three formatting capabilities are `nil`, alongside `foldingRangeProvider = nil` (which LS.3 depends on) and `hoverProvider`/`definitionProvider`/`documentSymbolProvider` all `true` (which LS.1 depends on). The rewrite also adds the `lua_ls` positive control and the conform-already-loaded variant, without which step 4 passes for the wrong reason.
+>
+> Passed live on the rewritten steps. Corroborated by a headless first pass beforehand, which confirmed `package.loaded["conform"] = true` after opening `init.lua`, marksman attached, and the ragged spacing `Short paragraph,      for       contrast.` preserved byte-for-byte in both the buffer and on disk after `:w`. The fixture was restored to `0f263cde` afterwards.
 
 #### LS.3 — Markdown folding is unchanged
 
