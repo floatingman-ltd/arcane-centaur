@@ -17,25 +17,18 @@ type Shape =
 
 let area shape =
     match shape with
-    | Circle r ->
-        System.Math.PI * r * r
-    | Rect (w, h) ->
-        w * h
+    | Circle r -> System.Math.PI * r * r
+    | Rect(w, h) -> w * h
 
 let describe shape =
     let a = area shape
-    if a > 100.0 then
-        "large"
-    elif a > 10.0 then
-        "medium"
-    else
-        "small"
 
-let summarise shapes =
-    shapes
-    |> List.map area
-    |> List.sum
+    if a > 100.0 then "large"
+    elif a > 10.0 then "medium"
+    else "small"
+
+let summarise shapes = shapes |> List.map area |> List.sum
 
 printfn "%s" (greet "World")
 printfn "%s" (describe (Circle 5.0))
-printfn "total area: %f" (summarise [ Circle 1.0; Rect (2.0, 3.0) ])
+printfn "total area: %f" (summarise [ Circle 1.0; Rect(2.0, 3.0) ])

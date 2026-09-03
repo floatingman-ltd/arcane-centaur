@@ -3276,7 +3276,9 @@ That blocks the write behind a question, on every save of an F# buffer. It was f
 
 > **Step 2 warns against adding lines for a reason.** A probe that replaced one line with four and wrote immediately produced a buffer with content duplicated — the async format applied edits against a buffer whose line numbers had just shifted. Re-running with an in-place indent change produced a clean 41→34 line format with no duplication. The duplication was the harness racing itself, not a defect in the change, but it is an easy trap to fall into while mangling a fixture by hand.
 
-- [ ] Writing an F# buffer reformats it via Fantomas, with no install prompt and no formatter errors
+- [X] Writing an F# buffer reformats it via Fantomas, with no install prompt and no formatter errors
+
+> Passed live. Fantomas restructured as predicted — `match` arms and the `if`/`elif`/`else` chain collapsed to single lines, `summarise` inlined to one pipeline, `Rect (w, h)` normalised to `Rect(w, h)` — with no install prompt and no duplication. The formatted result was **kept** rather than restored under step 6: it is what format-on-save now produces, so committing it makes the fixture stable instead of leaving a file that rewrites itself the first time anyone saves it. Note the one cosmetic oddity Fantomas introduces, a blank line after `let a = area shape` in `describe`; that is its house style, not damage.
 
 #### LS.6 — F# folds now come from the language server
 
