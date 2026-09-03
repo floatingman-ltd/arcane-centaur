@@ -3213,7 +3213,9 @@ The point of this case is that installing a language server changed **nothing**.
 4. `zR`, then put the cursor on a nested list item and press `za` — the list must fold.
 5. `:messages` — no `UnhandledPromiseRejection`. That is what a three-provider list would produce, and it yields **no folds at all** rather than degrading.
 
-- [ ] Headings fold, nested lists still fold, no `UnhandledPromiseRejection`
+- [X] Headings fold, nested lists still fold, no `UnhandledPromiseRejection`
+
+> Confirmed live ("folding works for MD") and corroborated headlessly: after `zM` the first `## ` heading (line 5) reports `foldlevel=2`, `foldclosed=1`; after `zR` then `za` on a nested list item (line 32) it reports `foldlevel=5`, `foldclosed=32`; `UnhandledPromiseRejection` absent from `:messages`. `foldmethod=manual` with `foldexpr=0` is ufo managing folds itself, not a fallback. The premise holds at the server too — marksman advertises `foldingRangeProvider = nil` (probed under LS.2), so the provider chain could not have shifted. The only `:messages` entry was `W325: Ignoring swapfile`, an artifact of the headless run colliding with the live session on the same fixture.
 
 #### LS.4 — fsautocomplete attaches to F#, with and without a project
 
