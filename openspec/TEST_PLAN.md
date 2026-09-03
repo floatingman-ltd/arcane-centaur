@@ -3245,9 +3245,11 @@ Steps 4 and 5 are the case. Step 2 alone would pass identically whether or not p
 
 **Timing.** `fsautocomplete` is a .NET process, so allow up to 30 seconds on a cold first launch; a timeout is not the same as a failure to attach, and it is worth one retry before recording a defect. In practice it attached in **1.0–1.3 seconds** on both fixtures when probed directly, so a wait of tens of seconds is itself worth noting even though it does not fail the case.
 
-- [ ] `fsautocomplete` attaches to both fixtures with **two distinct clients and two distinct roots** — cwd for the loose file, the `.fsproj` directory for the project — and hover responds
+- [X] `fsautocomplete` attaches to both fixtures with **two distinct clients and two distinct roots** — cwd for the loose file, the `.fsproj` directory for the project — and hover responds
 
 > Hardened alongside LS.2. The original step 4 said "repeat step 2", which re-checked the client *name* and therefore returned `{ "fsautocomplete" }` for both fixtures — it could not distinguish the project case from the loose case, which is the entire point of the title. Direct probing confirms the real difference: two client instances, `root_dir` = the repo root for `testdocs/hello.fs` (cwd fallback, no `.fsproj` above it) and `testdocs/fsharp-project` for `Program.fs`. The same probe confirms `documentFormattingProvider = true` and `foldingRangeProvider = true`, which are the premises LS.5 and LS.6 rest on, and recorded a 1.0–1.3s attach against the 30s allowance.
+>
+> Passed live on the rewritten steps: `id=1` at the repo root, `id=2` at `testdocs/fsharp-project`, hover returning `val area`. The pre-check that produced this rewrite also surfaced the two defects fixed in `c710fb2` — the missing Fantomas install and the bare-`.fs` `LoadedProjects` failure — neither of which the original case could have detected.
 
 #### LS.5 — F# format-on-save, which activates with no code change
 
