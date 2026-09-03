@@ -3215,14 +3215,33 @@ The point of this case is that installing a language server changed **nothing**.
 
 #### LS.4 — fsautocomplete attaches to F#, with and without a project
 
-1. Open `testdocs/hello.fs` — a loose file with no project.
-2. `:lua print(vim.inspect(vim.tbl_map(function(c) return c.name end, vim.lsp.get_clients({ bufnr = 0 }))))` — expect `{ "fsautocomplete" }`.
+Both fixtures attach a client called `fsautocomplete`, so checking the client *name* twice cannot tell them apart. What differs is `root_dir`, and that is the thing the case is really about: **run all of this in one session, launched from the repo root**, because the loose file's root is the cwd.
+
+1. Launch Neovim from the repo root and open `testdocs/hello.fs` — a loose file with no project.
+2. Wait for attach, then run as one line:
+
+   ```
+   :lua local c = vim.lsp.get_clients({ bufnr = 0, name = "fsautocomplete" })[1]; print(c and ("id=" .. c.id .. " root=" .. tostring(c.config.root_dir)) or "fsautocomplete NOT attached")
+   ```
+
+   Expect `root=` the **repo root** — no `.fsproj` above the file, so the root falls back to the cwd. `fsautocomplete NOT attached` after a genuine wait is a defect; see the timing note below.
 3. Press `K` on a function name — hover should respond.
-4. Now open `testdocs/fsharp-project/Program.fs` and repeat step 2.
+4. Now `:edit testdocs/fsharp-project/Program.fs`, wait for attach, and run the same line again. Expect a **different `id`** and `root=` the `testdocs/fsharp-project` directory, where `HelloFs.fsproj` lives.
+5. Confirm both clients are alive at once:
 
-`fsautocomplete` is a .NET process and slower to start than marksman — give it up to 30 seconds on first launch. A timeout here is not the same as a failure to attach; retry once before recording a defect.
+   ```
+   :lua for _, c in ipairs(vim.lsp.get_clients({ name = "fsautocomplete" })) do print(c.id, c.config.root_dir) end
+   ```
 
-- [ ] `fsautocomplete` attaches to both the loose file and the project file, and hover responds
+   Expect **two** lines with the two different roots. One line means root detection collapsed the two cases together and the project fixture is not testing what it claims.
+
+Steps 4 and 5 are the case. Step 2 alone would pass identically whether or not project detection works at all.
+
+**Timing.** `fsautocomplete` is a .NET process, so allow up to 30 seconds on a cold first launch; a timeout is not the same as a failure to attach, and it is worth one retry before recording a defect. In practice it attached in **1.0–1.3 seconds** on both fixtures when probed directly, so a wait of tens of seconds is itself worth noting even though it does not fail the case.
+
+- [ ] `fsautocomplete` attaches to both fixtures with **two distinct clients and two distinct roots** — cwd for the loose file, the `.fsproj` directory for the project — and hover responds
+
+> Hardened alongside LS.2. The original step 4 said "repeat step 2", which re-checked the client *name* and therefore returned `{ "fsautocomplete" }` for both fixtures — it could not distinguish the project case from the loose case, which is the entire point of the title. Direct probing confirms the real difference: two client instances, `root_dir` = the repo root for `testdocs/hello.fs` (cwd fallback, no `.fsproj` above it) and `testdocs/fsharp-project` for `Program.fs`. The same probe confirms `documentFormattingProvider = true` and `foldingRangeProvider = true`, which are the premises LS.5 and LS.6 rest on, and recorded a 1.0–1.3s attach against the 30s allowance.
 
 #### LS.5 — F# format-on-save, which activates with no code change
 
