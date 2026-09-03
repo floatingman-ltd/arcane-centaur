@@ -3145,7 +3145,9 @@ Nothing in the diff points at either. Validate them directly rather than inferri
 
 **Prerequisites** (confirm before validating):
 - Both binaries installed: `marksman` in `~/.local/bin` (release `2026-02-08`), `fsautocomplete` 0.83.0 in `~/.dotnet/tools`. Both directories are already on `$PATH`.
-- `testdocs/hello.fs` (a loose file, no project) and `testdocs/fsharp-project/` (with `HelloFs.fsproj`) — both are needed; they test different things.
+- `testdocs/hello.fsx` (a script, resolved by fsautocomplete on its own) and `testdocs/fsharp-project/` (with `HelloFs.fsproj`) — both are needed; they test different root-resolution paths.
+- **Not** `testdocs/hello.fs` for anything needing a server *response*. A bare `.fs` outside any project is never added to fsautocomplete's loaded projects, so every request against it fails with `Couldn't find <path> in LoadedProjects` and surfaces as an `UnhandledPromiseRejection`. `hello.fs` remains the loose-file indent/fold fixture, where no response is required.
+- `fantomas` (7.0.6, `~/.dotnet/tools`). fsautocomplete delegates formatting to it and **prompts interactively on every write without it** — see LS.5.
 - `testdocs/test.md` for the markdown cases.
 - **Take a copy of any `.fs` file before writing to it.** LS.5 deliberately triggers format-on-save; if the formatter misbehaves, the buffer is rewritten.
 
@@ -3221,7 +3223,7 @@ The point of this case is that installing a language server changed **nothing**.
 
 Both fixtures attach a client called `fsautocomplete`, so checking the client *name* twice cannot tell them apart. What differs is `root_dir`, and that is the thing the case is really about: **run all of this in one session, launched from the repo root**, because the loose file's root is the cwd.
 
-1. Launch Neovim from the repo root and open `testdocs/hello.fs` — a loose file with no project.
+1. Launch Neovim from the repo root and open `testdocs/hello.fsx` — a script with no project. (**Not** `hello.fs`; see the prerequisites — a bare `.fs` attaches but cannot answer.)
 2. Wait for attach, then run as one line:
 
    ```
@@ -3229,7 +3231,7 @@ Both fixtures attach a client called `fsautocomplete`, so checking the client *n
    ```
 
    Expect `root=` the **repo root** — no `.fsproj` above the file, so the root falls back to the cwd. `fsautocomplete NOT attached` after a genuine wait is a defect; see the timing note below.
-3. Press `K` on a function name — hover should respond.
+3. Press `K` on `area` (the `let area shape =` line) — hover must respond with `val area: shape: Shape -> float`. Hovering a comment line returns nothing, which is correct and not a failure; pick an identifier.
 4. Now `:edit testdocs/fsharp-project/Program.fs`, wait for attach, and run the same line again. Expect a **different `id`** and `root=` the `testdocs/fsharp-project` directory, where `HelloFs.fsproj` lives.
 5. Confirm both clients are alive at once:
 
@@ -3249,18 +3251,30 @@ Steps 4 and 5 are the case. Step 2 alone would pass identically whether or not p
 
 #### LS.5 — F# format-on-save, which activates with no code change
 
-**Copy the file first**: `cp testdocs/hello.fs /tmp/hello.fs.bak`
+**Copy the file first**: `cp testdocs/hello.fsx /tmp/hello.fsx.bak`
 
-1. Open `testdocs/hello.fs` and wait for the server to attach (LS.4 step 2).
-2. Introduce clearly wrong formatting — add three or four extra spaces of indent to a line inside a function, and a run of blank lines.
+1. Open `testdocs/hello.fsx` and wait for the server to attach (LS.4 step 2). Give it a further few seconds to resolve script options before writing.
+2. Introduce clearly wrong formatting — add three or four extra spaces of indent to a line inside a function. **Change an existing line in place; do not add lines.**
 3. `:w`
-4. The buffer must be reformatted: the indentation normalised and the blank-line run collapsed.
-5. `:messages` — no formatter errors.
-6. Restore: `cp /tmp/hello.fs.bak testdocs/hello.fs` if the result is not something you want committed.
+4. The buffer must be reformatted, and Fantomas's house style is more assertive than just fixing your indent — expect it to collapse multi-line `match` arms and `if`/`elif`/`else` onto single lines and to rewrite `Rect (w, h)` as `Rect(w, h)`. In one probe the file went from 41 lines to 34. That is Fantomas working correctly, not a defect.
+5. `:messages` — **no Fantomas install prompt** (see below), and no formatter errors. An `Error getting project options for … hello.fsx - A task was canceled.` may appear if the buffer is written before script options finish resolving; that shape is already documented at `§Change 03` and is a race, not a formatting failure.
+6. Restore: `cp /tmp/hello.fsx.bak testdocs/hello.fsx` if the result is not something you want committed.
 
-This is the change's most surprising effect. Nobody edited a formatter config, but `.fs` files are now rewritten on every write. If the result is unwelcome, that is a finding worth recording — the fix would be dropping `fsharp` from `conform.lua`, but it should be a deliberate decision rather than a discovery months later.
+This is the change's most surprising effect. Nobody edited a formatter config, but F# buffers are now rewritten on every write.
 
-- [ ] Writing an F# buffer reformats it, with no errors
+**Formatting needs Fantomas, which fsautocomplete does not bring with it.** Without it the write does not merely skip formatting — fsautocomplete raises an interactive prompt:
+
+```
+No Fantomas install was found.:
+1: Install locally
+2: Install globally
+```
+
+That blocks the write behind a question, on every save of an F# buffer. It was found during the pre-check for this case and fixed by `dotnet tool install -g fantomas` (7.0.6). If a future environment lacks it, this is the symptom.
+
+> **Step 2 warns against adding lines for a reason.** A probe that replaced one line with four and wrote immediately produced a buffer with content duplicated — the async format applied edits against a buffer whose line numbers had just shifted. Re-running with an in-place indent change produced a clean 41→34 line format with no duplication. The duplication was the harness racing itself, not a defect in the change, but it is an easy trap to fall into while mangling a fixture by hand.
+
+- [ ] Writing an F# buffer reformats it via Fantomas, with no install prompt and no formatter errors
 
 #### LS.6 — F# folds now come from the language server
 
@@ -3298,10 +3312,18 @@ Proves the "missing binary does not crash" scenario in both new specs without un
 
 #### LS.9 — No errors introduced
 
-1. In a normal session, open `testdocs/test.md`, then `testdocs/hello.fs`, then `testdocs/csharp-project/Program.cs`.
+1. In a normal session, open `testdocs/test.md`, then `testdocs/hello.fsx`, then `testdocs/csharp-project/Program.cs`.
 2. `:messages` — shows no errors.
 
 The criterion is *no errors*, not *empty*. Lazy's notices and LSP progress messages are expected content.
+
+**Use `hello.fsx`, not `hello.fs`.** Opening a bare `.fs` outside any project is on its own enough to produce
+
+```
+UnhandledPromiseRejection ... Couldn't find <path> in LoadedProjects.
+```
+
+with no hover and no write — confirmed by opening the three files and reading `:messages` directly. That is fsautocomplete declining to load a file it has no project for, not a fault introduced by this change, but it will fail this case if the `.fs` fixture is used.
 
 - [ ] `:messages` shows no errors after exercising all three filetypes
 

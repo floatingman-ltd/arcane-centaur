@@ -79,7 +79,9 @@ The same table settles a second question without a code change: marksman adverti
 
 Neither is a code change, which makes them easy to miss and the reason both get explicit validation cases. Format-on-save is the one to watch: it is silent, it fires on every write, and if `fsautocomplete`'s formatter misbehaves it will rewrite the buffer before anyone notices it is active.
 
-`fsautocomplete` attached to a loose `testdocs/hello.fs` with no project file, so basic features do not require a `.fsproj`. `testdocs/fsharp-project/` exists for the project-scoped checks.
+`fsautocomplete` *attaches* to a loose `testdocs/hello.fs` with no project file, but attaching is as far as it gets: the file is never added to the server's loaded projects, so every request against it — hover included — fails with `Couldn't find <path> in LoadedProjects` and surfaces as an `UnhandledPromiseRejection`. Merely opening the file is enough to produce it. Anything needing a *response* from the server therefore uses `testdocs/hello.fsx`, which fsautocomplete resolves on its own; `testdocs/fsharp-project/` exists for the project-scoped checks, and `hello.fs` remains the loose-file indent/fold fixture where no response is required.
+
+**Formatting needs a second binary.** `fsautocomplete` delegates F# formatting to Fantomas and does not ship it. Without Fantomas on `$PATH`, format-on-save does not quietly skip — the server raises an interactive `No Fantomas install was found.` prompt that blocks every write of an F# buffer. `fantomas` 7.0.6 is installed globally alongside `fsautocomplete` for this reason, which makes this change a two-binary change on the F# side rather than one.
 
 ### D4 — Two new capability specs, mirroring `lua-lsp`
 

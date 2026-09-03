@@ -150,8 +150,12 @@ Guide: xref:languages/dotnet.adoc#prerequisites[.NET Prerequisites]
 |Must be on `$PATH` — see xref:languages/dotnet.adoc#prerequisites[the .NET guide]
 
 |*fsautocomplete*
-|F# LSP; also provides F# formatting
+|F# LSP; drives F# formatting, but delegates the formatting itself to Fantomas
 |`dotnet tool install -g fsautocomplete`
+
+|*fantomas*
+|F# formatter. Required for F# format-on-save — without it fsautocomplete raises an interactive install prompt on every write
+|`dotnet tool install -g fantomas`
 
 |*csharprepl*
 |C# REPL, driven by iron.nvim
