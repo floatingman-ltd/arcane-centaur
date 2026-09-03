@@ -3339,8 +3339,12 @@ with no hover and no write — confirmed by opening the three files and reading 
 4. `content/diagrams.html` — same corrected install command.
 5. `other/architecture.html` — the Markdown row's LSP cell reads `✅ marksman (no folds/format)`.
 6. Confirm `sudo apt install marksman` appears nowhere on the site.
+7. `languages/dotnet.html` — the F# formatting section must render the Fantomas `IMPORTANT` callout containing the literal `No Fantomas install was found.` prompt, the `dotnet tool install -g fantomas` command, and the warning that Fantomas restructures code (collapsing multi-line constructs, rewriting `Rect (w, h)` as `Rect(w, h)`). Added after the pre-check: this is the most consequential new content in the change and the original case did not look at this page at all.
+8. `languages/setup.html` — a `fantomas` dependency row must be present alongside `fsautocomplete`.
 
-- [ ] All four pages render the corrected install command, and the phantom apt package is gone
+The build emits pre-existing `skipping reference to missing attribute` warnings for `name`, `pat` and `feed` (the tag-navigation table in `code-intelligence.adoc` and a feed reference in `dotnet.adoc`). They predate this change — confirmed against the tree two commits back — and are not a failure of this case.
+
+- [ ] All five pages render the corrected install command and the Fantomas documentation, and the phantom apt package is gone
 
 ### Raise PR & merge
 
