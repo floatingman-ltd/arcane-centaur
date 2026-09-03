@@ -3180,13 +3180,26 @@ Allow a second or two after opening; the server starts on first markdown buffer.
 
 #### LS.2 — marksman offers no formatting
 
-1. In the same buffer, `:lua print(vim.lsp.get_clients({ bufnr = 0 })[1].server_capabilities.documentFormattingProvider)` — expect `nil`.
-2. Introduce ragged spacing on a line, then `:w`.
-3. The spacing must be left exactly as typed.
+Ask **marksman by name**. Do not index the client list positionally: `get_clients({ bufnr = 0 })[1]` is whatever attached first, so it raises an index error in a buffer with no client and reports `true` in a Lua buffer, where `lua_ls` really does advertise formatting. Neither result says anything about marksman.
 
-`conform.lua` does not list markdown either, so two independent things would have to be wrong for this to fail. It is cheap and it pins the documented behaviour.
+1. Open `testdocs/test.md` and wait for marksman to attach (LS.1 step 2 confirms it).
+2. Run, as one line:
 
-- [ ] No formatting capability, and writing the buffer does not reformat it
+   ```
+   :lua local c = vim.lsp.get_clients({ bufnr = 0, name = "marksman" })[1]; if not c then print("marksman NOT attached") else for _, k in ipairs({ "documentFormattingProvider", "documentRangeFormattingProvider", "documentOnTypeFormattingProvider" }) do print(k, vim.inspect(c.server_capabilities[k])) end end
+   ```
+
+   All three must print `nil`. `marksman NOT attached` is a *timing* result, not a pass — wait and re-run.
+3. **Positive control.** Open any `.lua` file in the config and run the same line with `name = "lua_ls"`. `documentFormattingProvider` must print `true`. This proves the query works and that the `nil` in step 2 is a real absence rather than a mistyped capability name or a query that always returns nothing.
+4. Back in `testdocs/test.md`, introduce ragged spacing mid-sentence on a prose line, then `:w`.
+5. The spacing must be left exactly as typed.
+6. **The variant that can actually fail.** conform is lazy-gated on `ft` (`lua/plugins/conform.lua:3`), which excludes markdown, so in a markdown-only session conform is never even loaded and step 4 proves little. Start a fresh Neovim, open a `.lua` file **first** to force conform to load, *then* open `testdocs/test.md`, add ragged spacing and `:w`. The spacing must still survive.
+
+Two independent things guard this: markdown is absent from conform's `ft` list *and* from `formatters_by_ft`, and marksman advertises no formatting capability at all. Step 6 is what distinguishes them — it holds conform loaded while writing a markdown buffer, which is the only configuration in which the `formatters_by_ft` guard is the one doing the work.
+
+- [ ] All three formatting capabilities are `nil`, `lua_ls` returns `true` as a control, and writing the buffer does not reformat it — including with conform already loaded
+
+> Rewritten after the original step 1 proved to be a defect in the case, the same shape as LS.1. `get_clients({ bufnr = 0 })[1]` was reported returning a full error stack in an empty buffer and `true` in a `.lua` file — both correct behaviour for a positional index, and neither a statement about marksman. Probing the server directly confirms all three formatting capabilities are `nil`, alongside `foldingRangeProvider = nil` (which LS.3 depends on) and `hoverProvider`/`definitionProvider`/`documentSymbolProvider` all `true` (which LS.1 depends on). The rewrite also adds the `lua_ls` positive control and the conform-already-loaded variant, without which step 4 passes for the wrong reason.
 
 #### LS.3 — Markdown folding is unchanged
 
