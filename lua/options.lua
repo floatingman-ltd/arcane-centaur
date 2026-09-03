@@ -22,6 +22,19 @@ o.relativenumber = true -- add numbers to each line on the left side
 o.cursorline = true -- highlight cursor line underneath the cursor horizontally
 o.splitbelow = true -- open new vertical split bottom
 o.splitright = true -- open new horizontal splits right
+
+-- Wrapping. `wrap` is on by Neovim's default but `linebreak` is not, which is
+-- what leaves prose breaking mid-word at the exact window column; `linebreak`
+-- moves the break to a `breakat` character instead. `breakindent` keeps the
+-- continuation of a wrapped line aligned under the line it belongs to, so list
+-- items and indented blocks stay readable. Set globally rather than per
+-- filetype: mid-word breaks are unwanted in markdown, asciidoctor and prose
+-- generally, and code lines rarely wrap. The cheatsheet float already sets the
+-- same three per-window (lua/config/cheatsheet.lua) -- this makes ordinary
+-- buffers behave the way that float always has.
+o.wrap = true
+o.linebreak = true
+o.breakindent = true
 -- 24-bit color — only where the terminal actually supports it. A real TTY / bare
 -- SSH session can't render it, and forcing it there leaves gui-only highlights
 -- (e.g. Visual) invisible. colorscheme.lua reaffirms this for the console case.
