@@ -3377,3 +3377,141 @@ The build emits pre-existing `skipping reference to missing attribute` warnings 
 - [ ] Re-confirm LS.4 and LS.5 on the merged config
 - [ ] Change archived and the deltas promoted
 - [ ] Purpose paragraph of `openspec/specs/code-folding/spec.md` corrected by hand — it still says treesitter folding is disabled and markdown uses indent only, which `align-treesitter-providers` overturned and which its own line 48 already contradicts
+
+## Change · add-markserv-gfm-alerts
+
+**Branch:** `feat/markserv-gfm-alerts`
+
+Adds GitHub-flavoured alert rendering to the markserv preview container, so a blockquote opening with `[!NOTE]`, `[!TIP]`, `[!IMPORTANT]`, `[!WARNING]` or `[!CAUTION]` renders as a titled, coloured admonition instead of a blockquote whose first visible line is the literal marker.
+
+**The unusual risk in this change is that its failure mode is a dead container, not a degraded page.** `markdown-it-github-alerts` is published as an ES module only — `"type": "module"`, `dist/index.mjs`, no CommonJS build — while `server.js` is CommonJS. Requiring it works solely because `require(esm)` was backported to Node 20.19. If the base image ever resolves below that, `server.js` throws at load and the server never listens. Nothing about the change's appearance hints at this, so `MA.1` exercises it directly with a cache-free rebuild.
+
+Two supporting facts, both measured rather than assumed:
+
+- The container has **no stylesheet file**. Every rule is inlined by `renderPage()`, so the alert CSS lives in that `<style>` block. Confirmed by there being no `<link rel="stylesheet">` in a served page.
+- `require()` returns the module *namespace object*, not the plugin function, so the call site resolves `.default`. A bare `require(...)` would fail at `.use()`.
+
+**What deliberately does not change:** every other markdown construct. Alerts render as `<div class="markdown-alert">`, not `<blockquote>`, so the existing `blockquote` rule is untouched and a non-alert blockquote is byte-identical to before. `MA.4` and `MA.5` exist to prove that, which is the opposite of the usual assertion and easy to skip.
+
+**Prerequisites** (confirm before validating):
+- `testdocs/gfm-alerts.md` — the fixture. One page carries all five types, a rich-bodied alert, an unrecognised `[!EXAMPLE]` marker, a plain blockquote, a nested blockquote, and `plantuml`/`mermaid` fences.
+- Docker running. The `plantuml-server` container is needed only for `MA.5`'s diagram to produce an image; its absence shows a broken image rather than failing the page.
+- **`MD_DIR` must be an absolute path, and it must match Neovim's cwd.** A relative value resolves against the *compose file's* directory, not your shell's, so the container silently serves an empty tree and every request 404s. That failure has already happened once and left a stray root-owned `docker/markserv/docs/` behind. The URL `,sp` builds is relative to Neovim's cwd, so the mount root and the cwd must be the same directory.
+
+### Prepare
+
+1. `git fetch origin && git checkout feat/markserv-gfm-alerts`
+2. **Rebuild — do not just restart.** `MD_DIR=/home/walt/.config/nvim docker compose -f docker/markserv/docker-compose.yml up -d --build`. A plain `up -d` reuses the existing image, the alerts do not appear, and the natural next move is to debug the plugin rather than the image.
+3. `docker exec markserv-markserv-1 node --version` — must be ≥ `v20.19`. Below that the rest of this section is invalid rather than failing.
+4. `docker logs markserv-markserv-1` — must show `Markdown preview server listening`. A stack trace mentioning `require` or `ERR_REQUIRE_ESM` is the D2 risk having fired.
+
+- [X] Branch checked out, image rebuilt, Node ≥ 20.19, server listening with no load-time error
+
+### Validate
+
+#### MA.1 — The container starts from a cache-free rebuild
+
+The ESM/CommonJS interop is the one thing here that fails hard. A cached layer can hide it, so this case removes the cache.
+
+1. `docker compose -f docker/markserv/docker-compose.yml build --no-cache`
+2. `MD_DIR=/home/walt/.config/nvim docker compose -f docker/markserv/docker-compose.yml up -d`
+3. `docker logs markserv-markserv-1` — `Markdown preview server listening` present, no stack trace.
+4. `curl -s -o /dev/null -w '%{http_code}\n' http://localhost:8090/testdocs/gfm-alerts.md` — expect `200`.
+
+A non-200 here, or a container that exits, is the interop failing — not a rendering problem. Check `node --version` in the image first.
+
+- [X] Cache-free rebuild produces a container that starts and serves the fixture
+
+#### MA.2 — All five alert types render as admonitions
+
+1. Open `testdocs/gfm-alerts.md` in Neovim (from the repo root) and press `,sp`.
+2. Under *The five alert types*, each of the five must appear as a titled panel with an icon and a coloured left border — not as a blockquote.
+3. The titles must read `Note`, `Tip`, `Important`, `Warning`, `Caution`.
+4. **The literal text `[!NOTE]` and friends must appear nowhere on the page.** This is the actual defect being fixed; everything else is polish.
+5. The five accent colours must be visually distinct from one another. Distinctness is the point — the panel category has to be legible without reading the title.
+
+- [X] Five titled, icon-bearing, distinctly coloured panels, and no literal `[!TYPE]` marker anywhere
+
+#### MA.3 — Alert bodies are rendered as markdown
+
+1. Under *An alert with a rich body*, confirm the `IMPORTANT` panel contains: inline code, a working link, bold text, **two** paragraphs, a three-item bulleted list, a fenced shell block, and a closing paragraph.
+2. All of it must be inside the panel's coloured border, not spilling out below it.
+3. Nothing may render as literal or pre-formatted text that should not be.
+
+If only the first paragraph appears inside the panel, the body is being truncated at the first block — a real defect rather than a styling nit.
+
+- [X] The rich-bodied alert renders every construct as markdown, all inside the panel
+
+#### MA.4 — Non-alert blockquotes are unchanged
+
+The point of this case is that the change altered **nothing** here. Easy to skip because nothing is expected to happen, which is exactly why a regression would go unnoticed.
+
+**Check this in the browser, not in the Neovim buffer.** `render-markdown.nvim` recognises a much wider callout vocabulary than GFM does — `[!EXAMPLE]` is an *Obsidian* callout it renders happily (`lua/render-markdown/settings.lua:260`), and it maps `example` and `important` to the **same** highlight group, `RenderMarkdownHint`. So in the in-buffer preview `[!EXAMPLE]` renders as a styled callout indistinguishable in colour from `[!IMPORTANT]`. That is the in-buffer renderer behaving correctly and says nothing about the preview server. Reading it there instead of in the browser is how this case gets recorded as a false failure.
+
+1. Under *An unrecognised marker stays a blockquote*, the `[!EXAMPLE]` block must render as an ordinary blockquote **showing its literal `[!EXAMPLE]` text**, with no icon and no colour. This holds under the default `gfm` vocabulary; under `extended` it becomes a panel, which is `MA.7`'s business. The `[!NONSENSE]` block near the end of the fixture is the one that must stay literal under **either** setting.
+2. Under *A plain blockquote is untouched*, the blockquote must show the existing thin grey left border and muted grey text — no alert styling, no icon, no double border.
+3. The nested blockquote must still nest.
+4. Reload the page. No console errors in the browser devtools.
+
+- [X] `[!EXAMPLE]` stays a literal blockquote, plain and nested blockquotes keep their original styling
+
+> First read as a possible defect — `[!EXAMPLE]` appeared to render as a coloured callout resembling `[!IMPORTANT]`. That observation came from the **in-buffer** preview, not the rendered one. `render-markdown.nvim` treats `[!EXAMPLE]` as an Obsidian callout and assigns it `RenderMarkdownHint`, the identical highlight group it gives `[!IMPORTANT]`, so the two are the same colour there by design. In the served page it is a plain `<blockquote>` containing the literal text, exactly as specified — confirmed against the served HTML. The step now says to check it in the browser.
+
+#### MA.5 — Diagrams and everything else still render
+
+1. Under *Diagrams still render*, the `plantuml` fence must produce a diagram image (requires the `plantuml-server` container) and the `mermaid` fence must render a client-side graph.
+2. Under *Alerts adjacent to other constructs*, the table must render with borders and striping, and the `TIP` panel above it must not collapse into it.
+3. Save the file with a trivial edit while the page is open — the browser must reload itself via live reload.
+
+Alerts are blockquote-level and should not touch the fence overrides at all, but this is the assertion that proves it rather than assuming it.
+
+- [X] PlantUML and Mermaid still render, the table is unaffected, and live reload still fires
+
+> First run showed neither diagram rendering. **Proven not to be caused by this change:** the pre-change server (`9e6f89c`) was rebuilt and served the same fixture, and its PlantUML `<img>` URL, its `<pre class="mermaid">` block and its mermaid module script are byte-identical to the new server's. Alerts are a blockquote-level construct and cannot reach the fence renderer. Both backends were also reachable from WSL at the time — the PlantUML URL returned `200 image/svg+xml` (3623 bytes) and jsDelivr returned `200`. The first run was a setup error; on re-run both diagrams rendered. The A/B against the pre-change server is kept here anyway, because it is the evidence that would have been needed had the re-run failed too.
+
+#### MA.6 — Documentation renders
+
+1. `./docker/antora/run.sh antora-playbook.yml`
+2. `content/markdown.html` — the markserv preview section must document the five alert markers and state that they render in the preview only.
+3. `content/markdown-cheatsheet.html` — the five markers must be listed.
+4. Confirm the docs state that a **rebuild** is needed, not just a restart.
+5. `cheatsheets/markdown.md` — open the in-editor cheatsheet and confirm the alert markers are there too. This is a separate file from the Antora page and is easy to forget.
+
+- [X] Both docs pages and the in-editor cheatsheet carry the alert syntax and the rebuild note
+
+#### MA.7 — The vocabulary switch
+
+`MD_ALERT_VOCAB` chooses between GFM's five markers and the 27 the in-buffer renderer supports. It is an environment variable, so switching must not need an image rebuild — that is half of what this case proves.
+
+1. With the container running under the default (no `MD_ALERT_VOCAB` set), open the fixture. Everything under *Extended vocabulary* must render as plain blockquotes showing their literal markers.
+2. Recreate with the wider set, **without rebuilding**:
++
+`MD_ALERT_VOCAB=extended MD_DIR=/home/walt/.config/nvim docker compose -f docker/markserv/docker-compose.yml up -d`
+3. Reload. Every block under *Extended vocabulary* must now be a panel:
+   - `[!EXAMPLE]` purple (Important's colour and icon), `[!QUESTION]` amber, `[!TODO]` blue, `[!BUG]` red, `[!SUCCESS]` green.
+   - `[!TLDR]` titled **`TL;DR`**, not `Tldr`. `[!FAQ]` titled **`FAQ`**, not `Faq`.
+   - `[!QUOTE]` grey and deliberately **iconless** — it has no GFM counterpart to borrow one from.
+4. **Count the icons, do not just check the panels appear.** Every panel except `[!QUOTE]` must have one, *including the five GFM alerts higher up the page*. The plugin's `icons` option replaces its defaults rather than merging into them, so a regression here strips the icons from the GFM five while leaving every panel present and correctly coloured — invisible unless counted.
+5. `[!NONSENSE]` must still be a plain blockquote.
+6. Switch back by recreating with `MD_ALERT_VOCAB=gfm` (or unset) and confirm the *Extended vocabulary* section returns to plain blockquotes.
+
+> Found during implementation, and the reason step 4 exists: the served page had 8 octicons where 15 were expected. Every panel rendered, every colour was right, and the five GFM alerts had silently lost their icons because supplying any custom icon discards the plugin's default map. Checking for panels alone would have passed.
+
+- [X] Both vocabularies render as specified, switching needs no rebuild, every panel but `[!QUOTE]` keeps an icon, and `[!NONSENSE]` stays literal in both
+
+> Passed. Confirmed **visually**: the switch takes effect and the extended colours are all correct. Confirmed by **reading the served HTML** either side of the flip: `gfm` gives 7 panels / 7 icons with all nine extended markers literal; `extended` gives 16 panels / 15 icons with `quote` the only iconless one, the five GFM alerts still carrying their own icons, `TL;DR` and `FAQ` titled correctly, and `[!NONSENSE]` literal in both. Step 2's claim held exactly — compose reported `Recreate` with no build step, so switching vocabulary never needs an image rebuild. Note the flag itself required one rebuild to enter the image, since it is a code change; only subsequent switches are recreate-only.
+
+### Raise PR & merge
+
+- [X] Every MA box above ticked
+- [ ] Raise PR: `feat/markserv-gfm-alerts` → `main`
+- [ ] Review and approve PR
+- [ ] Merge PR
+
+### Post-merge
+
+- [ ] `git checkout main && git pull origin main`
+- [ ] Rebuild the container from merged `main` and re-confirm `MA.1` and `MA.2`
+- [ ] Change archived and the deltas promoted
+- [ ] `recommendations/nvim-markserv-gfm-alerts-proposal.md` deleted (tasks 5.1) — superseded by the change's own `proposal.md` and `design.md`
+- [ ] Stray root-owned `docker/markserv/docs/` tree removed (tasks 5.2) — needs `sudo rm -rf`, left over from the earlier relative-`MD_DIR` failure

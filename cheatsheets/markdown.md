@@ -46,6 +46,22 @@
 | `,pp` | Toggle rendered Markdown / raw source (popup: `:MarkdownPopup`) |
 | `,sp` | Open in markserv Docker server (cross-page links) |
 
+### GFM alerts (`,sp` preview only)
+
+A blockquote whose first line is one of these renders as a titled, coloured panel. The marker itself is not shown.
+
+| Marker | Panel |
+|--------|-------|
+| `> [!NOTE]` | Blue **Note** |
+| `> [!TIP]` | Green **Tip** |
+| `> [!IMPORTANT]` | Purple **Important** |
+| `> [!WARNING]` | Amber **Warning** |
+| `> [!CAUTION]` | Red **Caution** |
+
+For the 22 extra Obsidian markers the in-buffer renderer already shows (`[!EXAMPLE]`, `[!QUESTION]`, `[!TODO]`, ...), start the container with `MD_ALERT_VOCAB=extended` — env var, so a recreate rather than a rebuild. Those extras render locally only, not on GitHub or Confluence.
+
+Body content is ordinary markdown. Rendered by `,sp` only — not by `,pp`, `,p`, `:MarkdownPopup`, or on Confluence. Anything else falls back to a plain blockquote.
+
 ## Export
 
 | Key | Action |
