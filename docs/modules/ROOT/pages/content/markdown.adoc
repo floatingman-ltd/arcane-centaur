@@ -272,6 +272,32 @@ Mounting a subdirectory of your cwd produces the same *not found* even
 when the path is absolute.
 ====
 
+[WARNING]
+====
+*The image is pinned to `node:20.20-alpine`, and that pin is load-bearing.*
+
+The alert plugin is published as an ES module only, while the server is
+CommonJS. Requiring it works because `require(esm)` was backported to
+*Node 20.19*. Below that floor the server throws while loading and
+never starts listening — the container dies rather than rendering
+alerts unstyled, so the symptom is a preview that will not load at all
+rather than one that looks wrong.
+
+`node:20-alpine` is a floating tag and does not guarantee that floor,
+which is why the `Dockerfile` names a minor version. If you relax the
+pin, check the result:
+
+[source,sh]
+----
+docker compose -f ~/.config/nvim/docker/markserv/docker-compose.yml \
+  run --rm markserv node --version
+----
+
+If a rebuilt container stops serving, check `docker logs` for a
+`require` or `ERR++_++REQUIRE++_++ESM` stack trace before looking
+anywhere else.
+====
+
 [NOTE]
 ====
 *Changing the server itself needs `--build`.* The compose file builds
