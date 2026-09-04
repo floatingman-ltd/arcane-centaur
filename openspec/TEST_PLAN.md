@@ -3295,7 +3295,11 @@ The server returns **5 fold ranges** for this file. The most telling one is a `k
 
 Before this change the `lsp` slot was dead for F# and folding fell to `indent` alone. Structural folds that follow the *code* rather than the whitespace are the difference to look for.
 
-- [ ] F# folds structurally, not merely by indentation
+- [X] F# folds structurally, not merely by indentation
+
+> Passed live: `za` inside `main` folds the function as a unit, and `zR`/`zM` behave as advertised. Corroborated headlessly — the server returns 5 fold ranges, `za` at line 22 reports `foldclosed=21` (the fold starts at `let main _argv =`, so it is the function that folded, not an indent block), and `zM` puts all 25 lines inside a closed fold.
+>
+> `zR` was first read as a failing assertion because it appears to do nothing. It opens folds rather than closing them, and with `foldlevel`/`foldlevelstart` at 99 the buffer is already fully open, so it is correctly a no-op. Step 2 now says so explicitly.
 
 #### LS.7 — F# indentation is still broken, and that is expected
 
