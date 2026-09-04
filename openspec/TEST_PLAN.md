@@ -3283,8 +3283,15 @@ That blocks the write behind a question, on every save of an F# buffer. It was f
 #### LS.6 — F# folds now come from the language server
 
 1. Open `testdocs/fsharp-project/Program.fs` and wait for attach.
-2. `zR`, then put the cursor inside a function body and press `za` — the function must fold as a unit.
-3. `zM` — everything foldable closes.
+2. `zR` — **this is setup, not an assertion.** `zR` *opens* all folds, and because `options.lua` sets `foldlevel`/`foldlevelstart` to 99 the file is already fully open, so `zR` visibly does nothing. That is correct; it only guarantees a known starting state.
+3. Put the cursor inside a function body — line 22, inside `main` — and press `za`. The function must fold as a unit.
+4. `zM` — everything foldable closes.
+
+The server returns **5 fold ranges** for this file. The most telling one is a `kind=comment` range over the unindented header comment (lines 3–8): indentation cannot produce a fold there, so its presence is direct evidence the folds are structural rather than a coincidence of whitespace. Check it with:
+
+```
+:lua local c = vim.lsp.get_clients({ bufnr = 0, name = "fsautocomplete" })[1]; local r = vim.lsp.buf_request_sync(0, "textDocument/foldingRange", { textDocument = vim.lsp.util.make_text_document_params(0) }, 8000); for _, v in pairs(r or {}) do for i, f in ipairs(v.result or {}) do print(i, f.startLine + 1, f.endLine + 1, f.kind) end end
+```
 
 Before this change the `lsp` slot was dead for F# and folding fell to `indent` alone. Structural folds that follow the *code* rather than the whitespace are the difference to look for.
 
