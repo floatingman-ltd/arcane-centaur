@@ -6,13 +6,11 @@ Snapshot taken mid-validation, ahead of a possible power-down. Delete this file 
 
 | | |
 |---|---|
-| Branch | `feat/markserv-gfm-alerts` — **4 commits unpushed** |
-| Unpushed | `560abd0`, `159d9f3`, `a76069b`, `78d6360` |
-| Already pushed | `751922c`, `9e6f89c` (the OpenSpec proposal and the incoming source document) |
+| Branch | `feat/markserv-gfm-alerts` — pushed through `f0ac11e` |
 | `main` | `4d098c0`, in sync with `origin/main` — nothing to push |
 | Working tree | clean |
 
-Nothing is uncommitted. A power-down cannot lose work, but it *will* lose the four unpushed commits if the disk goes, so `git push origin feat/markserv-gfm-alerts` is worth doing on resume regardless of validation state.
+Everything is committed **and pushed**, so nothing is at risk from a power-down or a disk failure. The only exception is the commit that corrects this very table: if `git log origin/feat/markserv-gfm-alerts..HEAD` returns anything, push it.
 
 ## Where we are
 
