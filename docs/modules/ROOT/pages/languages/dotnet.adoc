@@ -155,7 +155,30 @@ LocalLeader is `,` in F# buffers. The REPL opens as a horizontal split
 [[fsharp-formatting]]
 == F# — Formatting (fsautocomplete)
 
-Format-on-save is enabled via `conform.nvim` using the fsautocomplete formatter. Manual trigger:
+Format-on-save is enabled via `conform.nvim` using the fsautocomplete formatter, which in turn
+delegates to https://fsprojects.github.io/fantomas/[Fantomas].
+
+[IMPORTANT]
+====
+*Fantomas must be installed separately* — `dotnet tool install -g fantomas`. fsautocomplete does
+not ship it, and without it a write does not merely skip formatting: the server raises an
+interactive prompt
+
+[source]
+----
+No Fantomas install was found.:
+1: Install locally
+2: Install globally
+----
+
+which blocks every save of an F# buffer.
+====
+
+Fantomas applies its own house style, not just indentation repair — it will collapse multi-line
+`match` arms and `if`/`elif`/`else` chains onto single lines where they fit, and normalise
+`Rect (w, h)` to `Rect(w, h)`. Expect saved files to be restructured, not merely re-indented.
+
+Manual trigger:
 
 [cols=",",options="header",]
 |===
@@ -380,6 +403,7 @@ dotnet fsi --version  # F#
 dotnet tool install -g csharpier    # C# formatter
 dotnet tool install -g csharprepl   # C# interactive REPL
 dotnet tool install -g fsautocomplete  # F# language server
+dotnet tool install -g fantomas     # F# formatter (fsautocomplete delegates to it)
 ----
 
 === Installing the Roslyn Language Server
@@ -439,7 +463,8 @@ in xref:languages/setup.adoc#dotnet[Language Setup].
 |Dependency |Purpose |Install hint
 |*.NET SDK ≥ 8* (net8.0 or net10.0 — both LTS) |C# and F# compiler, `dotnet fsi` REPL. The **runtime must match the project's `<TargetFramework>`** to run/debug. |https://dotnet.microsoft.com/download
 |*Roslyn LSP* |C# language server (roslyn.nvim) |<<setup,Installing the Roslyn Language Server>>
-|*fsautocomplete* |F# language server; also provides F# formatting |`dotnet tool install -g fsautocomplete`
+|*fsautocomplete* |F# language server; drives formatting but delegates it to Fantomas |`dotnet tool install -g fsautocomplete`
+|*fantomas* |F# formatter. Required for F# format-on-save |`dotnet tool install -g fantomas`
 |*csharprepl* |C# REPL (iron.nvim) |`dotnet tool install -g csharprepl`
 |*csharpier* |C# formatter |`dotnet tool install -g csharpier`
 |*EasyDotnet* |Server tool easy-dotnet.nvim needs for solution management, run, and test |`dotnet tool install -g EasyDotnet`

@@ -27,15 +27,26 @@ These keymaps are active in any buffer where an LSP server has attached
 [width="100%",cols="34%,33%,33%",options="header",]
 |===
 |Server |Language |Install
-|`fsautocomplete` |F# |`dotnet tool install -g fsautocomplete`
+|`fsautocomplete` |F# |`dotnet tool install -g fsautocomplete` (plus `dotnet tool install -g fantomas` for formatting)
 |`roslyn` |C# |See xref:languages/dotnet.adoc[.NET guide]
-|`marksman` |Markdown |`sudo apt install marksman`
+|`marksman` |Markdown |https://github.com/artempyanykh/marksman/releases[GitHub release binary] → `~/.local/bin`
 |`janet_lsp` |Janet |`jpm install janet-lsp`
 |`haskell-language-server` |Haskell |`ghcup install hls` (managed by haskell-tools.nvim)
 |`lua_ls` |Lua |See xref:languages/lua.adoc[Lua guide]
 |===
 
 _Keymaps defined in `lua/config/lsp.lua`._
+
+[NOTE]
+====
+`marksman` supplies hover, go-to-definition, references, rename, document symbols, code actions and completion — but *not* folding ranges or formatting. Markdown folds come from treesitter with an indent fallback (see xref:editor/navigation.adoc[Navigation]), and no LSP-backed markdown formatter is configured.
+
+`fsautocomplete` supplies all of the above *plus* folding ranges, signature help and formatting, so F# gains LSP folds and format-on-save. It does not supply indentation: F# has no indent script and no treesitter `indents.scm`, so pressing Enter copies the previous line's indent rather than indenting the body. That gap is tracked separately.
+
+Formatting needs a *second* binary: fsautocomplete delegates it to https://fsprojects.github.io/fantomas/[Fantomas] and does not ship it. Without `fantomas` on `$PATH` the write does not silently skip formatting — the server raises an interactive `No Fantomas install was found.` prompt that blocks every save of an F# buffer. Install it with `dotnet tool install -g fantomas`.
+
+fsautocomplete also cannot answer for a bare `.fs` file that sits outside any project: such a file is never added to its loaded projects, so requests fail with `Couldn't find <path> in LoadedProjects` and opening one is enough to log an `UnhandledPromiseRejection`. Work inside a project, or use a `.fsx` script, which it resolves on its own.
+====
 
 '''''
 

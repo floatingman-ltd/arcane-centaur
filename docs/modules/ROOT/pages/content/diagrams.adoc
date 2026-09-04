@@ -387,7 +387,7 @@ most Linux distros
 
 |*Browser opener* |Open rendered diagram URLs in the browser |`wslview`/`powershell.exe` (WSL), `xdg-open` (Linux), `open` (macOS) — auto-detected
 
-|*marksman* _(optional)_ |Markdown LSP |`sudo apt install marksman`
+|*marksman* _(optional)_ |Markdown LSP |https://github.com/artempyanykh/marksman/releases[GitHub release binary] → `~/.local/bin`
 |===
 
 === Installing Node.js via nvm
