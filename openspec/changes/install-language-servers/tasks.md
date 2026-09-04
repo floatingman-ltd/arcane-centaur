@@ -29,6 +29,6 @@
 
 ## 5. Close out
 
-- [ ] 5.1 Remove the entry from the priority queue in `recommendations/ideas.md`, keeping the F# indent gap — which this change explicitly does not fix — as its own item.
-- [ ] 5.2 Delete the stale `indentexpr` entry still sitting under *Things that seem broken*; it was fixed by `align-treesitter-providers` and is already listed as shipped further up the same file.
+- [x] 5.1 Remove the entry from the priority queue in `recommendations/ideas.md`, keeping the F# indent gap — which this change explicitly does not fix — as its own item.
+- [x] 5.2 Delete the stale `indentexpr` entry still sitting under *Things that seem broken*; it was fixed by `align-treesitter-providers` and is already listed as shipped further up the same file.
 - [ ] 5.3 After archiving, correct the Purpose of `openspec/specs/code-folding/spec.md` by hand. It still says "treesitter folding is deliberately disabled; markdown uses indent only", which `align-treesitter-providers` overturned and which its own line 48 contradicts. `openspec archive` does not touch Purpose prose.

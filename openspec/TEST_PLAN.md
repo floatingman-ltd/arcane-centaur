@@ -3366,7 +3366,7 @@ The build emits pre-existing `skipping reference to missing attribute` warnings 
 ### Raise PR & merge
 
 - [ ] Every LS box above ticked
-- [ ] `recommendations/ideas.md` updated — entry removed from the queue, F# indent gap retained as its own item, stale `indentexpr` entry deleted
+- [X] `recommendations/ideas.md` updated — entry removed from the queue, F# indent gap retained as its own item, stale `indentexpr` entry deleted
 - [ ] Raise PR: `fix/install-language-servers` → `main`
 - [ ] Review and approve PR
 - [ ] Merge PR
