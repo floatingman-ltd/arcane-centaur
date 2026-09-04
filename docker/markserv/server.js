@@ -20,6 +20,13 @@ const zlib    = require('zlib');
 const express      = require('express');
 const rateLimit    = require('express-rate-limit');
 const mdIt         = require('markdown-it');
+// GitHub-flavoured alert blockquotes ([!NOTE], [!TIP], [!IMPORTANT], [!WARNING],
+// [!CAUTION]).  The package is ES-module-only, so require() hands back a module
+// namespace object rather than the plugin function -- hence `.default`.  The
+// fallback arm keeps this working if it ever ships a CommonJS build.  Requiring
+// an ES module needs Node >= 20.19; the Dockerfile pins the base image for it.
+const mdAlertsMod  = require('markdown-it-github-alerts');
+const mdAlerts     = mdAlertsMod.default || mdAlertsMod;
 const chokidar = require('chokidar');
 
 // ---------------------------------------------------------------------------
@@ -44,7 +51,11 @@ function encodePlantUML(source) {
 // ---------------------------------------------------------------------------
 // markdown-it setup — override fence renderer for plantuml and mermaid
 // ---------------------------------------------------------------------------
-const md = mdIt({ html: true, linkify: true, typographer: true });
+// Alerts are a blockquote-level construct and do not interact with the fence
+// override below; registration sits next to construction to match the file's
+// existing shape.  Note the alert titles carry an inline <svg> octicon, which
+// only survives because `html: true` is set here.
+const md = mdIt({ html: true, linkify: true, typographer: true }).use(mdAlerts);
 
 const defaultFence = md.renderer.rules.fence ||
   ((tokens, idx, options, _env, self) => self.renderToken(tokens, idx, options));
@@ -111,6 +122,39 @@ function renderPage(title, bodyHtml, isMarkdown) {
     pre  { background: #f6f8fa; border-radius: 6px; overflow: auto; padding: 16px; }
     pre code { background: none; padding: 0; font-size: 100%; }
     blockquote { border-left: .25em solid #dfe2e5; color: #6a737d; margin: 0; padding: 0 1em; }
+
+    /* GFM alerts.  Inlined from markdown-it-github-alerts'
+       styles/github-base.css and styles/github-colors-light.css -- the
+       package ships them as files, but this server has no stylesheet and no
+       static route, so they travel with the page like every other rule here.
+       Both halves are required: the base rules below reference
+       var(--color-note) and friends, which only the :root block defines, so
+       base-only styling renders grey borders and uncoloured titles.
+
+       Alerts are <div class="markdown-alert">, not <blockquote>, so the
+       blockquote rule above deliberately does not apply to them and a
+       blockquote that is not an alert is unaffected. */
+    :root { --color-note: #0969da; --color-tip: #1a7f37; --color-warning: #9a6700;
+            --color-severe: #bc4c00; --color-caution: #d1242f; --color-important: #8250df; }
+    .markdown-alert { padding: .5rem 1rem; margin-bottom: 16px; color: inherit;
+                      border-left: .25em solid #888; }
+    .markdown-alert > :first-child { margin-top: 0; }
+    .markdown-alert > :last-child  { margin-bottom: 0; }
+    .markdown-alert .markdown-alert-title { display: flex; font-weight: 500;
+                                            align-items: center; line-height: 1; }
+    .markdown-alert .markdown-alert-title .octicon { margin-right: .5rem;
+            display: inline-block; overflow: visible !important;
+            vertical-align: text-bottom; fill: currentColor; }
+    .markdown-alert.markdown-alert-note      { border-left-color: var(--color-note); }
+    .markdown-alert.markdown-alert-note      .markdown-alert-title { color: var(--color-note); }
+    .markdown-alert.markdown-alert-tip       { border-left-color: var(--color-tip); }
+    .markdown-alert.markdown-alert-tip       .markdown-alert-title { color: var(--color-tip); }
+    .markdown-alert.markdown-alert-important { border-left-color: var(--color-important); }
+    .markdown-alert.markdown-alert-important .markdown-alert-title { color: var(--color-important); }
+    .markdown-alert.markdown-alert-warning   { border-left-color: var(--color-warning); }
+    .markdown-alert.markdown-alert-warning   .markdown-alert-title { color: var(--color-warning); }
+    .markdown-alert.markdown-alert-caution   { border-left-color: var(--color-caution); }
+    .markdown-alert.markdown-alert-caution   .markdown-alert-title { color: var(--color-caution); }
     table { border-collapse: collapse; width: 100%; }
     table th, table td { border: 1px solid #dfe2e5; padding: 6px 13px; }
     table tr:nth-child(2n) { background: #f6f8fa; }

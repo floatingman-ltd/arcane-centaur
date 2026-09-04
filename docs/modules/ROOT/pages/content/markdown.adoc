@@ -129,6 +129,46 @@ link:#plantuml-server[Starting the PlantUML Server].
 * *`mermaid`* fenced blocks are rendered client-side by Mermaid.js
 loaded from the jsDelivr CDN — no extra server is needed.
 
+=== GFM alerts
+
+A blockquote whose first line is a GitHub alert marker renders as a
+titled, coloured admonition with an icon rather than as a blockquote
+showing the marker as text. Five markers are recognised:
+
+[width="100%",cols="30%,70%",options="header",]
+|===
+|Marker |Use
+|`++[++!NOTE++]++` |Information a reader should notice even when skimming
+|`++[++!TIP++]++` |An optional suggestion that makes something easier
+|`++[++!IMPORTANT++]++` |Information needed to complete the task at hand
+|`++[++!WARNING++]++` |Urgent content where ignoring it risks a bad outcome
+|`++[++!CAUTION++]++` |A risk, or a negative consequence of some action
+|===
+
+[source,markdown]
+----
+> [!IMPORTANT]
+> The marker goes on its own line. Everything after it is ordinary
+> markdown — paragraphs, lists, code blocks and links all work.
+----
+
+The marker itself is not shown. A blockquote with no marker, or with an
+unrecognised one such as `++[++!EXAMPLE++]++`, renders as an ordinary
+blockquote — the syntax degrades rather than erroring.
+
+[NOTE]
+====
+*Alerts render in the markserv preview only.* They are not rendered by
+the in-buffer renderer (`,pp`), by the popup (`,p` /
+`:MarkdownPopup`), or by `markdown-preview.nvim`. Nor do they survive
+publishing to Confluence, which has no equivalent concept and shows the
+marker as literal text — Confluence panels need its own native macros.
+
+Everywhere that does not understand the syntax falls back to a plain
+blockquote, so a document using alerts stays readable; it simply loses
+the colour.
+====
+
 === How it works
 
 ....
@@ -175,6 +215,29 @@ contains all the interlinked markdown files. If you start Neovim from
 that directory and omit `MD++_++DIR`, Docker Compose uses `$PWD`
 automatically.
 ____
+
+[IMPORTANT]
+====
+*Use an absolute path for `MD++_++DIR`.* A relative value is resolved
+against the *compose file's* directory, not your shell's, so the
+container silently mounts a path under
+`~/.config/nvim/docker/markserv/` — creating it if absent — and every
+request returns *not found*. Docker gives no warning.
+
+The mount root must also match the directory Neovim was started from,
+because the URL `,sp` builds is relative to Neovim's working directory.
+Mounting a subdirectory of your cwd produces the same *not found* even
+when the path is absolute.
+====
+
+[NOTE]
+====
+*Changing the server itself needs `--build`.* The compose file builds
+from `docker/markserv/`, so edits to `server.js`, `package.json` or the
+`Dockerfile` are only picked up by `up -d --build`. A plain `up -d`
+restarts the *old image*, the change appears not to have worked, and
+the natural next step is to debug the wrong layer.
+====
 
 '''''
 

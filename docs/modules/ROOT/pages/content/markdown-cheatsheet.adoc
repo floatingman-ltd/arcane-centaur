@@ -118,13 +118,45 @@ The server runs at `http://localhost:8090` via Docker Compose
 docker compose -f ~/.config/nvim/docker/markserv/docker-compose.yml up -d --build
 ----
 
-To serve a directory other than `$PWD`, set `MD++_++DIR`:
+To serve a directory other than `$PWD`, set `MD++_++DIR` — *always as an
+absolute path*, and matching the directory Neovim was started from. A
+relative value resolves against the compose file's directory and the
+container serves an empty tree:
 
 [source,sh]
 ----
 MD_DIR=/path/to/project \
   docker compose -f ~/.config/nvim/docker/markserv/docker-compose.yml up -d --build
 ----
+
+Edits to `server.js`, `package.json` or the `Dockerfile` need
+`up -d --build`; a plain `up -d` restarts the old image.
+
+=== GFM alerts (markserv preview only)
+
+A blockquote whose first line is one of these markers renders as a
+titled, coloured admonition. The marker itself is not shown.
+
+[width="100%",cols="30%,70%",options="header",]
+|===
+|Marker |Renders as
+|`++>++ ++[++!NOTE++]++` |Blue *Note* panel
+|`++>++ ++[++!TIP++]++` |Green *Tip* panel
+|`++>++ ++[++!IMPORTANT++]++` |Purple *Important* panel
+|`++>++ ++[++!WARNING++]++` |Amber *Warning* panel
+|`++>++ ++[++!CAUTION++]++` |Red *Caution* panel
+|===
+
+[source,markdown]
+----
+> [!TIP]
+> Body is ordinary markdown — lists, code and links all work.
+----
+
+Rendered by `,sp` only — *not* by `,pp`, `,p`, `:MarkdownPopup`, or on
+published Confluence pages. Anything that does not understand the
+syntax falls back to a plain blockquote, so the document stays readable
+and only loses the colour.
 
 [width="100%",cols="34%,33%,33%",options="header",]
 |===
