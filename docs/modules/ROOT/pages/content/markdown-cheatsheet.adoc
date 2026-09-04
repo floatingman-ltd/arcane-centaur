@@ -153,6 +153,12 @@ titled, coloured admonition. The marker itself is not shown.
 > Body is ordinary markdown — lists, code and links all work.
 ----
 
+For the wider Obsidian set the in-buffer renderer already supports
+(`++[++!EXAMPLE++]++`, `++[++!QUESTION++]++`, `++[++!TODO++]++` and 19
+more), start the container with `MD++_++ALERT++_++VOCAB=extended` — an
+environment variable, so it needs a container recreate, not a rebuild.
+Those extra markers render locally but *not* on GitHub or Confluence.
+
 Rendered by `,sp` only — *not* by `,pp`, `,p`, `:MarkdownPopup`, or on
 published Confluence pages. Anything that does not understand the
 syntax falls back to a plain blockquote, so the document stays readable

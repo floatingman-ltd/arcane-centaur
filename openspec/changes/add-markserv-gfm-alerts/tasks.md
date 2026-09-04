@@ -7,8 +7,17 @@
 - [x] 1.5 Add the plugin's base rules and light colour definitions (~1.6 KB, from its `styles/github-base.css` and `styles/github-colors-light.css`) to the inlined `<style>` block in `renderPage()`. Both are required — the base rules reference `var(--color-note)` and friends, which only the colour file defines, so base-only styling yields grey borders and uncoloured titles.
 - [x] 1.6 Confirm no change is needed to the existing `blockquote` CSS rule: alerts render as `<div class="markdown-alert">`, so the rule does not apply to them and a non-alert blockquote is unaffected.
 
+## 1b. Vocabulary switch
+
+- [x] 1.7 Add an `MD_ALERT_VOCAB` switch to `server.js` selecting `gfm` (default, the five GFM markers) or `extended` (those five plus the 22 Obsidian markers `render-markdown.nvim` renders in-buffer). Group the 22 onto the five GFM markers using render-markdown's own mapping so no new palette is invented; `QUOTE`/`CITE` have no GFM counterpart and take the blockquote grey.
+- [x] 1.8 Harvest the plugin's five default octicons at startup rather than hard-coding them — they live in a non-exported internal constant, and a hard-coded copy would drift the first time upstream changed one. Seed the harvested map into `icons`: the option **replaces** the plugin's defaults rather than merging, so omitting them strips the icons from all five GFM markers.
+- [x] 1.9 Fix titles that plain capitalisation gets wrong: `TLDR` → `TL;DR`, `FAQ` → `FAQ`.
+- [x] 1.10 Add the 22 extra class-to-colour rules to the inlined `<style>` block. They are inert under `gfm` because the classes never appear.
+- [x] 1.11 Pass `MD_ALERT_VOCAB` through `docker-compose.yml` as an environment variable, defaulting to `gfm`, so switching is a container recreate rather than an image rebuild.
+
 ## 2. Fixture
 
+- [x] 2.2 Extend the fixture with an `MD_ALERT_VOCAB=extended` section covering a marker from each of the five colour groups, the two titles plain capitalisation gets wrong, and the iconless `QUOTE`. Add a `[!NONSENSE]` marker that belongs to no vocabulary, so the "unrecognised marker" scenario has a subject that holds under both settings — `[!EXAMPLE]` no longer does.
 - [x] 2.1 Add a markdown fixture under `testdocs/` carrying all five alert types, an unrecognised `[!EXAMPLE]` marker, a plain blockquote, an alert with a rich body (multiple paragraphs, a list, inline code, a link), and a `plantuml` fence — so one page exercises every scenario in the spec including the two "must not change" ones.
 
 ## 3. Validation
@@ -18,6 +27,7 @@
 - [x] 3.3 Include a case that rebuilds with **no layer cache** and asserts the container starts and serves an alert. This is the ESM/CommonJS risk from design D2, and it fails as a dead server rather than as unstyled output.
 - [x] 3.4 Include the two "nothing changed" cases — a plain blockquote still renders as a blockquote with the existing border, and the `plantuml`/`mermaid` fences still render. These are the ones easiest to skip because nothing is expected to happen.
 - [x] 3.5 Note in the prepare steps that `MD_DIR` must be an **absolute** path and must match Neovim's cwd. A relative value resolves against the compose file's directory, silently serving an empty tree — the failure already hit once and left a stray root-owned `docker/markserv/docs/` behind.
+- [x] 3.7 Add `MA.7` covering the vocabulary switch, including a step that **counts icons** rather than only checking panels appear — the `icons`-replaces-defaults bug produced correct-looking panels with the GFM five silently stripped of theirs.
 - [ ] 3.6 Walk every validation step live in a browser and tick each box only once genuinely confirmed.
 
 ## 4. Documentation

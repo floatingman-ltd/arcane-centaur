@@ -156,6 +156,48 @@ The marker itself is not shown. A blockquote with no marker, or with an
 unrecognised one such as `++[++!EXAMPLE++]++`, renders as an ordinary
 blockquote — the syntax degrades rather than erroring.
 
+==== Extending the vocabulary
+
+GFM defines those five. The in-buffer renderer (`,pp`) recognises *27* —
+those five plus 22 Obsidian markers such as `++[++!EXAMPLE++]++`,
+`++[++!QUESTION++]++` and `++[++!TODO++]++` — so by default the two
+previews disagree about anything outside the GFM set.
+
+Set `MD++_++ALERT++_++VOCAB` to choose:
+
+[width="100%",cols="25%,75%",options="header",]
+|===
+|Value |Behaviour
+|`gfm` |*Default.* The five GitHub markers only. The preview shows a
+document the way GitHub will render it, and a marker outside the set
+stays a visible blockquote — a useful signal that it is not portable.
+|`extended` |The five plus the 22 Obsidian markers, so the buffer and
+the browser agree. Each extra marker borrows the colour and icon of the
+GFM marker it is grouped with, using the same grouping the in-buffer
+renderer uses.
+|===
+
+[source,sh]
+----
+MD_ALERT_VOCAB=extended MD_DIR=/path/to/project \
+  docker compose -f ~/.config/nvim/docker/markserv/docker-compose.yml up -d
+----
+
+It is an environment variable rather than a build setting, so switching
+needs only a container recreate — *no image rebuild*.
+
+`++[++!QUOTE++]++` and `++[++!CITE++]++` have no GFM counterpart, so
+they render grey and without an icon. A marker in neither vocabulary,
+such as `++[++!NONSENSE++]++`, is always left as a plain blockquote.
+
+[WARNING]
+====
+Under `extended` the preview will render panels that *GitHub and
+Confluence will not*, showing the marker as literal text instead. That
+is precisely what the `gfm` default exists to avoid, so prefer
+`extended` for documents reviewed only locally.
+====
+
 [NOTE]
 ====
 *Alerts render in the markserv preview only.* They are not rendered by

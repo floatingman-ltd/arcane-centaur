@@ -3448,7 +3448,7 @@ The point of this case is that the change altered **nothing** here. Easy to skip
 
 **Check this in the browser, not in the Neovim buffer.** `render-markdown.nvim` recognises a much wider callout vocabulary than GFM does — `[!EXAMPLE]` is an *Obsidian* callout it renders happily (`lua/render-markdown/settings.lua:260`), and it maps `example` and `important` to the **same** highlight group, `RenderMarkdownHint`. So in the in-buffer preview `[!EXAMPLE]` renders as a styled callout indistinguishable in colour from `[!IMPORTANT]`. That is the in-buffer renderer behaving correctly and says nothing about the preview server. Reading it there instead of in the browser is how this case gets recorded as a false failure.
 
-1. Under *An unrecognised marker stays a blockquote*, the `[!EXAMPLE]` block must render as an ordinary blockquote **showing its literal `[!EXAMPLE]` text**, with no icon and no colour.
+1. Under *An unrecognised marker stays a blockquote*, the `[!EXAMPLE]` block must render as an ordinary blockquote **showing its literal `[!EXAMPLE]` text**, with no icon and no colour. This holds under the default `gfm` vocabulary; under `extended` it becomes a panel, which is `MA.7`'s business. The `[!NONSENSE]` block near the end of the fixture is the one that must stay literal under **either** setting.
 2. Under *A plain blockquote is untouched*, the blockquote must show the existing thin grey left border and muted grey text — no alert styling, no icon, no double border.
 3. The nested blockquote must still nest.
 4. Reload the page. No console errors in the browser devtools.
@@ -3478,6 +3478,26 @@ Alerts are blockquote-level and should not touch the fence overrides at all, but
 5. `cheatsheets/markdown.md` — open the in-editor cheatsheet and confirm the alert markers are there too. This is a separate file from the Antora page and is easy to forget.
 
 - [X] Both docs pages and the in-editor cheatsheet carry the alert syntax and the rebuild note
+
+#### MA.7 — The vocabulary switch
+
+`MD_ALERT_VOCAB` chooses between GFM's five markers and the 27 the in-buffer renderer supports. It is an environment variable, so switching must not need an image rebuild — that is half of what this case proves.
+
+1. With the container running under the default (no `MD_ALERT_VOCAB` set), open the fixture. Everything under *Extended vocabulary* must render as plain blockquotes showing their literal markers.
+2. Recreate with the wider set, **without rebuilding**:
++
+`MD_ALERT_VOCAB=extended MD_DIR=/home/walt/.config/nvim docker compose -f docker/markserv/docker-compose.yml up -d`
+3. Reload. Every block under *Extended vocabulary* must now be a panel:
+   - `[!EXAMPLE]` purple (Important's colour and icon), `[!QUESTION]` amber, `[!TODO]` blue, `[!BUG]` red, `[!SUCCESS]` green.
+   - `[!TLDR]` titled **`TL;DR`**, not `Tldr`. `[!FAQ]` titled **`FAQ`**, not `Faq`.
+   - `[!QUOTE]` grey and deliberately **iconless** — it has no GFM counterpart to borrow one from.
+4. **Count the icons, do not just check the panels appear.** Every panel except `[!QUOTE]` must have one, *including the five GFM alerts higher up the page*. The plugin's `icons` option replaces its defaults rather than merging into them, so a regression here strips the icons from the GFM five while leaving every panel present and correctly coloured — invisible unless counted.
+5. `[!NONSENSE]` must still be a plain blockquote.
+6. Switch back by recreating with `MD_ALERT_VOCAB=gfm` (or unset) and confirm the *Extended vocabulary* section returns to plain blockquotes.
+
+> Found during implementation, and the reason step 4 exists: the served page had 8 octicons where 15 were expected. Every panel rendered, every colour was right, and the five GFM alerts had silently lost their icons because supplying any custom icon discards the plugin's default map. Checking for panels alone would have passed.
+
+- [ ] Both vocabularies render as specified, switching needs no rebuild, every panel but `[!QUOTE]` keeps an icon, and `[!NONSENSE]` stays literal in both
 
 ### Raise PR & merge
 

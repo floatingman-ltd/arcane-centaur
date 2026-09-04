@@ -58,6 +58,8 @@ A blockquote whose first line is one of these renders as a titled, coloured pane
 | `> [!WARNING]` | Amber **Warning** |
 | `> [!CAUTION]` | Red **Caution** |
 
+For the 22 extra Obsidian markers the in-buffer renderer already shows (`[!EXAMPLE]`, `[!QUESTION]`, `[!TODO]`, ...), start the container with `MD_ALERT_VOCAB=extended` — env var, so a recreate rather than a rebuild. Those extras render locally only, not on GitHub or Confluence.
+
 Body content is ordinary markdown. Rendered by `,sp` only — not by `,pp`, `,p`, `:MarkdownPopup`, or on Confluence. Anything else falls back to a plain blockquote.
 
 ## Export

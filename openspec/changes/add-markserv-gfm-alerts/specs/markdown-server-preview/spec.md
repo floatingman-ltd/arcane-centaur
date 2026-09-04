@@ -26,9 +26,10 @@ The preview server SHALL render a blockquote whose first line is a GFM alert mar
 
 #### Scenario: An unrecognised marker is left alone
 
-- **WHEN** a blockquote begins with a bracketed word that is not one of the five alert types, such as `> [!EXAMPLE]`
-- **THEN** it SHALL render as an ordinary blockquote
+- **WHEN** a blockquote begins with a bracketed word belonging to no configured vocabulary, such as `> [!NONSENSE]`
+- **THEN** it SHALL render as an ordinary blockquote showing its literal marker text
 - **AND** the server SHALL NOT error
+- **AND** this SHALL hold whichever vocabulary is selected
 
 ### Requirement: Existing rendering behaviour is preserved
 
@@ -89,3 +90,43 @@ The server inlines all of its CSS into the page it generates and has no styleshe
 - **WHEN** the alert base rules are present in the page
 - **THEN** the custom properties they reference SHALL also be defined
 - **AND** no alert SHALL fall back to an undefined colour
+
+### Requirement: The alert vocabulary is selectable without a rebuild
+
+The set of markers treated as alerts SHALL be selectable at container start between two vocabularies:
+
+- **`gfm`** — the five GitHub markers and nothing else. This SHALL be the default, so that by default the preview shows a document the way GitHub will render it.
+- **`extended`** — those five plus the Obsidian markers that the in-buffer renderer already recognises, so that the buffer preview and the browser preview agree.
+
+Selection SHALL be made through an environment variable, not a build argument, so that switching requires only recreating the container and never rebuilding the image.
+
+Under `extended`, each additional marker SHALL take the accent colour and icon of the GFM marker it is grouped with, following the same grouping the in-buffer renderer uses, so no new palette is introduced and the same marker reads the same colour in both previews.
+
+#### Scenario: The default vocabulary is the GitHub five
+
+- **WHEN** the container is started with no vocabulary set
+- **THEN** the five GFM markers SHALL render as admonitions
+- **AND** a marker outside that set, such as `[!EXAMPLE]`, SHALL render as an ordinary blockquote showing its literal text
+
+#### Scenario: The extended vocabulary renders the Obsidian markers
+
+- **WHEN** the container is started with the vocabulary set to `extended`
+- **THEN** markers such as `[!EXAMPLE]`, `[!QUESTION]`, `[!TODO]`, `[!BUG]` and `[!SUCCESS]` SHALL render as admonitions
+- **AND** each SHALL carry the accent colour and icon of the GFM marker it is grouped with
+- **AND** the five GFM markers SHALL keep their own icons
+
+#### Scenario: Switching vocabulary does not require an image rebuild
+
+- **WHEN** the vocabulary is changed and the container is recreated without rebuilding the image
+- **THEN** the new vocabulary SHALL take effect
+
+#### Scenario: Titles that plain capitalisation would get wrong
+
+- **WHEN** the `extended` vocabulary renders `[!TLDR]` or `[!FAQ]`
+- **THEN** their titles SHALL read `TL;DR` and `FAQ` rather than `Tldr` and `Faq`
+
+#### Scenario: A marker with no GFM counterpart
+
+- **WHEN** the `extended` vocabulary renders `[!QUOTE]` or `[!CITE]`
+- **THEN** they SHALL render as admonitions with a muted accent colour
+- **AND** they MAY render without an icon, there being no GFM equivalent to borrow one from

@@ -58,6 +58,26 @@ Alternatives considered: adding a route that serves the files from `node_modules
 
 Alerts render as `<div class="markdown-alert">`, not `<blockquote>`, so the template's `blockquote { border-left: .25em solid #dfe2e5; color: #6a737d; }` does not apply to them and needs no change. A blockquote that is *not* an alert keeps rendering exactly as before. This is worth stating because it is the obvious place a careless implementation would produce a double border or grey out the alert text.
 
+### D5 — Make the vocabulary a runtime switch, defaulting to GitHub's five
+
+GFM defines five markers. `render-markdown.nvim` already renders **27** — those five plus 22 Obsidian ones — so the in-buffer preview and the browser preview disagree today about markers like `[!EXAMPLE]`, which the buffer styles and the server leaves as a literal blockquote.
+
+Both behaviours are defensible and they conflict. Faithfulness to GitHub argues for five: a preview that flatters a document with panels GitHub will render as blockquotes is a preview that lies about what a reader will see, and the marker showing through is a useful signal that it is not portable. Agreement between the two local previews argues for 27.
+
+Rather than pick, `MD_ALERT_VOCAB` selects between `gfm` (default) and `extended`. Default five keeps the preview honest and keeps the previously validated behaviour intact; `extended` is one variable away for anyone who wants the wider set.
+
+**An environment variable, not a build argument.** The distinction matters practically: an env change is a container recreate (`MD_ALERT_VOCAB=extended docker compose up -d`), while a build argument would mean rebuilding the image every time someone changed their mind.
+
+Under `extended` the 22 borrow the colour *and* icon of the GFM marker they are grouped with, using render-markdown's own 27-onto-5 collapse. That invents no new palette and means a given marker reads the same colour in the buffer and the browser. `QUOTE`/`CITE` are the exception — they map to render-markdown's `RenderMarkdownQuote`, which has no GFM counterpart, so they take the blockquote grey and stay iconless.
+
+### D6 — Harvest the plugin's icons instead of hard-coding them
+
+The plugin keeps its octicons in a module-internal `DEFAULT_GITHUB_ICONS` it does not export, so there is no supported way to reference them. The server therefore renders one alert of each GFM type through a throwaway `markdown-it` instance at startup and lifts the `<svg>` out of the result.
+
+This is more indirect than pasting the SVGs into `server.js`, and it is the better trade: the alternative duplicates ~2.5 KB of upstream markup that would drift silently the first time the plugin updated an icon. If the plugin's output shape ever changes, the harvest yields an empty map and extended markers render titled but iconless — degraded, not broken.
+
+**This turned out to be necessary rather than merely tidy.** The plugin's `icons` option *replaces* its default map rather than merging into it, so supplying a single custom icon strips the icons from all five GFM markers. Found by counting octicons in a served page: 8 where 15 were expected. The harvested map is therefore seeded into `icons` so the five keep their own icons alongside the borrowed ones.
+
 ## Risks / Trade-offs
 
 **The plugin is ESM-only and the base image tag floats** → the highest-consequence risk, because it fails at container startup rather than degrading: no server, not merely unstyled alerts. Mitigated by pinning the base image in the Dockerfile and by a validation case that rebuilds from scratch and asserts the container both starts and renders an alert.
@@ -67,6 +87,10 @@ Alerts render as `<div class="markdown-alert">`, not `<blockquote>`, so the temp
 **`html: true` is already set on the `markdown-it` instance** → the plugin injects raw `<svg>`, which only renders because HTML passthrough is on. This is pre-existing and not introduced here, but it means the alert titles depend on that option staying true; turning it off later would strip the octicons and leave bare titles. Noted so the coupling is discoverable.
 
 **Alert colour fidelity is light-mode only** → a reader using a dark browser theme gets GitHub's light alert colours on the template's light background, which is self-consistent but will look wrong if the template is ever darkened. Accepted: the alternative is shipping a dark theme for the whole page, which is a different change.
+
+**The `extended` vocabulary renders panels that GitHub and Confluence will not** → a document authored against `extended` looks richer locally than anywhere it is published, which is the failure mode the GFM-only default exists to avoid. Mitigated by defaulting to `gfm` and by documenting that the extra 22 markers are local-preview-only.
+
+**The icon harvest depends on the plugin's output shape** → a change to its markup silently costs the extended markers their icons. Mitigated by the empty-map fallback and by a validation case that counts icons rather than merely checking that panels appear, which is what caught the `icons`-replaces-defaults bug in the first place.
 
 **The plugin adds a transitive dependency surface to a container that currently has four direct dependencies** → small, MIT-licensed, single-purpose, and the container is a local dev tool with no network exposure beyond `127.0.0.1`. Accepted.
 

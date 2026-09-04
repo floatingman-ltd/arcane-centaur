@@ -51,11 +51,95 @@ function encodePlantUML(source) {
 // ---------------------------------------------------------------------------
 // markdown-it setup — override fence renderer for plantuml and mermaid
 // ---------------------------------------------------------------------------
+// ---------------------------------------------------------------------------
+// Alert vocabulary
+//
+// MD_ALERT_VOCAB selects how many markers are treated as alerts:
+//
+//   gfm       (default) the five GitHub markers, and nothing else.  Matches
+//             what GitHub itself renders, so a document previewed here looks
+//             the way it will look when pushed.
+//   extended  the five, plus the twenty-two Obsidian markers that
+//             render-markdown.nvim already renders in the buffer.  Makes the
+//             two local previews agree, at the cost of showing panels GitHub
+//             and Confluence will render as plain blockquotes.
+//
+// It is an environment variable rather than a build argument so switching is
+// `MD_ALERT_VOCAB=extended docker compose up -d` -- a container recreate, with
+// no image rebuild.
+// ---------------------------------------------------------------------------
+const GFM_MARKERS = ['NOTE', 'TIP', 'IMPORTANT', 'WARNING', 'CAUTION'];
+
+// Grouped by the GFM marker each one borrows its colour and icon from.  The
+// grouping mirrors render-markdown.nvim's own: it collapses all 27 markers onto
+// five highlight groups, so following it keeps the buffer and the browser
+// showing the same colour for the same marker.
+const OBSIDIAN_MARKERS = {
+  note:      ['ABSTRACT', 'SUMMARY', 'TLDR', 'INFO', 'TODO'],
+  tip:       ['HINT', 'SUCCESS', 'CHECK', 'DONE'],
+  important: ['EXAMPLE'],
+  warning:   ['QUESTION', 'HELP', 'FAQ', 'ATTENTION'],
+  caution:   ['FAILURE', 'FAIL', 'MISSING', 'DANGER', 'ERROR', 'BUG'],
+  quote:     ['QUOTE', 'CITE'],
+};
+
+// Default capitalisation of the marker name gets these two wrong.
+const ALERT_TITLES = { tldr: 'TL;DR', faq: 'FAQ' };
+
+const EXTENDED = (process.env.MD_ALERT_VOCAB || 'gfm').toLowerCase() === 'extended';
+
+// The plugin keeps its octicons in a module-internal constant it does not
+// export, so the only way to give an Obsidian marker the same icon as the GFM
+// marker it borrows from is to ask the plugin to render one of each and lift
+// the <svg> out of the result.  Harvesting beats hard-coding: copies of ~2.5 KB
+// of upstream SVG would drift silently the first time the plugin updates them.
+//
+// If the plugin's output shape ever changes this yields an empty map, and the
+// extended markers render titled but iconless -- degraded, not broken.
+function harvestIcons() {
+  try {
+    const probe = mdIt({ html: true }).use(mdAlerts);
+    const source = GFM_MARKERS.map(m => `> [!${m}]\n> x\n`).join('\n');
+    const html = probe.render(source);
+    const found = {};
+    const re = /<div class="markdown-alert markdown-alert-([a-z]+)"[^>]*>\s*<p class="markdown-alert-title">(<svg[\s\S]*?<\/svg>)/g;
+    let m;
+    while ((m = re.exec(html)) !== null) found[m[1]] = m[2];
+    return found;
+  } catch {
+    return {};
+  }
+}
+
+function alertOptions() {
+  if (!EXTENDED) return undefined; // plugin defaults: the five GFM markers
+
+  const gfmIcons = harvestIcons();
+  const markers = [...GFM_MARKERS];
+  // The plugin's `icons` option *replaces* its default map rather than merging
+  // into it, so the five GFM icons have to be re-supplied here or they vanish
+  // the moment any custom icon is given.  Seeding from the harvest does both
+  // jobs at once: it keeps the five and provides the source for the borrowed
+  // ones below.
+  const icons = { ...gfmIcons };
+
+  for (const [borrowFrom, extra] of Object.entries(OBSIDIAN_MARKERS)) {
+    for (const marker of extra) {
+      markers.push(marker);
+      // 'quote' has no GFM counterpart, so it stays iconless by design.
+      if (gfmIcons[borrowFrom]) icons[marker.toLowerCase()] = gfmIcons[borrowFrom];
+    }
+  }
+
+  return { markers, icons, titles: ALERT_TITLES };
+}
+
 // Alerts are a blockquote-level construct and do not interact with the fence
 // override below; registration sits next to construction to match the file's
 // existing shape.  Note the alert titles carry an inline <svg> octicon, which
 // only survives because `html: true` is set here.
-const md = mdIt({ html: true, linkify: true, typographer: true }).use(mdAlerts);
+const md = mdIt({ html: true, linkify: true, typographer: true })
+  .use(mdAlerts, alertOptions());
 
 const defaultFence = md.renderer.rules.fence ||
   ((tokens, idx, options, _env, self) => self.renderToken(tokens, idx, options));
@@ -155,6 +239,48 @@ function renderPage(title, bodyHtml, isMarkdown) {
     .markdown-alert.markdown-alert-warning   .markdown-alert-title { color: var(--color-warning); }
     .markdown-alert.markdown-alert-caution   { border-left-color: var(--color-caution); }
     .markdown-alert.markdown-alert-caution   .markdown-alert-title { color: var(--color-caution); }
+
+    /* Obsidian markers, active only under MD_ALERT_VOCAB=extended.  Each
+       borrows the colour of the GFM marker it is grouped with in server.js,
+       following render-markdown.nvim's own 27-onto-5 collapse so the buffer and
+       the browser agree.  These rules are inert when the vocabulary is "gfm":
+       the classes simply never appear.  'quote' has no GFM counterpart and uses
+       the blockquote grey instead. */
+    :root { --color-quote: #6a737d; }
+    .markdown-alert-abstract, .markdown-alert-summary, .markdown-alert-tldr,
+    .markdown-alert-info, .markdown-alert-todo
+      { border-left-color: var(--color-note); }
+    .markdown-alert-abstract .markdown-alert-title, .markdown-alert-summary .markdown-alert-title,
+    .markdown-alert-tldr .markdown-alert-title, .markdown-alert-info .markdown-alert-title,
+    .markdown-alert-todo .markdown-alert-title
+      { color: var(--color-note); }
+    .markdown-alert-hint, .markdown-alert-success, .markdown-alert-check,
+    .markdown-alert-done
+      { border-left-color: var(--color-tip); }
+    .markdown-alert-hint .markdown-alert-title, .markdown-alert-success .markdown-alert-title,
+    .markdown-alert-check .markdown-alert-title, .markdown-alert-done .markdown-alert-title
+      { color: var(--color-tip); }
+    .markdown-alert-example
+      { border-left-color: var(--color-important); }
+    .markdown-alert-example .markdown-alert-title
+      { color: var(--color-important); }
+    .markdown-alert-question, .markdown-alert-help, .markdown-alert-faq,
+    .markdown-alert-attention
+      { border-left-color: var(--color-warning); }
+    .markdown-alert-question .markdown-alert-title, .markdown-alert-help .markdown-alert-title,
+    .markdown-alert-faq .markdown-alert-title, .markdown-alert-attention .markdown-alert-title
+      { color: var(--color-warning); }
+    .markdown-alert-failure, .markdown-alert-fail, .markdown-alert-missing,
+    .markdown-alert-danger, .markdown-alert-error, .markdown-alert-bug
+      { border-left-color: var(--color-caution); }
+    .markdown-alert-failure .markdown-alert-title, .markdown-alert-fail .markdown-alert-title,
+    .markdown-alert-missing .markdown-alert-title, .markdown-alert-danger .markdown-alert-title,
+    .markdown-alert-error .markdown-alert-title, .markdown-alert-bug .markdown-alert-title
+      { color: var(--color-caution); }
+    .markdown-alert-quote, .markdown-alert-cite
+      { border-left-color: var(--color-quote); }
+    .markdown-alert-quote .markdown-alert-title, .markdown-alert-cite .markdown-alert-title
+      { color: var(--color-quote); }
     table { border-collapse: collapse; width: 100%; }
     table th, table td { border: 1px solid #dfe2e5; padding: 6px 13px; }
     table tr:nth-child(2n) { background: #f6f8fa; }

@@ -98,3 +98,38 @@ graph LR
 | [Link](https://neovim.io) | yes |
 
 Ordinary paragraph text after the table, closing the fixture.
+
+## Extended vocabulary (`MD_ALERT_VOCAB=extended` only)
+
+Under the default `gfm` vocabulary every blockquote in this section renders as a plain blockquote showing its literal marker. Under `extended` they become panels, borrowing the colour and icon of the GFM marker each is grouped with.
+
+> [!EXAMPLE]
+> Grouped with IMPORTANT — purple.
+
+> [!QUESTION]
+> Grouped with WARNING — amber.
+
+> [!TODO]
+> Grouped with NOTE — blue.
+
+> [!BUG]
+> Grouped with CAUTION — red.
+
+> [!SUCCESS]
+> Grouped with TIP — green.
+
+> [!TLDR]
+> Title must read `TL;DR`, not `Tldr`.
+
+> [!FAQ]
+> Title must read `FAQ`, not `Faq`.
+
+> [!QUOTE]
+> Has no GFM counterpart — grey, and deliberately iconless.
+
+## Never an alert, in either vocabulary
+
+This marker is in neither the GFM nor the Obsidian set. It must render as a plain blockquote showing its literal text whatever `MD_ALERT_VOCAB` is set to.
+
+> [!NONSENSE]
+> Not a marker in any vocabulary, so this stays a blockquote always.
