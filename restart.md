@@ -1,6 +1,6 @@
 # Restart handoff — 2026-09-04
 
-Snapshot taken mid-validation, ahead of a possible power-down. Delete this file once work resumes; it is a point-in-time note, not documentation.
+Snapshot taken with validation complete, awaiting PR. Delete this file once work resumes; it is a point-in-time note, not documentation.
 
 ## Git state
 
@@ -14,36 +14,28 @@ Everything is committed **and pushed**, so nothing is at risk from a power-down 
 
 ## Where we are
 
-Mid-validation on the OpenSpec change `add-markserv-gfm-alerts`. All four artifacts are written and pass `openspec validate --strict`; implementation and documentation are done; the test plan is `## Change · add-markserv-gfm-alerts` in `openspec/TEST_PLAN.md`, cases `MA.1`–`MA.7`.
+`add-markserv-gfm-alerts` — **validation complete**. All four artifacts pass `openspec validate --strict`, implementation and documentation are done, and `MA.1`–`MA.7` in `openspec/TEST_PLAN.md` are all ticked. Tasks stand at 20 of 21, the remainder being post-merge by design.
 
-**Validation progress: 6 of 7.** `MA.1`–`MA.6` are ticked. `MA.7` — the `MD_ALERT_VOCAB` switch — is the only one open, and it is *half done*: steps 1 and 2 are confirmed, steps 3–6 are not.
+**Waiting on the user to push and raise the PR**, which along with the merge are theirs to do.
 
-**Resume at `MA.7` step 3.** The container has already been rebuilt and flipped to `extended`, so no setup is needed — just reload `http://localhost:8090/testdocs/gfm-alerts.md` and look.
-
-What is already confirmed for MA.7, server-side, by reading the served HTML:
-
-- Step 1 (default `gfm`): 5 panels, 7 icons, `[!EXAMPLE]` and `[!NONSENSE]` both literal.
-- Step 2: flipping to `extended` recreated the container with **no rebuild** — compose reported `Recreate`, not a build. That is the core claim of the case.
-- Under `extended`: 16 panels, 15 icons, `quote` the only iconless one, the GFM five still carrying their own icons, `TL;DR` and `FAQ` titled correctly, `[!EXAMPLE]` now a panel, `[!NONSENSE]` still literal.
-
-What is **not** confirmed, and is what MA.7 still needs: the visual check in a browser. Colours per group (`[!EXAMPLE]` purple, `[!QUESTION]` amber, `[!TODO]` blue, `[!BUG]` red, `[!SUCCESS]` green), and step 6 — flipping back to `gfm` and confirming the *Extended vocabulary* section reverts to plain blockquotes.
-
-## The container is not where you left it
-
-**This matters more than anything else here.** The markserv container has been repointed for validation and is **not** serving the RMVMT docs:
+Title `Render GFM alerts in the markserv preview`. Compare URL:
 
 ```
-mount = /home/walt/.config/nvim      (was /home/walt/src/rmv)
-MD_ALERT_VOCAB = extended            (default is gfm)
+https://github.com/floatingman-ltd/arcane-centaur/compare/main...feat/markserv-gfm-alerts?expand=1
 ```
 
-Restore it when validation is done:
+Squash-merge, matching every merge since #171.
+
+## The container is back where it belongs
+
+Restored after validation — no action needed:
 
 ```
-MD_DIR=/home/walt/src/rmv docker compose -f docker/markserv/docker-compose.yml up -d
+mount = /home/walt/src/rmv
+MD_ALERT_VOCAB = gfm
 ```
 
-That also returns the vocabulary to `gfm`, since `MD_ALERT_VOCAB` is unset in that command and the compose default is `gfm`.
+Confirmed serving the RMVMT tree again (`0021/one-pager.md` returns 200). If the post-merge re-confirmation of `MA.1`/`MA.2` needs the fixture, repoint temporarily with `MD_DIR=/home/walt/.config/nvim`, then restore with the mount above.
 
 ## Things that survive the reboot
 
@@ -57,11 +49,11 @@ That also returns the vocabulary to `gfm`, since `MD_ALERT_VOCAB` is unset in th
 
 **Do not read MA.4 in the Neovim buffer.** `render-markdown.nvim` renders `[!EXAMPLE]` as an Obsidian callout and assigns it `RenderMarkdownHint` — the identical highlight group it gives `[!IMPORTANT]` — so in-buffer the two are the same colour by design. That already caused one false defect report this session. MA.4 is a browser assertion.
 
-## Remaining after MA.7
+## Remaining on this change
 
-1. Tick `MA.7`, then tasks 3.6 in `openspec/changes/add-markserv-gfm-alerts/tasks.md`.
-2. Push, PR, review, squash-merge.
-3. Post-merge: rebuild from merged `main`, re-confirm `MA.1` and `MA.2`, archive, then tasks 5.1 (delete `recommendations/nvim-markserv-gfm-alerts-proposal.md`) and 5.2 (`sudo rm -rf docker/markserv/docs` — the stray root-owned tree from the earlier relative-`MD_DIR` failure; still present).
+1. **User pushes**, raises the PR in the browser, reviews, squash-merges.
+2. Post-merge: `git checkout main && git pull`, rebuild the container from merged `main`, re-confirm `MA.1` and `MA.2`, archive the change and promote the deltas.
+3. Tasks 5.1 (delete `recommendations/nvim-markserv-gfm-alerts-proposal.md`) and 5.2 (`sudo rm -rf docker/markserv/docs` — the stray root-owned tree from the earlier relative-`MD_DIR` failure; still present, needs the user's sudo).
 4. Delete this file.
 
 ## Left unfinished on the previous change

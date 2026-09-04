@@ -36,6 +36,7 @@
 - [x] 4.2 Add the five alert markers to `docs/modules/ROOT/pages/content/markdown-cheatsheet.adoc`.
 - [x] 4.3 Add them to `cheatsheets/markdown.md` as well — that is the in-editor cheatsheet surfaced by `lua/config/cheatsheet.lua`, and it is a separate file from the Antora page.
 - [x] 4.4 Record what alerts do **not** do, where a reader would look for it: they render in the markserv preview only, not in the in-buffer renderer, not in the popup, and not on published Confluence pages.
+- [x] 4.7 Document the `node:20.20-alpine` pin and the Node ≥ 20.19 floor in `docs/modules/ROOT/pages/content/markdown.adoc`, including what the failure looks like (a container that dies at startup, not a page that renders wrongly) and how to check the version. It was recorded in the Dockerfile, `server.js`, the design and the test plan, but nowhere a user would look — and the Dockerfile comment only helps someone who already suspects the base image.
 - [x] 4.5 Note the rebuild requirement wherever the container's start command appears, so `up -d` alone is not mistaken for enough.
 - [x] 4.6 Build the docs site: `./docker/antora/run.sh antora-playbook.yml`.
 
