@@ -28,7 +28,7 @@
 - [x] 3.4 Include the two "nothing changed" cases — a plain blockquote still renders as a blockquote with the existing border, and the `plantuml`/`mermaid` fences still render. These are the ones easiest to skip because nothing is expected to happen.
 - [x] 3.5 Note in the prepare steps that `MD_DIR` must be an **absolute** path and must match Neovim's cwd. A relative value resolves against the compose file's directory, silently serving an empty tree — the failure already hit once and left a stray root-owned `docker/markserv/docs/` behind.
 - [x] 3.7 Add `MA.7` covering the vocabulary switch, including a step that **counts icons** rather than only checking panels appear — the `icons`-replaces-defaults bug produced correct-looking panels with the GFM five silently stripped of theirs.
-- [ ] 3.6 Walk every validation step live in a browser and tick each box only once genuinely confirmed.
+- [x] 3.6 Walk every validation step live in a browser and tick each box only once genuinely confirmed.
 
 ## 4. Documentation
 

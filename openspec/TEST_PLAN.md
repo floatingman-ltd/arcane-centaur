@@ -3497,11 +3497,13 @@ Alerts are blockquote-level and should not touch the fence overrides at all, but
 
 > Found during implementation, and the reason step 4 exists: the served page had 8 octicons where 15 were expected. Every panel rendered, every colour was right, and the five GFM alerts had silently lost their icons because supplying any custom icon discards the plugin's default map. Checking for panels alone would have passed.
 
-- [ ] Both vocabularies render as specified, switching needs no rebuild, every panel but `[!QUOTE]` keeps an icon, and `[!NONSENSE]` stays literal in both
+- [X] Both vocabularies render as specified, switching needs no rebuild, every panel but `[!QUOTE]` keeps an icon, and `[!NONSENSE]` stays literal in both
+
+> Passed. Confirmed **visually**: the switch takes effect and the extended colours are all correct. Confirmed by **reading the served HTML** either side of the flip: `gfm` gives 7 panels / 7 icons with all nine extended markers literal; `extended` gives 16 panels / 15 icons with `quote` the only iconless one, the five GFM alerts still carrying their own icons, `TL;DR` and `FAQ` titled correctly, and `[!NONSENSE]` literal in both. Step 2's claim held exactly — compose reported `Recreate` with no build step, so switching vocabulary never needs an image rebuild. Note the flag itself required one rebuild to enter the image, since it is a code change; only subsequent switches are recreate-only.
 
 ### Raise PR & merge
 
-- [ ] Every MA box above ticked
+- [X] Every MA box above ticked
 - [ ] Raise PR: `feat/markserv-gfm-alerts` → `main`
 - [ ] Review and approve PR
 - [ ] Merge PR
