@@ -3405,7 +3405,7 @@ Two supporting facts, both measured rather than assumed:
 3. `docker exec markserv-markserv-1 node --version` — must be ≥ `v20.19`. Below that the rest of this section is invalid rather than failing.
 4. `docker logs markserv-markserv-1` — must show `Markdown preview server listening`. A stack trace mentioning `require` or `ERR_REQUIRE_ESM` is the D2 risk having fired.
 
-- [ ] Branch checked out, image rebuilt, Node ≥ 20.19, server listening with no load-time error
+- [X] Branch checked out, image rebuilt, Node ≥ 20.19, server listening with no load-time error
 
 ### Validate
 
@@ -3420,7 +3420,7 @@ The ESM/CommonJS interop is the one thing here that fails hard. A cached layer c
 
 A non-200 here, or a container that exits, is the interop failing — not a rendering problem. Check `node --version` in the image first.
 
-- [ ] Cache-free rebuild produces a container that starts and serves the fixture
+- [X] Cache-free rebuild produces a container that starts and serves the fixture
 
 #### MA.2 — All five alert types render as admonitions
 
@@ -3430,7 +3430,7 @@ A non-200 here, or a container that exits, is the interop failing — not a rend
 4. **The literal text `[!NOTE]` and friends must appear nowhere on the page.** This is the actual defect being fixed; everything else is polish.
 5. The five accent colours must be visually distinct from one another. Distinctness is the point — the panel category has to be legible without reading the title.
 
-- [ ] Five titled, icon-bearing, distinctly coloured panels, and no literal `[!TYPE]` marker anywhere
+- [X] Five titled, icon-bearing, distinctly coloured panels, and no literal `[!TYPE]` marker anywhere
 
 #### MA.3 — Alert bodies are rendered as markdown
 
@@ -3440,18 +3440,22 @@ A non-200 here, or a container that exits, is the interop failing — not a rend
 
 If only the first paragraph appears inside the panel, the body is being truncated at the first block — a real defect rather than a styling nit.
 
-- [ ] The rich-bodied alert renders every construct as markdown, all inside the panel
+- [X] The rich-bodied alert renders every construct as markdown, all inside the panel
 
 #### MA.4 — Non-alert blockquotes are unchanged
 
 The point of this case is that the change altered **nothing** here. Easy to skip because nothing is expected to happen, which is exactly why a regression would go unnoticed.
+
+**Check this in the browser, not in the Neovim buffer.** `render-markdown.nvim` recognises a much wider callout vocabulary than GFM does — `[!EXAMPLE]` is an *Obsidian* callout it renders happily (`lua/render-markdown/settings.lua:260`), and it maps `example` and `important` to the **same** highlight group, `RenderMarkdownHint`. So in the in-buffer preview `[!EXAMPLE]` renders as a styled callout indistinguishable in colour from `[!IMPORTANT]`. That is the in-buffer renderer behaving correctly and says nothing about the preview server. Reading it there instead of in the browser is how this case gets recorded as a false failure.
 
 1. Under *An unrecognised marker stays a blockquote*, the `[!EXAMPLE]` block must render as an ordinary blockquote **showing its literal `[!EXAMPLE]` text**, with no icon and no colour.
 2. Under *A plain blockquote is untouched*, the blockquote must show the existing thin grey left border and muted grey text — no alert styling, no icon, no double border.
 3. The nested blockquote must still nest.
 4. Reload the page. No console errors in the browser devtools.
 
-- [ ] `[!EXAMPLE]` stays a literal blockquote, plain and nested blockquotes keep their original styling
+- [X] `[!EXAMPLE]` stays a literal blockquote, plain and nested blockquotes keep their original styling
+
+> First read as a possible defect — `[!EXAMPLE]` appeared to render as a coloured callout resembling `[!IMPORTANT]`. That observation came from the **in-buffer** preview, not the rendered one. `render-markdown.nvim` treats `[!EXAMPLE]` as an Obsidian callout and assigns it `RenderMarkdownHint`, the identical highlight group it gives `[!IMPORTANT]`, so the two are the same colour there by design. In the served page it is a plain `<blockquote>` containing the literal text, exactly as specified — confirmed against the served HTML. The step now says to check it in the browser.
 
 #### MA.5 — Diagrams and everything else still render
 
@@ -3463,6 +3467,8 @@ Alerts are blockquote-level and should not touch the fence overrides at all, but
 
 - [ ] PlantUML and Mermaid still render, the table is unaffected, and live reload still fires
 
+> First run showed neither diagram rendering. **Proven not to be caused by this change:** the pre-change server (`9e6f89c`) was rebuilt and served the same fixture, and its PlantUML `<img>` URL, its `<pre class="mermaid">` block and its mermaid module script are byte-identical to the new server's. Alerts are a blockquote-level construct and cannot reach the fence renderer. Both backends were also reachable from WSL at the time — the PlantUML URL returned `200 image/svg+xml` (3623 bytes) and jsDelivr returned `200`. Attributed to a setup error and pending a re-run; if it recurs, it is a browser-side problem (the browser resolves `localhost:8080` and the CDN through Windows, not through WSL) and not a regression here.
+
 #### MA.6 — Documentation renders
 
 1. `./docker/antora/run.sh antora-playbook.yml`
@@ -3471,7 +3477,7 @@ Alerts are blockquote-level and should not touch the fence overrides at all, but
 4. Confirm the docs state that a **rebuild** is needed, not just a restart.
 5. `cheatsheets/markdown.md` — open the in-editor cheatsheet and confirm the alert markers are there too. This is a separate file from the Antora page and is easy to forget.
 
-- [ ] Both docs pages and the in-editor cheatsheet carry the alert syntax and the rebuild note
+- [X] Both docs pages and the in-editor cheatsheet carry the alert syntax and the rebuild note
 
 ### Raise PR & merge
 
