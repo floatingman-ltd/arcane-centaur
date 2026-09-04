@@ -3312,7 +3312,9 @@ Installing an LSP does not fix indentation, and this case exists so that is not 
 
 That is the documented gap, tracked separately. A *changed* result here would be the surprise.
 
-- [ ] F# still copies the previous indent; `indentexpr` is empty — the known gap, unchanged
+- [X] F# still copies the previous indent; `indentexpr` is empty — the known gap, unchanged
+
+> Passed live. Corroborated headlessly on an indented fixture as well as line 17: a line indented 4 and ending in `=` yields a new line indented 4, not 8, so the result genuinely is *copy the previous indent* rather than *no indent at all* — the two are indistinguishable at column 0. `indentexpr` empty, `autoindent`/`smartindent` both on.
 
 #### LS.8 — A missing binary still degrades silently
 
@@ -3323,7 +3325,9 @@ Proves the "missing binary does not crash" scenario in both new specs without un
 3. `:messages` — no errors about a missing executable. Neovim must start clean.
 4. Quit. This session has a deliberately crippled `PATH` and is good for nothing else.
 
-- [ ] With both binaries off `PATH`, Neovim starts clean and simply attaches no client
+- [X] With both binaries off `PATH`, Neovim starts clean and simply attaches no client
+
+> Passed live. Corroborated headlessly under `PATH=/usr/bin:/bin`: `#get_clients() == 0` and `:messages` completely empty — not merely free of executable-not-found errors.
 
 #### LS.9 — No errors introduced
 
@@ -3340,7 +3344,9 @@ UnhandledPromiseRejection ... Couldn't find <path> in LoadedProjects.
 
 with no hover and no write — confirmed by opening the three files and reading `:messages` directly. That is fsautocomplete declining to load a file it has no project for, not a fault introduced by this change, but it will fail this case if the `.fs` fixture is used.
 
-- [ ] `:messages` shows no errors after exercising all three filetypes
+- [X] `:messages` shows no errors after exercising all three filetypes
+
+> Passed live. Corroborated headlessly: marksman, fsautocomplete and roslyn all attach across the three files and `:messages` is empty. This case passes **only** because it now uses `hello.fsx`; with the original `hello.fs` fixture it produced the `LoadedProjects` `UnhandledPromiseRejection` and would have failed.
 
 #### LS.10 — Documentation renders
 
