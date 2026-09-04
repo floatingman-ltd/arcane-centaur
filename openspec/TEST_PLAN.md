@@ -3465,9 +3465,9 @@ The point of this case is that the change altered **nothing** here. Easy to skip
 
 Alerts are blockquote-level and should not touch the fence overrides at all, but this is the assertion that proves it rather than assuming it.
 
-- [ ] PlantUML and Mermaid still render, the table is unaffected, and live reload still fires
+- [X] PlantUML and Mermaid still render, the table is unaffected, and live reload still fires
 
-> First run showed neither diagram rendering. **Proven not to be caused by this change:** the pre-change server (`9e6f89c`) was rebuilt and served the same fixture, and its PlantUML `<img>` URL, its `<pre class="mermaid">` block and its mermaid module script are byte-identical to the new server's. Alerts are a blockquote-level construct and cannot reach the fence renderer. Both backends were also reachable from WSL at the time — the PlantUML URL returned `200 image/svg+xml` (3623 bytes) and jsDelivr returned `200`. Attributed to a setup error and pending a re-run; if it recurs, it is a browser-side problem (the browser resolves `localhost:8080` and the CDN through Windows, not through WSL) and not a regression here.
+> First run showed neither diagram rendering. **Proven not to be caused by this change:** the pre-change server (`9e6f89c`) was rebuilt and served the same fixture, and its PlantUML `<img>` URL, its `<pre class="mermaid">` block and its mermaid module script are byte-identical to the new server's. Alerts are a blockquote-level construct and cannot reach the fence renderer. Both backends were also reachable from WSL at the time — the PlantUML URL returned `200 image/svg+xml` (3623 bytes) and jsDelivr returned `200`. The first run was a setup error; on re-run both diagrams rendered. The A/B against the pre-change server is kept here anyway, because it is the evidence that would have been needed had the re-run failed too.
 
 #### MA.6 — Documentation renders
 
