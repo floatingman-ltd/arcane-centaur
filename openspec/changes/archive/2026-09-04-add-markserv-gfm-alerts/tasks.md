@@ -42,5 +42,5 @@
 
 ## 5. Close out
 
-- [ ] 5.1 Delete `recommendations/nvim-markserv-gfm-alerts-proposal.md`, the incoming proposal this change supersedes, once the change is archived. Its content now lives in `proposal.md` and `design.md`.
+- [x] 5.1 Delete `recommendations/nvim-markserv-gfm-alerts-proposal.md`, the incoming proposal this change supersedes, once the change is archived. Its content now lives in `proposal.md` and `design.md`.
 - [ ] 5.2 Remove the stray root-owned `docker/markserv/docs/` tree left behind by the earlier relative-`MD_DIR` failure. It is empty, untracked and needs `sudo rm -rf`, so it is the user's to run.

@@ -3504,14 +3504,14 @@ Alerts are blockquote-level and should not touch the fence overrides at all, but
 ### Raise PR & merge
 
 - [X] Every MA box above ticked
-- [ ] Raise PR: `feat/markserv-gfm-alerts` → `main`
-- [ ] Review and approve PR
-- [ ] Merge PR
+- [X] Raise PR: `feat/markserv-gfm-alerts` → `main`
+- [X] Review and approve PR
+- [X] Merge PR
 
 ### Post-merge
 
-- [ ] `git checkout main && git pull origin main`
-- [ ] Rebuild the container from merged `main` and re-confirm `MA.1` and `MA.2`
-- [ ] Change archived and the deltas promoted
-- [ ] `recommendations/nvim-markserv-gfm-alerts-proposal.md` deleted (tasks 5.1) — superseded by the change's own `proposal.md` and `design.md`
+- [X] `git checkout main && git pull origin main`
+- [X] Rebuild the container from merged `main` and re-confirm `MA.1` and `MA.2`
+- [X] Change archived and the deltas promoted
+- [X] `recommendations/nvim-markserv-gfm-alerts-proposal.md` deleted (tasks 5.1) — superseded by the change's own `proposal.md` and `design.md`
 - [ ] Stray root-owned `docker/markserv/docs/` tree removed (tasks 5.2) — needs `sudo rm -rf`, left over from the earlier relative-`MD_DIR` failure
