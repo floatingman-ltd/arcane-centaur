@@ -3660,7 +3660,9 @@ The `recordWithCharDecoy` case is why the predicate reads treesitter **captures*
 
 **Do not `:w`.** Format-on-save is live on this file and Fantomas will reformat it.
 
-- [ ] With the server attached on a project file, indentation is unchanged and `:messages` is clean
+- [X] With the server attached on a project file, indentation is unchanged and `:messages` is clean
+
+> Passed live. Corroborated headlessly: exactly one client, `indentexpr = FSharpIndent()`, both bindings indenting to 4, and 0 `UnhandledPromiseRejection`. This is the coverage `FI.1`–`FI.4` deliberately gave up by running server-absent — that having `fsautocomplete` attached does not interfere with indentation.
 
 #### FI.6 — Indentation works in a standalone script
 
