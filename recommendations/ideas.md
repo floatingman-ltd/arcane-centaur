@@ -4,9 +4,8 @@
 
 Agreed running order. Details live in the sections below; this is just the queue.
 
-1. **Spell suggestions never reach the blink menu** — *Things that seem broken*. **High priority to review.** The spell source is wired up and works, but every suggestion is filtered out before display, so completing a misspelled word silently does nothing. One-line fix with a real trade-off attached, so it needs a decision rather than just an edit.
-2. **F# has no indent support of any kind** — *Things that seem broken*. What is left of the old "servers not installed" entry now that `install-language-servers` has shipped. F# now has an LSP, folds and format-on-save, but pressing Enter after `->` or `=` still copies the previous indent rather than indenting the body. Needs a plugin decision rather than configuration, so it wants a decision before an edit.
-3. **Fourteen capability specs have placeholder Purposes** — *Things that seem broken*. Mechanical but wide; best done as one pass.
+1. **F# has no indent support of any kind** — *Things that seem broken*. What is left of the old "servers not installed" entry now that `install-language-servers` has shipped. F# now has an LSP, folds and format-on-save, but pressing Enter after `->` or `=` still copies the previous indent rather than indenting the body. Needs a plugin decision rather than configuration, so it wants a decision before an edit.
+2. **Fourteen capability specs have placeholder Purposes** — *Things that seem broken*. Mechanical but wide; best done as one pass.
 
 **Shipped** (2026-08-25 / 27), kept briefly for context:
 
@@ -17,6 +16,10 @@ Agreed running order. Details live in the sections below; this is just the queue
 - ~~Three capability specs still reference `glow.nvim`~~ — `code-folding` was resolved by `align-treesitter-providers`; the remaining two by `retire-glow-spec-references`.
 
 **Declined** — decisions taken, not work waiting:
+
+- ~~Spell suggestions never reach the blink menu~~ — **not applying the fix; current behaviour accepted.** The analysis below stands and the one-line change still works, but it was reviewed and judged not worth its trade-off: `keep_all_entries = true` stops filtering spelling suggestions *at all*, so every word of three or more characters would offer the full `spellsuggest` list while `'spell'` is on. Noisier in exactly the prose buffers where spelling help matters. Native `z=` in normal mode already lists suggestions, and `<C-x>s` is available in insert mode. **Open to revisiting** if the absence starts to bite in practice — the detailed entry is kept below precisely so a change of heart does not have to re-derive it.
+
+  Note what remains genuinely untested: whether `<C-x>s` coexists cleanly with blink's auto-show menu. `<C-x>` is bound nowhere in insert mode and blink binds only `<C-f> <C-p> <C-b> <C-k> <C-n> <C-e> <C-y>`, so it should reach Vim's native handler — but headless Neovim cannot drive insert-mode input, so this was never confirmed by keystroke. Do not cite `<C-x>s` in documentation as the supported route on the strength of this entry alone.
 
 - ~~`open_url` never reaches `open` on macOS~~ — **won't fix. macOS is out of scope for this configuration.** The diagnosis was sound and the fix was a one-line exemption, but nobody here runs macOS and nobody intends to, so it would ship an unverifiable behaviour change to serve a platform this config does not target. Anyone wanting Neovim tooling on a Mac should expect to do their own platform work. Do not re-log this; the `open` entry left in `lua/config/util.lua`'s opener lists is harmless dead weight on Linux and WSL, where `open` is not an executable.
 
@@ -87,7 +90,7 @@ use before deciding.
 
   Found during `fix-tree-terminal-keymaps` validation (TEST_PLAN TK.3/TK.4) and deliberately **not fixed there**: the terminal panel's split approach is itself under review (see the full-screen panel idea above), so effort spent on the current geometry may be wasted. Revisit if the panel survives in its present form.
 
-- **spell suggestions never reach the blink menu, because blink filters them out.** Typing a misspelled word and pressing `<C-n>` shows nothing. Reported as "worked when the word was incomplete, does nothing once it is complete", which is exactly the shape of the bug.
+- **spell suggestions never reach the blink menu, because blink filters them out.** **Reviewed and accepted as-is — see *Declined* above. Kept for the analysis, not as pending work.** Typing a misspelled word and pressing `<C-n>` shows nothing. Reported as "worked when the word was incomplete, does nothing once it is complete", which is exactly the shape of the bug.
 
   The source is wired up correctly and does work: `f3fora/cmp-spell` is bridged through `blink.compat` as the `spell` provider (`lua/plugins/blink.lua:74-84`), enabled whenever `'spell'` is on, and `vim.fn.spellsuggest("recieve")` returns `{ receive, relieve, reserve, receiver, deceive }`. The suggestions are fetched and then discarded.
 
@@ -104,9 +107,9 @@ use before deciding.
 
   The control line explains the "worked when incomplete" half: `rec` is a true prefix, so it survives filtering. Finishing the word into a misspelling breaks the match.
 
-  **Fix:** one line — `opts = { keep_all_entries = true }` at `lua/plugins/blink.lua:83`. The menu then opens on a misspelled word and is navigated with the keys that already work: `<C-n>`/`<C-p>` to move, `<C-y>` to accept, `<C-e>` to dismiss. It is the same menu, so no new keymap is needed and nothing has to be routed out of `z=`.
+  **Fix, if revisited:** one line — `opts = { keep_all_entries = true }` at `lua/plugins/blink.lua:84`. The menu then opens on a misspelled word and is navigated with the keys that already work: `<C-n>`/`<C-p>` to move, `<C-y>` to accept, `<C-e>` to dismiss. It is the same menu, so no new keymap is needed and nothing has to be routed out of `z=`.
 
-  **The trade-off is why this needs review rather than just applying.** With `keep_all_entries = true`, spelling suggestions stop being filtered *at all*: every word of three or more characters offers the full `spellsuggest` list while `'spell'` is on, not only misspelled ones. That is the documented purpose of the option, but it is materially noisier in prose-heavy buffers. `score_offset = -3` keeps the entries below LSP items, which may or may not be enough. Worth trying live before committing to it.
+  **The trade-off is why this was reviewed rather than just applied, and is the reason it was declined.** With `keep_all_entries = true`, spelling suggestions stop being filtered *at all*: every word of three or more characters offers the full `spellsuggest` list while `'spell'` is on, not only misspelled ones. That is the documented purpose of the option, but it is materially noisier in prose-heavy buffers. `score_offset = -3` keeps the entries below LSP items, which may or may not be enough. Worth trying live before committing to it.
 
   **Not a defect, but the thing that made it look like one:** normal-mode `<C-n>` is `:NvimTreeOpen` (`lua/keymaps.lua:99`), and blink's keys are insert-mode and buffer-local (`preset = "none"`). Leave insert mode and `<C-n>` opens the file tree. `<C-t>` is not bound anywhere in the config at all — nvim-tree claims it buffer-locally inside the tree window for *Open: New Tab*. This is the same confusion as `fix-blink-completion-keymap`'s BC.1.
 
