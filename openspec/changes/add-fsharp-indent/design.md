@@ -69,13 +69,47 @@ A self-described "now disconnected fork" of Ionide-vim: 17 stars, three contribu
 
 The file carries a maintainer list going back to the original OCaml indent script — Yuen, Leary, Mottl, Grinberg, Kongo2002, Thompson, Pottle. That stays untouched; it is both an MIT courtesy and a useful record.
 
-Added above it: the upstream repository, the exact commit vendored (`094e7dbb8f77`, 2026-04-07), why it is vendored rather than installed, and how to refresh it. Without that, the next reader sees an unexplained 283-line Vimscript file and cannot tell whether it is homegrown, safe to edit, or safe to delete.
+Added above it: the upstream repository, the exact commit vendored (`094e7dbb8f77`, 2026-04-07), why it is vendored rather than installed, how to refresh it, and — because of D6 — **that the file is not byte-identical to upstream and exactly which function differs**. Without the first part the next reader sees an unexplained 283-line Vimscript file and cannot tell whether it is homegrown, safe to edit or safe to delete; without the deviation called out, the first refresh silently reverts the fix.
+
+### D6 — Fix the comment/string predicate, in Lua, as a declared deviation
+
+Upstream's `s:IsInCommentOrString()` reads `synIDattr(synID(...), "name")` and matches `comment\|string`. That needs Vim `:syntax` highlighting. Measured in this configuration:
+
+```
+b:current_syntax = nil          treesitter highlight active = true
+synID() on a comment line = 0   name=[]
+  -> IsInCommentOrString() returns false
+```
+
+It is not a subtle degradation. The function is passed as the skip predicate to `searchpairpos()`, so brace, bracket and paren matching currently cannot skip commented-out or quoted delimiters. A `{` inside a comment is treated as a real opening brace when computing the indent of a closing one. Upstream does not hit this because Ionide-vim ships its own `syntax/fsharp.vim`; we are vendoring the file into an environment its author did not assume.
+
+The replacement asks treesitter for the **captures** at the cursor, not the node type. Node types would miss a case — measured:
+
+|Construct |node type |captures |
+|---|---|---|
+|`// line` |`line_comment` |`comment` |
+|`(* block *)` |`block_comment_content` |`comment` |
+|a plain string literal |`string` |`string` |
+|a verbatim `@"..."` literal |`verbatim_string` |`string` |
+|a triple-quoted literal |`triple_quoted_string` |`string` |
+|a `char` literal holding a brace |`char` |**`string`** |
+|real code |`brace_expression` |`punctuation.bracket` |
+
+Matching node types on `comment`/`string` catches five of six and misses the `char` literal. Captures catch all six and cleanly exclude real code. Verified 7 of 7 against a fixture carrying every construct.
+
+**It returns three values, not two.** `1` comment-or-string, `0` no, `-1` undecidable — and `-1` makes the caller fall through to upstream's `synID` path. That matters because the predicate must not become *worse* than upstream anywhere: if treesitter highlighting is off, or the F# parser is missing, the original behaviour is what remains.
+
+**Deliberately not forcing a parse.** The predicate runs inside `searchpairpos()`, which calls it repeatedly, inside `indentexpr`, which runs on keystrokes. A live buffer's tree is already current; forcing `parser:parse()` here would put a full parse in the keystroke path. An unparsed tree yields no captures, which reads as `0` and is the safe answer.
+
+The Lua lives in `lua/config/fsharp_indent.lua` rather than inline `luaeval`, so it is greppable, annotated and testable — and so the deviation sits where this configuration's logic normally sits. The indent algorithm stays Vimscript, which keeps D1's upstream diff path intact for the 200 lines that matter.
+
+Alternatives considered. Leaving it broken was tempting on "vendor verbatim" grounds, but shipping a knowingly inert function to preserve a clean diff is the wrong trade when the diff is one function long. Porting the whole file to Lua to fix it is disproportionate, and is logged in `recommendations/ideas.md` as an idea rather than a plan. Patching upstream first would block this change on someone else's review cycle — though the issue is worth raising regardless, since every Ionide-vim user on treesitter highlighting has the same latent bug.
 
 ## Risks / Trade-offs
 
 **Upstream fixes arrive only when pulled by hand** → the accepted cost of D1. Mitigated by recording the exact upstream commit in the header so a refresh is a diff rather than an investigation. The file has changed three times since 2016 (2016-11, 2023-07, 2026-04), so the expected cadence is roughly one pull every few years.
 
-**Local edits and an upstream refresh will conflict** → if a defect is found here and patched locally, the next refresh has to reconcile. Mitigated by preferring an upstream issue or PR to a local patch, and by the header naming the source so that is an obvious option.
+**Local edits and an upstream refresh will conflict** → no longer hypothetical: D6 makes one function differ from upstream on day one. A careless refresh reverts it and the failure is silent, because the reverted predicate returns a plausible answer rather than erroring. Mitigated by naming the deviation in the header, by a validation case asserting that pair matching ignores commented delimiters, and by raising the issue upstream so the divergence can eventually end.
 
 **Indentation is felt on every keystroke** → unlike folding or formatting, a bad indent rule is immediately and continuously annoying, and `indentexpr` overrides `autoindent` entirely, so a rule that answers badly is worse than no rule at all. This is the reason the test plan covers the cases that currently work by accident as well as the ones that are broken: `if ... then` already indents correctly today, and must not regress.
 

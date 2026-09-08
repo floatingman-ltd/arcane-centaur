@@ -5,6 +5,16 @@
 - [ ] 1.3 Confirm nothing else competes for `indentexpr`: the treesitter indent guard in `lua/plugins/treesitter.lua` already excludes F# for want of an `indents.scm`, and `after/ftplugin/fsharp.lua` sets only `tabstop`/`shiftwidth`/`expandtab`/`spell`. Neither needs changing.
 - [ ] 1.4 Confirm no plugin spec, `lazy.nvim` entry or `lazy-lock.json` line is added — the whole point of vendoring is that there is nothing to install.
 
+## 1b. Comment and string awareness (the upstream deviation)
+
+- [ ] 1.5 Add `lua/config/fsharp_indent.lua` exposing a cursor-position predicate that returns `1` for a comment or string, `0` for code, and `-1` when it cannot tell. Decide from treesitter **captures**, not node types: node types miss a `char` literal holding a brace, captures catch all six comment and string forms. Verified 7 of 7 against a fixture carrying each.
+- [ ] 1.6 Do **not** force a parse in the predicate. It is called repeatedly by `searchpairpos()` from inside `indentexpr`, so a forced parse would land in the keystroke path. Rely on the live buffer's existing tree; no captures reads as `0`.
+- [ ] 1.7 Rewrite `s:IsInCommentOrString()` in the vendored file to call the Lua predicate and fall through to upstream's `synID` path on `-1`. Behaviour must never be worse than upstream — with treesitter off, upstream's logic is what remains.
+- [ ] 1.8 Mark the deviation clearly at the function, not only in the header: a comment saying this body differs from upstream, why (`synID` needs a `:syntax` file, F# here is treesitter-highlighted, so upstream's version always answered "no"), and that a refresh must re-apply it.
+- [ ] 1.9 State in the provenance header that the file is **not** byte-identical to upstream and name the one function that differs. Without this a refresh silently reverts the fix, and silently — the reverted predicate returns a plausible answer rather than erroring.
+- [ ] 1.10 Add a fixture covering `//` comments, `(* *)` block comments, plain, verbatim and triple-quoted strings, and a `char` literal, each holding a brace or bracket, plus real brace-delimited code as the control.
+- [ ] 1.11 Raise an issue upstream on `ionide/Ionide-vim`: every user on treesitter highlighting rather than its bundled `syntax/fsharp.vim` has the same latent bug. Not a blocker for this change, but it is the route by which the divergence eventually ends.
+
 ## 2. Validation
 
 - [ ] 2.1 Add a `## Change · add-fsharp-indent` section to `openspec/TEST_PLAN.md` with `Prepare` / `Validate` / `Raise PR & merge` / `Post-merge` subsections, following the structure of the existing sections.

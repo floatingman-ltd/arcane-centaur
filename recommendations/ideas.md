@@ -59,6 +59,37 @@ Everything else in this file is unranked and can be picked up opportunistically.
    own keybindings and doc updates. Surfaced while validating `fix-blink-completion-keymap`; well
    outside that change, which is a keymap consolidation.
 
+5. port the vendored F# indent script from Vimscript to Lua. `add-fsharp-indent` vendors
+   `indent/fsharp.vim` from Ionide-vim — 283 lines, ~200 of code, 8 functions — rather than
+   installing the plugin. Since we own the file anyway, Lua would match the rest of this
+   configuration and, more usefully, would be **unit-testable**: upstream ships no tests at all,
+   so today the only safety net is the TEST_PLAN cases.
+
+   **The honest catch is that most of it cannot actually become Lua.** The logic rests on 31
+   `=~`/`!~` comparisons across ~21 Vim-flavoured regexes — `'^\(let\|type\).*=\(\s\({\|[\|[|\)\)\?$'`,
+   `'\v^\s*(.{-})\s*$'` and the like. Lua patterns have no alternation, no grouped quantifiers,
+   no `\v` magic and no `.\{-}`, so every one would have to stay a Vim regex behind
+   `vim.regex()` or `vim.fn.match()`. The built-ins are the same story: `shiftwidth()` ×17,
+   `indent()` ×10, `getline()` ×7, and one `searchpairpos()` with a skip predicate. And
+   `indentexpr` must remain a Vim expression regardless — `vim.bo.indentexpr =
+   "v:lua.require'...'.indentexpr()"`, the pattern `lua/plugins/treesitter.lua` already uses.
+
+   So the realistic result is Lua control flow wrapping the same regexes and the same built-ins:
+   roughly 85% of the substance unchanged, a syntax change more than an idiom change.
+
+   **Costs, in order.** It kills the upstream diff path, which is the whole maintenance strategy
+   recorded in that change's D1 and D5 — refreshing becomes a re-port rather than a diff against
+   a known commit. There are 31 branch points to translate with no upstream test suite to check
+   the translation against. And it resets the battle-testing on a file whose value is precisely
+   that real editing has found and fixed bugs in it since 2014.
+
+   **If it is ever done**, it should be its own change *after* the vendoring has been lived with,
+   so a misindent is unambiguously a translation error rather than an inherited one, and so the
+   TEST_PLAN corpus from `add-fsharp-indent` exists to port against. Note that the treesitter
+   comment/string predicate from that change (`lua/config/fsharp_indent.lua`) is already Lua, so
+   the genuinely environment-specific part is Lua either way — which is a reason the rest is less
+   urgent than it first looks.
+
 ## Things to keep an eye on
 
 Not defects — they work as designed — but ergonomics we are not yet sure about. Left to settle with

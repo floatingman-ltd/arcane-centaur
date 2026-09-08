@@ -94,3 +94,38 @@ Adding indentation SHALL NOT alter anything else about F# editing. In particular
 
 - **WHEN** the user comments a line in an F# buffer
 - **THEN** the comment leader SHALL be unchanged from before this capability existed
+
+### Requirement: Indentation ignores delimiters inside comments and strings
+
+When resolving the indent of a closing `}`, `]` or `)`, the matching opening delimiter SHALL be sought in code only. A delimiter appearing inside a comment or a string literal SHALL NOT be treated as a real one.
+
+Detection SHALL use the syntactic information the buffer actually has. Where the buffer is highlighted by treesitter, the capture at the position SHALL decide; where it is not, detection SHALL fall back to Vim `:syntax` information, so behaviour is never worse than the upstream implementation.
+
+Detection SHALL NOT force a parse. It runs inside pair matching, which is called repeatedly from `indentexpr` on keystrokes, so it SHALL rely on the buffer's existing tree and treat an unavailable tree as "not a comment or string".
+
+#### Scenario: A brace inside a line comment is not matched
+
+- **WHEN** a file contains a `{` inside a `//` comment above a real brace-delimited expression
+- **AND** the indent of a closing `}` on its own line is resolved
+- **THEN** the commented `{` SHALL be ignored and the real opening brace SHALL be matched
+
+#### Scenario: A brace inside a string literal is not matched
+
+- **WHEN** a `{` appears inside a string literal, including a verbatim or triple-quoted literal, or inside a character literal
+- **THEN** it SHALL NOT be treated as an opening delimiter
+
+#### Scenario: A brace in a block comment is not matched
+
+- **WHEN** a `{` appears inside an `(* ... *)` block comment
+- **THEN** it SHALL NOT be treated as an opening delimiter
+
+#### Scenario: Real code is not mistaken for a comment or string
+
+- **WHEN** the position holds ordinary code, such as the brace of a record expression
+- **THEN** detection SHALL report that it is not inside a comment or string
+
+#### Scenario: Detection degrades rather than failing without treesitter
+
+- **WHEN** treesitter highlighting is not active for the buffer
+- **THEN** detection SHALL fall back to Vim `:syntax` information
+- **AND** SHALL NOT error
