@@ -3558,7 +3558,7 @@ Vendors `indent/fsharp.vim` from `ionide/Ionide-vim` (commit `094e7dbb8f77`) so 
 3. `:set indentexpr?` — expect `FSharpIndent()`. Empty means the file is not being sourced; check it is at `indent/fsharp.vim` and that `:filetype` reports `indent:ON`.
 4. `:messages` — the `LoadedProjects` rejection described in the prerequisites is expected, and is the only message that should appear. It is not a defect and it is not a reason to move the fixture into a project; see above for why moving it would break every case in this section.
 
-- [ ] Branch checked out, `indentexpr` is `FSharpIndent()`, no unexpected errors
+- [X] Branch checked out, `indentexpr` is `FSharpIndent()`, no unexpected errors
 
 ### Validate
 
