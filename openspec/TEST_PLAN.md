@@ -3673,7 +3673,9 @@ The `recordWithCharDecoy` case is why the predicate reads treesitter **captures*
 3. Add a `let f x =` line and confirm Enter indents its body to one `shiftwidth`.
 4. Undo. `:messages` — an `Error getting project options … A task was canceled.` may appear; it is the documented `.fsx` flake and has nothing to do with indentation.
 
-- [ ] Indentation behaves identically in a `.fsx`, regardless of option resolution
+- [X] Indentation behaves identically in a `.fsx`, regardless of option resolution
+
+> Passed live, and better than the case allowed for: **no** `Error getting project options` appeared at all this run. The case tolerates that flake because it is intermittent; its absence here is not evidence it is fixed. What matters is the property being tested — indentation never asks the server anything, so option resolution cannot affect it. This is the condition that made `LS.5` fail in the previous change, and indentation is immune to it.
 
 #### FI.7 — Nothing else about F# changed
 
