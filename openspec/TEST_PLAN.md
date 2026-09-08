@@ -3253,14 +3253,16 @@ Steps 4 and 5 are the case. Step 2 alone would pass identically whether or not p
 
 #### LS.5 — F# format-on-save, which activates with no code change
 
-**Copy the file first**: `cp testdocs/hello.fsx /tmp/hello.fsx.bak`
+**Use the project fixture, not the script.** Formatting goes through fsautocomplete, which needs resolved *project* options — and for a standalone `.fsx` that resolution intermittently cancels with `Error getting project options for … - A task was canceled.`, after which Fantomas is never invoked and the buffer writes unformatted with no error to show for it. `testdocs/fsharp-project/Program.fs` has a real `.fsproj` and resolves reliably.
 
-1. Open `testdocs/hello.fsx` and wait for the server to attach (LS.4 step 2). Give it a further few seconds to resolve script options before writing.
+**Copy the file first**: `cp testdocs/fsharp-project/Program.fs /tmp/Program.fs.bak`
+
+1. Open `testdocs/fsharp-project/Program.fs` and wait for the server to attach (LS.4 step 2). Give it a further few seconds before writing.
 2. Introduce clearly wrong formatting — add three or four extra spaces of indent to a line inside a function. **Change an existing line in place; do not add lines.**
 3. `:w`
 4. The buffer must be reformatted, and Fantomas's house style is more assertive than just fixing your indent — expect it to collapse multi-line `match` arms and `if`/`elif`/`else` onto single lines and to rewrite `Rect (w, h)` as `Rect(w, h)`. In one probe the file went from 41 lines to 34. That is Fantomas working correctly, not a defect.
-5. `:messages` — **no Fantomas install prompt** (see below), and no formatter errors. An `Error getting project options for … hello.fsx - A task was canceled.` may appear if the buffer is written before script options finish resolving; that shape is already documented at `§Change 03` and is a race, not a formatting failure.
-6. Restore: `cp /tmp/hello.fsx.bak testdocs/hello.fsx` if the result is not something you want committed.
+5. `:messages` — **no Fantomas install prompt** (see below), and no formatter errors. In particular **no** `Error getting project options`: on the project fixture that error means something is genuinely wrong, whereas on a `.fsx` it is the expected flake this case now avoids.
+6. Restore: `cp /tmp/Program.fs.bak testdocs/fsharp-project/Program.fs` if the result is not something you want committed.
 
 This is the change's most surprising effect. Nobody edited a formatter config, but F# buffers are now rewritten on every write.
 
@@ -3361,27 +3363,37 @@ with no hover and no write — confirmed by opening the three files and reading 
 
 The build emits pre-existing `skipping reference to missing attribute` warnings for `name`, `pat` and `feed` (the tag-navigation table in `code-intelligence.adoc` and a feed reference in `dotnet.adoc`). They predate this change — confirmed against the tree two commits back — and are not a failure of this case.
 
-- [ ] All five pages render the corrected install command and the Fantomas documentation, and the phantom apt package is gone
+- [X] All five pages render the corrected install command and the Fantomas documentation, and the phantom apt package is gone
+
+> Verified against the **local** Antora build: every assertion on all five pages passes, the notes render as `admonitionblock` callouts rather than inline prose, and `sudo apt install marksman` appears nowhere in `build/site/`. The **published**-site confirmation is the user's and is being done separately; any mismatch there is a new defect to log rather than a reopening of this box.
 
 ### Raise PR & merge
 
-- [ ] Every LS box above ticked
+- [X] Every LS box above ticked
 - [X] `recommendations/ideas.md` updated — entry removed from the queue, F# indent gap retained as its own item, stale `indentexpr` entry deleted
-- [ ] Raise PR: `fix/install-language-servers` → `main`
-- [ ] Review and approve PR
-- [ ] Merge PR
+- [X] Raise PR: `fix/install-language-servers` → `main`
+- [X] Review and approve PR
+- [X] Merge PR
+
+> Ticked on the evidence of `72a20ef fix/install language servers (#184)` in `main`'s history, not on a fresh observation — the PR was raised, approved and squash-merged earlier. Flagged because these are the user's actions, so correct this if the record is wrong.
 
 ### Post-merge
 
-- [ ] `git checkout main && git pull origin main`
-- [ ] Re-confirm LS.4 and LS.5 on the merged config
+- [X] `git checkout main && git pull origin main`
+- [X] Re-confirm LS.4 and LS.5 on the merged config
 
 > **LS.4 re-confirmed on merged `main`**: two distinct clients, `id=1` at the repo root for `hello.fsx` and `id=2` at `testdocs/fsharp-project`, hover returning `val area`.
 >
 > **LS.5 does NOT reproduce, and this box stays open.** Three headless attempts on merged `main` wrote the mangled buffer straight to disk with no reformatting — including a parseable mangle (multi-line `match` arms plus trailing whitespace) that Fantomas demonstrably acts on. No install prompt, no formatter error. The server side is healthy: a direct `textDocument/formatting` request returns edits (trailing whitespace → 1 edit, 1242 ms, inside conform's 2000 ms budget), so fsautocomplete and Fantomas both work. What does not happen is conform reaching them — `conform.list_formatters(0)` and `list_formatters_to_run(0)` are both empty for `fsharp`, and an explicit `conform.format({ lsp_format = "prefer" })` changes nothing.
 >
-> This contradicts the earlier pass, which was confirmed live and reproduced headlessly with a 41→34 line collapse. Neither `lua/plugins/conform.lua` nor conform's pin (`016802de`) has changed since. Worth noting that `lsp_format` is documented by conform as an option to `format()` and `format_on_save`, not as a `formatters_by_ft` per-filetype key — which would make `fsharp = { lsp_format = "prefer" }` inert for a reason unrelated to the binary, and would mean the earlier pass needs re-explaining rather than this one. **Needs a live check before concluding either way.**
-- [ ] Change archived and the deltas promoted
+> **Resolved: it was the fixture, not the feature.** The live run surfaced the cause — `Error getting project options for … hello.fsx - A task was canceled.` Formatting needs resolved project options, and for a standalone `.fsx` that resolution intermittently cancels, after which Fantomas is never invoked and the buffer writes unformatted with nothing in `:messages` to explain it. Being a race, it passed earlier and failed later on identical config.
+>
+> On `testdocs/fsharp-project/Program.fs`, which has a real `.fsproj`, format-on-save runs correctly: trailing whitespace stripped and `let greet name =` / `sprintf …` collapsed onto one line, with no project-options error and no Fantomas prompt. LS.5 now uses the project fixture.
+>
+> A speculation recorded here earlier — that `lsp_format` might be the wrong key inside `formatters_by_ft` — is **disproven**. `fsharp = { lsp_format = "prefer" }` works; it simply cannot work when the server has no project options to format against.
+>
+> This is the third fixture defect in this change, after LS.1's heading and LS.4's bare `.fs`. The pattern is worth naming: F# has three distinct fixture classes — a bare `.fs` outside a project answers nothing, a `.fsx` script answers hover but resolves options unreliably, and only a file inside a `.fsproj` supports everything. A case has to pick the class that matches what it asserts.
+- [X] Change archived and the deltas promoted
 - [X] Purpose paragraph of `openspec/specs/code-folding/spec.md` corrected by hand — it still says treesitter folding is disabled and markdown uses indent only, which `align-treesitter-providers` overturned and which its own line 48 already contradicts
 
 > Two stale claims fixed, not one. The Purpose contradicted its own requirement, as recorded. The second was created **by this change**: the markdown requirement justified omitting the LSP provider on the grounds that "no markdown language server is currently installed", which stopped being true the moment `marksman` was installed. The conclusion still holds but the reason is now that marksman advertises no `foldingRangeProvider` — measured directly under LS.2 — which is the same correction task 2.1 made to the equivalent comment in `lua/plugins/ufo.lua`. The spec was missed at the time.

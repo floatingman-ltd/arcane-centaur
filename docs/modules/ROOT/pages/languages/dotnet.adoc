@@ -174,6 +174,25 @@ No Fantomas install was found.:
 which blocks every save of an F# buffer.
 ====
 
+[WARNING]
+====
+*Format-on-save needs resolved project options, so it is unreliable on a
+standalone `.fsx` script.* fsautocomplete resolves options per project; for a
+script outside any `.fsproj` that resolution intermittently cancels with
+
+[source]
+----
+Error getting project options for <path> - A task was canceled.
+----
+
+after which Fantomas is never invoked and the buffer writes *unformatted* with
+nothing else in `++:++messages` to explain it. It is a race, so the same file may
+format one time and not the next.
+
+Inside a project it is reliable. If a script must be formatted, `++<++leader++>++f`
+after the server has settled is more dependable than relying on the write.
+====
+
 Fantomas applies its own house style, not just indentation repair — it will collapse multi-line
 `match` arms and `if`/`elif`/`else` chains onto single lines where they fit, and normalise
 `Rect (w, h)` to `Rect(w, h)`. Expect saved files to be restructured, not merely re-indented.

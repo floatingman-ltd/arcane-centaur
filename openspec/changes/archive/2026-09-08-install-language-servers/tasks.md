@@ -25,10 +25,10 @@
 ## 4. Test plan
 
 - [x] 4.1 Add a `## Change · install-language-servers` section to `openspec/TEST_PLAN.md` with `Prepare` / `Validate` / `Raise PR & merge` / `Post-merge` subsections, following the structure of the existing sections. Cover the two silent activations especially — F# format-on-save and F# LSP folds arrive with no edit, so nothing in the diff points at them.
-- [ ] 4.2 Walk every validation step live in a real Neovim session and tick each box only once genuinely confirmed.
+- [x] 4.2 Walk every validation step live in a real Neovim session and tick each box only once genuinely confirmed.
 
 ## 5. Close out
 
 - [x] 5.1 Remove the entry from the priority queue in `recommendations/ideas.md`, keeping the F# indent gap — which this change explicitly does not fix — as its own item.
 - [x] 5.2 Delete the stale `indentexpr` entry still sitting under *Things that seem broken*; it was fixed by `align-treesitter-providers` and is already listed as shipped further up the same file.
-- [ ] 5.3 After archiving, correct the Purpose of `openspec/specs/code-folding/spec.md` by hand. It still says "treesitter folding is deliberately disabled; markdown uses indent only", which `align-treesitter-providers` overturned and which its own line 48 contradicts. `openspec archive` does not touch Purpose prose.
+- [x] 5.3 After archiving, correct the Purpose of `openspec/specs/code-folding/spec.md` by hand. It still says "treesitter folding is deliberately disabled; markdown uses indent only", which `align-treesitter-providers` overturned and which its own line 48 contradicts. `openspec archive` does not touch Purpose prose.
