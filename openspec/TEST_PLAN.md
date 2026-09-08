@@ -3596,7 +3596,9 @@ In `testdocs/indent-fixture.fs`, with the cursor at the end of each line:
 
 Step 3 matters because `indentexpr` alone only fires on Enter. The `indentkeys` additions are what re-indent a line as you type `else`, `elif` or a `|` arm.
 
-- [ ] `indentexpr` set, function defined, F# `indentkeys` present
+- [X] `indentexpr` set, function defined, F# `indentkeys` present
+
+> Passed live. `indentkeys` confirmed as `0{,0},0),0],:,0#,!^F,o,O,e` plus the F# additions `0=|,0=|],0=when,0=elif,0=else,0=|>,==,=with`.
 
 #### FI.3 — What already worked must not regress
 
@@ -3610,7 +3612,9 @@ The point of this case is that things which were **already correct** stay correc
 
 Then, still in the fixture: `zR`, put the cursor in `let area shape =` and press `==`. The line should reindent without moving to column 0. `>>` and `<<` should shift by 4.
 
-- [ ] Previously-correct cases unchanged, and `==`/`>>`/`<<` behave sanely
+- [X] Previously-correct cases unchanged, and `==`/`>>`/`<<` behave sanely
+
+> Passed live. This is the case that guards against the change being a net loss: `indentexpr` replaces `autoindent` outright, so `if … then` (8) and a plain expression (4) had to keep working, not merely the previously-broken cases. Corroborated headlessly alongside FI.1 in the same 5/5 run.
 
 #### FI.4 — Delimiters inside comments and strings are ignored
 
