@@ -3641,7 +3641,11 @@ For each binding below, put the cursor on its closing `}` or `]` — the one alo
 
 The `recordWithCharDecoy` case is why the predicate reads treesitter **captures** rather than node types: `'{'` is node type `char`, which matches neither "comment" nor "string", but its capture is `string`.
 
-- [ ] All six decoy cases reindent to 4, and the control does too
+- [X] All six decoy cases reindent to 4, and the control does too
+
+> Passed live, all seven at 4. Corroborated headlessly both ways: 4/4/4/4/4/4/4 with the deviation and 6/6/6/6/6/6/4 without, so the deviation demonstrably prevents a real misindent and the control confirms ordinary pair matching is untouched.
+>
+> Two earlier attempts at this case tested nothing, which is worth remembering rather than just fixing. The first wrote closing delimiters idiomatically (`Value = 1 }`), and the dedent branches match `'^}$'` exactly, so pair matching was never reached. The second placed decoys *before* the construct, which `searchpairpos()` can never see — it searches backwards and finds the real opener first. Both passed while asserting nothing.
 
 #### FI.5 — Indentation works with the language server attached
 
