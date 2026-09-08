@@ -99,6 +99,34 @@ Everything else in this file is unranked and can be picked up opportunistically.
    the genuinely environment-specific part is Lua either way — which is a reason the rest is less
    urgent than it first looks.
 
+6. report the vendored F# indent script's `synID` problem upstream. Sits next to idea 5 because it
+   is the other half of the same question: what our relationship with `ionide/Ionide-vim` should be.
+
+   `add-fsharp-indent` deviates from upstream in exactly one function. Upstream's
+   `s:IsInCommentOrString()` detects comments and strings with `synID()`/`synIDattr()`, which
+   require a Vim `:syntax` file. Under treesitter highlighting no syntax file is sourced at all —
+   measured on `lua` and `markdown` buffers, both of which Neovim *does* ship syntax files for:
+   `b:current_syntax` is `nil` and `synID()` returns `0`. So the predicate always answers "not a
+   comment", and since it is the skip function handed to `searchpairpos()`, brace, bracket and
+   paren matching cannot skip delimiters written inside comments or string literals.
+
+   **Scope it accurately if reporting it.** This is not "every Ionide-vim user" — the plugin ships
+   its own `syntax/fsharp.vim`, so anyone relying on that is unaffected. It hits users who
+   highlight F# with nvim-treesitter instead, which suppresses the syntax file. Still a real
+   population, but the narrower claim is the true one.
+
+   **Why bother, given we have already fixed it locally.** Our fix lives in
+   `lua/config/fsharp_indent.lua` and is a declared deviation, which means every future refresh of
+   the vendored file has to re-apply it — and would revert it *silently* if it did not, because the
+   reverted predicate returns a plausible answer rather than erroring. An upstream fix is the only
+   thing that ends that obligation and lets the file go back to byte-identical.
+
+   Deliberately **not** a task in `add-fsharp-indent`. It depends on a third party's review cycle,
+   and a change should not sit permanently incomplete waiting on someone else — which is precisely
+   the limbo `install-language-servers` was in for weeks. Zero effect on this repository either
+   way; it is upstream hygiene with a long-term payoff, so it belongs here rather than in a task
+   list.
+
 ## Things to keep an eye on
 
 Not defects — they work as designed — but ergonomics we are not yet sure about. Left to settle with

@@ -3675,4 +3675,3 @@ The other "nothing happened" case, and the one that would catch the plugin havin
 - [ ] Change archived and the deltas promoted
 - [ ] Purpose of `openspec/specs/fsharp-lsp/spec.md` corrected by hand — it still says F# indentation remains unsupported, and `openspec archive` does not touch Purpose prose
 - [ ] Purpose of the new `openspec/specs/fsharp-indent/spec.md` written by hand — `openspec archive` leaves a `TBD` placeholder, and there are already 14 of those
-- [ ] Upstream issue raised on `ionide/Ionide-vim` about the `synID` predicate being inert under treesitter highlighting

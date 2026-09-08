@@ -13,7 +13,6 @@
 - [x] 1.8 Mark the deviation clearly at the function, not only in the header: a comment saying this body differs from upstream, why (`synID` needs a `:syntax` file, F# here is treesitter-highlighted, so upstream's version always answered "no"), and that a refresh must re-apply it.
 - [x] 1.9 State in the provenance header that the file is **not** byte-identical to upstream and name the one function that differs. Without this a refresh silently reverts the fix, and silently — the reverted predicate returns a plausible answer rather than erroring.
 - [x] 1.10 Add a fixture covering `//` comments, `(* *)` block comments, plain, verbatim and triple-quoted strings, and a `char` literal, each holding a brace or bracket, plus real brace-delimited code as the control.
-- [ ] 1.11 Raise an issue upstream on `ionide/Ionide-vim`: every user on treesitter highlighting rather than its bundled `syntax/fsharp.vim` has the same latent bug. Not a blocker for this change, but it is the route by which the divergence eventually ends.
 
 ## 2. Validation
 
