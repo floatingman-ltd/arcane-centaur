@@ -3562,6 +3562,16 @@ Vendors `indent/fsharp.vim` from `ionide/Ionide-vim` (commit `094e7dbb8f77`) so 
 
 ### Validate
 
+**Run `FI.1`, `FI.3` and `FI.4` with the language server absent:**
+
+```
+env PATH=/usr/bin:/bin ~/nvim-linux-x86_64.appimage testdocs/indent-fixture.fs
+```
+
+Not a convenience — a necessity. With `fsautocomplete` on `$PATH` the fixture's `LoadedProjects` rejection fires **once per edit**, not once on open (measured: 4 rejections across 3 edit cycles), so every Enter raises a hit-enter prompt that has to be dismissed before the next keystroke. That makes the indentation cases effectively unrunnable and risks the dismissal keys being read as buffer input.
+
+It costs no coverage. Indentation is specified as independent of the language server, so running these cases without it is testing the intended contract, and with no server the session is completely quiet — measured at 0 rejections with the edits behaving identically. `FI.5` covers the server-attached direction separately, on the project fixture where no rejection occurs at all.
+
 #### FI.1 — Bodies indent one shiftwidth deeper
 
 **Press Enter and then type a character** for every case. Vim strips autoindent from a line left empty, so `o` followed by `<Esc>` reports zero indent whatever the setting — the false negative that caught both `align-treesitter-providers` (AT.2) and `install-language-servers` (LS.7).
@@ -3613,18 +3623,20 @@ If a decoy is being matched, the symptom is a closing delimiter jumping to an in
 
 - [ ] Closing delimiters align with real openers; no decoy in a comment, string or char literal is matched
 
-#### FI.5 — Indentation does not need the language server
+#### FI.5 — Indentation works with the language server attached
 
-Proves the `fsharp-indent` capability is independent of `fsautocomplete`, mirroring `LS.8`'s crippled-`PATH` method.
+`FI.1`, `FI.3` and `FI.4` deliberately run with no server. This is the other direction: that nothing about having `fsautocomplete` attached interferes with indentation. It uses `testdocs/fsharp-project/Program.fs`, which has a real `.fsproj`, so options resolve and no rejection appears.
 
-1. From a shell: `env PATH=/usr/bin:/bin ~/nvim-linux-x86_64.appimage testdocs/indent-fixture.fs`
-2. `:lua print(#vim.lsp.get_clients({ bufnr = 0 }))` — expect `0`.
-3. `:set indentexpr?` — still `FSharpIndent()`.
-4. Repeat two cases from `FI.1`. They must behave identically.
-5. `:messages` — no errors. With no server there is not even a `LoadedProjects` rejection.
-6. Quit; this session has a deliberately crippled `PATH`.
+1. Open `testdocs/fsharp-project/Program.fs` in a **normal** session and wait for attach.
+2. `:lua print(#vim.lsp.get_clients({ bufnr = 0 }))` — expect `1`, not 0 and not 2.
+3. `:set indentexpr?` — `FSharpIndent()`.
+4. Cursor at the end of `let greet name =` (line 10), Enter, type a character — expect **4**. Undo.
+5. Same on `let sumOfSquares (xs: int list) =` (line 17) — expect **4**. Undo.
+6. `:messages` — **no** `UnhandledPromiseRejection`. Unlike the bare-`.fs` fixture, a project file produces none, so any rejection here is a real finding.
 
-- [ ] With no language server at all, indentation is unchanged and Neovim starts clean
+**Do not `:w`.** Format-on-save is live on this file and Fantomas will reformat it.
+
+- [ ] With the server attached on a project file, indentation is unchanged and `:messages` is clean
 
 #### FI.6 — Indentation works in a standalone script
 

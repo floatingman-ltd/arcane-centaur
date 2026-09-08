@@ -23,9 +23,15 @@ module IndentFixture
 // into the project directory. Doing so makes the fixture destroy itself the
 // first time someone saves it.
 //
-// Use testdocs/fsharp-project/Program.fs for anything that needs the server.
-// Indentation needs nothing -- see the FI.5 case, which runs with fsautocomplete
-// off $PATH entirely.
+// Because that rejection fires once per EDIT rather than once on open, run the
+// indentation cases with the server absent, or every Enter raises a hit-enter
+// prompt you have to dismiss before the next keystroke:
+//
+//     env PATH=/usr/bin:/bin ~/nvim-linux-x86_64.appimage testdocs/indent-fixture.fs
+//
+// Indentation needs no server, so this costs no coverage. FI.5 covers the
+// server-attached direction on testdocs/fsharp-project/Program.fs, which has a
+// real .fsproj and produces no rejection at all.
 //
 // Every case below is checked by pressing Enter at the end of a line and then
 // TYPING A CHARACTER. Vim strips autoindent from a line left empty, so `o`
