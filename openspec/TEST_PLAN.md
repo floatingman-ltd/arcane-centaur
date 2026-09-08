@@ -3584,7 +3584,9 @@ In `testdocs/indent-fixture.fs`, with the cursor at the end of each line:
 | `    \| Circle r ->` | **8** |
 | `let outer x =` (column 0) | **4** |
 
-- [ ] All three indent the body rather than copying the previous indent
+- [X] All three indent the body rather than copying the previous indent
+
+> Passed live in a server-absent session. Corroborated headlessly on the same three lines: `    let inner y =` → 8, `    | Circle r ->` → 8, `let outer x =` → 4. The first two returned 4 before this change, which was the defect.
 
 #### FI.2 — `indentexpr` is live, not just set
 
