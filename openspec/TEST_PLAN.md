@@ -3514,4 +3514,4 @@ Alerts are blockquote-level and should not touch the fence overrides at all, but
 - [X] Rebuild the container from merged `main` and re-confirm `MA.1` and `MA.2`
 - [X] Change archived and the deltas promoted
 - [X] `recommendations/nvim-markserv-gfm-alerts-proposal.md` deleted (tasks 5.1) — superseded by the change's own `proposal.md` and `design.md`
-- [ ] Stray root-owned `docker/markserv/docs/` tree removed (tasks 5.2) — needs `sudo rm -rf`, left over from the earlier relative-`MD_DIR` failure
+- [X] Stray root-owned `docker/markserv/docs/` tree removed (tasks 5.2) — needs `sudo rm -rf`, left over from the earlier relative-`MD_DIR` failure
