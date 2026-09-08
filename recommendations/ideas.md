@@ -7,7 +7,6 @@ Agreed running order. Details live in the sections below; this is just the queue
 1. **Spell suggestions never reach the blink menu** — *Things that seem broken*. **High priority to review.** The spell source is wired up and works, but every suggestion is filtered out before display, so completing a misspelled word silently does nothing. One-line fix with a real trade-off attached, so it needs a decision rather than just an edit.
 2. **F# has no indent support of any kind** — *Things that seem broken*. What is left of the old "servers not installed" entry now that `install-language-servers` has shipped. F# now has an LSP, folds and format-on-save, but pressing Enter after `->` or `=` still copies the previous indent rather than indenting the body. Needs a plugin decision rather than configuration, so it wants a decision before an edit.
 3. **Fourteen capability specs have placeholder Purposes** — *Things that seem broken*. Mechanical but wide; best done as one pass.
-4. **`open_url` never reaches `open` on macOS** — *Things that seem broken*. Small and well understood, but unverifiable without a Mac.
 
 **Shipped** (2026-08-25 / 27), kept briefly for context:
 
@@ -16,6 +15,10 @@ Agreed running order. Details live in the sections below; this is just the queue
 - ~~`indentexpr` set without a query~~ and ~~markdown folding on headings~~ — both fixed by `align-treesitter-providers`. C# and Clojure also regained Neovim's own indent scripts, which the blanket override had been suppressing.
 - ~~`marksman` and `fsautocomplete` configured but not installed~~ — fixed by `install-language-servers`, along with the three documentation defects (including the `sudo apt install marksman` package that does not exist). Validation turned up two things the entry had no inkling of: **fsautocomplete does not ship Fantomas**, and without it a write does not skip formatting but raises a blocking interactive install prompt on every save; and **a bare `.fs` outside any project can never be answered** — every request fails with `Couldn't find <path> in LoadedProjects`, and merely opening one logs an `UnhandledPromiseRejection`. The F# indent gap is deliberately untouched and is now queue item 2 in its own right.
 - ~~Three capability specs still reference `glow.nvim`~~ — `code-folding` was resolved by `align-treesitter-providers`; the remaining two by `retire-glow-spec-references`.
+
+**Declined** — decisions taken, not work waiting:
+
+- ~~`open_url` never reaches `open` on macOS~~ — **won't fix. macOS is out of scope for this configuration.** The diagnosis was sound and the fix was a one-line exemption, but nobody here runs macOS and nobody intends to, so it would ship an unverifiable behaviour change to serve a platform this config does not target. Anyone wanting Neovim tooling on a Mac should expect to do their own platform work. Do not re-log this; the `open` entry left in `lua/config/util.lua`'s opener lists is harmless dead weight on Linux and WSL, where `open` is not an executable.
 
 Everything else in this file is unranked and can be picked up opportunistically.
 
@@ -127,9 +130,9 @@ use before deciding.
 
   Best as a single pass rather than piecemeal: fourteen short paragraphs, each derivable from the requirements already in the spec, and the context is cheapest read together. Surfaced during `retire-glow-spec-references`, where `markdown-native-rendering` was deliberately left in this state rather than becoming the one exception.
 
-- **`open_url` never reaches `open` on macOS.** `M.is_console` is derived solely from `$DISPLAY`/`$WAYLAND_DISPLAY` (`lua/config/terminal.lua:77`), and macOS sets neither unless XQuartz is running. So `is_console` is `true` there, the console branch short-circuits, and `open` — which sits in the opener list specifically for macOS — is never reached. The same one-line exemption that fixed the equivalent WSL case would fix it: `if term.is_console and not (term.is_wsl or vim.fn.has("mac") == 1)`. Deliberately not applied during `fix-open-url-wsl-opener`, because there is no macOS here to validate against and shipping an unverifiable behaviour change is worse than logging it. Anyone with a Mac can close this in minutes.
+- **`is_console` answers the wrong question.** `M.is_console` is derived solely from `$DISPLAY`/`$WAYLAND_DISPLAY` (`lua/config/terminal.lua:77`), which asks "is a display exported?" when most callers want "can a browser be reached?". `open_url` already carries a narrow WSL exemption for exactly this reason, and the macOS case that exposed the same flaw has been declined as out of scope.
 
-  Worth noting the root cause is `is_console` answering "is a display exported?" when callers want "can a browser be reached?". Fixing the flag itself would touch six other call sites, where "no display" means something different in each — so the narrow exemptions are probably right, but the `console-detection` capability deserves a look eventually.
+  The flag itself is used at six other call sites, where "no display" means something different in each, so widening the definition is not a one-line change. The narrow exemptions are probably right, but the `console-detection` capability deserves a look eventually. Recorded here because the underlying confusion outlived the macOS bug that surfaced it.
 
 - snippet placeholders cannot be navigated. `snippets` is an active completion source
   (`lua/plugins/blink.lua:26`), so snippet completions are offered and expand — but
