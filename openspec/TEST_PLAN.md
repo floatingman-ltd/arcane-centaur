@@ -3685,10 +3685,10 @@ The other "nothing happened" case, and the one that would catch the plugin havin
 2. `:set foldmethod?` — must **not** be `syntax`. Ionide-vim's ftplugin sets `fdm=syntax`; if you see it, the plugin got enabled.
 3. Open `testdocs/fsharp-project/Program.fs`, wait for attach, `zR` then `za` inside a function — folds must still be structural from the LSP (`LS.6`).
 4. Same file: mangle an indent, `:w` — format-on-save must still reformat via Fantomas (`LS.5`).
-5. `gcc` on a line — the comment leader must be unchanged.
+5. `gcc` on a line — it must prefix the line with `// `, and `gcc` again must remove it. **This is a fix, not a preservation check.** Before this change `commentstring` was empty for F# and `gcc` failed with *comment string is empty*; commenting had never worked in an F# buffer. Confirm `:set commentstring?` is `// %s` and `:set comments?` lists `:///` before `://`.
 6. `:lua print(#vim.lsp.get_clients())` in an F# buffer — exactly **one** F# client, not two.
 
-- [ ] Indent options, folding, formatting, comments and the single LSP client all unchanged
+- [ ] Indent options, folding, formatting and the single LSP client unchanged; commenting now works where it previously errored
 
 #### FI.8 — Documentation renders
 

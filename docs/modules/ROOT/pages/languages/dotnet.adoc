@@ -181,6 +181,12 @@ was inert under treesitter highlighting. Read the file's header before
 editing or refreshing it.
 ====
 
+Commenting is fixed in the same place and for the same reason. Neovim ships no
+`ftplugin` for F#, so `commentstring` was unset and `++<++leader++>++`-style
+native commenting (`gcc`, `gc`) failed with *comment string is empty*. F# buffers
+now use `++/++++/++ %s`, with `comments` set so XML doc comments (`++/++++/++++/++`)
+are recognised ahead of plain line comments and `(* *)` blocks are handled.
+
 F# is the only language here that needs a hand-written indent script.
 nvim-treesitter ships no `indents.scm` for F#, and `smartindent` keys off
 `{`, `}` and `cinwords`, none of which F# uses.

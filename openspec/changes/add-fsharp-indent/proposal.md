@@ -10,6 +10,7 @@ Exactly one exists and is maintained: `indent/fsharp.vim` from `ionide/Ionide-vi
 
 - Vendor `indent/fsharp.vim` (283 lines, MIT) into the configuration at `indent/fsharp.vim`, verbatim apart from an added provenance header. Neovim's runtime loads `indent/<ft>.vim` on `FileType` and ships no F# indent file, so the file needs no registration.
 - **Do not install Ionide-vim.** Of its functional code this configuration needs only that one file; everything else it ships duplicates something already working here, and three of those duplicates would override validated behaviour. See the design for the full accounting.
+- **Set `commentstring` and `comments` for F#.** Found by this change's own validation: Neovim ships no `ftplugin` for F#, so `commentstring` was empty and `gcc` failed with *comment string is empty* — native commenting has never worked in an F# buffer here. Measured as `[]` on `main` as well, so it is pre-existing rather than caused by this change. Included because it is the same class of gap as indentation, editor-side behaviour no language server supplies.
 - Update the F# language documentation and cheatsheet, which currently state that indentation does not work.
 - Add a `## Change · add-fsharp-indent` section to `openspec/TEST_PLAN.md`.
 

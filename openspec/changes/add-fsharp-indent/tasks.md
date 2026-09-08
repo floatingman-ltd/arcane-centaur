@@ -14,6 +14,12 @@
 - [x] 1.9 State in the provenance header that the file is **not** byte-identical to upstream and name the one function that differs. Without this a refresh silently reverts the fix, and silently — the reverted predicate returns a plausible answer rather than erroring.
 - [x] 1.10 Add a fixture covering `//` comments, `(* *)` block comments, plain, verbatim and triple-quoted strings, and a `char` literal, each holding a brace or bracket, plus real brace-delimited code as the control.
 
+## 1c. Comment support
+
+- [x] 1.12 Set `commentstring = "// %s"` in `after/ftplugin/fsharp.lua`. `gcc` failed with *comment string is empty* because Neovim ships no F# ftplugin — confirmed `[]` on `main` too, so pre-existing. Use the line-comment form, not Ionide-vim's `(*%s*)`: a block comment wrapped around every line is worse `gcc` output than a `//` prefix.
+- [x] 1.13 Set `comments = "s1:(*,mb:*,ex:*),:///,://"`. Separate from `commentstring` — it drives continuation and reformatting. `:///` must precede `://` so an XML doc comment is not read as a plain one, and the default list has no `(* *)` form at all.
+- [x] 1.14 Correct the spec scenario that asserted comment behaviour was *unchanged*. It is deliberately changed, and asserting otherwise would have locked in the bug.
+
 ## 2. Validation
 
 - [x] 2.1 Add a `## Change · add-fsharp-indent` section to `openspec/TEST_PLAN.md` with `Prepare` / `Validate` / `Raise PR & merge` / `Post-merge` subsections, following the structure of the existing sections.

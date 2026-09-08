@@ -90,10 +90,11 @@ Adding indentation SHALL NOT alter anything else about F# editing. In particular
 - **WHEN** an F# file in a project is written
 - **THEN** it SHALL still be reformatted by the language server via Fantomas
 
-#### Scenario: Comment behaviour is unchanged
+#### Scenario: Comment behaviour is fixed, not merely unchanged
 
-- **WHEN** the user comments a line in an F# buffer
-- **THEN** the comment leader SHALL be unchanged from before this capability existed
+- **WHEN** the user comments a line in an F# buffer with the native commenting operator
+- **THEN** the line SHALL be prefixed with `//` and the operator SHALL NOT report that the comment string is empty
+- **AND** repeating the operator SHALL uncomment the line
 
 ### Requirement: Indentation ignores delimiters inside comments and strings
 
@@ -129,3 +130,30 @@ Detection SHALL NOT force a parse. It runs inside pair matching, which is called
 - **WHEN** treesitter highlighting is not active for the buffer
 - **THEN** detection SHALL fall back to Vim `:syntax` information
 - **AND** SHALL NOT error
+
+### Requirement: F# has a comment string
+
+Neovim ships no `ftplugin` for F# at all, so `commentstring` is unset and the native commenting operator fails outright with *comment string is empty* — commenting has never worked in an F# buffer in this configuration. A `commentstring` SHALL therefore be set.
+
+It SHALL use F#'s line-comment form rather than its block-comment form, so that commenting a range prefixes each line rather than wrapping every line in its own block delimiters.
+
+`comments` SHALL also be set, since it drives comment continuation and reformatting separately from what the commenting operator inserts, and the default list omits F#'s block-comment and XML-doc-comment forms.
+
+This is included here rather than deferred because it is the same class of gap as indentation — editor-side behaviour that no language server supplies and that Neovim does not fill for F# — and because this change's own validation is what surfaced it.
+
+#### Scenario: Commenting a line works
+
+- **WHEN** the native commenting operator is applied to a line of F# code
+- **THEN** the line SHALL be prefixed with the line-comment form
+- **AND** no *comment string is empty* error SHALL be reported
+
+#### Scenario: Uncommenting round-trips
+
+- **WHEN** the operator is applied twice to the same line
+- **THEN** the line SHALL return to its original text
+
+#### Scenario: Doc comments are recognised before line comments
+
+- **WHEN** `comments` is inspected in an F# buffer
+- **THEN** the XML doc-comment form SHALL appear before the plain line-comment form, so a doc comment is not treated as an ordinary comment
+- **AND** the block-comment form SHALL be present
