@@ -3547,7 +3547,7 @@ Vendors `indent/fsharp.vim` from `ionide/Ionide-vim` (commit `094e7dbb8f77`) so 
 **One function differs from upstream.** Upstream's `s:IsInCommentOrString()` uses `synID`/`synIDattr`, which need a Vim `:syntax` file; F# here is treesitter-highlighted and `b:current_syntax` is unset, so upstream's version always returned "not a comment" and pair matching could not skip delimiters inside comments or strings. `FI.4` is the case for the replacement, and it is the case a careless upstream refresh would break — silently, because the reverted predicate returns a plausible answer rather than erroring.
 
 **Prerequisites** (confirm before validating):
-- `testdocs/indent-fixture.fs` — the fixture. **Deliberately a bare `.fs` outside any project**, so `fsautocomplete` logs `Couldn't find <path> in LoadedProjects` on open. That is expected: if indentation works there, it is demonstrably independent of the language server. Do not add it to `HelloFs.fsproj`.
+- `testdocs/indent-fixture.fs` — the fixture. **Deliberately a bare `.fs` outside any project**, so `fsautocomplete` logs `Couldn't find <path> in LoadedProjects` on open. Expected, and the error is the price of the fixture protecting itself: outside a project, format-on-save cannot run. Inside one, a single `:w` would hand the file to Fantomas, which collapses exactly the multi-line constructs `FI.1`, `FI.3` and `FI.4` depend on — measured at 41 lines changed, every case flattened. **Do not add it to `HelloFs.fsproj` or move it into the project directory.**
 - `testdocs/fsharp-project/Program.fs` for anything needing the server (folds, format-on-save).
 - No new binary and no new plugin. If `lazy-lock.json` gained a line, something is wrong.
 
@@ -3556,7 +3556,7 @@ Vendors `indent/fsharp.vim` from `ionide/Ionide-vim` (commit `094e7dbb8f77`) so 
 1. `git fetch origin && git checkout feat/vendor-fsharp-indent`
 2. Launch Neovim and open `testdocs/indent-fixture.fs`.
 3. `:set indentexpr?` — expect `FSharpIndent()`. Empty means the file is not being sourced; check it is at `indent/fsharp.vim` and that `:filetype` reports `indent:ON`.
-4. `:messages` — the `LoadedProjects` rejection described above is expected. Nothing else.
+4. `:messages` — the `LoadedProjects` rejection described in the prerequisites is expected, and is the only message that should appear. It is not a defect and it is not a reason to move the fixture into a project; see above for why moving it would break every case in this section.
 
 - [ ] Branch checked out, `indentexpr` is `FSharpIndent()`, no unexpected errors
 

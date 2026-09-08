@@ -9,10 +9,23 @@ module IndentFixture
 // THIS FILE IS DELIBERATELY A BARE .fs OUTSIDE ANY PROJECT, so fsautocomplete
 // cannot resolve options for it and will log
 //     Couldn't find <path> in LoadedProjects
-// on open. That is expected and is the point: if indentation works here, it is
-// demonstrably independent of the language server. Do not "fix" it by adding
-// the file to HelloFs.fsproj -- that would remove the property being tested.
+// on open. That is expected, and the error is a price worth paying:
+//
+//   Format-on-save goes through fsautocomplete, which needs resolved project
+//   options. Outside a project it cannot run -- which is what protects this
+//   file. Inside a project, a single :w would hand it to Fantomas, and Fantomas
+//   collapses precisely the multi-line constructs every case below depends on:
+//   `let inner y =` / `y + 1` becomes one line, the match arms collapse, the
+//   if/elif/else chain collapses, the pipeline collapses. Measured: 41 lines
+//   changed, every test case flattened.
+//
+// So do NOT "fix" the error by adding this file to HelloFs.fsproj or moving it
+// into the project directory. Doing so makes the fixture destroy itself the
+// first time someone saves it.
+//
 // Use testdocs/fsharp-project/Program.fs for anything that needs the server.
+// Indentation needs nothing -- see the FI.5 case, which runs with fsautocomplete
+// off $PATH entirely.
 //
 // Every case below is checked by pressing Enter at the end of a line and then
 // TYPING A CHARACTER. Vim strips autoindent from a line left empty, so `o`
