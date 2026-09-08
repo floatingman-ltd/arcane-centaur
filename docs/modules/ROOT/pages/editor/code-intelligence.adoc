@@ -257,9 +257,39 @@ keymap only binds insert and command-line modes.
 |`snippets` |Built-in snippet engine (replaces dead LuaSnip config)
 |`buffer` |Words from open buffers
 |`path` |File-system paths
-|`spell` |Dictionary words when `:set spell` is active (min 3 chars); bridged via blink.compat
+|`spell` |Dictionary words when `:set spell` is active (min 3 chars); bridged via blink.compat. *Not* spelling corrections — see <<spelling,Spelling suggestions>>
 |`conjure` |Conjure REPL completions (Lisp/Clojure/Scheme/Fennel/Janet buffers); bridged via blink.compat
 |===
+
+[[spelling]]
+=== Spelling suggestions
+
+Spelling is on everywhere (`spell`, `spelllang=en_ca` in `lua/options.lua`), and
+`++[++os` / `++]++os` / `yos` toggle it per window.
+
+*Corrections do not come from the completion menu.* The `spell` completion source
+offers dictionary words that *extend* what you have typed, which is a different
+thing: a correction is by definition not a fuzzy match of the misspelling it
+corrects, so blink's matcher discards it. Typing `recieve` and pressing `Ctrl-n`
+therefore shows nothing. This is a deliberate trade-off, recorded in
+`recommendations/ideas.md` — the alternative disables suggestion filtering
+entirely and offers the full dictionary for every word of three or more
+characters.
+
+Use one of the two native routes instead:
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`Ctrl-x s` |Insert |Open a suggestion popup for the word before the cursor. Navigate with `Ctrl-n` / `Ctrl-p`, accept with `Ctrl-y`, dismiss with `Ctrl-e`
+|`z=` |Normal |List numbered suggestions for the word under the cursor; pick one by number
+|`zg` / `zw` |Normal |Add the word under the cursor to the dictionary as good / wrong
+|`++[++s` / `++]++s` |Normal |Jump to the previous / next misspelling
+|===
+
+`Ctrl-x` is bound nowhere in this config and blink binds only `Ctrl-n`, `Ctrl-p`,
+`Ctrl-y`, `Ctrl-e`, `Ctrl-k`, `Ctrl-f` and `Ctrl-b`, so `Ctrl-x s` reaches Vim's
+own handler and coexists with the completion menu.
 
 === Command-line Completion
 

@@ -187,6 +187,18 @@ Docs window appears on its own after 500ms; `:BlinkDocsToggle` makes it on-deman
 
 ---
 
+## Spelling
+
+Corrections do **not** come from the completion menu — the `spell` source only extends what you typed, so `recieve` + `<C-n>` shows nothing. Use these instead.
+
+| Key | Mode | Action |
+|-----|------|--------|
+| `<C-x>s` | Insert | Suggestion popup for the word before the cursor (`<C-n>`/`<C-p>` move, `<C-y>` accept, `<C-e>` dismiss) |
+| `z=` | Normal | Numbered suggestion list for the word under the cursor |
+| `zg` / `zw` | Normal | Add word to dictionary as good / wrong |
+| `[s` / `]s` | Normal | Previous / next misspelling |
+| `[os` / `]os` / `yos` | Normal | Disable / enable / toggle spell for the window |
+
 ## OpenSpec
 
 | Key | Action |

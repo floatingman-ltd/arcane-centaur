@@ -342,6 +342,27 @@ appears at the `:` prompt. C# via roslyn is the reliable place to see it.
 
 '''''
 
+=== Spelling
+
+IMPORTANT: Spelling *corrections* do not come from the completion menu. The `spell`
+source offers dictionary words that extend what you typed; a correction is not a fuzzy
+match of the misspelling it corrects, so blink discards it. Typing `recieve` and pressing
+`Ctrl-n` shows nothing. Use `Ctrl-x s` or `z=` instead.
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`Ctrl-x s` |Insert |Suggestion popup for the word before the cursor — `Ctrl-n`/`Ctrl-p` to move, `Ctrl-y` to accept, `Ctrl-e` to dismiss
+|`z=` |Normal |Numbered suggestion list for the word under the cursor
+|`zg` / `zw` |Normal |Add word under cursor to the dictionary as good / wrong
+|`++[++s` / `++]++s` |Normal |Previous / next misspelling
+|`++[++os` / `++]++os` / `yos` |Normal |Disable / enable / toggle `spell` for the window
+|===
+
+→ xref:editor/code-intelligence.adoc#spelling[Why the menu does not offer corrections]
+
+'''''
+
 === Git — vim-fugitive {plus} gitsigns {plus} diffview.nvim
 
 Each Git plugin documents its own keymaps on its own page:
