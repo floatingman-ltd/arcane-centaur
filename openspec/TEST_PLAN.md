@@ -3535,3 +3535,144 @@ Alerts are blockquote-level and should not touch the fence overrides at all, but
 - [X] Change archived and the deltas promoted
 - [X] `recommendations/nvim-markserv-gfm-alerts-proposal.md` deleted (tasks 5.1) — superseded by the change's own `proposal.md` and `design.md`
 - [X] Stray root-owned `docker/markserv/docs/` tree removed (tasks 5.2) — needs `sudo rm -rf`, left over from the earlier relative-`MD_DIR` failure
+
+## Change · add-fsharp-indent
+
+**Branch:** `feat/vendor-fsharp-indent`
+
+Vendors `indent/fsharp.vim` from `ionide/Ionide-vim` (commit `094e7dbb8f77`) so F# finally has indentation. The plugin itself is deliberately **not** installed — see the file's header, and the `DO NOT ENABLE` note at `lua/plugins/init.lua`.
+
+**The unusual risk here is that `indentexpr` overrides `autoindent` completely.** A rule that answers *badly* is worse than no rule, and the effect lands on every keystroke rather than on demand. So this section tests the cases that already worked **by accident** as hard as the ones that were broken: `if … then` indents correctly today via `autoindent`, and a bad `indentexpr` would silently regress it. `FI.3` exists for that.
+
+**One function differs from upstream.** Upstream's `s:IsInCommentOrString()` uses `synID`/`synIDattr`, which need a Vim `:syntax` file; F# here is treesitter-highlighted and `b:current_syntax` is unset, so upstream's version always returned "not a comment" and pair matching could not skip delimiters inside comments or strings. `FI.4` is the case for the replacement, and it is the case a careless upstream refresh would break — silently, because the reverted predicate returns a plausible answer rather than erroring.
+
+**Prerequisites** (confirm before validating):
+- `testdocs/indent-fixture.fs` — the fixture. **Deliberately a bare `.fs` outside any project**, so `fsautocomplete` logs `Couldn't find <path> in LoadedProjects` on open. That is expected: if indentation works there, it is demonstrably independent of the language server. Do not add it to `HelloFs.fsproj`.
+- `testdocs/fsharp-project/Program.fs` for anything needing the server (folds, format-on-save).
+- No new binary and no new plugin. If `lazy-lock.json` gained a line, something is wrong.
+
+### Prepare
+
+1. `git fetch origin && git checkout feat/vendor-fsharp-indent`
+2. Launch Neovim and open `testdocs/indent-fixture.fs`.
+3. `:set indentexpr?` — expect `FSharpIndent()`. Empty means the file is not being sourced; check it is at `indent/fsharp.vim` and that `:filetype` reports `indent:ON`.
+4. `:messages` — the `LoadedProjects` rejection described above is expected. Nothing else.
+
+- [ ] Branch checked out, `indentexpr` is `FSharpIndent()`, no unexpected errors
+
+### Validate
+
+#### FI.1 — Bodies indent one shiftwidth deeper
+
+**Press Enter and then type a character** for every case. Vim strips autoindent from a line left empty, so `o` followed by `<Esc>` reports zero indent whatever the setting — the false negative that caught both `align-treesitter-providers` (AT.2) and `install-language-servers` (LS.7).
+
+In `testdocs/indent-fixture.fs`, with the cursor at the end of each line:
+
+| Line | New line must be at |
+|---|---|
+| `    let inner y =` | **8** — one `shiftwidth` past the 4 above |
+| `    \| Circle r ->` | **8** |
+| `let outer x =` (column 0) | **4** |
+
+- [ ] All three indent the body rather than copying the previous indent
+
+#### FI.2 — `indentexpr` is live, not just set
+
+1. `:set indentexpr?` → `FSharpIndent()`.
+2. `:echo exists('*FSharpIndent')` → `1`.
+3. `:set indentkeys?` — must include the F# additions `0=|`, `0=when`, `0=elif`, `0=else`, `0=|>`, `=with`.
+
+Step 3 matters because `indentexpr` alone only fires on Enter. The `indentkeys` additions are what re-indent a line as you type `else`, `elif` or a `|` arm.
+
+- [ ] `indentexpr` set, function defined, F# `indentkeys` present
+
+#### FI.3 — What already worked must not regress
+
+The point of this case is that things which were **already correct** stay correct. `indentexpr` replaces `autoindent` outright, so a rule answering badly is worse than the empty `indentexpr` we had before. Easy to skip, because these cases were never the complaint.
+
+| Line | New line must be at | Was correct before? |
+|---|---|---|
+| `    if n > 100 then` | 8 | yes — via `autoindent` |
+| `    a + 1` (opens nothing) | 4 | yes |
+| inside the `\|>` pipeline | aligned with the pipeline | yes |
+
+Then, still in the fixture: `zR`, put the cursor in `let area shape =` and press `==`. The line should reindent without moving to column 0. `>>` and `<<` should shift by 4.
+
+- [ ] Previously-correct cases unchanged, and `==`/`>>`/`<<` behave sanely
+
+#### FI.4 — Delimiters inside comments and strings are ignored
+
+This is the local deviation, and the only case that exercises it. Under the *Delimiters inside comments and strings* heading the fixture holds six decoy opening delimiters — in a `//` comment, an `(* *)` block comment, a plain string, a verbatim `@"…"` string, a triple-quoted string, and a `char` literal — followed by real record and list expressions.
+
+1. Put the cursor on the closing `}` of the `record` binding and press `==`.
+2. It must align with the line that **opened** the record, not with any decoy above it.
+3. Repeat for the closing `}` of `nested` and the closing `]` of `listValue`.
+4. Reformat the whole region with `=` over the decoy block and confirm nothing shifts wildly.
+
+If a decoy is being matched, the symptom is a closing delimiter jumping to an indent that corresponds to a comment or string line rather than to real code. Note the `char` literal case specifically: it is why the predicate reads treesitter **captures** rather than node types — `'{'` is node type `char`, which matches neither "comment" nor "string", but its capture is `string`.
+
+- [ ] Closing delimiters align with real openers; no decoy in a comment, string or char literal is matched
+
+#### FI.5 — Indentation does not need the language server
+
+Proves the `fsharp-indent` capability is independent of `fsautocomplete`, mirroring `LS.8`'s crippled-`PATH` method.
+
+1. From a shell: `env PATH=/usr/bin:/bin ~/nvim-linux-x86_64.appimage testdocs/indent-fixture.fs`
+2. `:lua print(#vim.lsp.get_clients({ bufnr = 0 }))` — expect `0`.
+3. `:set indentexpr?` — still `FSharpIndent()`.
+4. Repeat two cases from `FI.1`. They must behave identically.
+5. `:messages` — no errors. With no server there is not even a `LoadedProjects` rejection.
+6. Quit; this session has a deliberately crippled `PATH`.
+
+- [ ] With no language server at all, indentation is unchanged and Neovim starts clean
+
+#### FI.6 — Indentation works in a standalone script
+
+`.fsx` scripts are where `fsautocomplete` resolves options unreliably — the condition that made `LS.5` fail. Indentation must be immune.
+
+1. Open `testdocs/hello.fsx`.
+2. `:set indentexpr?` → `FSharpIndent()`.
+3. Add a `let f x =` line and confirm Enter indents its body to one `shiftwidth`.
+4. Undo. `:messages` — an `Error getting project options … A task was canceled.` may appear; it is the documented `.fsx` flake and has nothing to do with indentation.
+
+- [ ] Indentation behaves identically in a `.fsx`, regardless of option resolution
+
+#### FI.7 — Nothing else about F# changed
+
+The other "nothing happened" case, and the one that would catch the plugin having been installed by mistake.
+
+1. `testdocs/indent-fixture.fs`: `:set tabstop? shiftwidth? expandtab?` → `4`, `4`, on — still from `after/ftplugin/fsharp.lua`.
+2. `:set foldmethod?` — must **not** be `syntax`. Ionide-vim's ftplugin sets `fdm=syntax`; if you see it, the plugin got enabled.
+3. Open `testdocs/fsharp-project/Program.fs`, wait for attach, `zR` then `za` inside a function — folds must still be structural from the LSP (`LS.6`).
+4. Same file: mangle an indent, `:w` — format-on-save must still reformat via Fantomas (`LS.5`).
+5. `gcc` on a line — the comment leader must be unchanged.
+6. `:lua print(#vim.lsp.get_clients())` in an F# buffer — exactly **one** F# client, not two.
+
+- [ ] Indent options, folding, formatting, comments and the single LSP client all unchanged
+
+#### FI.8 — Documentation renders
+
+1. `./docker/antora/run.sh antora-playbook.yml`
+2. `languages/dotnet.html` — the F# section must state that indentation now works and that it comes from the editor, not the language server.
+3. `editor/code-intelligence.html` — the note under the LSP table must no longer claim F# has no indentation.
+4. `cheatsheets/fsharp.md` — the in-editor cheatsheet, a separate file from the Antora pages.
+5. Confirm no page still says F# indentation does not work.
+
+- [ ] Both pages and the in-editor cheatsheet reflect the new behaviour, with no stale claim left
+
+### Raise PR & merge
+
+- [ ] Every FI box above ticked
+- [ ] `recommendations/ideas.md` updated — queue entry removed, recorded as shipped with what the investigation established
+- [ ] Raise PR: `feat/vendor-fsharp-indent` → `main`
+- [ ] Review and approve PR
+- [ ] Merge PR
+
+### Post-merge
+
+- [ ] `git checkout main && git pull origin main`
+- [ ] Re-confirm `FI.1` and `FI.4` on the merged config
+- [ ] Change archived and the deltas promoted
+- [ ] Purpose of `openspec/specs/fsharp-lsp/spec.md` corrected by hand — it still says F# indentation remains unsupported, and `openspec archive` does not touch Purpose prose
+- [ ] Purpose of the new `openspec/specs/fsharp-indent/spec.md` written by hand — `openspec archive` leaves a `TBD` placeholder, and there are already 14 of those
+- [ ] Upstream issue raised on `ionide/Ionide-vim` about the `synID` predicate being inert under treesitter highlighting

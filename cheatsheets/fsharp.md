@@ -27,6 +27,19 @@ Standard LSP keys apply — see core cheatsheet.
 
 ---
 
+## Indentation
+
+From the editor (`indent/fsharp.vim`, vendored), **not** the language server — so it works with `fsautocomplete` absent.
+
+| Key | Action |
+|-----|--------|
+| `<CR>` | Indents the body after `=`, `->`, `then`, `else`, or a `match` arm |
+| `==` | Reindent the current line |
+| `>>` / `<<` | Shift line right / left by `shiftwidth` (4) |
+| `=` (operator) | Reindent a motion or selection |
+
+Whole-file tidying is Fantomas' job, via format-on-save. Note that only works inside a project — a standalone `.fsx` resolves options unreliably.
+
 ## GUIDES
 
 - [1] dotnet-fsi — Start F# interactive REPL workflow
