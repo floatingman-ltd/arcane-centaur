@@ -1,6 +1,6 @@
 ## Purpose
 
-Provides structured, on-demand code folding via `nvim-ufo` with annotated foldtext showing the fold's opening text and hidden-line count. Fold ranges come from the LSP provider — which gives C# precise `#region` folds via Roslyn — with an indent fallback. Treesitter folding is deliberately disabled; markdown uses indent only, and asciidoctor is left to manage its own folds.
+Provides structured, on-demand code folding via `nvim-ufo` with annotated foldtext showing the fold's opening text and hidden-line count. The default provider chain is the LSP provider with an indent fallback — which gives C# precise `#region` folds via Roslyn, and gives F# structural folds via fsautocomplete. Markdown deviates deliberately, using treesitter with an indent fallback so that headings fold as sections while list folding is retained. Asciidoctor opts out of ufo entirely and manages its own folds.
 ## Requirements
 ### Requirement: Annotated foldtext
 A closed fold SHALL display a summary line showing the fold's opening text followed by the number of lines it hides.
@@ -45,7 +45,7 @@ C# buffers SHALL fold using ranges supplied by the Roslyn language server, so th
 ### Requirement: Per-filetype fold provider exceptions
 Markdown and asciidoctor buffers SHALL deviate from the default provider chain.
 
-Markdown SHALL use the treesitter provider with an indent fallback, so that document structure is foldable by heading while list folding is retained. The LSP provider is deliberately omitted: no markdown language server is currently installed, and with only two provider slots available including it would displace the indent fallback that list folding depends on.
+Markdown SHALL use the treesitter provider with an indent fallback, so that document structure is foldable by heading while list folding is retained. The LSP provider is deliberately omitted: `marksman` advertises no `foldingRangeProvider`, so it would contribute nothing, and with only two provider slots available including it would displace the indent fallback that list folding depends on.
 
 Asciidoctor SHALL continue to opt out of ufo entirely.
 

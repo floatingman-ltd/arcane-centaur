@@ -3375,8 +3375,16 @@ The build emits pre-existing `skipping reference to missing attribute` warnings 
 
 - [ ] `git checkout main && git pull origin main`
 - [ ] Re-confirm LS.4 and LS.5 on the merged config
+
+> **LS.4 re-confirmed on merged `main`**: two distinct clients, `id=1` at the repo root for `hello.fsx` and `id=2` at `testdocs/fsharp-project`, hover returning `val area`.
+>
+> **LS.5 does NOT reproduce, and this box stays open.** Three headless attempts on merged `main` wrote the mangled buffer straight to disk with no reformatting — including a parseable mangle (multi-line `match` arms plus trailing whitespace) that Fantomas demonstrably acts on. No install prompt, no formatter error. The server side is healthy: a direct `textDocument/formatting` request returns edits (trailing whitespace → 1 edit, 1242 ms, inside conform's 2000 ms budget), so fsautocomplete and Fantomas both work. What does not happen is conform reaching them — `conform.list_formatters(0)` and `list_formatters_to_run(0)` are both empty for `fsharp`, and an explicit `conform.format({ lsp_format = "prefer" })` changes nothing.
+>
+> This contradicts the earlier pass, which was confirmed live and reproduced headlessly with a 41→34 line collapse. Neither `lua/plugins/conform.lua` nor conform's pin (`016802de`) has changed since. Worth noting that `lsp_format` is documented by conform as an option to `format()` and `format_on_save`, not as a `formatters_by_ft` per-filetype key — which would make `fsharp = { lsp_format = "prefer" }` inert for a reason unrelated to the binary, and would mean the earlier pass needs re-explaining rather than this one. **Needs a live check before concluding either way.**
 - [ ] Change archived and the deltas promoted
-- [ ] Purpose paragraph of `openspec/specs/code-folding/spec.md` corrected by hand — it still says treesitter folding is disabled and markdown uses indent only, which `align-treesitter-providers` overturned and which its own line 48 already contradicts
+- [X] Purpose paragraph of `openspec/specs/code-folding/spec.md` corrected by hand — it still says treesitter folding is disabled and markdown uses indent only, which `align-treesitter-providers` overturned and which its own line 48 already contradicts
+
+> Two stale claims fixed, not one. The Purpose contradicted its own requirement, as recorded. The second was created **by this change**: the markdown requirement justified omitting the LSP provider on the grounds that "no markdown language server is currently installed", which stopped being true the moment `marksman` was installed. The conclusion still holds but the reason is now that marksman advertises no `foldingRangeProvider` — measured directly under LS.2 — which is the same correction task 2.1 made to the equivalent comment in `lua/plugins/ufo.lua`. The spec was missed at the time.
 
 ## Change · add-markserv-gfm-alerts
 
