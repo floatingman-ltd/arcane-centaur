@@ -3614,16 +3614,30 @@ Then, still in the fixture: `zR`, put the cursor in `let area shape =` and press
 
 #### FI.4 — Delimiters inside comments and strings are ignored
 
-This is the local deviation, and the only case that exercises it. Under the *Delimiters inside comments and strings* heading the fixture holds six decoy opening delimiters — in a `//` comment, an `(* *)` block comment, a plain string, a verbatim `@"…"` string, a triple-quoted string, and a `char` literal — followed by real record and list expressions.
+This is the local deviation, and the only case that exercises it. **Navigate by binding name, not line number** — the fixture's header has been extended twice and line numbers shift.
 
-1. Put the cursor on the closing `}` of the `record` binding and press `==`.
-2. It must align with the line that **opened** the record, not with any decoy above it.
-3. Repeat for the closing `}` of `nested` and the closing `]` of `listValue`.
-4. Reformat the whole region with `=` over the decoy block and confirm nothing shifts wildly.
+Two things about the fixture are structurally necessary, and both were wrong on the first attempt:
 
-If a decoy is being matched, the symptom is a closing delimiter jumping to an indent that corresponds to a comment or string line rather than to real code. Note the `char` literal case specifically: it is why the predicate reads treesitter **captures** rather than node types — `'{'` is node type `char`, which matches neither "comment" nor "string", but its capture is `string`.
+- The closing delimiter must be **on its own line**. The script's dedent branches match `'^}$'`, `'^]$'` and `'^)$'` exactly, so an idiomatic trailing `Value = 1 }` never reaches the pair-matching path at all — the case would silently test nothing.
+- The decoy must be **inside** the pair. `searchpairpos()` searches backwards for the nearest unmatched opener, so a decoy placed *before* the construct is unreachable: the real opener is found first and the decoy never wins.
 
-- [ ] Closing delimiters align with real openers; no decoy in a comment, string or char literal is matched
+For each binding below, put the cursor on its closing `}` or `]` — the one alone on a line — and press `==`:
+
+| Binding | Decoy it contains | Expect |
+|---|---|---|
+| `recordWithCommentDecoy` | `{` in a `//` comment | **4** |
+| `recordWithStringDecoy` | `{` in a string | **4** |
+| `recordWithBlockCommentDecoy` | `{` in an `(* *)` comment | **4** |
+| `recordWithCharDecoy` | `'{'` char literal | **4** |
+| `recordWithVerbatimDecoy` | `{` in an `@"…"` string | **4** |
+| `listWithDecoy` | `[` in a comment | **4** |
+| `plainRecord` | none — the control | **4** |
+
+**The failure signature is 6, not chaos.** Without the deviation every decoy case reindents to 6, aligning with the decoy line instead of the opener, while the control still gives 4. Measured both ways: 4/4/4/4/4/4/4 with it, 6/6/6/6/6/6/4 without. So if you see a 6, the predicate is not working — and the control staying correct is what tells you ordinary pair matching is still fine.
+
+The `recordWithCharDecoy` case is why the predicate reads treesitter **captures** rather than node types: `'{'` is node type `char`, which matches neither "comment" nor "string", but its capture is `string`.
+
+- [ ] All six decoy cases reindent to 4, and the control does too
 
 #### FI.5 — Indentation works with the language server attached
 

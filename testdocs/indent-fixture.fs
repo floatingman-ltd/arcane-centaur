@@ -80,42 +80,68 @@ let pipeline xs =
 // These exercise the LOCAL DEVIATION in indent/fsharp.vim: pair matching must
 // not treat a delimiter written inside a comment or a string as a real one.
 // Upstream's synID()-based check is inert here because F# is highlighted by
-// treesitter, so without the deviation every brace below is treated as real.
+// treesitter, so without the deviation every decoy below wins.
+//
+// TWO THINGS ARE STRUCTURALLY NECESSARY, and both were wrong on the first
+// attempt at this fixture:
+//
+//   1. The closing delimiter must be ON ITS OWN LINE. The indent script's
+//      dedent branches match '^}$', '^]$' and '^)$' exactly, so a trailing
+//      `Value = 1 }` never reaches the pair-matching path at all.
+//
+//   2. The decoy must be INSIDE the pair, between the opener and the closer.
+//      searchpairpos() searches backwards for the nearest unmatched opener, so
+//      a decoy placed before the construct is unreachable -- the real opener is
+//      found first and the decoy never wins.
+//
+// Each closing delimiter below must reindent to 4, aligning with the line that
+// opened it. Without the deviation they align with the decoy instead, at 6.
 
-// a decoy opening brace in a line comment: {
-
-(* a decoy opening brace in a block comment: { *)
-
-let decoyString = "an opening brace in a string: {"
-
-let decoyVerbatim = @"an opening brace in a verbatim string: {"
-
-let decoyTriple =
-    """
-    an opening brace in a triple-quoted string: {
-    """
-
-let decoyChar = '{'
-
-// The record below is the control: its braces are real code, and the closing
-// brace must align with the line that opened it -- not with any decoy above.
-let record =
+let recordWithCommentDecoy =
     { Name = "real"
-      Value = 1 }
+      // a stray opening brace inside the record: {
+      Value = 1
+}
 
-let nested =
-    { Outer =
-        { Inner = 1 }
-      Other = 2 }
+let recordWithStringDecoy =
+    { A = 1
+      B = "a stray opening brace in a string: {"
+      C = 2
+}
 
-// --- A bracket variant, same idea -------------------------------------------
+let recordWithBlockCommentDecoy =
+    { A = 1
+      (* a stray opening brace in a block comment: { *)
+      B = 2
+}
 
-// decoy opening bracket in a comment: [
+let recordWithCharDecoy =
+    { A = 1
+      B = '{'
+      C = 2
+}
 
-let listValue =
+let recordWithVerbatimDecoy =
+    { A = 1
+      B = @"a stray opening brace in a verbatim string: {"
+      C = 2
+}
+
+// The bracket variant, same two requirements.
+
+let listWithDecoy =
     [ 1
+      // a stray opening bracket in a comment: [
       2
-      3 ]
+]
+
+// Control: no decoy at all. Must also reindent to 4, which proves the
+// deviation has not broken ordinary pair matching.
+
+let plainRecord =
+    { A = 1
+      B = 2
+}
 
 let main _ =
     printfn "%s" (describe 50)

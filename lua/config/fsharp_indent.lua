@@ -43,6 +43,12 @@ local SKIP_CAPTURES = { comment = true, string = true }
 --- full reparse in the typing path. A live buffer's tree is already current, and
 --- an unavailable tree yields no captures, which reads as 0: the safe answer.
 ---
+--- One consequence worth knowing when probing this headlessly: a headless
+--- session never redraws, so the highlighter never parses and captures come back
+--- empty, making this return 0 for everything. That is not a bug -- interactive
+--- sessions keep the tree current -- but a headless test of this must call
+--- `vim.treesitter.get_parser(buf):parse(true)` first or it will measure nothing.
+---
 ---@return integer # 1 in a comment or string, 0 in code, -1 undecidable
 function M.at_cursor_is_comment_or_string()
   local buf = vim.api.nvim_get_current_buf()
