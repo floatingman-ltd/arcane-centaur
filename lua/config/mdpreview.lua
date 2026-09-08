@@ -5,8 +5,11 @@
 -- Start the Docker container first (from your project root, or set MD_DIR):
 --   docker compose -f ~/.config/nvim/docker/markserv/docker-compose.yml up -d
 --
--- The server runs at http://localhost:8090.  Live reload on port 35729
--- refreshes the browser automatically when you save a file.
+-- The server runs at http://localhost:8090, and delivers live reload over
+-- Server-Sent Events on /__livereload on that same port, so the browser
+-- refreshes automatically when you save a file.  Port 35729 is upstream
+-- markserv's LiveReload port; this is a local build (docker/markserv/server.js)
+-- and never opens it.
 --
 -- See docs/modules/ROOT/pages/content/markdown.adoc for the full guide.
 

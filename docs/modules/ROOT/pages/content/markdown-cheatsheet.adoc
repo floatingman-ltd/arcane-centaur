@@ -107,8 +107,9 @@ preview requires a graphical environment.
 
 The markserv server serves the *entire project directory*, so relative
 links between `.md` files resolve correctly in the browser. It also
-provides live reload (port 35729) so the browser refreshes automatically
-when you save.
+provides live reload over Server-Sent Events on `/++__++livereload`, on the
+same port as the server, so the browser refreshes automatically when you
+save.
 
 The server runs at `http://localhost:8090` via Docker Compose
 (`docker/markserv/docker-compose.yml`). Start it from your project root:

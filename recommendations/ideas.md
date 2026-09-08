@@ -9,6 +9,8 @@ Agreed running order. Details live in the sections below; this is just the queue
 
 **Shipped** (2026-08-25 / 27), kept briefly for context:
 
+- ~~markserv live reload documented on port 35729~~ — fixed 2026-09-08. `lua/config/mdpreview.lua` and `content/markdown-cheatsheet.adoc` both claimed live reload ran on port 35729. It does not: `docker/markserv/server.js` is a local build that delivers reload over Server-Sent Events on `/__livereload` on the same port as the server (8090). 35729 is upstream markserv's LiveReload port and this build never opens it, so anyone debugging a reload failure was sent to a port nothing listens on. Surfaced while validating `add-markserv-gfm-alerts`, unrelated to it.
+
 - ~~`open_url` silently notifies~~ — fixed by `fix-open-url-wsl-opener`. **The diagnosis recorded here was wrong**, and worth remembering as a pattern: the INFO-notify branch it blamed was unreachable, because WSLg exports `DISPLAY=:0` and `is_console` was therefore `false`. The real cause was opener ordering — `xdg-open` won, found no Linux browser, fell through to `w3m` in a detached job with no tty, and exited `0`. Investigating turned up two further defects the entry had no inkling of: `explorer.exe` does not treat a URL containing `=` as a URL and opens a folder window instead (confirmed on a trailing `=` and a mid-query `=`; other positions untested), and WSL without WSLg would notify and open nothing.
 
 - ~~`indentexpr` set without a query~~ and ~~markdown folding on headings~~ — both fixed by `align-treesitter-providers`. C# and Clojure also regained Neovim's own indent scripts, which the blanket override had been suppressing.
