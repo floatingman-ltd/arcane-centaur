@@ -349,6 +349,34 @@ sudo apt install -y ripgrep fzf     # Debian/Ubuntu
 # or: brew install ripgrep fzf
 ----
 
+=== Terminal and Nerd Font (optional — enables icons)
+
+`nvim-tree` and `fzf-lua` show file-type icons when a patched
+https://www.nerdfonts.com/[Nerd Font] is installed *and* selected as the terminal
+font. Without one the config falls back to plain Unicode glyphs automatically, so
+icons are entirely optional — nothing errors.
+
+. Download a Nerd Font — _FiraCode Nerd Font_ is a good default — from
+https://www.nerdfonts.com/font-downloads.
+. Install it system-wide or for the current user.
+. Select it as your terminal's font. In GNOME Terminal that is
+_Preferences → Profiles → Custom font_; other emulators vary.
+
+Terminal capabilities are detected automatically in `lua/config/terminal.lua`, and
+`lua/options.lua` derives `vim.g.have_nerd_font` from that detection. Detection
+keys off environment variables the emulator sets, so it cannot always tell —
+GNOME Terminal in particular does not advertise Nerd Font support. If icons are
+missing despite a Nerd Font being selected, override it in `lua/options.lua`:
+
+[source,lua]
+----
+vim.g.have_nerd_font = true
+----
+
+The same detection drives true-colour and undercurl support. A bare TTY console
+supports neither, and the config degrades rather than rendering unreadably — see
+xref:other/architecture.adoc[Architecture] for the capability table.
+
 [[required-per-feature]]
 == Required per feature
 

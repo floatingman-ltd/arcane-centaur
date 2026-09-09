@@ -58,7 +58,7 @@ Genuinely incomplete, and each says so in place.
 >
 > My first characterisation of that file as "the repository's front page" was **wrong**. `_readme.adoc` is an orphan: absent from the Antora site, absent from `nav.adoc`, referenced by nothing but archived task notes, and not in the built output. `readme.md` is the actual readme. It is also stale far beyond one keymap — roughly **30 mentions of GitHub Copilot**, which was removed in favour of Claude, plus nvim-cmp and glow. `replace-glow-renderer` recorded it in August 2026 as *"stale beyond this change and only partly repaired"*, so piecemeal repair has now been attempted three times without converging.
 >
-> **Outstanding decision:** delete `_readme.adoc`, or rewrite it from the Antora pages. A `////`-comment banner now marks it as superseded and tells readers not to cite it or fix single lines in it, which contains the harm but is not a fix.
+> **Resolved 2026-09-09 — deleted.** 776 lines, 31 Copilot mentions, unpublished and unreferenced; git history keeps it. Before deleting, its sections were checked against the Antora pages and one thing was genuinely unique: ~150 lines of terminal and Nerd Font setup guidance, which `getting-started.adoc` did not cover at all. That was condensed and moved there as *Terminal and Nerd Font (optional — enables icons)* rather than dropped.
 
 ---
 
@@ -79,7 +79,7 @@ These are reusable templates in `TEST_PLAN.md` rather than one-off deferrals, bu
 Long-standing, and the largest block of genuinely undone eyes-on work.
 
 - **Run the full validation guide** — work through every section rather than the per-change subsets.
-- **Test on a fresh machine / clean install** — clone to a new machine and follow the setup docs as written. This is the only thing that would catch missing prerequisites; the `ripgrep`/`fzf` gap below was found exactly this way, by accident.
+- **Test on a fresh machine / clean install** — clone to a new machine and follow the setup docs as written. This is the only thing that would catch missing prerequisites; the `ripgrep`/`fzf` gap was found exactly this way, by accident — and has since been closed.
 - **Console-mode E2E** — the validation guide's sections 3–9 in a real console (no GUI), where terminal-capability branching in `lua/config/terminal.lua` actually matters.
 - **`docs/guides/validation.md`** — complete a run-through and mark its steps.
 - **REST client guide** — may be stale since the kulala migration.
@@ -92,7 +92,7 @@ Note several of these reference `docs/guides/*.md` paths that predate the Antora
 
 ## F. Known mismatches waiting on a decision or a pass
 
-**`ripgrep` and `fzf` are undocumented runtime dependencies.** Both are hard requirements — `rg` for fzf-lua `live_grep`, todo-comments and trouble; the `fzf` binary for every fzf-lua picker, which has no pure-Lua fallback. Neither appears in `getting-started.adoc` §System Dependencies. Found during Change 06 validation on a replacement machine, when `<leader>xt` and `<leader>xT` both crashed. The fix was deliberately held for a `document-setup-prerequisites` change — which, verified 2026-09-09, **does not exist** either: no directory in `openspec/changes/` or its archive, and no branch. So this is held for a change nobody has created, which in practice means it is simply not tracked anywhere except here and in a note.
+**~~`ripgrep` and `fzf` are undocumented runtime dependencies.~~ Closed — and this entry was stale when written.** `getting-started.adoc` has a *ripgrep and fzf* section documenting both binaries, what breaks without each, and the install command. Found 2026-09-09 while checking `_readme.adoc`'s sections against the docs. The lesson is the same one this file was created for: the note recording the gap outlived the gap, because nothing prompted a re-check. **Verify before carrying a deferral forward.**
 
 **Keymap documentation is unreconciled.** There are three unsynchronised keymap surfaces and none reads the others: which-key (generated from `desc`, always accurate), the `<leader>?` cheatsheet (hand-maintained `cheatsheets/*.md`), and the Antora pages. `editor/keybindings.adoc` is a 518-line sheet **orphaned from `nav.adoc`** that duplicates the per-area cheatsheets.
 
