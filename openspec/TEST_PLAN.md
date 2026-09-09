@@ -3688,7 +3688,11 @@ The other "nothing happened" case, and the one that would catch the plugin havin
 5. `gcc` on a line — it must prefix the line with `// `, and `gcc` again must remove it. **This is a fix, not a preservation check.** Before this change `commentstring` was empty for F# and `gcc` failed with *comment string is empty*; commenting had never worked in an F# buffer. Confirm `:set commentstring?` is `// %s` and `:set comments?` lists `:///` before `://`.
 6. `:lua print(#vim.lsp.get_clients())` in an F# buffer — exactly **one** F# client, not two.
 
-- [ ] Indent options, folding, formatting and the single LSP client unchanged; commenting now works where it previously errored
+- [X] Indent options, folding, formatting and the single LSP client unchanged; commenting now works where it previously errored
+
+> Passed live: `zR`/`za` folding structural as before, and `gcc` prefixing and removing `// ` where it previously errored with *comment string is empty*.
+>
+> This case earned its place twice over. It caught the empty `commentstring` — a pre-existing gap, measured `[]` on `main` as well — and it caught its own wording: the step originally asked for the comment leader to be *unchanged*, which empty-to-empty satisfies, so a loosely worded preservation check was letting a broken thing pass. Both the step and the spec scenario now assert the fix instead.
 
 #### FI.8 — Documentation renders
 
