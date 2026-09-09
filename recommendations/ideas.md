@@ -4,10 +4,19 @@
 
 Agreed running order. Details live in the sections below; this is just the queue.
 
-1. **F# has no indent support of any kind** — *Things that seem broken*. What is left of the old "servers not installed" entry now that `install-language-servers` has shipped. F# now has an LSP, folds and format-on-save, but pressing Enter after `->` or `=` still copies the previous indent rather than indenting the body. Needs a plugin decision rather than configuration, so it wants a decision before an edit.
-2. **Fourteen capability specs have placeholder Purposes** — *Things that seem broken*. Mechanical but wide; best done as one pass.
+1. **Fourteen capability specs have placeholder Purposes** — *Things that seem broken*. Mechanical but wide; best done as one pass.
 
 **Shipped** (2026-08-25 / 27), kept briefly for context:
+
+- ~~F# has no indent support of any kind~~ — fixed by `add-fsharp-indent`, which **vendors** `indent/fsharp.vim` from `ionide/Ionide-vim` (commit `094e7dbb8f77`) rather than installing the plugin. The investigation settled several things worth not re-deriving:
+
+  The indent file is **separable**: 283 lines, no references to `fsharp#`, `ionide` or `g:fsharp`, so it works alone. Measured against this configuration's constructs it took indentation from 2 of 5 cases correct to 5 of 5.
+
+  Installing the plugin would have added **no** capability. Its LSP client, fold method, syntax file, `commentstring` and FSI keymaps all duplicate working configuration here, and three would have overridden behaviour validated under `LS.5`/`LS.6`. Its last tagged release was 2019-11-25 and its open issues are freezes and per-keystroke errors in the integration we would have disabled. `WillEhrendreich/Ionide-nvim` was assessed and rejected — a self-declared disconnected fork, 17 stars, effectively one maintainer, an 87 KB single Lua file; its one genuine advantage is a test suite Ionide-vim lacks.
+
+  There is **no treesitter route**: nvim-treesitter ships no `indents.scm` for F#, and no `queries/fsharp` directory exists at all on `main` or `master`. LSP has no indent-as-you-type concept and `smartindent` keys off braces F# never uses, so a hand-written `indentexpr` was the only mechanism.
+
+  Validation turned up one thing the entry had no inkling of: upstream's `s:IsInCommentOrString()` uses `synID()`, which needs a Vim `:syntax` file. F# here is treesitter-highlighted, so it always answered "not a comment" and pair matching could not skip delimiters inside comments or strings. Fixed as a declared deviation via `lua/config/fsharp_indent.lua`, deciding on treesitter **captures** rather than node types — node types miss a `char` literal holding a brace. See idea 5 under *Things we'd like to add* for why the rest of the file was not ported to Lua.
 
 - ~~markserv live reload documented on port 35729~~ — fixed 2026-09-08. `lua/config/mdpreview.lua` and `content/markdown-cheatsheet.adoc` both claimed live reload ran on port 35729. It does not: `docker/markserv/server.js` is a local build that delivers reload over Server-Sent Events on `/__livereload` on the same port as the server (8090). 35729 is upstream markserv's LiveReload port and this build never opens it, so anyone debugging a reload failure was sent to a port nothing listens on. Surfaced while validating `add-markserv-gfm-alerts`, unrelated to it.
 
@@ -58,6 +67,65 @@ Everything else in this file is unranked and can be picked up opportunistically.
    this needs signature help turned on *plus* something that actually cycles signatures, with its
    own keybindings and doc updates. Surfaced while validating `fix-blink-completion-keymap`; well
    outside that change, which is a keymap consolidation.
+
+5. port the vendored F# indent script from Vimscript to Lua. `add-fsharp-indent` vendors
+   `indent/fsharp.vim` from Ionide-vim — 283 lines, ~200 of code, 8 functions — rather than
+   installing the plugin. Since we own the file anyway, Lua would match the rest of this
+   configuration and, more usefully, would be **unit-testable**: upstream ships no tests at all,
+   so today the only safety net is the TEST_PLAN cases.
+
+   **The honest catch is that most of it cannot actually become Lua.** The logic rests on 31
+   `=~`/`!~` comparisons across ~21 Vim-flavoured regexes — `'^\(let\|type\).*=\(\s\({\|[\|[|\)\)\?$'`,
+   `'\v^\s*(.{-})\s*$'` and the like. Lua patterns have no alternation, no grouped quantifiers,
+   no `\v` magic and no `.\{-}`, so every one would have to stay a Vim regex behind
+   `vim.regex()` or `vim.fn.match()`. The built-ins are the same story: `shiftwidth()` ×17,
+   `indent()` ×10, `getline()` ×7, and one `searchpairpos()` with a skip predicate. And
+   `indentexpr` must remain a Vim expression regardless — `vim.bo.indentexpr =
+   "v:lua.require'...'.indentexpr()"`, the pattern `lua/plugins/treesitter.lua` already uses.
+
+   So the realistic result is Lua control flow wrapping the same regexes and the same built-ins:
+   roughly 85% of the substance unchanged, a syntax change more than an idiom change.
+
+   **Costs, in order.** It kills the upstream diff path, which is the whole maintenance strategy
+   recorded in that change's D1 and D5 — refreshing becomes a re-port rather than a diff against
+   a known commit. There are 31 branch points to translate with no upstream test suite to check
+   the translation against. And it resets the battle-testing on a file whose value is precisely
+   that real editing has found and fixed bugs in it since 2014.
+
+   **If it is ever done**, it should be its own change *after* the vendoring has been lived with,
+   so a misindent is unambiguously a translation error rather than an inherited one, and so the
+   TEST_PLAN corpus from `add-fsharp-indent` exists to port against. Note that the treesitter
+   comment/string predicate from that change (`lua/config/fsharp_indent.lua`) is already Lua, so
+   the genuinely environment-specific part is Lua either way — which is a reason the rest is less
+   urgent than it first looks.
+
+6. report the vendored F# indent script's `synID` problem upstream. Sits next to idea 5 because it
+   is the other half of the same question: what our relationship with `ionide/Ionide-vim` should be.
+
+   `add-fsharp-indent` deviates from upstream in exactly one function. Upstream's
+   `s:IsInCommentOrString()` detects comments and strings with `synID()`/`synIDattr()`, which
+   require a Vim `:syntax` file. Under treesitter highlighting no syntax file is sourced at all —
+   measured on `lua` and `markdown` buffers, both of which Neovim *does* ship syntax files for:
+   `b:current_syntax` is `nil` and `synID()` returns `0`. So the predicate always answers "not a
+   comment", and since it is the skip function handed to `searchpairpos()`, brace, bracket and
+   paren matching cannot skip delimiters written inside comments or string literals.
+
+   **Scope it accurately if reporting it.** This is not "every Ionide-vim user" — the plugin ships
+   its own `syntax/fsharp.vim`, so anyone relying on that is unaffected. It hits users who
+   highlight F# with nvim-treesitter instead, which suppresses the syntax file. Still a real
+   population, but the narrower claim is the true one.
+
+   **Why bother, given we have already fixed it locally.** Our fix lives in
+   `lua/config/fsharp_indent.lua` and is a declared deviation, which means every future refresh of
+   the vendored file has to re-apply it — and would revert it *silently* if it did not, because the
+   reverted predicate returns a plausible answer rather than erroring. An upstream fix is the only
+   thing that ends that obligation and lets the file go back to byte-identical.
+
+   Deliberately **not** a task in `add-fsharp-indent`. It depends on a third party's review cycle,
+   and a change should not sit permanently incomplete waiting on someone else — which is precisely
+   the limbo `install-language-servers` was in for weeks. Zero effect on this repository either
+   way; it is upstream hygiene with a long-term payoff, so it belongs here rather than in a task
+   list.
 
 ## Things to keep an eye on
 

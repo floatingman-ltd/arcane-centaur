@@ -16,6 +16,12 @@ return {
   -- "Xuyuanp/nerdtree-git-plugin",
   -- f-sharp tooling
   -- "autozimu/LanguageClient-neovim", branch = "next", build = "bash install.sh",
-  -- "ionide/Ionide-vim",
+  -- "ionide/Ionide-vim",  -- DO NOT ENABLE. Its indent/fsharp.vim is vendored at
+  --                         -- indent/fsharp.vim instead; the plugin additionally
+  --                         -- registers a second FsAutoComplete LSP client, sets
+  --                         -- fdm=syntax (replacing our LSP folds), ships a regex
+  --                         -- syntax file, changes commentstring, and binds FSI
+  --                         -- keymaps that collide with iron.nvim. See the header
+  --                         -- of indent/fsharp.vim.
   -- "junegunn/fzf",
 }

@@ -152,6 +152,47 @@ LocalLeader is `,` in F# buffers. The REPL opens as a horizontal split
 
 ---
 
+[[fsharp-indent]]
+== F# — Indentation
+
+Pressing Enter after a line that opens a body — one ending in `=`, `->`,
+`then`, `else`, or a `match` arm — indents the new line one `shiftwidth`
+deeper. `==`, `>>` and `<<` work as reindent operators.
+
+*This comes from the editor, not from the language server.* No language
+server supplies indentation; LSP has no indent-as-you-type concept.
+Indentation therefore keeps working with `fsautocomplete` absent, still
+starting, or unable to resolve options for a standalone `.fsx`.
+
+[NOTE]
+====
+The implementation is a *vendored* third-party file, `indent/fsharp.vim`,
+taken from https://github.com/ionide/Ionide-vim[Ionide-vim] at a recorded
+commit. The plugin itself is deliberately **not** installed: only that one
+file is wanted, and the rest of the plugin duplicates configuration that
+already works here — it registers a second FsAutoComplete client, sets
+`fdm=syntax` in place of the LSP folds, ships a regex syntax file instead
+of treesitter, changes `commentstring`, and binds FSI keymaps that collide
+with iron.nvim.
+
+One function in the vendored file differs from upstream: its comment and
+string detection used `synID()`, which needs a Vim `:syntax` file and so
+was inert under treesitter highlighting. Read the file's header before
+editing or refreshing it.
+====
+
+Commenting is fixed in the same place and for the same reason. Neovim ships no
+`ftplugin` for F#, so `commentstring` was unset and `++<++leader++>++`-style
+native commenting (`gcc`, `gc`) failed with *comment string is empty*. F# buffers
+now use `++/++++/++ %s`, with `comments` set so XML doc comments (`++/++++/++++/++`)
+are recognised ahead of plain line comments and `(* *)` blocks are handled.
+
+F# is the only language here that needs a hand-written indent script.
+nvim-treesitter ships no `indents.scm` for F#, and `smartindent` keys off
+`{`, `}` and `cinwords`, none of which F# uses.
+
+'''''
+
 [[fsharp-formatting]]
 == F# — Formatting (fsautocomplete)
 
