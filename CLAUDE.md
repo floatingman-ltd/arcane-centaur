@@ -22,6 +22,7 @@ Lazy-loading is filetype-driven: plugins use lazy.nvim's `ft = { ... }` field so
 - **LSP**: every server shares one `on_attach` in `lua/config/lsp.lua`. Add servers there with `lspconfig.<server>.setup{ on_attach = on_attach }`.
 - **Formatting**: `lua/plugins/conform.lua` does format-on-save; add filetypes to its `formatters_by_ft`. F# uses `lsp_format = "prefer"`.
 - **Terminal capabilities**: branch on `lua/config/terminal.lua`'s flags (`has_nerd_font`, `has_undercurl`, `name`) rather than hardcoding terminal-specific behavior.
+- **Neovim 0.12 plugin API drift**: this config targets 0.12, and plugins calling private treesitter or decoration APIs crash there. The fix is usually already on the plugin's `main`/`master` **ahead of any tagged release**, so pinning to a release can be the thing keeping you broken — check upstream `main` before concluding a plugin is incompatible. Bit `nvim-treesitter` and `trouble.nvim`.
 - **Colorscheme**: TokyoNight; change the `style` variable at the top of `lua/plugins/colorscheme.lua`.
 - **Diagnostics panel**: `folke/trouble.nvim` v3 (`lua/plugins/trouble.lua`) provides `<leader>x` maps for project/buffer diagnostics, symbols, LSP refs, quickfix, and loclist. Native `[d`/`]d`/`<leader>e` are preserved.
 - **TODO annotations**: `folke/todo-comments.nvim` (`lua/plugins/todo-comments.lua`) highlights `TODO`/`FIXME`/`HACK`/`NOTE`/`WARN`; list via `<leader>xT` (fzf-lua) or `<leader>xt` (trouble). `]t`/`[t` remain vim-unimpaired tag navigation.
@@ -50,6 +51,16 @@ GitHub Copilot and OpenCode have been removed in favour of Claude; the OpenSpec/
 This repo uses **OpenSpec** (`openspec/`, `schema: spec-driven`) to drive changes. Capabilities are documented as specs under `openspec/specs/<capability>/`, change proposals live in `openspec/changes/` and are moved to `openspec/changes/archive/` once shipped. `lua/config/openspec.lua` provides in-editor commands. When making a substantive feature change, check whether an OpenSpec proposal/spec is expected for it.
 
 The OpenSpec and project workflows are also available as Claude Code skills in **`.claude/skills/`** — invoke them as slash commands: `/openspec-propose`, `/openspec-apply-change`, `/openspec-continue-change`, `/openspec-verify-change`, `/openspec-archive-change`, `/openspec-explore`, `/openspec-sync-specs`, `/openspec-onboard`, plus `/add-neovim-feature`.
+
+### Archive gotchas
+
+`openspec archive` has three behaviours worth knowing before you run it:
+
+- **It leaves a placeholder Purpose** on every capability it creates: `TBD - created by archiving change <name>. Update Purpose after archive.` Deltas operate on requirements, not Purpose prose, so archiving can never fill it in. **Write it by hand immediately** — 14 specs already carry the placeholder because nobody did, and it is trivial to make 15.
+- **It does not touch existing Purpose prose either.** A change that overturns something a Purpose asserts leaves that Purpose stating the opposite of its own requirements. `code-folding` and `fsharp-lsp` both had to be corrected by hand for exactly this.
+- **It aborts on legacy specs missing `## Purpose`, and is not atomic** — it partial-writes specs before aborting, so a failed archive can leave the tree half-updated. Check `git status` after a failure rather than assuming nothing happened.
+
+Deferred verification across all changes is inventoried in **`openspec/DEFERRED_VERIFICATION.md`** — read it before claiming validation is complete for the repository as a whole, and add to it whenever a box is ticked on programmatic evidence with a human check deferred.
 
 ## Documentation
 

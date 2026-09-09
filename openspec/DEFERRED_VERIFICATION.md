@@ -111,3 +111,25 @@ Recorded here because they are the places where the plan is greenest relative to
 - **`install-language-servers` PR/review/merge boxes** — ticked on the evidence of `72a20ef fix/install language servers (#184)` in `main`'s history, not on a fresh observation. Flagged in place; correct them if the record is wrong.
 - **The three `LS.10`/`MA.6`/`FI.8` documentation boxes** — see group A.
 - **`add-fsharp-indent` `FI.6`** — passed live, and notably *without* the intermittent `.fsx` project-options error appearing. Its absence in one run is not evidence the flake is fixed.
+
+---
+
+## Where this kind of knowledge lives
+
+Decided 2026-09-09, after this file's own compilation found two pieces of work recorded as existing that did not.
+
+Claude Code keeps per-project notes in `~/.claude/projects/-home-walt--config-nvim/memory/`. That directory is **outside the repository and unversioned** — no history, machine-local, not reviewable in a PR. It had accumulated substantive engineering knowledge, which is the wrong place for it.
+
+The split is now:
+
+| Belongs in the repo | Stays in memory |
+|---|---|
+| `CLAUDE.md` — architecture, conventions, tooling gotchas | How to work with the user: who pushes, how to phrase commands |
+| `openspec/DEFERRED_VERIFICATION.md` — eyes-on work outstanding | Environment quirks of *this machine* (e.g. `nvim` being a shell alias) |
+| `recommendations/ideas.md` — defects, ideas, declined decisions | Writing and reporting preferences |
+| `openspec/TEST_PLAN.md` — per-change validation | |
+
+Nine memory entries were promoted or deleted as a result: the OpenSpec archive gotchas and the Neovim 0.12 API drift note moved into `CLAUDE.md`; the ripgrep/fzf gap, the keymap-docs reconciliation and the `Alt-Space` history were already captured here; and four shipped-work notes were dropped because the git history and the OpenSpec archive already record them.
+
+**If you find yourself writing a project fact into memory, put it in one of the four files above instead.**
+
