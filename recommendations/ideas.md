@@ -7,7 +7,12 @@ Agreed running order. Details live in the sections below; this is just the queue
 1. **Editing at distance — GitHub issues #187–192** — *Things we'd like to add*. Six open enhancements that are really one theme with a dependency order. `#189` is the enabler and should land first; `#191` is a project in its own right and should land last. Two caveats not recorded in the issues themselves make the sequencing matter — see the entry.
 2. **Fourteen capability specs have placeholder Purposes** — *Things that seem broken*. Mechanical but wide; best done as one pass.
 
-**Shipped** (2026-08-25 / 27), kept briefly for context:
+**Shipped** — a thin record only. The detail belongs elsewhere: implementation in the archived change
+under `openspec/changes/archive/`, validation in `openspec/TEST_PLAN.md`, and anything a *user* needs
+in the Antora docs under `docs/modules/ROOT/pages/`. **Do not restate documentation here.** If a
+shipped entry is the only place a fact is written down, that fact is in the wrong place — move it to
+the docs.
+
 
 - ~~F# has no indent support of any kind~~ — fixed by `add-fsharp-indent`, which **vendors** `indent/fsharp.vim` from `ionide/Ionide-vim` (commit `094e7dbb8f77`) rather than installing the plugin. The investigation settled several things worth not re-deriving:
 
@@ -17,7 +22,7 @@ Agreed running order. Details live in the sections below; this is just the queue
 
   There is **no treesitter route**: nvim-treesitter ships no `indents.scm` for F#, and no `queries/fsharp` directory exists at all on `main` or `master`. LSP has no indent-as-you-type concept and `smartindent` keys off braces F# never uses, so a hand-written `indentexpr` was the only mechanism.
 
-  Validation turned up one thing the entry had no inkling of: upstream's `s:IsInCommentOrString()` uses `synID()`, which needs a Vim `:syntax` file. F# here is treesitter-highlighted, so it always answered "not a comment" and pair matching could not skip delimiters inside comments or strings. Fixed as a declared deviation via `lua/config/fsharp_indent.lua`, deciding on treesitter **captures** rather than node types — node types miss a `char` literal holding a brace. See idea 5 under *Things we'd like to add* for why the rest of the file was not ported to Lua.
+  Validation turned up one thing the entry had no inkling of: upstream's `s:IsInCommentOrString()` uses `synID()`, which needs a Vim `:syntax` file. F# here is treesitter-highlighted, so it always answered "not a comment" and pair matching could not skip delimiters inside comments or strings. Fixed as a declared deviation via `lua/config/fsharp_indent.lua`, deciding on treesitter **captures** rather than node types — node types miss a `char` literal holding a brace. See idea 4 under *Things we'd like to add* for why the rest of the file was not ported to Lua.
 
 - ~~markserv live reload documented on port 35729~~ — fixed 2026-09-08. `lua/config/mdpreview.lua` and `content/markdown-cheatsheet.adoc` both claimed live reload ran on port 35729. It does not: `docker/markserv/server.js` is a local build that delivers reload over Server-Sent Events on `/__livereload` on the same port as the server (8090). 35729 is upstream markserv's LiveReload port and this build never opens it, so anyone debugging a reload failure was sent to a port nothing listens on. Surfaced while validating `add-markserv-gfm-alerts`, unrelated to it.
 
@@ -45,17 +50,15 @@ Everything else in this file is unranked and can be picked up opportunistically.
    - assembler
    - terraform
    - lua
-   - **F# — bring the existing support up to the level the docs claim.** Unlike the others this is
-     not a new language: it is already listed as supported, with a parser, a REPL and easy-dotnet
-     integration. But it has no LSP installed, no indent support of any kind, and no fold query, so
-     it is the least capable of the "supported" languages in practice. See the entry under *Things
-     that seem broken* for the full inventory.
+   - ~~**F# — bring the existing support up to the level the docs claim.**~~ **Done.**
+     `install-language-servers` installed `fsautocomplete` and Fantomas, giving F# an LSP, structural
+     folds and format-on-save; `add-fsharp-indent` vendored an indent script and fixed its missing
+     `commentstring`. F# no longer has a gap the other listed languages do not. Documented in
+     `languages/dotnet.adoc` and `editor/code-intelligence.adoc`.
 2. some sort of visual buffer tabbing:
    - the sidebar panels for claude.cli and avanate.nvim are awkward to read, it seems both would like to be "full screen" 
    - the terminal at the bottom of the screen requires scrolling, it too would like a "full screen"
-3. markdown folding on **headings**, not just indentation. Today `lua/plugins/ufo.lua` returns the *indent* provider for markdown, so nested lists fold and headings do not — which is not what most people expect from a document outline. The reason treesitter folding is disabled is recorded in `openspec/specs/code-folding/spec.md:48`: it "errors on special buffers such as the `glow` preview". **`replace-glow-renderer` removed glow**, so that rationale no longer applies, and treesitter folding is exactly what would provide heading folds. Worth re-testing whether the errors still occur with glow gone; if they do not, markdown could move to the treesitter provider and the `code-folding` spec would need a delta. Surfaced while validating `replace-glow-renderer` (RG.9c) — the expectation that `zM` would collapse sections is reasonable and currently unmet.
-
-4. signature help, and a way to browse method overloads. Today there is no way to see a method's
+3. signature help, and a way to browse method overloads. Today there is no way to see a method's
    other overloads. Roslyn collapses them into a *single* completion item and just notes the count
    ("+16 overloads"), so the completion documentation window cannot page through them — it renders
    one item's docs and there is no second item to move to. Overloads belong to a different LSP
@@ -69,7 +72,7 @@ Everything else in this file is unranked and can be picked up opportunistically.
    own keybindings and doc updates. Surfaced while validating `fix-blink-completion-keymap`; well
    outside that change, which is a keymap consolidation.
 
-5. port the vendored F# indent script from Vimscript to Lua. `add-fsharp-indent` vendors
+4. port the vendored F# indent script from Vimscript to Lua. `add-fsharp-indent` vendors
    `indent/fsharp.vim` from Ionide-vim — 283 lines, ~200 of code, 8 functions — rather than
    installing the plugin. Since we own the file anyway, Lua would match the rest of this
    configuration and, more usefully, would be **unit-testable**: upstream ships no tests at all,
@@ -100,7 +103,7 @@ Everything else in this file is unranked and can be picked up opportunistically.
    the genuinely environment-specific part is Lua either way — which is a reason the rest is less
    urgent than it first looks.
 
-6. report the vendored F# indent script's `synID` problem upstream. Sits next to idea 5 because it
+5. report the vendored F# indent script's `synID` problem upstream. Sits next to idea 4 because it
    is the other half of the same question: what our relationship with `ionide/Ionide-vim` should be.
 
    `add-fsharp-indent` deviates from upstream in exactly one function. Upstream's
@@ -128,7 +131,7 @@ Everything else in this file is unranked and can be picked up opportunistically.
    way; it is upstream hygiene with a long-term payoff, so it belongs here rather than in a task
    list.
 
-7. **editing at distance — the SSH/tmux cluster, GitHub issues #187–192.** Six open `enhancement`
+6. **editing at distance — the SSH/tmux cluster, GitHub issues #187–192.** Six open `enhancement`
    issues, all raised 2026-09-08. Treat them as one piece of work with an order, not six tickets:
    `#189` enables two of the others, and `#190` and `#191` actively collide.
 
@@ -190,8 +193,8 @@ use before deciding.
   already caused one false failure during validation, where pressing it a moment before entering
   insert mode opened the tree instead of the completion menu.
 
-  Worth noting if this is revisited: **the tree role is the cheapest to give up.** Once
-  `fix-tree-terminal-keymaps` lands, the tree answers to `<leader>t` (toggle), `<C-t>` (toggle),
+  Worth noting if this is revisited: **the tree role is the cheapest to give up.** Since
+  `fix-tree-terminal-keymaps` landed (2026-08-24), the tree answers to `<leader>t` (toggle), `<C-t>` (toggle),
   `<leader>n` (open) and `<C-f>` (reveal) — so dropping `<C-n>` would remove nothing that is not
   already covered twice over, and would leave `<C-n>` meaning one thing: completion, in both modes
   that have it. The alternative, moving the completion trigger instead, is worse — it is constrained
@@ -236,16 +239,6 @@ use before deciding.
   **Unverified, and left that way deliberately:** native `<C-x>s` (insert-mode spell completion) would give a navigable popup with no config change, and blink binds no `<C-x>`. Whether it coexists cleanly with blink's auto-show could not be tested here — headless Neovim will not drive insert-mode input, which defeated two end-to-end probes before the matcher was called directly instead. Worth thirty seconds in a live session before adopting the config change, since it may make it unnecessary.
 
   Surfaced while validating `install-language-servers`, and entirely unrelated to it.
-
-- **F# has no indent support of any kind.** `install-language-servers` gave F# a working LSP (`fsautocomplete`), LSP-backed folds and Fantomas format-on-save. It deliberately did **not** fix indentation, and this is what remains.
-
-  There is no `indent/fsharp.vim`, no `ftplugin/fsharp.vim`, and nvim-treesitter ships no `indents.scm` for F#. Indenting is plain `autoindent`, so a new line after `| Circle r ->` or `let inner y =` copies the previous indent rather than indenting the body. `smartindent` cannot help — it keys off `{`, `}` and `cinwords`, none of which F# uses. This also makes `>>`, `<<` and `=` unhelpful as reindent operators. Confirmed again under `install-language-servers` LS.7: a line indented 4 and ending in `=` yields a new line indented 4, not 8, with `indentexpr` empty.
-
-  Fixing it probably means a plugin decision rather than configuration: `ionide/Ionide-vim` ships an `indent/fsharp.vim` that understands the offside rule and constructs like `->`, `=` and `let`. It overlaps with `fsautocomplete` (Ionide bundles its own LSP integration), so the two need reconciling rather than both being added blindly.
-
-  Note that Fantomas will reformat the whole file on save, which papers over indentation mistakes after the fact but does nothing for indent-as-you-type.
-
-  Surfaced during `align-treesitter-providers` validation (AT.2); carried forward through `install-language-servers`, which measured it but left it alone.
 
 - **fourteen capability specs have placeholder Purposes.** `openspec archive` writes `TBD - created by archiving change <name>. Update Purpose after archive.` whenever a change creates a new capability, and relies on someone circling back. Nobody has, going back to changes 01-08: `asciidoc-inbuffer-preview`, `asciidoc-syntax`, `avante-runtime`, `claudecode-session`, `completion-engine`, `diagnostics-panel`, `dotnet-debugging`, `dotnet-test-runner`, `editor-commenting`, `markdown-native-rendering`, `statusline`, `surround-text-objects`, `todo-comments`, `treesitter-textobjects`.
 
