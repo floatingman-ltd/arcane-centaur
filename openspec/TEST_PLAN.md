@@ -3702,12 +3702,16 @@ The other "nothing happened" case, and the one that would catch the plugin havin
 4. `cheatsheets/fsharp.md` — the in-editor cheatsheet, a separate file from the Antora pages.
 5. Confirm no page still says F# indentation does not work.
 
-- [ ] Both pages and the in-editor cheatsheet reflect the new behaviour, with no stale claim left
+- [X] Both pages and the in-editor cheatsheet reflect the new behaviour, with no stale claim left
+
+> Verified against the **local** Antora build: `languages/dotnet.html` carries the new *F# — Indentation* section and the commenting paragraph, `editor/code-intelligence.html` no longer claims F# lacks indentation and xrefs the dotnet page, and a `grep` of `build/site/` finds no page still saying indentation copies the previous line. The in-editor cheatsheet was confirmed by opening the float: 259 lines, `# F# / C#` at 213, `## Indentation` at 242, the `gcc` row at 252.
+>
+> The **published**-site review is the user's and happens after merge; defects found there are raised separately rather than reopening this box.
 
 ### Raise PR & merge
 
-- [ ] Every FI box above ticked
-- [ ] `recommendations/ideas.md` updated — queue entry removed, recorded as shipped with what the investigation established
+- [X] Every FI box above ticked
+- [X] `recommendations/ideas.md` updated — queue entry removed, recorded as shipped with what the investigation established
 - [ ] Raise PR: `feat/vendor-fsharp-indent` → `main`
 - [ ] Review and approve PR
 - [ ] Merge PR

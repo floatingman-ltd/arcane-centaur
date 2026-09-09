@@ -28,7 +28,7 @@
 - [x] 2.4 Include a case proving indentation is independent of the language server: run with `fsautocomplete` off `$PATH` and confirm indentation still works, mirroring `LS.8`'s crippled-`PATH` method.
 - [x] 2.5 Include a case for a standalone `.fsx`, where project options resolve unreliably. This is the condition that made `LS.5` fail, and indentation must be immune to it.
 - [x] 2.6 Include the "nothing else changed" cases: folds still structural from the LSP, format-on-save still runs, `tabstop`/`shiftwidth` still 4, comment leader unchanged. These are the easiest to skip because nothing is expected to happen.
-- [ ] 2.7 Walk every validation step live in a real Neovim session and tick each box only once genuinely confirmed.
+- [x] 2.7 Walk every validation step live in a real Neovim session and tick each box only once genuinely confirmed.
 
 ## 3. Documentation
 
