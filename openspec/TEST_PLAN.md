@@ -3712,14 +3712,24 @@ The other "nothing happened" case, and the one that would catch the plugin havin
 
 - [X] Every FI box above ticked
 - [X] `recommendations/ideas.md` updated — queue entry removed, recorded as shipped with what the investigation established
-- [ ] Raise PR: `feat/vendor-fsharp-indent` → `main`
-- [ ] Review and approve PR
-- [ ] Merge PR
+- [X] Raise PR: `feat/vendor-fsharp-indent` → `main`
+- [X] Review and approve PR
+- [X] Merge PR
+
+> Squash-merged as #193 (`61c5ffa`).
 
 ### Post-merge
 
-- [ ] `git checkout main && git pull origin main`
-- [ ] Re-confirm `FI.1` and `FI.4` on the merged config
-- [ ] Change archived and the deltas promoted
-- [ ] Purpose of `openspec/specs/fsharp-lsp/spec.md` corrected by hand — it still says F# indentation remains unsupported, and `openspec archive` does not touch Purpose prose
-- [ ] Purpose of the new `openspec/specs/fsharp-indent/spec.md` written by hand — `openspec archive` leaves a `TBD` placeholder, and there are already 14 of those
+- [X] `git checkout main && git pull origin main`
+- [X] Re-confirm `FI.1` and `FI.4` on the merged config
+
+> FI.1 re-confirmed 8/8/4 and FI.4 all seven at 4, on merged `main`.
+- [X] Change archived and the deltas promoted
+
+> Archived as `2026-09-09-add-fsharp-indent`; 6 requirements added to `fsharp-indent`, 1 removed from `fsharp-lsp`.
+- [X] Purpose of `openspec/specs/fsharp-lsp/spec.md` corrected by hand — it still says F# indentation remains unsupported, and `openspec archive` does not touch Purpose prose
+
+> Corrected. The claim was not merely stale but misattributed — indentation was never the server's to supply, since LSP has no indent-as-you-type concept. Now points at `fsharp-indent`.
+- [X] Purpose of the new `openspec/specs/fsharp-indent/spec.md` written by hand — `openspec archive` leaves a `TBD` placeholder, and there are already 14 of those
+
+> Written. The placeholder did appear, taking the count to 15; fixing it immediately put it back to 14.

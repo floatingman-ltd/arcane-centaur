@@ -3,7 +3,7 @@
 ## Purpose
 Defines F# language-server support: `fsautocomplete` registered through the native `vim.lsp` API with the shared `on_attach`, supplying hover, completion, references, rename, diagnostics, structural fold ranges, and format-on-save via Fantomas.
 
-It also records what F# does **not** get, because that is what this capability had to measure and what the next person would otherwise re-measure. Indentation remains unsupported — F# ships no indent script and no treesitter `indents.scm`, so a new line copies the previous indent rather than indenting the body. Formatting depends on a second binary, Fantomas, which `fsautocomplete` does not ship and whose absence blocks every write behind an interactive install prompt rather than degrading. And the server can only answer for files it can resolve options for: a bare `.fs` outside any project answers nothing at all, a `.fsx` script resolves options unreliably, and only a file inside a `.fsproj` supports everything.
+It also records what F# does **not** get from the *server*, because that is what this capability had to measure and what the next person would otherwise re-measure. Indentation is not among the gaps any more, and never was the server's to supply — LSP has no indent-as-you-type concept. It is provided editor-side and specified by `fsharp-indent`. Formatting depends on a second binary, Fantomas, which `fsautocomplete` does not ship and whose absence blocks every write behind an interactive install prompt rather than degrading. And the server can only answer for files it can resolve options for: a bare `.fs` outside any project answers nothing at all, a `.fsx` script resolves options unreliably, and only a file inside a `.fsproj` supports everything.
 ## Requirements
 ### Requirement: fsautocomplete is configured as the F# LSP server
 
@@ -39,14 +39,4 @@ The config SHALL register `fsautocomplete` via the native `vim.lsp.config`/`vim.
 
 - **WHEN** an F# buffer containing nested structure is opened
 - **THEN** fold ranges SHALL be supplied by `fsautocomplete` through ufo's `lsp` provider, with indent as the fallback
-
-### Requirement: F# indentation remains unsupported
-
-Installing the language server SHALL NOT be taken to mean F# indentation works. There is no `indent/fsharp.vim`, no `ftplugin/fsharp.vim` and no treesitter `indents.scm` for F#, so newline indentation remains plain `autoindent`. This gap SHALL remain recorded until addressed by a dedicated change.
-
-#### Scenario: Newline after a match arm does not indent the body
-
-- **WHEN** the user presses Enter at the end of a line such as `| Circle r ->`
-- **THEN** the new line SHALL merely copy the previous indent rather than indenting the body
-- **THEN** this SHALL be understood as a known gap, not a regression introduced by installing the server
 

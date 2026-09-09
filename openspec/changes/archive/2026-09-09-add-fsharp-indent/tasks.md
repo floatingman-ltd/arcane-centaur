@@ -43,5 +43,5 @@
 ## 4. Close out
 
 - [x] 4.1 Remove the F# indent entry from the priority queue in `recommendations/ideas.md` and record it as shipped, including what the investigation established: the indent file is separable and standalone, no treesitter `indents.scm` exists for F# upstream, and `WillEhrendreich/Ionide-nvim` was assessed and rejected.
-- [ ] 4.2 After archiving, check the Purpose of `openspec/specs/fsharp-lsp/spec.md` by hand — it currently states that F# indentation remains unsupported, and `openspec archive` does not touch Purpose prose. The removed requirement will go; the Purpose paragraph will not.
-- [ ] 4.3 After archiving, write the Purpose of the new `openspec/specs/fsharp-indent/spec.md` by hand. `openspec archive` leaves `TBD - created by archiving change …`, which is the gap that has accumulated 14 placeholder Purposes across this repository; do not make it 15.
+- [x] 4.2 After archiving, check the Purpose of `openspec/specs/fsharp-lsp/spec.md` by hand — it currently states that F# indentation remains unsupported, and `openspec archive` does not touch Purpose prose. The removed requirement will go; the Purpose paragraph will not.
+- [x] 4.3 After archiving, write the Purpose of the new `openspec/specs/fsharp-indent/spec.md` by hand. `openspec archive` leaves `TBD - created by archiving change …`, which is the gap that has accumulated 14 placeholder Purposes across this repository; do not make it 15.
