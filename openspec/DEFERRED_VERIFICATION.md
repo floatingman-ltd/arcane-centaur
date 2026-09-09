@@ -54,7 +54,11 @@ Genuinely incomplete, and each says so in place.
 
 **`Alt-Space` completion trigger under WSL.** Reported not working on 2026-07-30 and **never diagnosed** — the cause is presumed to be the Windows host or the terminal swallowing the chord, but that was never confirmed. The runtime is fine: the trigger is now `<C-n>` in `lua/plugins/blink.lua`, and both `editor/code-intelligence.adoc` and `openspec/specs/completion-engine/spec.md` have been corrected, the latter now *requiring* that the trigger not be a host-reserved combination.
 
-> **Live defect found while compiling this file (2026-09-09):** `_readme.adoc:436` still says *"To open it on demand in insert mode, press `Alt+Space` (`<M-Space>`)"*. That keymap does not exist any more. It is the last surviving instance of a claim corrected everywhere else, and the repository's front page is the worst place for it to survive. One-line fix, not yet made.
+> **Found while compiling this file (2026-09-09), and fixed — but it exposed something larger.** `_readme.adoc` still told readers to press `Alt+Space`. Corrected to `Ctrl-n`.
+>
+> My first characterisation of that file as "the repository's front page" was **wrong**. `_readme.adoc` is an orphan: absent from the Antora site, absent from `nav.adoc`, referenced by nothing but archived task notes, and not in the built output. `readme.md` is the actual readme. It is also stale far beyond one keymap — roughly **30 mentions of GitHub Copilot**, which was removed in favour of Claude, plus nvim-cmp and glow. `replace-glow-renderer` recorded it in August 2026 as *"stale beyond this change and only partly repaired"*, so piecemeal repair has now been attempted three times without converging.
+>
+> **Outstanding decision:** delete `_readme.adoc`, or rewrite it from the Antora pages. A `////`-comment banner now marks it as superseded and tells readers not to cite it or fix single lines in it, which contains the harm but is not a fix.
 
 ---
 

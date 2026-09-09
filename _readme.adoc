@@ -1,3 +1,21 @@
+////
+SUPERSEDED — DO NOT TRUST THIS FILE.
+
+It is not published: it is absent from the Antora site (`docs/modules/ROOT/pages/`),
+absent from `nav.adoc`, and referenced by nothing but archived task notes. The
+repository's actual readme is `readme.md`, which points at the hosted site.
+
+It is also badly stale. As of 2026-09-09 it still describes GitHub Copilot (~30
+mentions, removed in favour of Claude), nvim-cmp (replaced by blink.cmp), and
+glow (replaced by in-buffer rendering). `replace-glow-renderer` recorded it as
+"stale beyond this change and only partly repaired" in August 2026.
+
+Piecemeal repair has been tried twice and does not converge. Either delete this
+file or rewrite it from the Antora pages; do not cite it, and do not fix single
+lines in it expecting the rest to be right. Tracked in
+openspec/DEFERRED_VERIFICATION.md.
+////
+
 // :auto-generated: true
 // :source: readme.md
 // Remove this header to take manual ownership of this file
@@ -433,7 +451,11 @@ the spell dictionary.
 ==== Triggering the menu
 
 The completion menu opens automatically as you type. To open it on
-demand in insert mode, press *`Alt{plus}Space`* (`++<++M-Space++>++`).
+demand in insert mode, press *`Ctrl-n`*, which also moves to the next
+suggestion once the menu is open. There is no `Alt{plus}Space` trigger:
+this configuration runs under WSL in a Windows console, which claims
+`Alt{plus}Space` for its own system menu, so the keystroke never reached
+Neovim.
 
 ==== Navigating the menu
 
