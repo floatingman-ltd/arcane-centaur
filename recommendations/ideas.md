@@ -4,7 +4,8 @@
 
 Agreed running order. Details live in the sections below; this is just the queue.
 
-1. **Fourteen capability specs have placeholder Purposes** — *Things that seem broken*. Mechanical but wide; best done as one pass.
+1. **Editing at distance — GitHub issues #187–192** — *Things we'd like to add*. Six open enhancements that are really one theme with a dependency order. `#189` is the enabler and should land first; `#191` is a project in its own right and should land last. Two caveats not recorded in the issues themselves make the sequencing matter — see the entry.
+2. **Fourteen capability specs have placeholder Purposes** — *Things that seem broken*. Mechanical but wide; best done as one pass.
 
 **Shipped** (2026-08-25 / 27), kept briefly for context:
 
@@ -126,6 +127,55 @@ Everything else in this file is unranked and can be picked up opportunistically.
    the limbo `install-language-servers` was in for weeks. Zero effect on this repository either
    way; it is upstream hygiene with a long-term payoff, so it belongs here rather than in a task
    list.
+
+7. **editing at distance — the SSH/tmux cluster, GitHub issues #187–192.** Six open `enhancement`
+   issues, all raised 2026-09-08. Treat them as one piece of work with an order, not six tickets:
+   `#189` enables two of the others, and `#190` and `#191` actively collide.
+
+   Every claim in them was verified against the code on 2026-09-09; they are accurate.
+
+   **Dependency shape.**
+
+   ```
+   #189 (is_remote flag)  ─┬─> #187 (lualine refresh)
+                           └─> #188 (ttimeoutlen)
+   #191 (capability detection)  ─> independent, and the hard one
+   #190 (docs)  ─> independent; #192's docs half folds into it
+   ```
+
+   | # | Effort | Risk | Grounding |
+   |---|---|---|---|
+   | `#189` detect remote once in `options.lua` | small, ~3 lines | low | slots into the existing `term.is_wsl` / `term.is_console` pattern at `options.lua:66-96` |
+   | `#188` set `ttimeoutlen` explicitly | trivial, 3 lines | low but **felt** | confirmed unset, so on the 50 ms default; 100 ms makes `<Esc>` measurably slower locally, so it needs a live feel-test rather than a headless check |
+   | `#187` raise lualine `refresh` when remote | small, ~6 lines in a 39-line file | low | `refresh` confirmed absent. Check first that nothing in `lualine_b` depends on the timer rather than autocommands, or it goes stale at 5000 ms |
+   | `#192` preview servers bind to the wrong host | medium, or small if docs-only | low | all three ports confirmed fixed — `mdpreview` 8090, `marp` 8880, `http_preview` 8092 — which is what makes a documented `LocalForward` block sufficient |
+   | `#190` document the terminal-side setup | medium, docs only | none | new page plus a `nav.adoc` entry; tmux, `ControlMaster`, mosh. No runtime change, so no TEST_PLAN section |
+   | `#191` capability detection fails over SSH and in tmux | **large** | **high** | see below |
+
+   **Why `#191` is the outlier.** `detect()` returns a terminal *name* and the three capabilities are
+   derived by membership in name lists. `sshd` forwards none of the identifying variables, so a remote
+   session falls to `"unknown"` and `has_nerd_font`, `has_undercurl` and `has_truecolor` all go false
+   together — losing the colorscheme on a terminal that renders it perfectly. The issue's framing is
+   right and it is architectural: **the capability belongs to the local emulator, not the host Neovim
+   runs on.** Fixing it means changing what `terminal.lua` is, from "which terminal" to "what can the
+   display do", with per-capability detection. That reaches **10 require sites and 23 flag uses**, and
+   `console-detection` is an existing capability spec, so it is spec-affecting and needs its own
+   OpenSpec change plus validation across local, WSL, console, SSH and tmux.
+
+   **Two caveats that are not in the issues, and that decide the order.**
+
+   - **`#190` and `#191` collide.** `detect()` short-circuits on `$TMUX` before identifying the real
+     terminal, and `"tmux"` is in neither the nerd-font nor the undercurl list. So taking `#190`'s
+     advice to use tmux for session persistence *currently costs the colorscheme*. `#191` notes this;
+     `#190` does not, and picked up separately the recommendation would be actively harmful.
+   - **`is_remote` will be wrong in exactly the setup `#190` recommends.** `SSH_TTY` is absent inside a
+     tmux session started *before* the SSH connection — `#189`'s own notes say so. Resolve that before
+     `#187` and `#188` are built on the flag, or remote behaviour applies in some remote sessions and
+     not others, which is worse than not having it.
+
+   **Suggested order:** `#189`, then `#188`+`#187` bundled as one change with a shared TEST_PLAN
+   section, then `#190` with `#192`'s `LocalForward` table folded into it, then `#191` alone. The first
+   four are plausibly an afternoon and two OpenSpec changes; the last is its own project.
 
 ## Things to keep an eye on
 
