@@ -7,30 +7,15 @@ Agreed running order. Details live in the sections below; this is just the queue
 1. **Editing at distance — GitHub issues #187–192** — *Things we'd like to add*. Six open enhancements that are really one theme with a dependency order. `#189` is the enabler and should land first; `#191` is a project in its own right and should land last. Two caveats not recorded in the issues themselves make the sequencing matter — see the entry.
 2. **Fourteen capability specs have placeholder Purposes** — *Things that seem broken*. Mechanical but wide; best done as one pass.
 
-**Shipped** — a thin record only. The detail belongs elsewhere: implementation in the archived change
-under `openspec/changes/archive/`, validation in `openspec/TEST_PLAN.md`, and anything a *user* needs
-in the Antora docs under `docs/modules/ROOT/pages/`. **Do not restate documentation here.** If a
-shipped entry is the only place a fact is written down, that fact is in the wrong place — move it to
-the docs.
+Shipped work is **deleted from this file**, not archived in it. The record lives in three places
+that are already authoritative: the implementation in `openspec/changes/archive/<date>-<name>/`, the
+validation in `openspec/TEST_PLAN.md`, and anything a *user* needs in the Antora docs under
+`docs/modules/ROOT/pages/`. A wish list that also serves as a changelog goes stale in both roles —
+this file carried two items as shipped *and* pending simultaneously before the 2026-09-09 audit.
 
-
-- ~~F# has no indent support of any kind~~ — fixed by `add-fsharp-indent`, which **vendors** `indent/fsharp.vim` from `ionide/Ionide-vim` (commit `094e7dbb8f77`) rather than installing the plugin. The investigation settled several things worth not re-deriving:
-
-  The indent file is **separable**: 283 lines, no references to `fsharp#`, `ionide` or `g:fsharp`, so it works alone. Measured against this configuration's constructs it took indentation from 2 of 5 cases correct to 5 of 5.
-
-  Installing the plugin would have added **no** capability. Its LSP client, fold method, syntax file, `commentstring` and FSI keymaps all duplicate working configuration here, and three would have overridden behaviour validated under `LS.5`/`LS.6`. Its last tagged release was 2019-11-25 and its open issues are freezes and per-keystroke errors in the integration we would have disabled. `WillEhrendreich/Ionide-nvim` was assessed and rejected — a self-declared disconnected fork, 17 stars, effectively one maintainer, an 87 KB single Lua file; its one genuine advantage is a test suite Ionide-vim lacks.
-
-  There is **no treesitter route**: nvim-treesitter ships no `indents.scm` for F#, and no `queries/fsharp` directory exists at all on `main` or `master`. LSP has no indent-as-you-type concept and `smartindent` keys off braces F# never uses, so a hand-written `indentexpr` was the only mechanism.
-
-  Validation turned up one thing the entry had no inkling of: upstream's `s:IsInCommentOrString()` uses `synID()`, which needs a Vim `:syntax` file. F# here is treesitter-highlighted, so it always answered "not a comment" and pair matching could not skip delimiters inside comments or strings. Fixed as a declared deviation via `lua/config/fsharp_indent.lua`, deciding on treesitter **captures** rather than node types — node types miss a `char` literal holding a brace. See idea 4 under *Things we'd like to add* for why the rest of the file was not ported to Lua.
-
-- ~~markserv live reload documented on port 35729~~ — fixed 2026-09-08. `lua/config/mdpreview.lua` and `content/markdown-cheatsheet.adoc` both claimed live reload ran on port 35729. It does not: `docker/markserv/server.js` is a local build that delivers reload over Server-Sent Events on `/__livereload` on the same port as the server (8090). 35729 is upstream markserv's LiveReload port and this build never opens it, so anyone debugging a reload failure was sent to a port nothing listens on. Surfaced while validating `add-markserv-gfm-alerts`, unrelated to it.
-
-- ~~`open_url` silently notifies~~ — fixed by `fix-open-url-wsl-opener`. **The diagnosis recorded here was wrong**, and worth remembering as a pattern: the INFO-notify branch it blamed was unreachable, because WSLg exports `DISPLAY=:0` and `is_console` was therefore `false`. The real cause was opener ordering — `xdg-open` won, found no Linux browser, fell through to `w3m` in a detached job with no tty, and exited `0`. Investigating turned up two further defects the entry had no inkling of: `explorer.exe` does not treat a URL containing `=` as a URL and opens a folder window instead (confirmed on a trailing `=` and a mid-query `=`; other positions untested), and WSL without WSLg would notify and open nothing.
-
-- ~~`indentexpr` set without a query~~ and ~~markdown folding on headings~~ — both fixed by `align-treesitter-providers`. C# and Clojure also regained Neovim's own indent scripts, which the blanket override had been suppressing.
-- ~~`marksman` and `fsautocomplete` configured but not installed~~ — fixed by `install-language-servers`, along with the three documentation defects (including the `sudo apt install marksman` package that does not exist). Validation turned up two things the entry had no inkling of: **fsautocomplete does not ship Fantomas**, and without it a write does not skip formatting but raises a blocking interactive install prompt on every save; and **a bare `.fs` outside any project can never be answered** — every request fails with `Couldn't find <path> in LoadedProjects`, and merely opening one logs an `UnhandledPromiseRejection`. The F# indent gap is deliberately untouched and is now queue item 2 in its own right.
-- ~~Three capability specs still reference `glow.nvim`~~ — `code-folding` was resolved by `align-treesitter-providers`; the remaining two by `retire-glow-spec-references`.
+Before deleting an entry, check its facts are recorded in one of those three places. If a shipped
+entry is the only place something is written down, that thing is in the wrong place: move it, then
+delete the entry.
 
 **Declined** — decisions taken, not work waiting:
 
@@ -50,11 +35,6 @@ Everything else in this file is unranked and can be picked up opportunistically.
    - assembler
    - terraform
    - lua
-   - ~~**F# — bring the existing support up to the level the docs claim.**~~ **Done.**
-     `install-language-servers` installed `fsautocomplete` and Fantomas, giving F# an LSP, structural
-     folds and format-on-save; `add-fsharp-indent` vendored an indent script and fixed its missing
-     `commentstring`. F# no longer has a gap the other listed languages do not. Documented in
-     `languages/dotnet.adoc` and `editor/code-intelligence.adoc`.
 2. some sort of visual buffer tabbing:
    - the sidebar panels for claude.cli and avanate.nvim are awkward to read, it seems both would like to be "full screen" 
    - the terminal at the bottom of the screen requires scrolling, it too would like a "full screen"
