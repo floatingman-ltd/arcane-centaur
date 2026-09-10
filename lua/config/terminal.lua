@@ -48,6 +48,41 @@ local function detect()
   return "unknown"
 end
 
+--- Detect whether this session reaches the user across a network.
+---
+--- `sshd` sets both variables for interactive sessions. Neither is set for a
+--- non-interactive command, which is intended -- remote-specific behaviour is
+--- not wanted there.
+---
+--- The tmux fallback exists because a process's environment is fixed when it
+--- starts and tmux cannot update panes that already exist. A tmux session
+--- started *before* the SSH connection -- or started locally and later attached
+--- to over SSH -- therefore hosts a Neovim whose $SSH_CONNECTION is stale or
+--- absent, and which would otherwise read as local while being remote. The tmux
+--- server does know: SSH_CONNECTION is in its default `update-environment`, so
+--- it is refreshed from each attaching client. Only the *presence* of a value
+--- is tested, never its content, so a value left over from an earlier
+--- connection is harmless.
+---
+--- Independent of `M.is_console`. That flag asks whether a display is
+--- available; this one asks whether the session crosses a network. All four
+--- combinations occur -- a WSLg session is local with a display, a headless
+--- server over SSH is remote without one.
+local function detect_remote()
+  if vim.env.SSH_TTY ~= nil or vim.env.SSH_CONNECTION ~= nil then
+    return true
+  end
+
+  if vim.env.TMUX ~= nil and vim.fn.executable("tmux") == 1 then
+    local out = vim.fn.system({ "tmux", "show-environment", "SSH_CONNECTION" })
+    -- tmux prefixes the name with "-" when it knows the variable to be unset,
+    -- which is what distinguishes that from a query that failed.
+    return vim.v.shell_error == 0 and out:sub(1, 1) ~= "-"
+  end
+
+  return false
+end
+
 --- Terminal identifier (e.g. "alacritty", "vte", "tty", "unknown").
 M.name = detect()
 
@@ -70,6 +105,11 @@ M.has_nerd_font = nerd_font_terminals[M.name] or false
 M.has_undercurl = undercurl_terminals[M.name] or false
 M.is_vte = M.name == "vte"
 M.is_wsl = is_wsl
+
+--- True when the session reaches the user across a network (SSH, or a tmux
+--- session attached to over SSH). Independent of `M.is_console` -- see
+--- `detect_remote` above.
+M.is_remote = detect_remote()
 
 --- True when no graphical display is available (physical TTY, SSH without X
 --- forwarding, headless server). Derived solely from the absence of both

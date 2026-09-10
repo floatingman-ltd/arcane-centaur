@@ -3733,3 +3733,195 @@ The other "nothing happened" case, and the one that would catch the plugin havin
 - [X] Purpose of the new `openspec/specs/fsharp-indent/spec.md` written by hand — `openspec archive` leaves a `TBD` placeholder, and there are already 14 of those
 
 > Written. The placeholder did appear, taking the count to 15; fixing it immediately put it back to 14.
+
+---
+
+## Change · add-remote-session-profile
+
+**Branch:** `feat/add-remote-session-profile`
+
+Adds `term.is_remote` to `lua/config/terminal.lua` and wires two behaviours to it: `ttimeoutlen` (100 ms remote, 50 ms local) and lualine's repaint interval (5000 ms remote, 1000 ms local). Bundles GitHub issues #189, #188 and #187.
+
+**The flag is only worth having if it is right in a tmux session**, which is the setup #190 will recommend and the one where the naive check fails. A process's environment is fixed when it starts and tmux cannot update panes that already exist, so a tmux session started *before* the SSH connection hosts a Neovim with no `$SSH_CONNECTION` at all. `RS.4` is that case, and it is the reason the detection has a second step rather than a comment.
+
+**The statusline cases matter more than they look.** Raising the repaint interval to 5000 ms is only safe because the two components that read asynchronously-arriving state — git hunk counts from gitsigns, and diagnostics — are refreshed by dedicated autocommands. If that wiring breaks, the counts go stale for up to five seconds while the buffer sits idle, which is exactly when someone is reading them. `RS.7` checks the wiring directly; `RS.8` and `RS.9` check the behaviour it exists to produce.
+
+> **Defect found and fixed during implementation, 2026-09-10.** The first attempt added `User GitSignsUpdate` and `DiagnosticChanged` to lualine's `options.refresh.events`. lualine builds that list into one command with `string.format("autocmd %s %s %s %s", group, events, pattern, cmd)`, so the space in `User GitSignsUpdate` split the event list and everything after it became the *pattern*. Inspecting the registered autocommands showed all ten real events bound to the patterns `GitSignsUpdate`/`DiagnosticChanged` instead of `*`, `DiagnosticChanged` not registered as an event at all, and the command mangled to `* call v:lua...`. The statusline would have stopped refreshing on cursor movement entirely — silently, and a worse regression than the staleness the change set out to fix. Reworked to dedicated autocommands in a `LualineAsyncRefresh` augroup. `RS.7` is the regression case.
+
+**Prerequisites** (confirm before validating):
+- **A real remote host** for `RS.3`, `RS.4`, `RS.8`, `RS.9` and `RS.10`. `$SSH_TTY` can be faked locally to exercise the *branch*, but not the latency, and `RS.10` is a feel-test that has no headless equivalent.
+- **tmux on the remote host** for `RS.4`. Not a dependency of the config — see `RS.6` — but the case cannot be run without it.
+- A file that produces an LSP diagnostic, for `RS.9`.
+- No new plugin and no new binary. If `lazy-lock.json` gained a line, something is wrong.
+
+### Prepare
+
+1. `git fetch origin && git checkout feat/add-remote-session-profile`
+2. `find . -name '*.lua' -print0 | xargs -0 luac -p` — expect no output.
+3. Launch Neovim locally and run `:lua print(require("config.terminal").is_remote)`.
+4. `:messages` — expect nothing new. In particular no tmux error: a failed query must read as local silently.
+
+- [ ] Branch checked out, all Lua parses, `is_remote` reports `false` locally, no new messages
+
+### Validate
+
+#### RS.1 — Local session takes the local branch
+
+In a local Neovim session:
+
+| Check | Expected |
+|---|---|
+| `:lua print(require("config.terminal").is_remote)` | `false` |
+| `:set ttimeoutlen?` | `ttimeoutlen=50` |
+| `:set timeoutlen?` | `timeoutlen=1000` (unchanged) |
+| `:lua print(require("lualine.config").get_config().options.refresh.statusline)` | `1000` |
+
+- [ ] All four report the local values
+
+> Confirmed headlessly on 2026-09-10: `is_remote=false`, `ttimeoutlen=50`, `timeoutlen=1000`, `timeout=1`, `ttimeout=1`, `refresh.statusline/tabline/winbar = 1000`. A live pass is still required — this box is for that.
+
+#### RS.2 — The remote branch is reachable
+
+Exercises the branch without a remote host:
+
+```
+SSH_TTY=/dev/pts/9 ~/nvim-linux-x86_64.appimage
+```
+
+Expect `is_remote` `true`, `ttimeoutlen=100`, lualine `refresh.statusline` `5000`.
+
+- [ ] The remote branch produces all three values
+
+> Confirmed headlessly on 2026-09-10, both with `SSH_TTY` alone and with `SSH_CONNECTION` alone: `is_remote=true`, `ttimeoutlen=100`, `refresh` 5000 on all three places.
+
+#### RS.3 — Real SSH session
+
+Over an actual SSH connection, not a faked variable:
+
+- [ ] `is_remote` is `true`
+- [ ] `ttimeoutlen=100`
+- [ ] lualine `refresh.statusline` is `5000`
+- [ ] `:messages` is clean
+
+#### RS.4 — tmux session that predates the SSH connection
+
+**This is the case the second detection step exists for.** Order matters — starting tmux after connecting would not test it.
+
+1. On the remote host, at a local console or an existing session, start tmux: `tmux new-session -s persist`
+2. Detach, and disconnect entirely.
+3. SSH back in and `tmux attach -t persist`.
+4. In a pane that existed **before** step 3, confirm the pane's own environment is empty: `env | grep -c '^SSH_'` → expect `0`.
+5. Confirm the server does know: `tmux show-environment SSH_CONNECTION` → expect a value, not a `-` prefix.
+6. Launch Neovim in that pane and check `is_remote`.
+
+- [ ] The pane's own environment has no `SSH_*` variables
+- [ ] `tmux show-environment SSH_CONNECTION` returns a value
+- [ ] `is_remote` is `true` despite the pane's environment
+- [ ] `ttimeoutlen=100` and lualine `refresh.statusline` is `5000`
+
+> The code path was exercised locally on 2026-09-10 by reproducing the same asymmetry: a tmux pane was created, `tmux set-environment SSH_CONNECTION` was then set on the server, and Neovim launched in the pre-existing pane. The pane reported `0` for `env | grep -c '^SSH_'` and `is_remote` read `true`. That confirms the mechanism but **not over a real link**, which is what this case is for.
+
+#### RS.5 — Local tmux is not mistaken for remote
+
+In a tmux session on the local machine, never reached over SSH:
+
+- [ ] `tmux show-environment SSH_CONNECTION` returns the name prefixed with `-`
+- [ ] `is_remote` is `false`
+- [ ] `ttimeoutlen=50`
+
+> Confirmed headlessly on 2026-09-10 in a local tmux pane: pane environment had no `SSH_*` variables, server reported `-SSH_CONNECTION`, and `is_remote` read `false`.
+
+#### RS.6 — tmux absent or unreachable degrades quietly
+
+Two failure modes, both must read as local with no message:
+
+```
+env TMUX=/tmp/fake,1,0 PATH=/usr/bin:/bin ~/nvim-linux-x86_64.appimage   # tmux not on PATH
+TMUX=/tmp/nonexistent-socket,1,0 ~/nvim-linux-x86_64.appimage            # query fails
+```
+
+- [ ] Both report `is_remote` `false`
+- [ ] Neither produces an error in `:messages`
+
+> Confirmed headlessly on 2026-09-10: both cases returned `false`, and `:messages` showed nothing.
+
+#### RS.7 — lualine's own event wiring is intact
+
+The regression case for the defect recorded above. Run in a live session:
+
+```vim
+:lua local c = require("lualine.config").get_config()
+:lua print(#c.options.refresh.events)
+```
+
+Then check no refresh autocommand carries a pattern other than `*`:
+
+```vim
+:lua local n=0 for _,x in ipairs(vim.api.nvim_get_autocmds({group="lualine_stl_refresh"})) do if x.pattern ~= "*" then n=n+1 end end print(n)
+```
+
+- [ ] `options.refresh.events` holds exactly **10** entries — lualine's defaults, with neither addition among them
+- [ ] **Zero** autocommands in `lualine_stl_refresh` have a non-`*` pattern
+- [ ] The `LualineAsyncRefresh` augroup holds exactly two autocommands: `User` with pattern `GitSignsUpdate`, and `DiagnosticChanged` with pattern `*`
+- [ ] The statusline still updates on cursor movement — move the cursor and watch the location segment change
+
+> Confirmed headlessly on 2026-09-10 after the fix: 10 events (`WinEnter, BufEnter, BufWritePost, SessionLoadPost, FileChangedShellPost, VimResized, Filetype, CursorMoved, CursorMovedI, ModeChanged`), 0 non-`*` patterns, and both dedicated autocommands present and firing without error. `refresh_time` remained `16`, confirming the deep merge left lualine's other defaults alone. The cursor-movement box needs a live session.
+
+#### RS.8 — Git hunk counts do not go stale at 5000 ms
+
+On the remote session, in a git repository:
+
+1. Edit a tracked file so gitsigns reports hunks.
+2. **Stop moving the cursor** and leave insert mode — this is essential, since cursor movement would refresh the statusline and mask the case.
+3. Watch the added/changed/removed counts.
+
+- [ ] The counts appear within about a second of the edit settling, not after five
+- [ ] Undoing the edit clears them equally promptly
+
+#### RS.9 — Diagnostic counts do not go stale at 5000 ms
+
+Same conditions, with a file that produces an LSP diagnostic:
+
+1. Introduce an error and wait for the server to report.
+2. Stop moving the cursor.
+
+- [ ] The error count appears within about a second, not after five
+- [ ] Fixing the error clears it equally promptly
+
+#### RS.10 — `<Esc>` latency is acceptable on the remote session
+
+A feel-test with no headless equivalent. `ttimeoutlen=100` is a deliberate trade: it tolerates a split escape sequence and makes leaving insert mode measurably slower.
+
+- [ ] Entering and leaving insert mode repeatedly feels acceptable at 100 ms
+- [ ] No stray literal characters are inserted when leaving insert mode over the link (the symptom #188 exists to fix)
+
+> If 100 ms is intolerable, 75 ms is the fallback. Record the verdict here either way — a bare pass tells a later reader nothing about how close it was.
+
+#### RS.11 — The tmux query's cost
+
+- [ ] The query cost is recorded, and is small relative to startup
+
+> Measured on 2026-09-10 inside a live tmux pane: **3.59 ms mean over 20 calls** of `tmux show-environment SSH_CONNECTION`. Paid once at startup, and only when `$TMUX` is set *and* both SSH variables are absent — plain SSH never reaches it, and a local session outside tmux never reaches it.
+
+#### RS.12 — Documentation
+
+- [ ] `other/architecture.html` — the `terminal.lua` row lists `is_remote` alongside `is_console`, `is_wsl`, `has_nerd_font` and `has_undercurl`
+- [ ] The new *Remote Session Detection* section renders: the three-step detection list, the *Why the tmux step exists* subsection, the four-combination table against `is_console`, and the settings table
+- [ ] Underscores render as `is_remote`, not `is++_++remote`, and `<Esc>` renders as itself
+- [ ] The index table at the top links to *Remote Session Detection*
+
+> Built locally on 2026-09-10 (`./docker/antora/run.sh antora-playbook.yml`) and checked in `build/site/arcane-centaur/other/architecture.html`: the anchor, all subsections and both tables render, with zero stray `++` in the section. Only the pre-existing `name`/`pat`/`feed` attribute warnings appeared. **Reviewing the published site is deferred** — see `openspec/DEFERRED_VERIFICATION.md` group A.
+
+### Raise PR & merge
+
+- [ ] Every box above ticked, or explicitly deferred with a reason recorded here
+- [ ] `gh pr create --fill`
+- [ ] PR merged
+
+### Post-merge
+
+- [ ] `git checkout main && git pull`
+- [ ] `is_remote` still reports correctly on `main`
+- [ ] GitHub issues #189, #188 and #187 closed with a reference to the PR
+- [ ] `#187`/`#188`/`#189` portions removed from the priority entry in `recommendations/ideas.md`, leaving `#190`, `#191` and `#192`
+- [ ] Change archived, and the `remote-session-profile` Purpose written by hand immediately afterwards — `openspec archive` leaves a `TBD` placeholder that no delta can fill

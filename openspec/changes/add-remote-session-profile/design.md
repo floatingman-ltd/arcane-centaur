@@ -70,7 +70,11 @@ Adding the two events makes both components event-driven, so the timer interval 
 
 *Alternative considered — a smaller interval such as 2000 ms.* Rejected as a half measure: it shortens the staleness window without closing it, and gives up most of the idle-traffic saving.
 
-**Implementation trap, verified in lualine's source.** `refresh` is the one option lualine deep-merges rather than replaces (`lualine/config.lua:127`), using `vim.tbl_deep_extend('force', ...)`. Because `events` is a list, that merge is index-wise: supplying a two-entry list overwrites entries 1 and 2 and retains defaults 3 through 10, which would drop `WinEnter` and `BufEnter` while looking like it worked. All ten defaults must therefore be restated ahead of the two additions, and the resolved list must be checked at runtime rather than read off the config file.
+**Mechanism, corrected during implementation.** The two events are installed as dedicated autocommands in an augroup of our own, calling `require("lualine").refresh()`. They are deliberately *not* added to `options.refresh.events`, for a reason found by running the check rather than reading the code.
+
+lualine turns that list into one command via `string.format("autocmd %s %s %s %s", group, events, pattern, cmd)` (`lualine/utils/utils.lua:98`). An entry containing a space — `User GitSignsUpdate` — splits the event list there, so everything after the space becomes the *pattern*. Inspecting the registered autocommands confirmed the damage: all 10 real events were registered against the patterns `GitSignsUpdate` and `DiagnosticChanged` instead of `*`, `DiagnosticChanged` never registered as an event at all, and the command itself became `* call v:lua...`. The statusline would have stopped refreshing on cursor movement entirely — a far worse regression than the staleness this decision set out to fix, and silent.
+
+Two related facts, both now moot for the implementation but worth recording. `refresh` is the one option lualine deep-merges rather than replaces (`lualine/config.lua:127`), and because `events` is a list that merge is index-wise, so a short list would have overwritten entries 1-2 and silently retained defaults 3-10. And the merge is what preserved `refresh_time = 16` when the interval keys were supplied alone, which is the positive evidence that it is a merge. Leaving `events` unset avoids both hazards: lualine's defaults stay exactly as shipped, and the two additions live somewhere their names cannot be misparsed.
 
 ### D5 — Scope boundary against #191
 

@@ -8,6 +8,19 @@ o.clipboard = "unnamedplus" -- use system clipboard
 o.completeopt = { "menu", "menuone", "noselect" }
 o.mouse = "a" -- allow the mouse to be used in Nvim
 
+-- Terminal key code timeout — the window in which a multi-byte escape sequence
+-- has to arrive completely before Neovim decides it has seen a bare <Esc>.
+-- Connection jitter can split a sequence across that window, which parses as
+-- <Esc> plus stray literal characters: silent in normal mode, junk in insert
+-- mode. 100 ms tolerates the split; it also makes leaving insert mode
+-- measurably slower, so it is applied only where the jitter is. Both branches
+-- are written out so the effective value is recorded here rather than inherited
+-- from a default that may change.
+--
+-- `timeout` and `ttimeout` are deliberately not set: both are already on.
+-- `timeoutlen` (mapped sequences, 1000 ms) is a separate setting and unchanged.
+o.ttimeoutlen = term.is_remote and 100 or 50
+
 -- Tab
 o.tabstop = 2 -- number of visual spaces per TAB
 o.softtabstop = 2 -- number of spacesin tab when editing

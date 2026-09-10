@@ -20,6 +20,7 @@ where it is, and how the pieces fit together at startup.
 | xref:#github[.github/] | GitHub Actions (docs CI)
 | xref:#claude[.claude/] | Claude Code skills & settings
 | xref:#console-detection[Console Detection] | How is_console is determined
+| xref:#remote-detection[Remote Session Detection] | How is_remote is determined
 | xref:#open-url[Open URL Behaviour] | Clipboard, echo and platform opener order
 |===
 
@@ -392,9 +393,9 @@ ftplugins. They do not return lazy.nvim specs.
 |===
 |File |Purpose
 |`terminal.lua` |Detects the terminal environment: `is++_++console`,
-`is++_++wsl`, `has++_++nerd++_++font`, `has++_++undercurl`. Plugin
-configs branch on these flags instead of hardcoding terminal-specific
-behaviour.
+`is++_++remote`, `is++_++wsl`, `has++_++nerd++_++font`,
+`has++_++undercurl`. Plugin configs branch on these flags instead of
+hardcoding terminal-specific behaviour.
 
 |`lsp.lua` |Shared `on++_++attach` function and LSP server setup
 (`lspconfig.++<++server++>++.setup++{++}`). All servers use the same
@@ -677,6 +678,93 @@ setup, file an issue.
 ====
 The flag answers "is a display exported?", which is not always the same question as "can a browser be reached?". Two environments differ: under WSL, the Windows openers reach the Windows browser whether or not WSLg is exporting a display; on macOS, `$DISPLAY` is unset unless XQuartz is running, yet `open` works. `util.open++_++url` carves out WSL explicitly for this reason. macOS is a known gap.
 ====
+
+'''''
+
+[[remote-detection]]
+== Remote Session Detection
+
+`is++_++remote` answers whether the editing session reaches you across a
+network:
+
+[source,lua]
+----
+local term = require("config.terminal")
+if term.is_remote then ...
+----
+
+Detection runs once at startup, in this order:
+
+. `$SSH++_++TTY` or `$SSH++_++CONNECTION` present -> remote. `sshd` sets
+both for interactive sessions.
+. Otherwise, if `$TMUX` is set and `tmux` is executable, ask the tmux
+server: `tmux show-environment SSH++_++CONNECTION`. A returned value
+means remote; the name returned with a leading `-` means tmux knows the
+variable to be unset.
+. Otherwise local.
+
+=== Why the tmux step exists
+
+A process's environment is fixed when it starts, and tmux cannot update
+panes that already exist. A tmux session started *before* the SSH
+connection -- or started locally and later attached to over SSH --
+therefore hosts a Neovim whose `$SSH++_++CONNECTION` is stale or absent,
+and which would otherwise read as local while being remote. That is
+precisely the arrangement you want for session persistence, so the naive
+check is wrong in the case that matters most.
+
+The tmux server does know, because `SSH++_++CONNECTION` is in its default
+`update-environment` and is refreshed from each attaching client. Only
+the *presence* of a value is tested, never its content, so a value left
+over from an earlier connection is harmless.
+
+tmux is not a dependency. `$TMUX` is only ever set by tmux itself, so
+step 2 is unreachable when tmux is absent, and an `executable("tmux")`
+guard covers `$TMUX` set with the binary missing.
+
+=== Independent of `is++_++console`
+
+The two flags answer different questions and neither implies the other.
+`is++_++console` asks whether a display is available; `is++_++remote`
+asks whether the session crosses a network. All four combinations occur:
+
+[width="100%",cols="40%,30%,30%",options="header",]
+|===
+|Environment |`is++_++console` |`is++_++remote`
+|WSLg or a local GUI terminal |`false` |`false`
+|Local physical TTY |`true` |`false`
+|Headless server over SSH |`true` |`true`
+|SSH with X11 forwarding |`false` |`true`
+|===
+
+[NOTE]
+====
+A non-interactive command over SSH reads as *not* remote, because `sshd`
+sets no `$SSH++_++TTY` for one. This is intended rather than a gap --
+remote-specific behaviour is not wanted for a scripted invocation.
+====
+
+=== What reads the flag
+
+[width="100%",cols="34%,33%,33%",options="header",]
+|===
+|Setting |Local |Remote
+|`ttimeoutlen` (`lua/options.lua`) |`50` |`100`
+|lualine `refresh` (`lua/plugins/lualine.lua`) |`1000` |`5000`
+|===
+
+`ttimeoutlen` is the window in which a multi-byte escape sequence must
+arrive completely before Neovim decides it has seen a bare `++<++Esc++>++`.
+Connection jitter can split a sequence across it, which parses as
+`++<++Esc++>++` plus stray literal characters. The higher value tolerates
+the split; it also makes leaving insert mode measurably slower, which is
+why it applies only where the jitter is.
+
+lualine's `refresh` interval governs *idle* repaints only -- its event
+list already refreshes on cursor movement and mode changes. Each
+timer-driven repaint is terminal output that has to cross the link, so
+the longer interval removes steady background traffic while the buffer
+sits idle.
 
 '''''
 
