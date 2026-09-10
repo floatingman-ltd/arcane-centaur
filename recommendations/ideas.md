@@ -145,20 +145,17 @@ Everything else in this file is unranked and can be picked up opportunistically.
    `console-detection` is an existing capability spec, so it is spec-affecting and needs its own
    OpenSpec change plus validation across local, WSL, console, SSH and tmux.
 
-   **Two caveats that are not in the issues, and that decide the order.**
+   **Two caveats that are not in the issues, and that decide the order.** The first was recorded wrongly on 2026-09-09 and is corrected below; read the correction rather than the claim it replaces.
 
-   - **`#190` and `#191` collide.** `detect()` short-circuits on `$TMUX` before identifying the real
-     terminal, and `"tmux"` is in neither the nerd-font nor the undercurl list. So taking `#190`'s
-     advice to use tmux for session persistence *currently costs the colorscheme*. `#191` notes this;
-     `#190` does not, and picked up separately the recommendation would be actively harmful.
-   - **`is_remote` will be wrong in exactly the setup `#190` recommends.** `SSH_TTY` is absent inside a
-     tmux session started *before* the SSH connection — `#189`'s own notes say so. Resolve that before
-     `#187` and `#188` are built on the flag, or remote behaviour applies in some remote sessions and
-     not others, which is worse than not having it.
+   - **~~`#190` and `#191` collide.~~ Corrected 2026-09-10 — the collision is far narrower than first recorded, and does not affect this machine.** The original claim was that `detect()` short-circuits on `$TMUX` before identifying the real terminal, and that recommending tmux therefore *costs the colorscheme*. Both halves are wrong. The `$TMUX` test is **sixth of seven** in `detect()` (`lua/config/terminal.lua:43`) — after Alacritty, Windows Terminal, VTE, Apple Terminal and the Linux TTY — so it is a last resort before `"unknown"`, not a short-circuit. Measured on WSL + Windows Terminal, outside and then inside a tmux pane: `name=wt nerd=true undercurl=true truecolor=true` both times, because `WT_SESSION` is inherited by the pane. tmux costs nothing on the machine this config is developed on.
 
-   **Suggested order:** `#189`, then `#188`+`#187` bundled as one change with a shared TEST_PLAN
-   section, then `#190` with `#192`'s `LocalForward` table folded into it, then `#191` alone. The first
-   four are plausibly an afternoon and two OpenSpec changes; the last is its own project.
+     The real collision is this: tmux rewrites `$TERM` to `tmux-256color`, so a terminal identified **only** by `$TERM` degrades inside it. Alacritty on Linux is the one such case in `detect()` today, since `TERM_PROGRAM` is macOS-only for it (see the comment at `terminal.lua:19`). Terminals that export their own variable — `WT_SESSION`, `VTE_VERSION` — are unaffected. Over SSH the question is moot: bare SSH already lands on `"unknown"` with all three capabilities false, so tmux adds no loss there. `#191` is what costs the colorscheme over SSH; tmux is not.
+
+     **Consequence for the order: `#191` does not block `#190`.** What `#190` needs is not a warning but two tmux settings — `set -g default-terminal "tmux-256color"` and `set -ga terminal-overrides ",*:Tc"`. Without the second, tmux downsamples 24-bit colour even when `has_truecolor` reports true, because that flag is derived from the terminal *name* and not from anything tmux actually passes through. A flag that reads true while the rendering is wrong needs an eyes-on check, not a headless one.
+
+   - **`is_remote` will be wrong in exactly the setup `#190` recommends — but it is resolvable.** `SSH_TTY` and `SSH_CONNECTION` are both absent inside a tmux session started *before* the SSH connection, because tmux cannot update the environment of panes that already exist; `#189`'s own notes say so and propose accepting it. **Verified 2026-09-10 (tmux 3.4):** `SSH_CONNECTION` is in tmux's default `update-environment`, so the server holds the attached client's value even when the pane does not. `tmux show-environment SSH_CONNECTION` returns it, printing a leading `-` when tmux knows the variable to be unset — which makes "unset" and "no answer" distinguishable, and the check reliable. Querying it when `$TMUX` is set closes the gap for one subprocess at startup, inside tmux only. Decide this before `#187` and `#188` are built on the flag, or remote behaviour applies in some remote sessions and not others.
+
+   **Suggested order:** `#189`, then `#188`+`#187` bundled as one change with a shared TEST_PLAN section, then `#190` with `#192`'s `LocalForward` table folded into it, then `#191` alone. The first four are plausibly an afternoon and two OpenSpec changes; the last is its own project. The correction above frees `#190` to be picked up independently of `#191` if convenient, provided it carries the two tmux settings.
 
 ## Things to keep an eye on
 
