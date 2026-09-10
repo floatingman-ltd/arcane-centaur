@@ -8,37 +8,33 @@ openspec change when work begins.
 
 ## Git Housekeeping
 
-**Rewritten 2026-09-09.** The previous list named 13 `origin/*` branches to delete. **All 13 were
-already gone**, and **none of the 9 that actually existed were listed** — so following it would have
-been busywork while missing everything real. If you touch this section, re-derive it from
-`git branch -r` rather than editing the list in place.
+**Nothing outstanding as of 2026-09-10.** `origin` carries only `main` and `gh-pages`; locally, `main` is the only branch. Verified with `git ls-remote --heads origin` and `git branch -a`.
 
-### Merged remote branches, safe to delete
+The nine `origin/*` branches this section listed on 2026-09-09 had all been deleted on the remote by the time they were re-checked — the local `refs/remotes/origin/*` entries were stale tracking refs, cleared with `git fetch --all --prune`. This is the second consecutive time the list went stale before anyone worked it: the 2026-09-09 rewrite found all 13 of its predecessor's branches already gone too.
 
-Verified 2026-09-09: for each, the only files not present on `main` are pre-archive
-`openspec/changes/<name>/` paths (now under `openspec/changes/archive/`), the retired
-`markdown-preview-glow` spec, and `_readme.adoc` — which was deleted deliberately. No unique work.
-
-- [ ] `origin/chore/archive-align-treesitter-providers`
-- [ ] `origin/chore/archive-replace-glow-renderer`
-- [ ] `origin/chore/archive-retire-glow-spec-references`
-- [ ] `origin/chore/close-align-treesitter-providers`
-- [ ] `origin/chore/lazy-lock-sync-late-aug`
-- [ ] `origin/fix/align-treesitter-providers`
-- [ ] `origin/fix/open-url-wsl-opener`
-- [ ] `origin/fix/replace-glow-renderer`
-- [ ] `origin/fix/retire-glow-spec-references`
+**So do not maintain a branch list here.** Two rewrites in two days both produced a list that was wrong when read. Re-derive on the spot instead, and only write something down if a branch turns out to hold unique work:
 
 ```sh
-git push origin --delete <branch>          # one per branch; the user runs these
-git fetch --all --prune                    # then drop the stale tracking refs
+git fetch --all --prune                     # clear stale tracking refs first
+git ls-remote --heads origin                # what actually exists
+git rev-list --count origin/main..<branch>  # per branch, is it ahead?
 ```
 
-Keep `origin/main` and `origin/gh-pages`. Local branches were cleaned on 2026-09-09; `main` is the
-only one left. Recovery SHAs for the four deleted locally, should they ever be wanted:
-`backup/markserv-pre-collapse` `9c49620`, `feat/markserv-gfm-alerts` `dd43bb9`,
-`feat/vendor-fsharp-indent` `1d66514`, `fix/install-language-servers` `b562b23` — in the reflog for
-90 days from that date.
+Keep `origin/main` and `origin/gh-pages`. Recovery SHAs for the four branches deleted locally on 2026-09-09, should they ever be wanted: `backup/markserv-pre-collapse` `9c49620`, `feat/markserv-gfm-alerts` `dd43bb9`, `feat/vendor-fsharp-indent` `1d66514`, `fix/install-language-servers` `b562b23` — in the reflog for 90 days from that date.
+
+### Stale stashes
+
+**Dropped 2026-09-10 — nothing outstanding.** Three stashes had accumulated, all on branches that no longer exist. Each contained **only `lazy-lock.json`** — no staged component, no untracked files, no source changes — and each was a *regression* against `main` rather than pending work: they reinstated removed plugins and predated current pins. `stash@{2}` was the clearest case, carrying the whole pre-blink `nvim-cmp`/`cmp-*` family. Restoring any of them would have undone shipped work.
+
+Recovery SHAs, should they ever be wanted — in the reflog for 90 days from 2026-09-10:
+
+| Was | Base | Content |
+|---|---|---|
+| `b04ebf5` | `16aa6ee` (feat/06 diagnostics panel) | 1 line; `glow.nvim` back, `claudecode.nvim`/`nvim-dap`/`easy-dotnet` gone |
+| `2c5e588` | `7c7f53a` (bracey fix) | 12+/14−; `glow.nvim`, `dressing.nvim`, treesitter back on `master` |
+| `4619508` | `4d4804e` (asciidoc docs) | 2 lines; pre-blink `nvim-cmp` + five `cmp-*` plugins |
+
+A dropped stash is unreachable by `git stash list`, so `git fsck --unreachable` or the SHAs above are the only routes back.
 
 ## End-to-End Testing
 
