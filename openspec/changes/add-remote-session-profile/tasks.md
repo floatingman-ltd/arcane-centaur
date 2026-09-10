@@ -1,0 +1,48 @@
+## 1. Detection flag
+
+- [ ] 1.1 Add a local `detect_remote()` helper to `lua/config/terminal.lua`, returning `true` when `$SSH_TTY` or `$SSH_CONNECTION` is present
+- [ ] 1.2 Extend `detect_remote()` with the tmux fallback: when `$TMUX` is set, both SSH variables are absent, and `vim.fn.executable("tmux") == 1`, run `tmux show-environment SSH_CONNECTION` and treat a result whose first character is not `-` as remote
+- [ ] 1.3 Guard the fallback on `vim.v.shell_error == 0` so a failed query reads as local rather than remote, and confirm no error surfaces in `:messages`
+- [ ] 1.4 Expose `M.is_remote = detect_remote()` beside `M.is_wsl` and `M.is_console`, with a comment naming both the tmux limitation it solves and its independence from `is_console`
+- [ ] 1.5 Syntax-check: `find . -name '*.lua' -print0 | xargs -0 luac -p`
+
+## 2. Input timing
+
+- [ ] 2.1 Set `o.ttimeoutlen = term.is_remote and 100 or 50` in `lua/options.lua`, with a comment recording why the remote value is higher
+- [ ] 2.2 Confirm `timeout` and `ttimeout` are left unset, since both are already `1` by default — do not add the two no-op lines from issue #188
+- [ ] 2.3 Verify headlessly that `ttimeoutlen` is `50` on this local machine and `timeoutlen` is still `1000`
+
+## 3. Statusline repaint
+
+- [ ] 3.1 Add an `options.refresh` table to `lua/plugins/lualine.lua` setting `statusline`, `tabline` and `winbar` to `term.is_remote and 5000 or 1000`
+- [ ] 3.2 Add `events` to the same table, restating **all ten** lualine defaults (`WinEnter`, `BufEnter`, `BufWritePost`, `SessionLoadPost`, `FileChangedShellPost`, `VimResized`, `Filetype`, `CursorMoved`, `CursorMovedI`, `ModeChanged`) followed by `User GitSignsUpdate` and `DiagnosticChanged`
+- [ ] 3.3 Do not supply a short `events` list. `refresh` is deep-merged by index (`lualine/config.lua:127` uses `vim.tbl_deep_extend('force', ...)`), so a two-entry list would overwrite entries 1-2 and silently retain defaults 3-10 — dropping `WinEnter` and `BufEnter` while appearing to work
+- [ ] 3.4 Confirm the resolved event list at runtime rather than by reading the config file, since a mangled list fails silently
+- [ ] 3.5 Verify headlessly that `refresh.statusline` is `1000` locally
+
+## 4. Documentation
+
+- [ ] 4.1 Add `is_remote` to the `terminal.lua` flag list in `docs/modules/ROOT/pages/other/architecture.adoc` (the row at the `terminal.lua` entry)
+- [ ] 4.2 Document the detection rule, the tmux fallback, and the deliberate negative for non-interactive commands, in the Console Detection section or a sibling section
+- [ ] 4.3 State explicitly that `is_remote` and `is_console` are independent, and that neither implies the other
+- [ ] 4.4 Build the docs site (`./docker/antora/run.sh antora-playbook.yml`) and check the rendered page for AsciiDoc errors
+
+## 5. Validation
+
+- [ ] 5.1 Add a `## Change · add-remote-session-profile` section to `openspec/TEST_PLAN.md` with branch name, prerequisites, and numbered `Prepare` / `Validate` / `Raise PR & merge` / `Post-merge` subsections
+- [ ] 5.2 Validate locally in a live Neovim session: `is_remote` false, `ttimeoutlen` 50, lualine refresh 1000, statusline content unchanged
+- [ ] 5.3 Validate over a real SSH session: `is_remote` true, `ttimeoutlen` 100, lualine refresh 5000
+- [ ] 5.4 Validate in a tmux session started **before** the SSH connection, which is the case the fallback exists for: `is_remote` must still read true
+- [ ] 5.5 Validate in a local tmux session outside SSH: `is_remote` must read false
+- [ ] 5.6 Feel-test `<Esc>` latency on the remote session and record the verdict; drop to 75 ms if 100 ms is intolerable
+- [ ] 5.7 Confirm git hunk counts update promptly at the 5000 ms interval — edit a tracked file, stop moving the cursor, and watch the counts change without waiting five seconds
+- [ ] 5.8 Confirm diagnostic counts update promptly under the same conditions, using a file that produces an LSP diagnostic
+- [ ] 5.9 Measure and record the tmux query's startup cost, so the design's claim that it is negligible rests on a number
+- [ ] 5.10 Tick each `- [ ]` in the TEST_PLAN section only once genuinely confirmed, logging any defect and its fix inline as a blockquote note
+
+## 6. Close out
+
+- [ ] 6.1 Delete the `#187`/`#188`/`#189` portions of the priority entry in `recommendations/ideas.md`, per that file's rule that shipped work is deleted rather than archived; leave `#190`, `#191` and `#192`
+- [ ] 6.2 Add any deferred eyes-on work to `openspec/DEFERRED_VERIFICATION.md` — in particular the mosh question, if it is still open
+- [ ] 6.3 Close GitHub issues #189, #188 and #187 with a reference to the merged PR
+- [ ] 6.4 Archive the change (`openspec archive`), then immediately write the `remote-session-profile` Purpose by hand — `openspec archive` leaves a `TBD` placeholder that deltas cannot fill, and 14 specs already carry one
