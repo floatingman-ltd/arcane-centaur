@@ -81,5 +81,36 @@ vim.lsp.config("roslyn", {
 })
 
 -- Lua LSP (requires: lua-language-server on $PATH)
-vim.lsp.config("lua_ls", { on_attach = on_attach, capabilities = capabilities })
+--
+-- A Neovim config is not an ordinary Lua project: `vim` is injected by the host
+-- program and the API definitions live in $VIMRUNTIME, neither of which lua_ls
+-- can work out on its own. Without these settings it analyses the tree as plain
+-- Lua and reports every `vim` reference as an undefined global -- measured at
+-- 659 of 661 diagnostics across 62 files, which does not make the list untidy,
+-- it makes it unreadable. A genuine vim.tbl_islist deprecation nearly went
+-- unnoticed that way on 2026-09-08.
+vim.lsp.config("lua_ls", {
+  on_attach = on_attach,
+  capabilities = capabilities,
+  settings = {
+    Lua = {
+      runtime = { version = "LuaJIT" },
+      -- `pandoc` belongs here for the same reason as `vim`, not as a
+      -- workaround: the Lua filters under docker/md2pdf/ and scripts/ run
+      -- inside Pandoc, which injects that global exactly as Neovim injects
+      -- `vim`. They account for every undefined-global report that survives
+      -- the vim fix.
+      diagnostics = { globals = { "vim", "pandoc" } },
+      workspace = {
+        -- $VIMRUNTIME only, deliberately -- not nvim_get_runtime_file("", true).
+        -- The wider form additionally indexes all ~45 installed plugins, for a
+        -- benefit nothing here needs; the runtime alone resolves every
+        -- diagnostic this was about. Widen it only with a reason.
+        library = { vim.env.VIMRUNTIME },
+        checkThirdParty = false,
+      },
+      telemetry = { enable = false },
+    },
+  },
+})
 vim.lsp.enable("lua_ls")

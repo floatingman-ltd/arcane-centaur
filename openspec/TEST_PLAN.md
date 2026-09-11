@@ -3733,3 +3733,116 @@ The other "nothing happened" case, and the one that would catch the plugin havin
 - [X] Purpose of the new `openspec/specs/fsharp-indent/spec.md` written by hand — `openspec archive` leaves a `TBD` placeholder, and there are already 14 of those
 
 > Written. The placeholder did appear, taking the count to 15; fixing it immediately put it back to 14.
+
+---
+
+## Change · configure-lua-ls-workspace
+
+**Branch:** `fix/configure-lua-ls-workspace`
+
+Gives `lua_ls` the `settings` table it never had (`lua/config/lsp.lua`), so it analyses this tree as a Neovim configuration rather than as plain Lua.
+
+**The number is the point of this change.** Before: 661 diagnostics across 62 files, 659 of them `Undefined global` — 99.7% noise. After: 8, every one a real finding. `LW.2` exists to make that measurable rather than impressionistic, because the failure this fixes is not a missing message but a list nobody opens.
+
+**`LW.4` is the case that distinguishes a fix from a suppression.** Adding `"vim"` to `diagnostics.globals` produces the same zero-undefined-global count while teaching the server nothing. Only `workspace.library` supplies real API definitions, and hover is the cheapest way to tell which one you have.
+
+**Prerequisites:**
+- `lua-language-server` on `$PATH` — already required by the `lua-lsp` capability. Verified at 3.18.2-dev.
+- No new plugin and no new binary. If `lazy-lock.json` gained a line, something is wrong.
+
+### Prepare
+
+1. `git fetch origin && git checkout fix/configure-lua-ls-workspace`
+2. `find . -name '*.lua' -print0 | xargs -0 luac -p` — expect no output.
+3. Open any `.lua` file and confirm `lua_ls` attaches: `:lua print(#vim.lsp.get_clients({ bufnr = 0 }))` → `1`.
+
+- [X] Branch checked out, all Lua parses, `lua_ls` attaches
+
+> Confirmed 2026-09-11. `luac -p` across the tree produced no output; `lua_ls` attached and published diagnostics in every subsequent case.
+
+### Validate
+
+#### LW.1 — Attachment and keymaps are unchanged
+
+- [X] `lua_ls` attaches to a `.lua` buffer as before
+- [X] `gd`, `K`, `gr`, `<leader>rn` and `<leader>ca` are all bound in the buffer
+- [X] They behave as they do in an F# or markdown buffer — the shared `on_attach` is untouched by this change
+
+> Confirmed live 2026-09-11, reported as "looks good". `K` was separately exercised in `LW.4`, returning a real `$VIMRUNTIME` signature. The headless pass beforehand found one client attached and 23 buffer-local normal-mode maps, with none of the five missing.
+
+#### LW.2 — The diagnostics are readable
+
+Open `lua/config/http_preview.lua` — the file with the most findings.
+
+- [X] `Undefined global \`vim\`` does not appear anywhere in the buffer
+- [X] The five real findings are visible without scrolling past noise
+- [X] Across the whole tree the total is **8**, against a baseline of 661
+
+> Confirmed live 2026-09-11, in two passes.
+>
+> **Single buffer.** The quickfix list from `lua/config/http_preview.lua` held six entries and no `Undefined global` of any kind: four `Need check nil` at 99, 103, 110 and 115, the `(uv.uv_tcp_t)?` to `uv.uv_stream_t` assignment at 115, and the pre-existing `fzf-lua.Config` alias at `lua/plugins/fzf-lua.lua:8`.
+>
+> **Whole tree.** All 62 tracked Lua files loaded via `:args`/`:argdo edit`, then `vim.diagnostic.setqflist()`. **Exactly 8 entries, zero `Undefined global` of any kind.** The two additions over the single-buffer pass were `lua/config/claude_cli.lua:61` and `testdocs/hello.lua:13`, absent earlier only because those buffers were not open.
+>
+> All eight match the table in `recommendations/ideas.md` line for line, which is the cross-check that the recorded findings are accurate and not a transcription of a headless run.
+
+> Confirmed headlessly on 2026-09-11 by opening all 62 tracked Lua files in turn: total 8, `Undefined global \`vim\`` 0, `Undefined global \`pandoc\`` 0. The live pass is for how the list *reads*, which a count cannot tell you.
+
+#### LW.3 — Pandoc filters are quiet too
+
+Eighteen of the pre-fix reports were `pandoc`, in files that run inside Pandoc rather than Neovim.
+
+- [X] `docker/md2pdf/mermaid-filter.lua` reports no undefined `pandoc`
+- [X] `docker/md2pdf/plantuml-filter.lua` reports no undefined `pandoc`
+- [X] `scripts/confluence_filter.lua` reports no undefined `pandoc`
+
+> Confirmed live 2026-09-11 — reported "as documented". Corroborated by the whole-tree pass in `LW.2`, which loaded all 62 tracked Lua files including these three and produced zero `Undefined global` entries of any kind.
+
+#### LW.4 — The library is loaded, not the global suppressed
+
+Put the cursor on a `vim.fn.*` call — `vim.fn.setreg` at `lua/config/util.lua:109` is a good one — and press `K`.
+
+- [X] Hover returns a signature and documentation, not an empty or generic response
+- [X] The documentation is the real `$VIMRUNTIME` text for that function
+- [X] Completion after typing `vim.fn.` offers real API names
+
+> Confirmed live 2026-09-11 — reported "as documented". Matches the headless result: hover on `vim.fn.setreg` returned `function table.setreg(regname: string, value: any, options?: string) -> any` with the runtime's own description. That is only possible with the library loaded, which is what separates this from merely silencing the global.
+
+#### LW.5 — The indexing cost is acceptable
+
+- [X] The first Lua file of a session produces diagnostics after a pause that is tolerable in practice
+- [X] Subsequent Lua files in the same session are not noticeably slower than before
+
+> Confirmed live 2026-09-11. Reported verbatim: *"pause was not noticable at this time"*. The second box rests on the same session's `LW.2` whole-tree pass, which loaded all 62 files in one go — a per-file cost would have been conspicuous there. Note the qualifier "at this time": this was one session on a warm machine, not a cold-boot measurement.
+
+> Measured on 2026-09-11. Attach ~80 ms with or without the change. First diagnostic ~3.4 s with the library against ~0.9 s without — `lua_ls` indexing `$VIMRUNTIME`. **One-off per session, not per file**: second and third files returned diagnostics in 101 ms each, against 3546 ms for the first. If the pause proves intolerable in real use, the fallback is the globals-only configuration, which keeps the list readable but loses deprecation and type reporting.
+
+#### LW.6 — Nothing else regressed
+
+- [X] `:messages` is clean on startup
+- [X] Other language servers are unaffected — open an F# or markdown file and confirm its diagnostics and keymaps behave as before
+- [X] `:Lazy` shows no errors and `lazy-lock.json` is unchanged
+
+> Confirmed 2026-09-11, reported as "looks good". `lazy-lock.json` independently verified by git: identical to `main` and clean in the worktree.
+>
+> **The middle box is partly confirmed, 2026-09-11.** An F# buffer was opened and `gd` exercised, reported as "seems okay - i only tested `gd`". That is more than it sounds: `gd` is bound by the shared `on_attach`, so its working proves `fsautocomplete` attached, that `on_attach` ran for a non-Lua server, and that the server answered a definition request. The keymap half of the box is therefore met.
+>
+> **Diagnostics half closed 2026-09-11.** Getting there took two attempts, and the first was a false pass waiting to happen. `.fs` and `.fsx` fixtures all reported `0` diagnostics — which proves nothing, because `openspec/specs/fsharp-lsp` already records that a bare `.fs` outside a project "answers nothing at all" and a `.fsx` "resolves options unreliably". `testdocs/fsharp-project/Program.fs` also reported `0`, and that too was correct rather than informative: the fixture is deliberately valid, with no seeded errors.
+>
+> Settled by injecting `let bad : int = "not an int"` into `Program.fs`, which produced a non-zero count, then undoing without saving. Reported "done and good". So `fsautocomplete` both attaches and publishes, and this change's blast radius really was one server.
+>
+> **Worth keeping for next time:** a zero diagnostic count is not evidence a server is healthy. In this repository it is the expected reading for three of the four F# fixtures, for reasons already specified.
+
+### Raise PR & merge
+
+- [X] Every box above ticked, or explicitly deferred with a reason recorded here — all six cases passed live on 2026-09-11, nothing deferred
+- [ ] `gh pr create --fill`
+- [ ] PR merged
+
+### Post-merge
+
+- [ ] `git checkout main && git pull`
+- [ ] Diagnostics still read correctly on `main`
+- [ ] Change archived — `lua-lsp` already has a real Purpose, so no placeholder needs writing this time
+- [ ] The eight surfaced findings remain recorded in `recommendations/ideas.md`; they are not shipped work and must not be deleted with this entry
+
