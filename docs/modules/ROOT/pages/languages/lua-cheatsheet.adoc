@@ -1,0 +1,122 @@
+== Lua Cheatsheet (lua_ls {plus} stylua)
+
+→ Back to xref:editor/keybindings.adoc[main cheatsheet] · xref:languages/lua.adoc[Full guide]
+
+NOTE: Lua has *no* `<localleader>` maps. Every other language here binds `,` to a REPL or evaluation workflow; Lua does not, because Neovim *is* the Lua runtime — see <<running-lua,Running Lua>> below for what replaces them.
+
+== LSP
+
+Registered as `lua_ls` in `lua/config/lsp.lua`, attaching automatically to any `.lua` buffer. These are the shared keymaps, identical in every LSP-backed language here.
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`gd` |Normal |Go to definition
+|`K` |Normal |Hover documentation
+|`gr` |Normal |Find references
+|`<leader>rn` |Normal |Rename symbol
+|`<leader>ca` |Normal |Code action
+|===
+
+TIP: `K` on a `vim.*` call returns the real signature and documentation from `$VIMRUNTIME`, not a generic response. If it does not, the workspace library is not loading — that is the symptom to report.
+
+== Diagnostics
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`<leader>e` |Normal |Show diagnostics for the current line in a float
+|`]d` |Normal |Next diagnostic
+|`[d` |Normal |Previous diagnostic
+|`<leader>xx` |Normal |Project diagnostics in the trouble panel
+|`<leader>xX` |Normal |Buffer diagnostics only
+|===
+
+Lua diagnostics are configured to be *readable* rather than merely present: `lua_ls` is given `$VIMRUNTIME` as a workspace library, so `vim` and `pandoc` are known globals and deprecated API use is reported. Before that configuration landed the tree carried 661 diagnostics of which 659 were `Undefined global`. If that ratio ever returns, the workspace settings are the first thing to check.
+
+== Formatting
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`<leader>f` |Normal / Visual |Format buffer, or the visual selection
+|===
+
+`stylua` runs on every write through conform.nvim, with a 2-second timeout, and respects a `stylua.toml` or `.stylua.toml` in the project root. It is *required rather than optional* in this repository — a `PostToolUse` hook re-runs it on every Lua file Claude Code edits, so the committed tree stays stylua-clean. A missing `stylua` degrades gracefully: formatting simply does not apply, and nothing errors or blocks the write.
+
+== Completion
+
+Provided by blink.cmp. The same keys work in insert mode and on the command line.
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`<C-n>` |Insert |Open the menu when closed; select the next item when open
+|`<C-p>` |Insert |Select the previous item
+|`<C-y>` |Insert |Accept the selected item, or the top item if none is selected
+|`<C-e>` |Insert |Cancel and restore the typed text
+|`<C-k>` |Insert |Show the documentation window
+|`<C-b>` / `<C-f>` |Insert |Scroll the documentation window up / down
+|===
+
+CAUTION: `<CR>` never accepts a completion — it inserts a newline, whether or not an item is highlighted. And `<C-n>` in *normal* mode opens the file tree, which is a different command entirely; the separation is by mode only.
+
+== Text Objects and Motions
+
+Treesitter-backed, and active in Lua buffers.
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`af` / `if` |Visual / Operator |Outer / inner function
+|`ac` / `ic` |Visual / Operator |Outer / inner class
+|`aa` / `ia` |Visual / Operator |Outer / inner argument
+|`]f` / `[f` |Normal / Visual / Operator |Jump to next / previous function start
+|`]F` / `[F` |Normal / Visual / Operator |Jump to next / previous function end
+|===
+
+== Indentation and Folding
+
+Lua is one of the languages where treesitter supplies indentation, because nvim-treesitter ships an `indents.scm` for it — `indentexpr` resolves to `v:lua.require'nvim-treesitter'.indentexpr()`. Folding comes from nvim-ufo, using the LSP provider with an indent fallback.
+
+Buffer-local settings from `after/ftplugin/lua.lua`: 2-space tabs, spaces only.
+
+[[running-lua]]
+== Running Lua
+
+There is no REPL binding because Neovim is already a Lua interpreter. These replace one.
+
+[cols=",",options="header",]
+|===
+|Command |Action
+|`:lua <expr>` |Evaluate an expression in the running Neovim
+|`:lua =<expr>` |Evaluate and print the result — the closest thing to a REPL prompt
+|`:luafile %` |Execute the current file in the running instance
+|`:source %` |Same, for a file that expects to be sourced
+|`:messages` |Review output and errors after the fact
+|===
+
+TIP: `:lua =vim.lsp.get_clients({bufnr=0})` is the quickest way to confirm which servers are attached to the buffer you are in.
+
+== Validation
+
+No test suite exists; validation is manual. Syntax-check every Lua file in the repository from its root:
+
+[source,sh]
+----
+find . -name '*.lua' -print0 | xargs -0 luac -p
+----
+
+Silence means everything parses. If `luac` is unavailable, `:luafile %` inside Neovim covers a single file.
+
+== Other Active Plugins
+
+* *nvim-treesitter* — highlighting, indentation and the text objects above
+* *nvim-ufo* — folding, LSP provider with an indent fallback
+* *conform.nvim* — `stylua` on save
+* *blink.cmp* — completion, sourcing from `lua_ls`, buffer words and paths
+* *trouble.nvim* — the diagnostics panel behind `<leader>x`
+
+'''''
+
+_LSP keymaps come from the shared `on_attach` in `lua/config/lsp.lua`, identical across every language. Indent settings are in `after/ftplugin/lua.lua`; formatting in `lua/plugins/conform.lua`._
