@@ -114,6 +114,19 @@ pushing a branch or raising a PR:
 This is the repo's standing practice — see the `Change 03`–`Change 08` and `Hotfix` sections in
 `openspec/TEST_PLAN.md` for the expected level of detail.
 
+## Dependencies: containers first
+
+**Services run in Docker. Do not reach for a native install as the fallback — fix the container instead.** Ollama, Antora, PlantUML, MARP and the Lisp REPL containers all follow this, and it is why `docker/` exists.
+
+The line is not "everything in a container", and `add-terraform-support` is where it had to be drawn precisely. Two categories sit outside it:
+
+- **Editor machinery runs natively.** Language servers and formatters that the editor spawns to function — `lua-language-server`, `marksman`, `fsautocomplete`, `stylua`, `terraform-ls` — are on the host. Containerising them buys nothing and costs start-up latency on every keystroke-adjacent operation.
+- **Host CLIs the editor merely calls** — `ripgrep`, `fzf`, `tmux`, `git` — are documented prerequisites in `getting-started.adoc`.
+
+**The tool being *operated* is containerised**, even when a language's tooling surrounds it. `terraform` is the worked example: the CLI runs in a pinned `hashicorp/terraform` image behind a wrapper on `$PATH`, while `terraform-ls` — the language server — stays native.
+
+That split has a consequence worth knowing before repeating it. A native process invoking a containerised CLI must agree with it on what a path means, so the wrapper mounts the working directory **at the same path inside and out** (`-v "$PWD:$PWD" -w "$PWD"`) and drops to the invoking user (`--user`). A renamed mount such as `-w /work` breaks absolute paths — measured failing on 2026-09-11 — and without `--user` everything written is root-owned on the host. Budget for the latency too: a containerised format-on-save measured ~530-606 ms against conform's 2000 ms timeout, where a native binary is 10-30 ms.
+
 ## Other tooling
 
 - **`scripts/confluence_publish.sh`** — publish/pull a Markdown file to/from a Confluence page (`--pull`, `--comments`, `--force`); needs `CONFLUENCE_EMAIL` + related env vars. `lua/config/confluence.lua` / `lua/config/jira.lua` wrap Atlassian integration in-editor.
