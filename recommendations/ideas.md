@@ -5,7 +5,6 @@
 Agreed running order. Details live in the sections below; this is just the queue.
 
 1. **Editing at distance — GitHub issues #187–192** — *Things we'd like to add*. Six open enhancements that are really one theme with a dependency order. `#189` is the enabler and should land first; `#191` is a project in its own right and should land last. Two caveats not recorded in the issues themselves make the sequencing matter — see the entry.
-2. **Fourteen capability specs have placeholder Purposes** — *Things that seem broken*. Mechanical but wide; best done as one pass.
 
 Shipped work is **deleted from this file**, not archived in it. The record lives in three places
 that are already authoritative: the implementation in `openspec/changes/archive/<date>-<name>/`, the
@@ -217,11 +216,11 @@ use before deciding.
 
   Surfaced while validating `install-language-servers`, and entirely unrelated to it.
 
-- **fourteen capability specs have placeholder Purposes.** `openspec archive` writes `TBD - created by archiving change <name>. Update Purpose after archive.` whenever a change creates a new capability, and relies on someone circling back. Nobody has, going back to changes 01-08: `asciidoc-inbuffer-preview`, `asciidoc-syntax`, `avante-runtime`, `claudecode-session`, `completion-engine`, `diagnostics-panel`, `dotnet-debugging`, `dotnet-test-runner`, `editor-commenting`, `markdown-native-rendering`, `statusline`, `surround-text-objects`, `todo-comments`, `treesitter-textobjects`.
+- **two spec requirements are out of date, found while writing the Purposes on 2026-09-11.** Neither is a code defect; both are specs that describe a state the repository has moved on from, and correcting a requirement needs its own change rather than a prose edit.
 
-  The Purpose is the one part of a spec that says *what the capability is for*, so anyone arriving at these gets requirements with no framing. It also cannot be fixed by a delta — deltas operate on requirements, not Purpose prose — so `openspec archive` will never resolve it and each needs a direct edit.
+  **`treesitter-textobjects` — *Branch-consistent treesitter setup* requires the `master` branch.** Both plugins are pinned to `main` (`lua/plugins/treesitter.lua`), changed by `align-treesitter-providers` because the master-branch API crashes on Neovim 0.12. The requirement's *intent* is still exactly right — the two plugins must share a branch so the configured API is the one that runs — so this is a one-word correction to the branch it names, not a rethink.
 
-  Best as a single pass rather than piecemeal: fourteen short paragraphs, each derivable from the requirements already in the spec, and the context is cheapest read together. Surfaced during `retire-glow-spec-references`, where `markdown-native-rendering` was deliberately left in this state rather than becoming the one exception.
+  **`asciidoc-inbuffer-preview` specifies a capability that does not exist.** markview is not installed and there is no `<localleader>mv` toggle; it needs `cathaysia/tree-sitter-asciidoc`, absent from nvim-treesitter. The deferral is recorded at `lua/plugins/asciidoc.lua` and in `CLAUDE.md`, but the spec reads as though the feature shipped. Its Purpose now says plainly that the requirements describe intent rather than behaviour, which is the honest stopgap; the real question is whether an unimplemented capability should hold a spec at all.
 
 - **`is_console` answers the wrong question.** `M.is_console` is derived solely from `$DISPLAY`/`$WAYLAND_DISPLAY` (`lua/config/terminal.lua:77`), which asks "is a display exported?" when most callers want "can a browser be reached?". `open_url` already carries a narrow WSL exemption for exactly this reason, and the macOS case that exposed the same flaw has been declined as out of scope.
 

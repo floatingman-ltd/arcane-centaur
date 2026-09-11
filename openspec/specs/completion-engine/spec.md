@@ -1,7 +1,12 @@
 # completion-engine Specification
 
 ## Purpose
-TBD - created by archiving change 03-migrate-completion-blink. Update Purpose after archive.
+Provides insert-mode and command-line completion through `saghen/blink.cmp` on the stable v1 line, having replaced the nvim-cmp stack entirely.
+
+The keymap is the substance of this capability rather than a detail of it. One set of keys behaves identically in insert mode and on the command line: `<C-n>` opens the menu and then moves down it, `<C-p>` moves up, `<C-y>` accepts, `<C-e>` cancels and restores what was typed, `<C-k>` shows documentation, `<C-b>`/`<C-f>` scroll it. `<CR>` is deliberately **not** an accept key in either mode, so opening the menu never pre-selects anything and a completion is only ever committed on purpose. The manual trigger must also be a plain Ctrl-plus-letter chord: `Alt` and `Space` combinations are reserved by the host console and were measured never to reach Neovim at all.
+
+Sources are the language server, buffer words, filesystem paths, Conjure's REPL completions bridged through `blink.compat`, and spelling suggestions gated on `'spell'`. The spelling source is wired correctly but its suggestions are filtered out of the menu in practice — a known, reviewed and accepted behaviour recorded in `recommendations/ideas.md`, with native `<C-x>s` as the working route.
+
 ## Requirements
 ### Requirement: blink.cmp is the completion engine
 Insert-mode and command-line completion SHALL be provided by `saghen/blink.cmp`, pinned to the stable v1 release line. The legacy nvim-cmp stack (`nvim-cmp`, `cmp-nvim-lsp`, `cmp-buffer`, `cmp-path`, `cmp-cmdline`, `cmp_luasnip`) SHALL be removed.

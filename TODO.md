@@ -58,10 +58,7 @@ A dropped stash is unreachable by `git stash list`, so `git fsck --unreachable` 
   `lua/plugins/plantuml.lua` back to `/utxt/` once confirmed.
   See `docs/guides/cli-console-mode.md` "Known limitation" callout.
 
-- [ ] **avante.nvim version pin** — pinned to `v0.0.27` (latest release with
-  prebuilt Linux binaries). Monitor [releases](https://github.com/yetone/avante.nvim/releases)
-  and unpin `version = "v0.0.27"` in `lua/plugins/avante.lua` when a newer
-  release publishes Linux `.so` files.
+- [X] ~~**avante.nvim version pin** — pinned to `v0.0.27`~~ — **stale, closed 2026-09-11.** `lua/plugins/avante.lua` pins `version = "v0.1.*"` and has done since `avante-runtime`; the `v0.0.27` pin and its do-not-update comment were retired by that change. This entry outlived the problem, which is the same failure the Git Housekeeping section above was rewritten to stop repeating: verify before carrying an item forward.
 
 - [x] **`lazy-lock.json` is gitignored** — currently excluded from version control.
   Consider whether to track it (guarantees reproducible installs across machines)

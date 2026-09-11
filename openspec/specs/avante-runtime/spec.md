@@ -1,7 +1,12 @@
 # avante-runtime Specification
 
 ## Purpose
-TBD - created by archiving change 05-upgrade-avante-drop-dressing. Update Purpose after archive.
+Keeps `avante.nvim` on a maintained release that ships prebuilt Linux binaries — the `v0.1.*` line, built with `make` — rather than the stale `v0.0.27` pin it replaced, which carried a "do not update" comment and no working build.
+
+It also fixes the dependency set at `plenary.nvim`, `nui.nvim` and `nvim-web-devicons`. `dressing.nvim` is deliberately absent: the native `vim.ui.select` and `vim.ui.input` are wanted instead. `plenary.nvim` is retained for a reason that has nothing to do with avante — `diffview.nvim` depends on it transitively, and trimming it is the kind of edit that breaks an unrelated plugin silently.
+
+Provider configuration is Ollama-only: model `qwen2.5:0.5b`, opened with `<leader>aa` or `<leader>ao`. There is no `claude` provider and no `<leader>ac` map. That absence is a recorded decision about subscription-OAuth terms, not an oversight, and `claudecode-session` is where editor-aware Claude work actually lives.
+
 ## Requirements
 ### Requirement: avante.nvim pinned to a maintained release with Linux binaries
 `avante.nvim` SHALL be pinned to a current stable release (`v0.1.x` or later) that ships prebuilt Linux binaries, and built via the build step documented for that release. The previous `v0.0.27` pin and its "do not update" comment SHALL be retired.

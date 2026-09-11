@@ -1,7 +1,12 @@
 # asciidoc-syntax Specification
 
 ## Purpose
-TBD - created by archiving change 02-enhance-asciidoc-authoring. Update Purpose after archive.
+Makes AsciiDoc a first-class editing filetype: syntax highlighting, section folding, and language-aware highlighting inside `[source,<lang>]` blocks, via `habamax/vim-asciidoctor` loaded on the `asciidoctor` filetype.
+
+The filetype name is the load-bearing part. `*.adoc` and `*.asciidoc` resolve to `asciidoctor`, **not** `asciidoc`, and that is registered at startup through `vim.filetype.add` rather than left to the plugin's own `ftdetect` — so the first file opened in a cold session resolves correctly rather than depending on load order. Every `after/ftplugin/` file and filetype-keyed module in this repository must key on `asciidoctor`; the legacy name is gone and nothing should reintroduce it.
+
+The plugin's document-compile commands are disabled deliberately, leaving the Docker/Antora preview as the single conversion path rather than a second one competing with it.
+
 ## Requirements
 ### Requirement: AsciiDoc syntax, folding, and fenced-code highlighting
 AsciiDoc files SHALL be highlighted, foldable, and fenced-code-aware via `habamax/vim-asciidoctor`, loaded lazily on the `asciidoctor` filetype. The plugin's own document-compile commands SHALL be disabled so the existing Docker/Antora preview remains the single conversion path.

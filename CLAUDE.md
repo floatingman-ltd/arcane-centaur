@@ -56,7 +56,7 @@ The OpenSpec and project workflows are also available as Claude Code skills in *
 
 `openspec archive` has three behaviours worth knowing before you run it:
 
-- **It leaves a placeholder Purpose** on every capability it creates: `TBD - created by archiving change <name>. Update Purpose after archive.` Deltas operate on requirements, not Purpose prose, so archiving can never fill it in. **Write it by hand immediately** — 14 specs already carry the placeholder because nobody did, and it is trivial to make 15.
+- **It leaves a placeholder Purpose** on every capability it creates: `TBD - created by archiving change <name>. Update Purpose after archive.` Deltas operate on requirements, not Purpose prose, so archiving can never fill it in. **Write it by hand immediately.** 14 specs accumulated the placeholder because nobody did; all 14 were written on 2026-09-11 and the count is now zero. It took one pass to clear and one archive to recreate, so the discipline matters more than the backlog did.
 - **It does not touch existing Purpose prose either.** A change that overturns something a Purpose asserts leaves that Purpose stating the opposite of its own requirements. `code-folding` and `fsharp-lsp` both had to be corrected by hand for exactly this.
 - **It aborts on legacy specs missing `## Purpose`, and is not atomic** — it partial-writes specs before aborting, so a failed archive can leave the tree half-updated. Check `git status` after a failure rather than assuming nothing happened.
 

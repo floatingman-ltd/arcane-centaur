@@ -1,7 +1,12 @@
 # claudecode-session Specification
 
 ## Purpose
-TBD - created by archiving change 08-add-claudecode-session. Update Purpose after archive.
+Provides a persistent, editor-aware Claude Code session through `coder/claudecode.nvim`, which speaks the WebSocket MCP protocol so the running `claude` CLI can see the buffers you are working in — session toggle and focus, adding a buffer as context, sending a visual selection, and accepting or rejecting a proposed diff, all under the `<leader>gc` group.
+
+Two constraints shape the configuration as much as the features do. It uses Neovim's native terminal provider rather than pulling in `snacks.nvim`, and it stays entirely out of the `<leader>a` namespace, which belongs to avante. A keymap collision between two AI assistants is precisely the failure this capability is written to prevent.
+
+It coexists with the one-shot `claude_cli` commands rather than replacing them: the session is for sustained work, while `<leader>gcs` and `<leader>gce` remain for a single question about the buffer in front of you.
+
 ## Requirements
 ### Requirement: Editor-aware Claude Code session via MCP
 A persistent, editor-aware Claude session SHALL be provided by `coder/claudecode.nvim` over the WebSocket MCP protocol, exposing session toggle/focus, context add, selection send, and diff accept/reject, with maps under the `<leader>gc` "Claude" group.

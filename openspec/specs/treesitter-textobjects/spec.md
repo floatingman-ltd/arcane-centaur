@@ -1,7 +1,12 @@
 # treesitter-textobjects Specification
 
 ## Purpose
-TBD - created by archiving change 01-add-treesitter-textobjects. Update Purpose after archive.
+Provides treesitter-based select text objects — `af`/`if` for a function, `ac`/`ic` for a class, `aa`/`ia` for an argument — together with `]f`/`[f`/`]F`/`[F` motions between functions, for F#, Haskell, C# and Lua.
+
+Where it does *not* apply is as much of the capability as where it does. The text objects are disabled for lisp, clojure, scheme, fennel and janet, so vim-sexp keeps `af`/`if`/`aF`/`iF` as s-expression form objects in exactly the languages where a form, not a function, is the unit you want to act on. The motion keys are likewise chosen to avoid vim-unimpaired's bracket maps, gitsigns' `]h`/`[h`, and the class motions `]c`/`[c`.
+
+**One requirement below is out of date, and is left standing rather than silently edited.** *Branch-consistent treesitter setup* requires the `master` branch; both plugins are now pinned to `main` (`lua/plugins/treesitter.lua`), changed by `align-treesitter-providers` because the master-branch API crashes on Neovim 0.12. The intent behind the requirement still holds exactly — the two plugins must be on the same branch, so that the configured API is the one that actually runs — but the branch it names is wrong, and correcting a requirement needs its own change rather than a Purpose rewrite.
+
 ## Requirements
 ### Requirement: Treesitter select and move text objects for non-Lisp languages
 Treesitter-based select text objects (`af`/`if` function, `ac`/`ic` class, `aa`/`ia` argument) and function move motions (`]f`/`[f`/`]F`/`[F`) SHALL be available via `nvim-treesitter-textobjects` for F#, Haskell, C#, and Lua. The `haskell` parser SHALL be added to `ensure_installed`.
