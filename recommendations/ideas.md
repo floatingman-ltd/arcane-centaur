@@ -6,6 +6,10 @@ Agreed running order. Details live in the sections below; this is just the queue
 
 1. **Editing at distance — GitHub issues #187–192** — *Things we'd like to add*. Six open enhancements that are really one theme with a dependency order. `#189` is the enabler and should land first; `#191` is a project in its own right and should land last. Two caveats not recorded in the issues themselves make the sequencing matter — see the entry.
 
+2. **Lua cheatsheet** — *Things we'd like to add*, entry 1d. Lua is the only language in `nav.adoc` with a Guide and no Cheatsheet. Docs-only, no runtime risk, no TEST_PLAN section; the cheapest item in this file. Queued 2026-09-11 ahead of Terraform deliberately, so the inconsistency closes before new languages add to it.
+3. **Terraform support** — *Things we'd like to add*, entry 1c. Every answer is official and `conform` already ships `terraform_fmt`. One decision is open before implementation: how the `terraform` binary is provided, given it is not installed and the containers principle. Kept as a change entirely separate from the Lua work.
+4. **JavaScript / TypeScript** — *Things we'd like to add*, entry 1a. **Explore before proposing.** The unknowns are real — `ts_ls` versus `vtsls`, prettier versus biome, and whether to run `eslint` as a second server against the same buffer, which this configuration has never done. Scoping it as a proposal without settling those would produce a proposal that has to be rewritten.
+
 Shipped work is **deleted from this file**, not archived in it. The record lives in three places
 that are already authoritative: the implementation in `openspec/changes/archive/<date>-<name>/`, the
 validation in `openspec/TEST_PLAN.md`, and anything a *user* needs in the Antora docs under
