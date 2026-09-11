@@ -6,6 +6,8 @@ This file exists because `openspec/TEST_PLAN.md` records deferrals *inside the s
 
 Two entries below record work believed to exist that **does not** — `reorganize-per-plugin-docs` and `document-setup-prerequisites`. Both were checked while compiling this file. That is the strongest argument for the file existing: deferrals tracked only in notes decay into deferrals tracked nowhere.
 
+> **Active work, paused — read this first.** `add-remote-session-profile` is the only change in flight. Code complete and pushed on `feat/add-remote-session-profile`; validation blocked on the remote host being rebuilt as of 2026-09-11, expected back around 2026-09-25. Full state in **group C** below, cases in `openspec/TEST_PLAN.md` § `Change · add-remote-session-profile`. Everything else in this file is older and unblocked.
+
 **A tick in `TEST_PLAN.md` does not always mean a human looked.** Where a box was closed on programmatic evidence with the human check deferred, it is listed below. That is deliberate and recorded in each case, but it means the plan reads greener than reality.
 
 ---
@@ -49,6 +51,26 @@ Genuinely incomplete, and each says so in place.
 ---
 
 ## C. Blocked on hardware or environment
+
+**`add-remote-session-profile` — remote validation. Blocked on the remote host, which is being rebuilt as of 2026-09-11; expected back around 2026-09-25.** This is the one live piece of work in the repository, and it is paused rather than abandoned.
+
+The code is complete and pushed: branch `feat/add-remote-session-profile`, commits `f009e6f` (proposal artifacts) and `d35552b` (implementation). It adds `term.is_remote` to `lua/config/terminal.lua` and wires `ttimeoutlen` and lualine's repaint interval to it, closing the code side of GitHub issues #189, #188 and #187. 19 of 31 tasks are done; the remainder is validation plus post-merge close-out.
+
+**To resume, read `openspec/TEST_PLAN.md` § `Change · add-remote-session-profile`.** It holds all 39 boxes, none ticked, each with the headless evidence already gathered recorded underneath it as a blockquote.
+
+| Case | State |
+|---|---|
+| `RS.1`, `RS.2`, `RS.5`, `RS.6`, `RS.7`, `RS.11`, `RS.12` | Headless evidence recorded. Needs a live session to confirm, which is quick. |
+| `RS.3`, `RS.8`, `RS.9`, `RS.10` | **Needs the remote host.** Nothing can be done until it returns. |
+| `RS.4` | **Needs the remote host and tmux on it.** The highest-value case — see below. |
+
+`RS.4` is the one worth the setup effort. It is the case the second detection step exists for: a tmux session started *before* the SSH connection hosts a Neovim with no `SSH_*` variables at all, because a process's environment is fixed when it starts and tmux cannot update panes that already exist. The mechanism was reproduced locally on 2026-09-10 by recreating the same asymmetry — pane created first, `tmux set-environment SSH_CONNECTION` set afterwards, `is_remote` read `true` from a pane whose own environment had zero `SSH_*` entries — but never over a real link, which is the whole point of the case.
+
+`RS.10` is a feel-test of `<Esc>` latency at `ttimeoutlen=100` and has no headless equivalent at all. Record the verdict rather than just ticking it; 75 ms is the recorded fallback if 100 ms proves intolerable.
+
+> **One defect was already found and fixed during implementation**, and its regression case is `RS.7`. Adding `User GitSignsUpdate` to lualine's `options.refresh.events` looks correct and is not: lualine builds that list into one command with `string.format("autocmd %s %s %s %s", ...)`, so the space splits the event list and everything after it becomes the pattern — leaving all ten real events bound to the pattern `GitSignsUpdate` instead of `*`, and the statusline silently not refreshing on cursor movement. Fixed by using dedicated autocommands in a `LualineAsyncRefresh` augroup. If a future change revisits lualine's refresh wiring, this is the trap.
+
+**Post-merge close-out is task group 6** in `openspec/changes/add-remote-session-profile/tasks.md`: close the three issues, strip `#187`/`#188`/`#189` from the priority entry in `recommendations/ideas.md` leaving `#190`-`#192`, archive the change, and write the `remote-session-profile` Purpose by hand immediately — `openspec archive` leaves a `TBD` placeholder that no delta can fill, and 14 specs already carry one.
 
 **macOS `open_url`.** No longer deferred — **formally declined**. macOS is out of scope for this configuration; recorded under *Declined* in `recommendations/ideas.md` with the reasoning, and explicitly marked do-not-re-log. Listed here only so nobody reads its absence as an oversight.
 
