@@ -234,3 +234,18 @@ use before deciding.
   accepted there is no way to jump between its placeholders. A pre-existing gap rather than a
   regression; explicitly out of scope for the `fix-blink-completion-keymap` change, which only
   addresses the manual trigger and the cross-mode accept key.
+
+- **eight real Lua diagnostics, six of them newly visible.** Surfaced on 2026-09-11 by `configure-lua-ls-workspace`, which gave `lua_ls` the workspace configuration it had never had. **Not introduced by that change** — it touched none of these files; they were simply invisible underneath 659 `Undefined global` reports. Recorded here rather than fixed there, because they are unrelated to each other and to the configuration that hid them.
+
+  | File | Line | Finding |
+  |---|---|---|
+  | `lua/config/http_preview.lua` | 99, 103, 110, 115 | `Need check nil` ×4 |
+  | `lua/config/http_preview.lua` | 115 | `Cannot assign (uv.uv_tcp_t)? to parameter uv.uv_stream_t` |
+  | `lua/config/claude_cli.lua` | 61 | `Cannot assign (integer\|unknown)? to parameter integer` |
+  | `lua/plugins/fzf-lua.lua` | 8 | `Undefined type or alias fzf-lua.Config` — **pre-existing**, visible before the fix |
+  | `testdocs/hello.lua` | 13 | `Unused local x` — **pre-existing**, and only a fixture |
+
+  The five `http_preview.lua` entries are worth taking first: four missing nil checks and an optional-type assignment, all in the same file, all in socket-handling code where a nil is precisely what you would expect to have to handle. That those two pre-existing entries were the *only* findings visible beforehand is the measure of what the noise was costing.
+
+  **Do not let the count grow back.** `openspec/TEST_PLAN.md` § `Change · configure-lua-ls-workspace` records the expected total so a later reader has something to compare against.
+

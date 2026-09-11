@@ -122,7 +122,7 @@ Note several of these reference `docs/guides/*.md` paths that predate the Antora
 
 **The context-aware cheatsheet buries its context.** `<leader>?` concatenates `core.md` then the filetype sheet, so filetype content starts around line 213 of a 259-line float — the "context-aware" part is the least visible part. Found 2026-09-09 while validating `add-fsharp-indent` `FI.8`; **not yet logged in `ideas.md`**. Jumping the cursor to the filetype heading on open would fix it.
 
-**`lua_ls` reports `Undefined global vim` across the whole tree.** Every `after/ftplugin/*.lua` and `lua/**` file shows it. Pre-existing and cosmetic — it is a missing lua_ls workspace/library configuration, not a code defect — but it means real diagnostics are buried in noise, which is how a genuine `unpack` deprecation nearly went unnoticed on 2026-09-08.
+**~~`lua_ls` reports `Undefined global vim` across the whole tree.~~ Fixed 2026-09-11** by `configure-lua-ls-workspace`. The diagnosis was right — a missing workspace/library configuration — but **"cosmetic" was wrong**, and worth recording as a lesson about this file's own vocabulary. Measured before the fix: 661 diagnostics across 62 files, 659 of them `Undefined global`. A list that is 99.7% noise is not untidy, it is unread, which is exactly how the `unpack` deprecation nearly slipped through on 2026-09-08. After the fix: 8 diagnostics, every one a real finding, now listed in `recommendations/ideas.md`. Six of those eight had never been visible.
 
 ---
 
