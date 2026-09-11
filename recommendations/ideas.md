@@ -4,11 +4,13 @@
 
 Agreed running order. Details live in the sections below; this is just the queue.
 
-1. **Editing at distance — GitHub issues #187–192** — *Things we'd like to add*. Six open enhancements that are really one theme with a dependency order. `#189` is the enabler and should land first; `#191` is a project in its own right and should land last. Two caveats not recorded in the issues themselves make the sequencing matter — see the entry.
+1. **Visual buffer tabbing / full-screen panels** — *Things we'd like to add*, entry 2. **Explored 2026-09-11 and ready to propose.** Moved to the head of the queue on the user's instruction the same day, ahead of the editing-at-distance issues. The exploration rejected the right-hand sidebar the request started from and landed on native tabpages for the console plus avante's existing `zen_mode()` for avante. One decision is open before a proposal can be written (⑤: what `<leader>T` becomes), and one prerequisite defect should land first or alongside — `nvim_list_wins()` is tabpage-blind at four call sites, see *Things that seem broken*.
 
-2. **Lua cheatsheet** — *Things we'd like to add*, entry 1d. Lua is the only language in `nav.adoc` with a Guide and no Cheatsheet. Docs-only, no runtime risk, no TEST_PLAN section; the cheapest item in this file. Queued 2026-09-11 ahead of Terraform deliberately, so the inconsistency closes before new languages add to it.
-3. **Terraform support** — *Things we'd like to add*, entry 1c. Every answer is official and `conform` already ships `terraform_fmt`. One decision is open before implementation: how the `terraform` binary is provided, given it is not installed and the containers principle. Kept as a change entirely separate from the Lua work.
-4. **JavaScript / TypeScript** — *Things we'd like to add*, entry 1a. **Explored 2026-09-11; still not ready to propose.** The exploration found that the three original unknowns (`ts_ls` vs `vtsls`, prettier vs biome, eslint as a second server) are all downstream of one unanswered question: whether this is for editing the occasional JS file or for real frontend application work. Those are a weekend and a project respectively. It also found that the Node dependency is already carried and that `javascript` is already a loaded filetype, so two arguments against it turned out to be false. See the entry for what a proposal would need.
+2. **Editing at distance — GitHub issues #187–192** — *Things we'd like to add*. Six open enhancements that are really one theme with a dependency order. `#189` is the enabler and should land first; `#191` is a project in its own right and should land last. Two caveats not recorded in the issues themselves make the sequencing matter — see the entry.
+
+3. **Lua cheatsheet** — *Things we'd like to add*, entry 1d. Lua is the only language in `nav.adoc` with a Guide and no Cheatsheet. Docs-only, no runtime risk, no TEST_PLAN section; the cheapest item in this file. Queued 2026-09-11 ahead of Terraform deliberately, so the inconsistency closes before new languages add to it.
+4. **Terraform support** — *Things we'd like to add*, entry 1c. Every answer is official and `conform` already ships `terraform_fmt`. One decision is open before implementation: how the `terraform` binary is provided, given it is not installed and the containers principle. Kept as a change entirely separate from the Lua work.
+5. **JavaScript / TypeScript** — *Things we'd like to add*, entry 1a. **Explored 2026-09-11; still not ready to propose.** The exploration found that the three original unknowns (`ts_ls` vs `vtsls`, prettier vs biome, eslint as a second server) are all downstream of one unanswered question: whether this is for editing the occasional JS file or for real frontend application work. Those are a weekend and a project respectively. It also found that the Node dependency is already carried and that `javascript` is already a loaded filetype, so two arguments against it turned out to be false. See the entry for what a proposal would need.
 
 Shipped work is **deleted from this file**, not archived in it. The record lives in three places
 that are already authoritative: the implementation in `openspec/changes/archive/<date>-<name>/`, the
@@ -115,9 +117,40 @@ Everything else in this file is unranked and can be picked up opportunistically.
 
    **If these are ever ranked:** Lua's cheatsheet first, because it closes a visible inconsistency for almost nothing. Terraform second, because every answer is official and the REPL fit is genuinely nice. JavaScript/TypeScript third and treated as a project, since it introduces a Node dependency and the first two-server buffer. Assembler last, and not costed at all until the purpose question is answered.
 
-2. some sort of visual buffer tabbing:
-   - the sidebar panels for claude.cli and avanate.nvim are awkward to read, it seems both would like to be "full screen" 
-   - the terminal at the bottom of the screen requires scrolling, it too would like a "full screen"
+2. **visual buffer tabbing — explored 2026-09-11; the answer is probably native tabpages, and the original framing was wrong.**
+
+   The note this replaces read: the sidebar panels for claude.cli and avante.nvim are awkward to read and both seem to want to be "full screen"; the terminal at the bottom of the screen requires scrolling and wants the same. The request that prompted the exploration was more specific — a **tabbed buffer control on the right side of the screen**, sitting where nvim-tree sits on the left, listing open buffers including the console and the avante buffer, with the avante entry needing to remain *interactive with a text buffer*. The motivation is remote work: locally the console problem is solved by opening another terminal-emulator tab, and over a single SSH connection that is not available.
+
+   **The finding that decides the design: avante can never be a tab.** `M.sidebars` is keyed by tabpage handle (`avante/init.lua:501-507`), `Sidebar:new(id)` documents `id` as "the tabpage id retrieved from `api.nvim_get_current_tabpage()`" (`avante/sidebar.lua:157`), and `Sidebar:initialize()` binds `code.winid`/`code.bufnr` to whatever window is current at open time. An avante opened in its own tabpage therefore gets its own sidebar instance bound to that tab's scratch buffer, not to your code. The "shared context" objection is structural, not a preference.
+
+   **Avante already ships the full-screen behaviour, and ships it correctly.** `require("avante.api").zen_mode()` (alias of `full_view_ask`, `avante/api.lua:120-131`, default binding `<leader>az` per `avante/config.lua:923`) calls `Sidebar:toggle_code_window()`, which sets the code window's **width to 0** rather than closing it and stashes every non-sidebar window's dimensions in `win_size_store` for restore. `code.winid` stays valid, so apply-diff, selection and `auto_add_current_file` keep working, and `Sidebar:close()` un-maximizes first so the layout cannot be stranded. This is exactly the trap a generic buffer-list control would fall into: closing the code window to make room would sever the binding.
+
+   **So the two halves of this entry have different answers, and that is the correct decomposition rather than a compromise.** The console is context-free — a shell does not care which buffer you were in — so it takes a dedicated tabpage. Avante is context-bound and stays in the code tab, made large by zen mode. The "tabbed control" then collapses into Neovim's native tabline, which only ever has to list *tabs*, never buffers.
+
+   **The cost comparison seals it.** A permanent right-hand sidebar costs 25-30 columns always — roughly 35% of an 80-column SSH terminal, which is in direct tension with the full-screen goal that motivated it. `showtabline` is at its default `1` and `tabline` is `""`, so the native strip costs one row and only appears once a second tab exists. Cheaper *and* better-behaved.
+
+   **No off-the-shelf plugin does the sidebar version anyway.** `bufferline.nvim` and `tabby.nvim` are horizontal-only. `neo-tree.nvim` has a `buffers` source and can sit `position = "right"` — the closest fit — but it enumerates listed file buffers, so avante's unlisted nui buffers would never appear and a custom source would be most of the work. `folke/edgy.nvim` (stacked, collapsible titled panels in one edge) is the only serious candidate and was **not** investigated; its Neovim 0.12 status is unknown and CLAUDE.md's API-drift warning makes that a real question. Only worth reopening if tabpages are rejected.
+
+   **What would remain to build, if tabpages are adopted:**
+
+   | # | Item | Note |
+   |---|---|---|
+   | ① | `nvim_list_wins()` → `nvim_tabpage_list_wins(0)` | a **defect in shipped behaviour** — see *Things that seem broken*. Standalone, four lines, and a prerequisite for all of the below |
+   | ② | tab labels | the default tabline would render a console tab as `term://…//4213:/bin/zsh`. lualine is installed with its `tabline` section unused, and `add-remote-session-profile` is already adding `options.refresh` for `statusline`/`tabline`/`winbar` — land that first and the budget is already there |
+   | ③ | tab navigation keymaps + which-key entries | `gt`/`gT` work natively but are bound and described nowhere, so which-key cannot surface them |
+   | ④ | a create-or-switch way to reach the console tab | must be idempotent, like `<leader>L` is |
+   | ⑤ | decide `<leader>T`'s fate | see below — the one genuinely open decision |
+   | ⑥ | nvim-tree `tab.sync` | currently unset, so it is undecided whether a new tab gets a tree. A console tab should not have one |
+
+   **⑤ is the open decision.** A single global `term_buf` means a bottom split and a console tab would show the *same* shell. Three readings: **keep both** (`<leader>T` stays the 15-line glance, the tab is where you work, one shell two viewports); **`<leader>T` becomes "go to the console tab"** (the bottom split disappears and `ide-layout`'s *Full-width terminal toggle* requirement is rewritten rather than extended); or **two shells** (the glance keeps `term_buf`, the tab gets its own — more state, but the glance stops scrolling away what you were doing).
+
+   **Reading ⑤ as "the console tab replaces the split" would retire the reduced-width terminal defect** recorded under *Things that seem broken* instead of fixing it, which is the cheapest available outcome. Weigh that before anyone touches the current geometry.
+
+   **Unsettled, one live session away from an answer:** does zen mode behave under the IDE layout? `toggle_code_window` only zeroes *widths* in vertical layout, and the terminal is a full-width `botright` row — a different axis — so 15 lines of shell probably survive underneath "full screen" avante. It also closes every floating window unconditionally on the way in. Headless probing of whether the default `<leader>az` binding actually lands was **inconsistent across runs** and should not be trusted; the `<Plug>(AvanteZenMode)` map and the `zen_mode()` API exist regardless, so the capability is reachable either way.
+
+   **Spec impact.** This modifies `openspec/specs/ide-layout/spec.md`, three of whose requirements name the bottom split by geometry. Depending on ⑤ it either extends or replaces *Full-width terminal toggle*. Item ① is arguably its own hotfix — a defect in shipped behaviour, not a new capability — and does not need the rest of this to be worth doing.
+
+   **Also open:** is one console tab enough, or do you want several (a shell per concern — build, logs, git — which is the tmux habit and which tabpages do natively)? That turns ④ into a create-or-switch-*which* problem and pushes toward naming tabs.
 3. signature help, and a way to browse method overloads. Today there is no way to see a method's
    other overloads. Roslyn collapses them into a *single* completion item and just notes the count
    ("+16 overloads"), so the completion documentation window cannot page through them — it renders
@@ -262,6 +295,21 @@ use before deciding.
 
 ## Things that seem broken
 
+- **`nvim_list_wins()` is global across tabpages, and four call sites assume it is not.** Confirmed headlessly: with two tabpages open, `nvim_list_wins()` returns both tabs' windows while `nvim_tabpage_list_wins(0)` returns only the current tab's. Harmless today because nothing in this configuration creates a second tabpage — and live the moment anyone does, which is exactly what the tabpage exploration above proposes.
+
+  | Site | Behaviour once a second tabpage exists |
+  |---|---|
+  | `lua/keymaps.lua:133` `toggle_terminal` | `<leader>T` in tab 2 finds tab 1's terminal window, **closes it there**, and returns. Tab 2 gets no terminal and tab 1 silently loses its own — no error, nothing on screen in the tab you are looking at |
+  | `lua/keymaps.lua:156` `ide_layout` | `editor_win` may be picked from another tabpage, and the closing `nvim_set_current_win(editor_win)` then **switches you to that tabpage** |
+  | `lua/keymaps.lua:171` `ide_layout` | tab 1's terminal counts as "visible", so `<leader>L` in tab 2 opens no terminal there |
+  | `lua/plugins/nvim-tree.lua:57` `QuitPre` guard | tab 1's editor window lands in `remaining`, hits the early `return`, and **the guard disables itself** — in precisely the situation where nvim-tree can be left as a lone full-width window |
+
+  `lua/keymaps.lua:227` (`:Bd`) uses the same call and is **correct as written**: clearing the target buffer out of every window in every tabpage before `bdelete` is the intended behaviour. Do not change that one.
+
+  The fix is `nvim_list_wins()` → `nvim_tabpage_list_wins(0)` at the four sites above. It is correct independently of whether the tabpage work proceeds, and it contradicts `openspec/specs/ide-layout/spec.md`'s *Tree never left as the last window* requirement, which is written without any tabpage qualifier.
+
+  **Not ours to fix, but present:** `claudecode.nvim` has the same blindness at `lua/claudecode/terminal/native.lua:33`, `:181` and `:265`, so a Claude Code session in one tab is discoverable and mutable from another.
+
 - the terminal opens at **reduced width when toggled from inside the tree window**, instead of full width. Measured in a 171-column terminal: opened from the text pane `winwidth(0)` is 171 (correct); opened from the tree it is 140 — which is 171 minus the 30-column tree minus its separator, i.e. the split lands below the *editor column* rather than spanning the screen. The tree stays full height beside it.
 
   This contradicts an existing requirement. `openspec/specs/ide-layout/spec.md` — *Requirement: Full-width terminal toggle* — says the terminal SHALL open full-width at the bottom "regardless of which window has focus when invoked", with a scenario explicitly stating "not inside the tree column". `toggle_terminal` in `lua/keymaps.lua` does use `botright split`, which should be unconditional, so something is relocating the window afterwards; nvim-tree re-establishing its own layout on `WinNew` is the obvious suspect but is **unconfirmed**. Not reproducible headlessly — a scripted run with the same arrangement produced a correct full-width 171 split, so the trigger is not understood.
@@ -269,6 +317,8 @@ use before deciding.
   `<leader>L` (IDE layout assembly) is **not** affected — it opens its terminal full-width through the same `botright split` code, which narrows the fault to `toggle_terminal` invoked with focus already in the tree window rather than to the split call itself.
 
   Found during `fix-tree-terminal-keymaps` validation (TEST_PLAN TK.3/TK.4) and deliberately **not fixed there**: the terminal panel's split approach is itself under review (see the full-screen panel idea above), so effort spent on the current geometry may be wasted. Revisit if the panel survives in its present form.
+
+  **Update 2026-09-11:** that review has now happened — see entry 2 under *Things we'd like to add*. If decision ⑤ there goes the way of "the console tab replaces the bottom split", this defect is retired rather than fixed. Do not spend effort on it until ⑤ is answered.
 
 - **spell suggestions never reach the blink menu, because blink filters them out.** **Reviewed and accepted as-is — see *Declined* above. Kept for the analysis, not as pending work.** Typing a misspelled word and pressing `<C-n>` shows nothing. Reported as "worked when the word was incomplete, does nothing once it is complete", which is exactly the shape of the bug.
 
