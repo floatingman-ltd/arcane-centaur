@@ -1,7 +1,10 @@
 # surround-text-objects Specification
 
 ## Purpose
-TBD - created by archiving change 04-modernize-editing-plugins. Update Purpose after archive.
+Provides add, change and delete-surrounding operations through `kylechui/nvim-surround` — `ysiw"` to wrap a word, `cs"'` to change a pair, `ds(` to remove one — having replaced vim-surround.
+
+Dot-repeat is the reason for the swap. nvim-surround implements it natively, so a surround operation repeats with `.` without vim-repeat needing to be installed to make it work.
+
 ## Requirements
 ### Requirement: Surround operations via nvim-surround
 Add/change/delete-surrounding operations SHALL be provided by `kylechui/nvim-surround`, replacing `vim-surround`, using the `ys`/`cs`/`ds` mnemonics and providing native dot-repeat (no dependency on vim-repeat for surround).

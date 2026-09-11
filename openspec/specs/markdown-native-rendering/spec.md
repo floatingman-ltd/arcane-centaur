@@ -1,7 +1,12 @@
 # markdown-native-rendering Specification
 
 ## Purpose
-TBD - created by archiving change replace-glow-renderer. Update Purpose after archive.
+Renders markdown inside Neovim using the editor's own treesitter parsers, with no external binary involved. It replaced a `glow`-based path whose failure mode was a "binary not found" notification on any machine that did not happen to have it installed.
+
+Three properties are the point of doing it in-editor. Prose wraps at word boundaries at any window width and reflows when the window is resized, because the editor performs the wrapping rather than replaying output that was wrapped elsewhere. Every markdown surface — the cheatsheet, the mini-guides and the forced popup preview — shares a single rendering entry point, so their behaviour cannot quietly diverge. And tables render with visible column structure instead of as raw pipe-delimited text.
+
+One trade-off is accepted rather than solved: a table wider than the float may wrap, because a single window cannot both wrap prose and scroll tables. That is documented rather than worked around.
+
 ## Requirements
 ### Requirement: Markdown renders in-editor without an external binary
 Markdown SHALL be rendered inside Neovim, using the editor's own treesitter parsers, with no external binary invoked. No preview surface SHALL depend on the `glow` binary being present on `$PATH`, and no preview surface SHALL emit a "binary not found" notification.

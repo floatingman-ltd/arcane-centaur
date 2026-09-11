@@ -1,7 +1,10 @@
 # diagnostics-panel Specification
 
 ## Purpose
-TBD - created by archiving change 06-add-diagnostics-todo-panel. Update Purpose after archive.
+Provides a persistent, filterable list panel via `folke/trouble.nvim` v3 for the things that otherwise scroll past in a float or sit in an unstyled quickfix window: project and buffer diagnostics, document symbols, LSP references, the quickfix list and the location list — all reached from the `<leader>x` group.
+
+It is additive by design. The native diagnostic maps `[d`, `]d` and `<leader>e` keep their existing behaviour and are **not** delegated to trouble, so the fast path for "what is wrong on this line" stays a keystroke rather than becoming a panel.
+
 ## Requirements
 ### Requirement: Persistent diagnostics and list panel via trouble.nvim
 A persistent, filterable panel SHALL be available via `folke/trouble.nvim` (stable v3) for diagnostics (project and buffer), symbols, LSP references, the quickfix list, and the location list, opened from the `<leader>x` group.

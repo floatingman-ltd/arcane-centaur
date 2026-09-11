@@ -1,7 +1,10 @@
 # editor-commenting Specification
 
 ## Purpose
-TBD - created by archiving change 04-modernize-editing-plugins. Update Purpose after archive.
+Comment toggling comes from Neovim's built-in `gc` operator, core since 0.10, rather than from a plugin. `vim-commentary` was removed and `lua/plugins/vim-commentary.lua` no longer exists.
+
+Nothing about the interface changed in that removal: `gcc`, `gc{motion}` and visual-mode `gc` behave as they always did, and the operation is dot-repeatable. The capability exists mainly to record that the plugin's absence is a decision rather than a gap, so that nobody reinstalls it to fix a problem that is not there.
+
 ## Requirements
 ### Requirement: Comment toggling via the native gc operator
 Comment toggling SHALL be provided by Neovim's built-in `gc` operator (core since 0.10), and the `vim-commentary` plugin SHALL be removed. The user-facing interface (`gcc`, `gc{motion}`, visual-mode `gc`) SHALL be unchanged.

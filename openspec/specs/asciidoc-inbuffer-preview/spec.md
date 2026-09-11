@@ -1,7 +1,12 @@
 # asciidoc-inbuffer-preview Specification
 
 ## Purpose
-TBD - created by archiving change 02-enhance-asciidoc-authoring. Update Purpose after archive.
+Specifies an opt-in, toggle-able rendered view of an AsciiDoc buffer, drawn in place with extmarks by `OXY2DEV/markview.nvim`, so a document can be read as formatted text without leaving Neovim or starting Docker. Rendering starts disabled, because the capability is for reading rather than for editing.
+
+**Not implemented.** markview is not installed and no `<localleader>mv` toggle exists: it depends on `cathaysia/tree-sitter-asciidoc`, which is absent from nvim-treesitter, and the work was deferred rather than abandoned — see the note at `lua/plugins/asciidoc.lua`. The requirements below therefore describe intended behaviour, not current behaviour.
+
+The Docker/Antora browser preview remains the only rendered view of AsciiDoc available today. That is exactly why the second requirement matters when the grammar does land: this capability has to be purely additive, leaving both the Docker preview and the whole Markdown rendering path untouched.
+
 ## Requirements
 ### Requirement: Opt-in in-buffer AsciiDoc rendering
 AsciiDoc buffers SHALL support an opt-in, toggle-able in-buffer rendered view via `OXY2DEV/markview.nvim`. Rendering SHALL start disabled and be controlled by a buffer-local toggle, so editing is unaffected until the user requests a rendered view.

@@ -1,7 +1,12 @@
 # dotnet-debugging Specification
 
 ## Purpose
-TBD - created by archiving change 07-add-dotnet-debug-test. Update Purpose after archive.
+Provides breakpoint debugging for C# and F# through `nvim-dap` and `nvim-dap-ui`, driven by the netcoredbg adapter, with launch configurations discovered automatically by easy-dotnet — so no `launch.json` has to be written by hand or kept in step with the solution.
+
+Keymaps are the function keys plus a `<leader>b` group, chosen to stay clear of `<leader>d` (system-clipboard cut) and the `<localleader>s*` REPL maps that F# buffers already carry.
+
+Two boundaries are part of the capability. Enabling easy-dotnet must not start a second C# language server: roslyn.nvim remains the sole C# LSP, and exactly one client should attach to a `.cs` buffer. And Haskell debugging arrives free through haskell-tools' own DAP auto-discovery once nvim-dap is present — specified here rather than under Haskell because nvim-dap is what makes it possible at all.
+
 ## Requirements
 ### Requirement: Breakpoint debugging for .NET via nvim-dap
 C# and F# SHALL support breakpoint debugging through `nvim-dap` + `nvim-dap-ui`, using the netcoredbg adapter, with launch configurations auto-discovered by easy-dotnet (no hand-authored `launch.json`).

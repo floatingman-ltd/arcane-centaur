@@ -1,7 +1,10 @@
 # dotnet-test-runner Specification
 
 ## Purpose
-TBD - created by archiving change 07-add-dotnet-debug-test. Update Purpose after archive.
+Runs and inspects .NET tests without leaving the editor, through easy-dotnet's built-in test runner, reached from `<localleader>t*` maps in the C# and F# ftplugins.
+
+That namespace is deliberate. `<localleader>s*` already belongs to iron.nvim's REPL maps in those buffers, so putting tests under `t` means adding a test runner cannot disturb the F# REPL workflow. Selections — project, test, or launch target — are presented through fzf-lua, matching every other picker in this configuration rather than introducing telescope or snacks to serve one plugin.
+
 ## Requirements
 ### Requirement: Run and inspect .NET tests from the editor
 C# and F# test projects SHALL be runnable from the editor via easy-dotnet's built-in test runner, exposed through `<localleader>` maps in the C#/F# ftplugins (consistent with the iron.nvim REPL-map convention). The fuzzy picker used SHALL be fzf-lua.
