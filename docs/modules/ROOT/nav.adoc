@@ -16,6 +16,7 @@
 ** xref:languages/haskell-cheatsheet.adoc[Cheatsheet]
 * Lua
 ** xref:languages/lua.adoc[Guide]
+** xref:languages/lua-cheatsheet.adoc[Cheatsheet]
 
 .Editor Core
 * xref:editor/editing.adoc[Editing Cheatsheet]
