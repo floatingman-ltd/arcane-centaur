@@ -24,9 +24,9 @@
 ## 4. Validation
 
 - [x] 4.1 Add a `## Change · configure-lua-ls-workspace` section to `openspec/TEST_PLAN.md` with branch name, prerequisites, and numbered `Prepare` / `Validate` / `Raise PR & merge` / `Post-merge` subsections
-- [ ] 4.2 Walk every step in a live Neovim session — the headless scan proves the counts but says nothing about how the list reads in a real buffer
-- [ ] 4.3 Confirm in a live session that the diagnostics list is now usable: open `lua/config/http_preview.lua` and check the four nil-check findings are visible without scrolling past noise
-- [ ] 4.4 Tick each `- [ ]` in the TEST_PLAN section only once genuinely confirmed, logging any defect and its fix inline as a blockquote note
+- [x] 4.2 Walk every step in a live Neovim session — the headless scan proves the counts but says nothing about how the list reads in a real buffer
+- [x] 4.3 Confirm in a live session that the diagnostics list is now usable: open `lua/config/http_preview.lua` and check the four nil-check findings are visible without scrolling past noise
+- [x] 4.4 Tick each `- [ ]` in the TEST_PLAN section only once genuinely confirmed, logging any defect and its fix inline as a blockquote note
 
 ## 5. Close out
 
