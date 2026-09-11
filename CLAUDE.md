@@ -56,7 +56,9 @@ The OpenSpec and project workflows are also available as Claude Code skills in *
 
 Change artifacts for work that is still on a branch are **copied onto `main` as well**, so `openspec list` and a plain `ls openspec/changes/` show everything in flight without having to know which branches exist. Decided 2026-09-11, after a paused change spent a fortnight discoverable only to someone who already knew its branch name.
 
-**The branch copy is authoritative.** The mirror is a snapshot for discovery, and the file that drifts is `tasks.md` — checkboxes get ticked on the branch as work proceeds, and `main`'s copy will not follow. Read the task state from the branch, never from `main`. `proposal.md`, `design.md` and the delta specs are stable by comparison, which is what makes the duplication tolerable.
+**The branch copy is authoritative.** The mirror is a snapshot for discovery; read task state, and any decision, from the branch rather than from `main`.
+
+> **Corrected 2026-09-11, the same day this was written.** The original note claimed `tasks.md` would be the file that drifts, with `proposal.md`, `design.md` and the specs stable by comparison. `design.md` drifted first, when `add-terraform-support`'s D4 was settled on the branch — and it matters more than a checkbox would, because a stale checkbox is visibly stale whereas a stale *decision* reads as current. **Refresh the mirror whenever a branch commit changes an artifact, not only when a change merges.**
 
 Keep the copies byte-identical. Editing the mirror is how the two versions start disagreeing, and a conflict at merge time is the cheap outcome — a silently stale plan is the expensive one. When a change merges, git reconciles the two copies on its own; when it archives, the move to `openspec/changes/archive/` resolves the duplication entirely.
 
