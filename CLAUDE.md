@@ -52,6 +52,14 @@ This repo uses **OpenSpec** (`openspec/`, `schema: spec-driven`) to drive change
 
 The OpenSpec and project workflows are also available as Claude Code skills in **`.claude/skills/`** — invoke them as slash commands: `/openspec-propose`, `/openspec-apply-change`, `/openspec-continue-change`, `/openspec-verify-change`, `/openspec-archive-change`, `/openspec-explore`, `/openspec-sync-specs`, `/openspec-onboard`, plus `/add-neovim-feature`.
 
+### In-flight changes are mirrored on `main`
+
+Change artifacts for work that is still on a branch are **copied onto `main` as well**, so `openspec list` and a plain `ls openspec/changes/` show everything in flight without having to know which branches exist. Decided 2026-09-11, after a paused change spent a fortnight discoverable only to someone who already knew its branch name.
+
+**The branch copy is authoritative.** The mirror is a snapshot for discovery, and the file that drifts is `tasks.md` — checkboxes get ticked on the branch as work proceeds, and `main`'s copy will not follow. Read the task state from the branch, never from `main`. `proposal.md`, `design.md` and the delta specs are stable by comparison, which is what makes the duplication tolerable.
+
+Keep the copies byte-identical. Editing the mirror is how the two versions start disagreeing, and a conflict at merge time is the cheap outcome — a silently stale plan is the expensive one. When a change merges, git reconciles the two copies on its own; when it archives, the move to `openspec/changes/archive/` resolves the duplication entirely.
+
 ### Archive gotchas
 
 `openspec archive` has three behaviours worth knowing before you run it:
