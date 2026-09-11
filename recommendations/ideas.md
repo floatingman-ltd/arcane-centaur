@@ -94,9 +94,22 @@ Everything else in this file is unranked and can be picked up opportunistically.
 
    **1d. Lua — already ~90% done; this is a finishing job, not an addition.** It has `lua_ls` with a full workspace configuration (as of `configure-lua-ls-workspace`), `stylua` in conform, the `lua` treesitter parser, `after/ftplugin/lua.lua`, `docs/.../languages/lua.adoc`, and three capability specs — `lua-lsp`, `lua-ftplugin`, `lua-formatting`.
 
-   **What is actually missing is the cheatsheet.** There is no `lua-cheatsheet.adoc`, and `nav.adoc` shows the gap unambiguously: every other language reads `Guide` then `Cheatsheet`, while Lua reads `Guide` alone. That is a docs task of a few hours with no runtime risk, and it is the single cheapest item in this entire wish list.
+   **~~What is actually missing is the cheatsheet.~~ Written 2026-09-11**, closing the `Guide` / `Cheatsheet` asymmetry that made Lua the odd one out in `nav.adoc`.
 
-   Two smaller gaps behind it. There is **no REPL binding** — Neovim's own `:lua` is always there, and Conjure has a Neovim-Lua client that would fit the existing Conjure setup. And there is **no DAP support**; `jbyuki/one-small-step-for-vimkind` is the standard adapter for debugging Neovim Lua specifically, which is what Lua is used for in this repository.
+   **The driver, recorded 2026-09-11 because it is obvious now and invisible in six months: Battle for Wesnoth add-ons.** The user plays occasionally and would build Lua tooling out in order to write or modify enhancements. That answers, for Lua, the *"is a real project driving this?"* question that entry 1a leaves open for JavaScript/TypeScript — and it changes which gaps are worth closing, because add-on Lua runs inside the Wesnoth engine rather than inside Neovim.
+
+   **It also corrects this entry's own earlier suggestion.** `jbyuki/one-small-step-for-vimkind` debugs Lua running *inside Neovim*, so it is useless for Wesnoth work. The debugging gap is therefore both harder to close and less valuable than first recorded: Wesnoth offers an in-game Lua console and `wesnoth.message`, and print-debugging is the realistic fallback unless it exposes a debug protocol nobody here has looked for.
+
+   **What Wesnoth work would actually want, cheapest first:**
+
+   . **`wesnoth` in `diagnostics.globals`** — and likely `wml` and `gui` too. Exactly the fix already applied twice, for `vim` and then `pandoc`: each embedding host injects its own global, and `lua_ls` reports every line as `Undefined global` until told which host it is looking at. One line, and most of the practical benefit.
+   . **Check whether LuaLS type definitions exist for the Wesnoth API**, from the project or the community. If they do, pointing `workspace.library` at them buys completion and hover over `wesnoth.units.*` — the same difference `$VIMRUNTIME` made for configuration work, which is the gap between "no false errors" and "actually useful". Nobody has looked; do that before assuming either way.
+   . **WML is the larger unknown.** Add-ons are mostly `.cfg` files in Wesnoth Markup Language with Lua embedded in `[lua]` tags. That is a separate filetype, with no treesitter parser and no language server as far as anyone here knows. Depending on the split in what actually gets written, WML support may matter more than anything on the Lua side.
+   . **Testing is more tractable than debugging** — Wesnoth has a scenario-based unit-test mode (`wesnoth --unit-test`), which is a command to wire up rather than a protocol to implement. Separately, `plenary.nvim` is already loaded at startup as a transitive dependency and already provides `:PlenaryBustedFile` and `:PlenaryBustedDirectory`, undocumented and unbound — that covers plain Lua libraries, not Wesnoth scenarios.
+
+   **The honest caveat, recorded rather than argued away.** "From time to time, as time permits" is hobby cadence, and tooling for something opened occasionally rots between uses — the same trap entry 1a names for JavaScript/TypeScript. The difference is that the cheap end here is genuinely cheap. Do step 1, possibly step 2, and stop; let actual use say whether WML support or a test runner earns its keep.
+
+   There is still **no REPL binding**, which matters less than it appears: Neovim is itself the Lua runtime, so `:lua`, `:lua =`, `:luafile %` and `:source %` stand in for one, and the cheatsheet now says so outright rather than leaving the absence to look like an omission.
 
    ---
 
