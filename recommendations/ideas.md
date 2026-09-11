@@ -8,7 +8,7 @@ Agreed running order. Details live in the sections below; this is just the queue
 
 2. **Lua cheatsheet** — *Things we'd like to add*, entry 1d. Lua is the only language in `nav.adoc` with a Guide and no Cheatsheet. Docs-only, no runtime risk, no TEST_PLAN section; the cheapest item in this file. Queued 2026-09-11 ahead of Terraform deliberately, so the inconsistency closes before new languages add to it.
 3. **Terraform support** — *Things we'd like to add*, entry 1c. Every answer is official and `conform` already ships `terraform_fmt`. One decision is open before implementation: how the `terraform` binary is provided, given it is not installed and the containers principle. Kept as a change entirely separate from the Lua work.
-4. **JavaScript / TypeScript** — *Things we'd like to add*, entry 1a. **Explore before proposing.** The unknowns are real — `ts_ls` versus `vtsls`, prettier versus biome, and whether to run `eslint` as a second server against the same buffer, which this configuration has never done. Scoping it as a proposal without settling those would produce a proposal that has to be rewritten.
+4. **JavaScript / TypeScript** — *Things we'd like to add*, entry 1a. **Explored 2026-09-11; still not ready to propose.** The exploration found that the three original unknowns (`ts_ls` vs `vtsls`, prettier vs biome, eslint as a second server) are all downstream of one unanswered question: whether this is for editing the occasional JS file or for real frontend application work. Those are a weekend and a project respectively. It also found that the Node dependency is already carried and that `javascript` is already a loaded filetype, so two arguments against it turned out to be false. See the entry for what a proposal would need.
 
 Shipped work is **deleted from this file**, not archived in it. The record lives in three places
 that are already authoritative: the implementation in `openspec/changes/archive/<date>-<name>/`, the
@@ -51,15 +51,34 @@ Everything else in this file is unranked and can be picked up opportunistically.
 
    ---
 
-   **1a. JavaScript + TypeScript — one piece of work, and the largest of the four.** Grouped deliberately: for frontend work the toolchain is shared, and splitting them would duplicate every surface above.
+   **1a. JavaScript + TypeScript — explored 2026-09-11, deliberately not proposed.** Grouped as one piece of work: for frontend the toolchain is shared, and splitting them would duplicate every surface above. The exploration changed the shape of this entry enough that the original scoping is superseded rather than extended.
 
-   The size comes from breadth rather than difficulty. **Four filetypes** (`javascript`, `typescript`, `javascriptreact`, `typescriptreact`) before counting `json`, `css` and `html`, which frontend work drags in and of which only `html` has an ftplugin today. **Treesitter** needs `javascript`, `typescript`, `tsx` and `jsdoc` at minimum. **Formatting** is a decision, not a default — prettier is conventional, biome is the faster single-binary alternative, and picking one commits the repo to a Node-ecosystem dependency it does not currently carry.
+   **Correction to what this entry first claimed.** It said picking a formatter "commits the repo to a Node-ecosystem dependency it does not currently carry." That was wrong. The dependency is already carried: `lua/plugins/html.lua` builds `bracey.vim` with `npm install --prefix server`, node v24.14.0 is installed, and Neovim resolves it — `vim.fn.exepath("node")` returns `~/.nvm/versions/node/v24.14.0/bin/node`. One argument against this work therefore does not exist.
 
-   **The LSP question is the real fork.** `ts_ls` is the direct successor to tsserver; `vtsls` wraps it and is what most large setups have moved to. Either way a second server is usually wanted — `eslint` — and this configuration has never run two servers against one buffer, so `on_attach` sharing and diagnostic precedence would both be exercised for the first time.
+   **`javascript` is already a filetype this config loads a plugin for.** bracey declares `ft = { "html", "css", "javascript" }`, and `after/ftplugin/html.lua` binds `<localleader>p`/`x`/`r` to the live preview. There is a frontend foothold already; this would extend it rather than start cold.
 
-   **Not blocked on the containers principle**, though it looks like it should be. Language servers are editor tooling, not services — `fsautocomplete`, `marksman` and `lua_ls` all already run on the host. Node would join them. The principle bites on anything *served*, and there the existing `bracey.vim` live-preview and `http_preview` surfaces already exist to build on.
+   **The central finding, which reframes all three of the open questions.** JavaScript/TypeScript would be the first language here whose toolchain is *project-defined* rather than *editor-defined*:
 
-   Worth noting there is already a frontend foothold: `after/ftplugin/html.lua` and bracey. This would be extending that rather than starting cold.
+   | Language | Who chooses the formatter |
+   |---|---|
+   | F# | the config — Fantomas, via the LSP |
+   | Lua | the config — stylua |
+   | Lisp family | the config — LSP format |
+   | Terraform | nobody; `terraform fmt` is the only answer |
+   | **JS/TS** | **the repository you open** |
+
+   Formatting a repo with prettier when its CI runs biome does not produce a style disagreement, it produces a failing pipeline and a diff touching every file. So *prettier versus biome* is not a preference question — it is **does this config impose a formatter, or detect the project's?** `conform` supports either, but `formatters_by_ft` as written here is a static global table, a shape that assumes the editor decides. The same reframing applies to eslint: its config is per-project, so the real question is whether the server attaches conditionally on one existing, not whether it attaches at all.
+
+   **The two-server question is not virgin territory, and the existing stance is narrower than it looks.** `openspec/specs/dotnet-debugging` requires that enabling easy-dotnet "SHALL NOT start a second C# language server", with exactly one client on a `.cs` buffer. That was about two *rival* servers answering the same questions. `eslint` and `ts_ls` are complementary — types and navigation versus lint rules and fixes. Whether the existing requirement means "never two clients on a buffer" or "never two servers answering the same question" is a decision about intent, not something readable off the spec. The second reading is the defensible one, but it should be stated deliberately if this proceeds.
+
+   **What blocks a proposal is none of the three original questions.** It is the one underneath them: *what is JS/TS for here?*
+
+   - **Editing the occasional JS file** — `package.json`, config files, whatever bracey previews. `ts_ls` plus a formatter, no jsx, no eslint, no DAP. Small, and arguably already three-quarters justified by bracey's existence.
+   - **Real frontend application work** — the framework choice then drives everything. React means `tsx`/`jsx` and two more filetypes; Vue means `volar` and a different server entirely; Svelte means a third. A dev-server story follows, which is where the containers principle finally does bite. That is a project, not a language addition.
+
+   Related and worth answering at the same time: **is there a real project driving this?** Every language here arrived for a reason — F# and Haskell for REPL work, Lua because the configuration is written in it, AsciiDoc because the documentation is. JS/TS arriving "because frontend" with no repository to point at is how four filetypes get maintained and opened twice a year.
+
+   **Two smaller threads surfaced and left open.** node is nvm-managed, so `exepath` is version-pinned and an nvm upgrade moves it silently — anything spawned by conform or an LSP follows `$PATH` at spawn time, which is the same class of trap as `nvim` being a shell alias. And `after/ftplugin/html.lua` uses `<localleader>p`/`x`/`r` for preview while every language ftplugin uses `<localleader>s*` for a REPL; if JS/TS lands with a node REPL, that inconsistency needs resolving or entrenching.
 
    **1b. Assembler — the smallest surface and the largest unanswered question.** Everything hinges on something the wish list never said: *which* assembler, and what for.
 
