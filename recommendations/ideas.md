@@ -28,12 +28,57 @@ Everything else in this file is unranked and can be picked up opportunistically.
 
 # Things we'd like to add
 
-1. Additional language support
-   - javascript
-   - typescript
-   - assembler
-   - terraform
-   - lua
+1. **Additional language support — JavaScript/TypeScript, assembler, Terraform, Lua.** Expanded 2026-09-11 from a bare list into what each would actually cost. No implementation implied; the point is that these four are not comparable in size, and one of them is nearly done.
+
+   **What "adding a language" means here**, derived from the existing ones rather than invented. Every entry below is measured against this list:
+
+   | Surface | Where |
+   |---|---|
+   | LSP | `lua/config/lsp.lua` — `vim.lsp.config`/`vim.lsp.enable` with the shared `on_attach` |
+   | Formatting | `lua/plugins/conform.lua` — `formatters_by_ft` |
+   | Treesitter | `lua/plugins/treesitter.lua` — the `ts.install{...}` list |
+   | Filetype maps | `after/ftplugin/<ft>.lua` — `<localleader>` REPL/eval maps, indent |
+   | Guide + cheatsheet | `docs/modules/ROOT/pages/languages/<lang>.adoc` and `<lang>-cheatsheet.adoc` |
+   | Nav | `docs/modules/ROOT/nav.adoc` — one `xref:` per page |
+   | Setup matrix | a row in `languages/setup.adoc`, per the `docs-language-setup` capability |
+   | Spec + validation | an OpenSpec change and a `TEST_PLAN.md` section |
+
+   Guides must follow `docs-guide-template`: usage-first, a dynamic jump menu, and Prerequisites distinct from Setup.
+
+   ---
+
+   **1a. JavaScript + TypeScript — one piece of work, and the largest of the four.** Grouped deliberately: for frontend work the toolchain is shared, and splitting them would duplicate every surface above.
+
+   The size comes from breadth rather than difficulty. **Four filetypes** (`javascript`, `typescript`, `javascriptreact`, `typescriptreact`) before counting `json`, `css` and `html`, which frontend work drags in and of which only `html` has an ftplugin today. **Treesitter** needs `javascript`, `typescript`, `tsx` and `jsdoc` at minimum. **Formatting** is a decision, not a default — prettier is conventional, biome is the faster single-binary alternative, and picking one commits the repo to a Node-ecosystem dependency it does not currently carry.
+
+   **The LSP question is the real fork.** `ts_ls` is the direct successor to tsserver; `vtsls` wraps it and is what most large setups have moved to. Either way a second server is usually wanted — `eslint` — and this configuration has never run two servers against one buffer, so `on_attach` sharing and diagnostic precedence would both be exercised for the first time.
+
+   **Not blocked on the containers principle**, though it looks like it should be. Language servers are editor tooling, not services — `fsautocomplete`, `marksman` and `lua_ls` all already run on the host. Node would join them. The principle bites on anything *served*, and there the existing `bracey.vim` live-preview and `http_preview` surfaces already exist to build on.
+
+   Worth noting there is already a frontend foothold: `after/ftplugin/html.lua` and bracey. This would be extending that rather than starting cold.
+
+   **1b. Assembler — the smallest surface and the largest unanswered question.** Everything hinges on something the wish list never said: *which* assembler, and what for.
+
+   Architecture and syntax are not one choice but two — x86-64 versus ARM versus RISC-V, and GAS versus Intel/NASM syntax within x86. They select different tooling. `asm-lsp` covers x86/x86-64/ARM/RISC-V and is the obvious LSP candidate; `nasm_language_server` exists if NASM is the target. nvim-treesitter has an `asm` parser. **There is effectively no formatter** — nothing comparable to stylua or Fantomas exists for assembly, so `conform` would simply have no entry, which is a first for this config.
+
+   The prior question is purpose. Reading compiler output, embedded work, and CTF-style reverse engineering want different things — the first needs little more than highlighting and would be satisfied by treesitter alone, while the last wants a debugger. **Answer that before costing it**, because the honest range runs from "a parser and a guide" to "a DAP integration".
+
+   **1c. Terraform — the cleanest fit of the four.** Every surface has an obvious, official answer, which is unusual.
+
+   `terraformls` is HashiCorp's own server. Formatting is `terraform fmt`, which `conform` already ships as a built-in formatter, so that line is a one-liner. Treesitter needs `terraform` and `hcl`. Filetypes are `terraform`, `hcl` and `terraform-vars`.
+
+   Two things are specific rather than generic. `terraform console` is a genuine REPL and would fit the existing iron.nvim pattern the way `dotnet fsi` does for F# — an unusually good match for a language nobody thinks of as having a REPL. And the `terraform` binary is a prerequisite the docs must state: `terraformls` leans on it, and `terraform fmt` *is* it. It is a CLI tool rather than a service, so it sits with tmux and ripgrep rather than with the Docker-hosted services.
+
+   **1d. Lua — already ~90% done; this is a finishing job, not an addition.** It has `lua_ls` with a full workspace configuration (as of `configure-lua-ls-workspace`), `stylua` in conform, the `lua` treesitter parser, `after/ftplugin/lua.lua`, `docs/.../languages/lua.adoc`, and three capability specs — `lua-lsp`, `lua-ftplugin`, `lua-formatting`.
+
+   **What is actually missing is the cheatsheet.** There is no `lua-cheatsheet.adoc`, and `nav.adoc` shows the gap unambiguously: every other language reads `Guide` then `Cheatsheet`, while Lua reads `Guide` alone. That is a docs task of a few hours with no runtime risk, and it is the single cheapest item in this entire wish list.
+
+   Two smaller gaps behind it. There is **no REPL binding** — Neovim's own `:lua` is always there, and Conjure has a Neovim-Lua client that would fit the existing Conjure setup. And there is **no DAP support**; `jbyuki/one-small-step-for-vimkind` is the standard adapter for debugging Neovim Lua specifically, which is what Lua is used for in this repository.
+
+   ---
+
+   **If these are ever ranked:** Lua's cheatsheet first, because it closes a visible inconsistency for almost nothing. Terraform second, because every answer is official and the REPL fit is genuinely nice. JavaScript/TypeScript third and treated as a project, since it introduces a Node dependency and the first two-server buffer. Assembler last, and not costed at all until the purpose question is answered.
+
 2. some sort of visual buffer tabbing:
    - the sidebar panels for claude.cli and avanate.nvim are awkward to read, it seems both would like to be "full screen" 
    - the terminal at the bottom of the screen requires scrolling, it too would like a "full screen"
