@@ -30,6 +30,7 @@
 
 ## 5. Close out
 
-- [ ] 5.1 Raise the PR once every validation step is ticked
-- [ ] 5.2 Remove the `lua_ls` noise entry from `recommendations/ideas.md`, per that file's rule that shipped work is deleted rather than archived — but keep the six surfaced findings, which are not shipped
+- [x] 5.1 Raise the PR once every validation step is ticked — PR #195, merged 2026-09-11
+- [x] 5.2 Remove the `lua_ls` noise entry — but keep the surfaced findings, which are not shipped work
+  > **This task named the wrong file.** The noise entry was in `openspec/DEFERRED_VERIFICATION.md` (group F), not `recommendations/ideas.md`; the same mistake appeared in the first draft of `design.md` and was corrected there before commit. It was marked resolved in place rather than deleted, which is that file's convention — it records why a deferral closed, and in this case that "cosmetic" was the wrong word for 99.7% noise. The eight surfaced findings were *added* to `ideas.md` and verified still present after the merge.
 - [ ] 5.3 Archive the change (`openspec archive`); `lua-lsp` already has a real Purpose, so no placeholder needs writing this time
