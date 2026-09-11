@@ -127,6 +127,16 @@ The line is not "everything in a container", and `add-terraform-support` is wher
 
 That split has a consequence worth knowing before repeating it. A native process invoking a containerised CLI must agree with it on what a path means, so the wrapper mounts the working directory **at the same path inside and out** (`-v "$PWD:$PWD" -w "$PWD"`) and drops to the invoking user (`--user`). A renamed mount such as `-w /work` breaks absolute paths — measured failing on 2026-09-11 — and without `--user` everything written is root-owned on the host. Budget for the latency too: a containerised format-on-save measured ~530-606 ms against conform's 2000 ms timeout, where a native binary is 10-30 ms.
 
+## GitHub CLI gotchas
+
+Three behaviours that cost time on 2026-09-11 and will do so again, because each fails quietly rather than loudly.
+
+- **`gh pr edit` is broken against this repo.** It queries `repository.pullRequest.projectCards`, which GitHub has sunset, and the GraphQL error **aborts the edit** rather than warning — the command appears to half-succeed and changes nothing. Verify after running it, or avoid it: `gh api -X PATCH repos/{owner}/{repo}/pulls/<n> -f title="..."` touches no project fields and works. Add `--jq .title` unless you want the whole PR object back.
+- **`gh pr create --fill` only lifts a commit message when the branch has exactly one commit.** With two or more it falls back to the *branch name* as the title, producing things like `fix/configure lua ls workspace`. Pass `--title` explicitly whenever the branch has more than one commit — which, given the repo's split of implementation and test-plan commits, is most of the time.
+- **`gh pr merge --delete-branch` silently skips its local half** when the local default branch has unpushed commits. It merges on the remote and deletes the remote branch, then cannot pull, and says nothing at all — no output, exit 0. The result reads as "nothing happened" and invites re-running it. Check `gh api .../pulls/<n> --jq .merged` and `git fetch` before concluding either way; the fix is `git pull --rebase`, which keeps this repo's linear history.
+
+Long commands are also worth avoiding for a separate reason: anything long enough to wrap on paste arrives with the newline embedded. A PR title was set to `Give lua_ls the workspace\n  config it never had` exactly this way. Prefer `{owner}/{repo}` placeholders and short titles.
+
 ## Other tooling
 
 - **`scripts/confluence_publish.sh`** — publish/pull a Markdown file to/from a Confluence page (`--pull`, `--comments`, `--force`); needs `CONFLUENCE_EMAIL` + related env vars. `lua/config/confluence.lua` / `lua/config/jira.lua` wrap Atlassian integration in-editor.
