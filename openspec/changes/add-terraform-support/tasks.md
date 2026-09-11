@@ -1,8 +1,15 @@
-## 0. Blocked until the binary decision is made
+## 0. Provide the toolchain
 
-- [ ] 0.1 Settle **D4** in `design.md` — whether the `terraform` binary is a documented host prerequisite or is provided through a Docker wrapper. Do not start section 1 before this: it changes what the docs must say, and it is the difference between a prerequisites paragraph and a wrapper script that has to be maintained
-- [ ] 0.2 Install `terraform-ls`, and `terraform` per the D4 decision. Record the versions — every other language guide states the versions it was validated against
-- [ ] 0.3 Confirm both resolve: `terraform version` and `terraform-ls --version`
+**D4 decided 2026-09-11: Docker wrapper, not a native install.** See `design.md` for the measured evidence behind the wrapper's shape.
+
+- [ ] 0.1 Create `~/.local/bin/terraform` as a wrapper. It **must** use an identity mount and drop privileges — `-v "$PWD:$PWD" -w "$PWD" --user "$(id -u):$(id -g)"`. A renamed mount such as `-w /work` breaks absolute paths, which `terraform-ls` passes; verified failing on 2026-09-11
+- [ ] 0.2 Pin the image tag rather than tracking `latest`, so a formatter does not change behaviour underneath the repository without a commit
+- [ ] 0.3 Confirm `terraform version` resolves through the wrapper, and that Neovim itself sees it — `:lua print(vim.fn.exepath("terraform"))`
+- [ ] 0.4 Confirm `terraform fmt -no-color -` formats over stdin with no volume attached, which is the path `conform` actually uses
+- [ ] 0.5 Confirm a file formatted in place stays owned by the invoking user, not root
+- [ ] 0.6 Install `terraform-ls` **natively** — it is editor tooling, in the same category as `lua_ls` and `marksman`, and is deliberately not containerised
+- [ ] 0.7 Record the image tag and the `terraform-ls` version; every language guide states what it was validated against
+- [ ] 0.8 Decide whether the wrapper should mount a repository root rather than `$PWD`, so that `../modules/foo` references resolve. This is the most likely real-world failure and will not show up in a single-directory fixture
 
 ## 1. Language server
 
