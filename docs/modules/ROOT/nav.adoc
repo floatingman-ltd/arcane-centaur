@@ -17,6 +17,9 @@
 * Lua
 ** xref:languages/lua.adoc[Guide]
 ** xref:languages/lua-cheatsheet.adoc[Cheatsheet]
+* Terraform
+** xref:languages/terraform.adoc[Guide]
+** xref:languages/terraform-cheatsheet.adoc[Cheatsheet]
 
 .Editor Core
 * xref:editor/editing.adoc[Editing Cheatsheet]

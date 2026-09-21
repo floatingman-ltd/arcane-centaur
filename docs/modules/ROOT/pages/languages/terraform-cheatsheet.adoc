@@ -1,0 +1,118 @@
+== Terraform Cheatsheet (terraform-ls {plus} terraform fmt)
+
+→ Back to xref:editor/keybindings.adoc[main cheatsheet] · xref:languages/terraform.adoc[Full guide]
+
+NOTE: The `terraform` CLI runs in a container; `terraform-ls` and `hclfmt` run natively. That split is why format-on-save costs ~500 ms here and ~20 ms in Lua — see the guide's xref:languages/terraform.adoc#the-container-split[container split] section.
+
+== LSP
+
+Registered as `terraformls` in `lua/config/lsp.lua`, attaching automatically to any `.tf` buffer. These are the shared keymaps, identical in every LSP-backed language here.
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`gd` |Normal |Go to definition (jumps into module sources)
+|`K` |Normal |Hover documentation from the provider schema
+|`gr` |Normal |Find references
+|`<leader>rn` |Normal |Rename symbol
+|`<leader>ca` |Normal |Code action
+|===
+
+TIP: Completions for a provider's resources need `terraform init` to have run in that directory. Without it the server still parses and reports syntax errors, but has no schema to complete against — that is the symptom, not a broken server.
+
+== Diagnostics
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`<leader>e` |Normal |Show diagnostics for the current line in a float
+|`]d` |Normal |Next diagnostic
+|`[d` |Normal |Previous diagnostic
+|`<leader>xx` |Normal |Project diagnostics in the trouble panel
+|`<leader>xX` |Normal |Buffer diagnostics only
+|===
+
+== Formatting
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`<leader>f` |Normal, Visual |Format buffer or selection
+|— |— |Format-on-save, automatic on write
+|===
+
+Two filetypes, two formatters, and they are not interchangeable:
+
+[cols=",,",options="header",]
+|===
+|Filetype |Extension |Formatter
+|`terraform` |`.tf` |`terraform fmt`
+|`terraform-vars` |`.tfvars` |`terraform fmt`
+|`hcl` |`.hcl` |`hclfmt`
+|===
+
+`terraform fmt` does not parse generic HCL, which is why `.hcl` gets its own formatter rather than sharing one.
+
+Formatting does *not* defer to the language server, unlike F# and the Lisp family. `terraform fmt` ships from the same project as the language, so it is authoritative rather than one option among several.
+
+== REPL — terraform console
+
+`<localleader>` is `,`. Opens in a 15-line split at the bottom, the same iron.nvim arrangement F# uses for `dotnet fsi`.
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`<localleader>ss` |Normal |Open the console REPL
+|`<localleader>sr` |Normal |Restart the REPL
+|`<localleader>sl` |Normal |Send current line
+|`<localleader>sc` |Normal, Visual |Send motion or visual selection
+|`<localleader>sp` |Normal |Send paragraph
+|`<localleader>sf` |Normal |Send whole file
+|`<localleader>si` |Normal |Interrupt
+|`<localleader>sq` |Normal |Quit the REPL
+|`<localleader>cl` |Normal |Clear the REPL buffer
+|===
+
+IMPORTANT: *`terraform console` reads real state.* Every other REPL here — `dotnet fsi`, GHCi, the Lisp family — evaluates in a scratch environment. This one queries what is actually deployed. It cannot apply changes, but treat it as pointed at production, because it is.
+
+Stateless expressions work in any directory; anything naming a resource, module or data source needs `terraform init` first.
+
+[source,hcl]
+----
+> 1 + 1
+2
+> upper("x")
+"X"
+> max(3, 7)
+7
+----
+
+== Treesitter
+
+Both `terraform` and `hcl` parsers are installed and provide highlighting. Both ship an `indents.scm`, so treesitter indenting is active for them as well.
+
+== Editing
+
+[cols=",,",options="header",]
+|===
+|Setting |Value |Where
+|`tabstop` / `shiftwidth` |2 |`after/ftplugin/terraform.lua`
+|`expandtab` |on |`after/ftplugin/terraform.lua`
+|`spell` |off |`after/ftplugin/terraform.lua`
+|===
+
+2 spaces is not a preference — it is what `terraform fmt` enforces, so any other value is undone on the next write.
+
+== When things are missing
+
+[cols=",",options="header",]
+|===
+|Symptom |Cause
+|Nothing formats, no error |`terraform` wrapper not on `$PATH`
+|No provider completions |`terraform init` not run in that directory
+|`lstat ../../modules` failure |Directory is outside a git repo, so the wrapper mounted only `$PWD`
+|`.hcl` files not formatting |`hclfmt` not built — see the guide's Setup section
+|Files owned by root |A `terraform` binary earlier on `$PATH` is shadowing the wrapper
+|===
+
+All of these degrade quietly rather than erroring. With no Terraform tooling installed at all, `.tf` files still open, highlight and indent correctly, and Neovim starts clean.

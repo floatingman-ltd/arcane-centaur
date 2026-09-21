@@ -1,0 +1,351 @@
+== Working with Terraform
+
+This configuration provides LSP support, format-on-save and a `terraform console`
+REPL for Terraform and HCL, via `terraform-ls`, `terraform fmt` and iron.nvim.
+
+The `terraform` CLI itself runs in a container rather than on the host — see
+xref:#the-container-split[The container split] for what that means in practice.
+
+*Quick navigation*
+
+[cols="1,3"]
+|===
+| xref:#quick-start[Quick Start] | Open a `.tf` file and start editing
+| xref:#lsp[LSP] | terraform-ls setup
+| xref:#formatting[Formatting] | terraform fmt and hclfmt on save
+| xref:#repl[REPL] | terraform console, and how it differs from the others
+| xref:#the-container-split[The container split] | Why the CLI is containerised and the server is not
+| xref:#typical-workflow[Typical Workflow] | Editing a module end to end
+| xref:#troubleshooting[Troubleshooting] | Known failure modes
+| xref:#setup[Setup] | Installing the wrapper, the server and hclfmt
+| xref:#prerequisites[Prerequisites] | What is needed and why
+|===
+
+'''''
+
+[[quick-start]]
+== Quick Start
+
+. *Open a Terraform file* — `terraform-ls` attaches automatically:
++
+[source,sh]
+----
+nvim main.tf
+----
+. *Use LSP keymaps* (see xref:../editor/code-intelligence.adoc[Code Intelligence cheatsheet] for the full list):
++
+[cols=",",options="header",]
+|===
+|Keys |Action
+|`gd` |Go to definition
+|`K` |Hover documentation
+|`gr` |Find references
+|`<leader>rn` |Rename symbol
+|`<leader>ca` |Code action
+|`<leader>e` |Show diagnostics
+|===
+. *Format on save* — `terraform fmt` runs automatically when you write a `.tf`
+  file. Manual format: `<leader>f` in normal or visual mode.
+. *Open the REPL* — `<localleader>ss` starts `terraform console` in a split at
+  the bottom of the screen. `<localleader>` is `,`.
+
+'''''
+
+[[lsp]]
+== LSP
+
+`terraformls` is configured in `lua/config/lsp.lua` and attaches automatically
+when a Terraform buffer is opened. It provides completions for providers and
+resource arguments, diagnostics, go-to-definition across modules, and hover
+documentation pulled from the provider schema.
+
+Verify the server is attached with:
+
+[source,vim]
+----
+:lua =vim.lsp.get_clients({bufnr=0})
+----
+
+Completions for a provider's resources only appear once that provider has been
+downloaded, which means after `terraform init` in the directory you are editing.
+Before that the server still parses the file and reports syntax errors, but it
+has no schema to complete against.
+
+'''''
+
+[[formatting]]
+== Formatting
+
+`terraform` and `terraform-vars` buffers are formatted by `terraform fmt` on
+every save, through conform.nvim. `hcl` buffers are formatted by `hclfmt`.
+
+Those are two different filetypes with two different formatters, and the split is
+deliberate: Neovim maps `.tf` to `terraform` and `.hcl` to `hcl`, and
+`terraform fmt` does not parse generic HCL. Applying it to a `.hcl` file would
+fail rather than reformat it.
+
+[cols=",",options="header",]
+|===
+|Keys |Action
+|`<leader>f` |Format buffer or visual selection
+|===
+
+Indent settings for Terraform buffers (set in `after/ftplugin/terraform.lua`):
+2-space tabs, spaces only. That matches what `terraform fmt` enforces — anything
+else would be undone on the next write.
+
+Formatting is *not* deferred to the language server, which is how the Lisp family
+and F# are handled here. `terraform fmt` is defined by the same project that
+defines the language, so it is the authoritative answer rather than one of
+several.
+
+[NOTE]
+====
+Format-on-save takes roughly *500 ms* for Terraform files, against conform's
+2000 ms timeout. That is container start-up, paid on every write; a native binary
+would be 10-30 ms. It is the accepted cost of the container split below.
+
+`.hcl` files do not pay it — `hclfmt` is a native binary.
+====
+
+'''''
+
+[[repl]]
+== REPL
+
+`<localleader>ss` opens `terraform console` in a 15-line split at the bottom of
+the screen, using the same iron.nvim convention F# uses for `dotnet fsi`.
+
+[cols=",",options="header",]
+|===
+|Keys |Action
+|`<localleader>ss` |Open the console REPL
+|`<localleader>sr` |Restart the REPL
+|`<localleader>sl` |Send current line
+|`<localleader>sc` |Send motion or visual selection
+|`<localleader>sp` |Send paragraph
+|`<localleader>sf` |Send whole file
+|`<localleader>si` |Interrupt
+|`<localleader>sq` |Quit the REPL
+|===
+
+[IMPORTANT]
+====
+*`terraform console` evaluates against real state.* This is a genuine difference
+from every other REPL in this configuration — `dotnet fsi`, GHCi and the Lisp
+REPLs all evaluate in a scratch environment, where the worst case of a mistake is
+a confusing answer.
+
+`terraform console` reads your actual state file. Expressions referring to
+resources, data sources or outputs report what is really deployed. It is closer
+to a query tool than to a scratchpad.
+
+It does not apply changes — the console is read-only — but treat it as pointed at
+production, because it is.
+====
+
+In an uninitialised directory the console still starts, but answers very little:
+anything referring to a provider, module or resource fails until `terraform init`
+has run. Stateless expressions work anywhere:
+
+[source,hcl]
+----
+> 1 + 1
+2
+> upper("x")
+"X"
+> max(3, 7)
+7
+----
+
+'''''
+
+[[the-container-split]]
+== The container split
+
+Two binaries are involved and they are provided in opposite ways.
+
+[cols="1,1,2",options="header"]
+|===
+|Binary |Runs |Why
+
+|`terraform`
+|In a container
+|It is the tool being *operated* on infrastructure, which is what this
+repository's containers-first rule covers.
+
+|`terraform-ls`
+|Natively
+|It is a language server — editor machinery, like `lua-language-server` and
+`fsautocomplete`, neither of which is containerised.
+
+|`hclfmt`
+|Natively
+|A formatter the editor spawns on every write, in the same category as `stylua`.
+|===
+
+The consequence worth knowing: a native process invoking a containerised CLI must
+agree with it on what a path means. `terraform-ls` passes absolute host paths, so
+the wrapper mounts the working tree *at the same path inside the container as
+outside*, and drops to the invoking user so nothing it writes ends up root-owned.
+
+The wrapper mounts the enclosing git repository rather than just the current
+directory, so a module referenced as `../../modules/thing` resolves. Mounting only
+the working directory is the obvious shortcut and it breaks exactly there.
+
+'''''
+
+[[typical-workflow]]
+== Typical Workflow
+
+. Open a module — `nvim envs/dev/main.tf`. `terraform-ls` attaches.
+. Run `terraform init` once in that directory, from a shell or via
+  `<localleader>ss` then `:!terraform init`, so the provider schema is available
+  and completions become useful.
+. Edit. Completions come from the provider schema; `gd` jumps into module
+  sources; diagnostics appear inline.
+. Write the file. `terraform fmt` rewrites it canonically — expect the ~500 ms
+  pause.
+. Check an expression against real state with `<localleader>ss` and the console.
+. `<localleader>sq` to close the REPL.
+
+'''''
+
+[[troubleshooting]]
+== Troubleshooting
+
+*Nothing formats and no error appears.* The `terraform` wrapper is not on `$PATH`.
+This degrades silently by design — the write completes, the buffer is left
+unchanged, and nothing is logged. Check with `:lua =vim.fn.exepath("terraform")`;
+an empty string means conform found nothing to run.
+
+*No completions for provider resources.* The directory has not been through
+`terraform init`, so `terraform-ls` has no schema. Syntax errors are still
+reported; only schema-backed completion is missing.
+
+*`Unable to evaluate directory symlink: lstat ../../modules`.* The wrapper mounted
+the working directory rather than the repository root. This happens when the
+directory is not inside a git repository — the wrapper falls back to `$PWD`, and
+anything outside it is invisible to the container.
+
+*Formatting is slow on the first write of a session.* The container image is
+being loaded. Subsequent writes are the ~500 ms steady state.
+
+*Files owned by root.* The wrapper is not passing `--user`, or is being bypassed
+by a `terraform` binary earlier on `$PATH`. Check `command -v terraform` resolves
+to the wrapper.
+
+'''''
+
+[[setup]]
+== Setup
+
+=== The terraform wrapper
+
+The wrapper lives in the repository at `docker/terraform/terraform`. Symlink it
+onto `$PATH`:
+
+[source,sh]
+----
+ln -s ~/.config/nvim/docker/terraform/terraform ~/.local/bin/terraform
+----
+
+Verify it resolves and runs:
+
+[source,sh]
+----
+command -v terraform
+terraform version
+----
+
+The image tag is pinned inside the wrapper rather than tracking `latest`, so
+`terraform fmt` cannot change its output underneath the repository without a
+commit. To move to a newer Terraform, edit `IMAGE` in that file.
+
+=== Installing terraform-ls
+
+Download the release binary (check
+https://github.com/hashicorp/terraform-ls/releases[releases] for the current
+version):
+
+[source,sh]
+----
+VERSION=0.39.0
+curl -sLo /tmp/terraform-ls.zip \
+  https://releases.hashicorp.com/terraform-ls/${VERSION}/terraform-ls_${VERSION}_linux_amd64.zip
+unzip -o /tmp/terraform-ls.zip -d ~/.local/bin/
+chmod +x ~/.local/bin/terraform-ls
+----
+
+Verify:
+
+[source,sh]
+----
+terraform-ls --version
+----
+
+=== Installing hclfmt
+
+Only needed if you edit `.hcl` files; Terraform's own `.tf` files do not use it.
+
+`hashicorp/hcl` publishes no prebuilt binaries, so `hclfmt` has to be compiled.
+The repository ships a script that does this in a container, so no Go toolchain
+is installed on the host:
+
+[source,sh]
+----
+./docker/terraform/build-hclfmt.sh
+----
+
+Verify:
+
+[source,sh]
+----
+hclfmt --version
+----
+
+'''''
+
+[[prerequisites]]
+== Prerequisites
+
+Terraform-specific tools only. Base requirements — Neovim itself, git, a C
+compiler for the Treesitter parsers — are in
+xref:getting-started.adoc[Getting Started]; the cross-language view is in
+xref:languages/setup.adoc#terraform[Language Setup].
+
+Docker is required, since the `terraform` CLI runs in a container.
+
+[width="100%",cols="34%,33%,33%",options="header",]
+|===
+|Dependency |Purpose |Install hint
+|Docker |Runs the `terraform` CLI |xref:getting-started.adoc[Getting Started]
+|`terraform` wrapper |Format-on-save *and* everything `terraform-ls` shells out to |Symlink from `docker/terraform/` — see xref:#setup[Setup]
+|`terraform-ls` |LSP (completions, diagnostics, go-to-def) |Binary download — see xref:#setup[Setup]
+|`hclfmt` |Format-on-save for `.hcl` files only |Build script — see xref:#setup[Setup]
+|===
+
+[IMPORTANT]
+====
+The `terraform` binary is needed by *both* the formatter and the language server,
+not only the formatter.
+
+That is the easier half to guess wrong. `terraform-ls` shells out to `terraform`
+for validation and for provider schema work, so without the wrapper on `$PATH`
+you lose schema-backed completions and diagnostics as well as formatting — and
+both fail quietly rather than reporting a missing binary.
+====
+
+Everything degrades gracefully. With none of these installed, Terraform files
+still open, still highlight via Treesitter, and still honour the indent settings;
+Neovim starts with no errors and no LSP client attaches.
+
+=== Validated against
+
+[cols=",",options="header",]
+|===
+|Component |Version
+|Terraform image |`hashicorp/terraform:1.16.3`
+|`terraform-ls` |0.39.0
+|`hclfmt` |built from `hashicorp/hcl` v2 `main`
+|===

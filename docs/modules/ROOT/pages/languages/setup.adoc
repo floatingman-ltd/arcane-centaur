@@ -19,6 +19,7 @@ Base tools that *every* language needs — Neovim, git, curl, a C compiler, and 
 | xref:#lisp[Lisp family] | Common Lisp, Clojure, Scheme, Fennel
 | xref:#janet[Janet] | janet, janet-lsp
 | xref:#markdown[Markdown] | marksman
+| xref:#terraform[Terraform] | terraform wrapper, terraform-ls, hclfmt
 | xref:#parsers[Treesitter parsers] | The C-compiler requirement
 |===
 
@@ -101,6 +102,13 @@ it is not a gap you need to fill.
 |—
 |—
 |`markdown`
+
+|xref:#terraform[Terraform]
+|`terraform-ls`
+|`terraform console`
+|`terraform fmt`
+|—
+|`terraform`, `hcl`
 |===
 
 [NOTE]
@@ -271,6 +279,27 @@ Guide: xref:editor/code-intelligence.adoc[Code Intelligence]
 
 `marksman` supplies no folding ranges and no formatting. Markdown folds come from treesitter with an indent fallback, and no LSP-backed markdown formatter is configured — installing the server deliberately changes neither.
 
+[[terraform]]
+== Terraform
+
+Terraform is the only language here whose CLI is *containerised*. `terraform` runs in a pinned
+`hashicorp/terraform` image behind a wrapper script; `terraform-ls` and `hclfmt` run natively on the
+host, like every other language server and formatter. Docker is therefore a hard requirement for
+Terraform work, and the full reasoning is in
+xref:languages/terraform.adoc#the-container-split[the Terraform guide].
+
+[cols=",",options="header",]
+|===
+|Tool |Install
+|`terraform` (wrapper) |`ln -s ~/.config/nvim/docker/terraform/terraform ~/.local/bin/terraform`
+|`terraform-ls` |Binary from https://github.com/hashicorp/terraform-ls/releases[releases] — see xref:languages/terraform.adoc#setup[the guide]
+|`hclfmt` |`./docker/terraform/build-hclfmt.sh` — only needed for `.hcl` files
+|===
+
+The `terraform` binary is needed by *both* the formatter and the language server. `terraform-ls`
+shells out to it for validation and provider schema work, so without the wrapper you lose
+schema-backed completions as well as formatting — and both fail silently.
+
 [[parsers]]
 == Treesitter parsers
 
@@ -285,7 +314,7 @@ how to verify.
 
 The config installs these parsers automatically on first launch: `commonlisp`, `clojure`,
 `scheme`, `fennel`, `janet_simple`, `lua`, `fsharp`, `c_sharp`, `haskell`, `vim`, `http`,
-`markdown`, and `markdown_inline`. Check the result with:
+`terraform`, `hcl`, `markdown`, and `markdown_inline`. Check the result with:
 
 [source,vim]
 ----
