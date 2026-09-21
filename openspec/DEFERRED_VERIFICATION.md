@@ -68,6 +68,8 @@ The code is complete and pushed: branch `feat/add-remote-session-profile`, commi
 
 `RS.10` is a feel-test of `<Esc>` latency at `ttimeoutlen=100` and has no headless equivalent at all. Record the verdict rather than just ticking it; 75 ms is the recorded fallback if 100 ms proves intolerable.
 
+**One question to answer while the remote host is available, not in the plan's boxes.** The clipboard provider in `lua/options.lua` is selected without consulting `is_remote`: `is_wsl` wins first, then `is_console`, then Neovim's auto-detection. If `sshd` into this WSL box leaves `WSL_DISTRO_NAME` set, a remote user's yanks land in *this* machine's Windows clipboard rather than reaching them, where OSC 52 would have worked. Checking it costs one `echo $WSL_DISTRO_NAME` in the SSH session and one yank. Logged in `recommendations/ideas.md` under *Things that seem broken*; it is a question rather than a defect until that variable is observed. Three of the four clipboard cases work today, so do not reorder the branches on a guess.
+
 ### `add-terraform-support` — live validation outstanding. Paused 2026-09-21, not blocked.
 
 Adds Terraform and HCL as a supported language: `terraformls`, format-on-save, treesitter parsers, a `terraform console` REPL, guide and cheatsheet. Branch `feat/add-terraform-support`, pushed through `eb61325`. 29 of 39 tasks done — everything through documentation. The remaining ten are the live walk plus post-merge close-out.

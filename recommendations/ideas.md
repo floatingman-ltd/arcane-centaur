@@ -295,6 +295,22 @@ use before deciding.
 
 ## Things that seem broken
 
+- **The clipboard provider is chosen without asking whether the session is remote, and `is_wsl` wins first.** `lua/options.lua` branches `is_wsl` -> `win32yank.exe`, then `is_console` -> OSC 52, then Neovim's auto-detection. `is_remote` is not consulted at any point.
+
+  Measured 2026-09-21: that ordering is real, and `is_wsl` is simply `vim.env.WSL_DISTRO_NAME ~= nil`.
+
+  **Not yet measured, and the reason this is filed rather than fixed:** whether `sshd` into this WSL box leaves `WSL_DISTRO_NAME` set in the session it spawns. If it does, branch 1 wins for a remote user and every yank lands in the Windows clipboard of *this* machine instead of reaching the person at the far end, where OSC 52 would have worked. If it does not, there is nothing here.
+
+  The same question applies more weakly to SSH with X11 forwarding, where `is_console` is `false` and Neovim auto-detects `xclip` against the forwarded display. That should be correct but slow, rather than wrong.
+
+  Needs the remote host, so it is logged against `add-remote-session-profile`'s validation in `openspec/DEFERRED_VERIFICATION.md` rather than guessed at. Do not change the branch order until it is measured — three of the four cases currently work.
+
+- **`SSH_TTY` is absent from tmux's default `update-environment`, which constrains `detect_remote`'s tmux step more than the code comment says.** Measured 2026-09-21 against tmux 3.4: the default list is `DISPLAY`, `KRB5CCNAME`, `SSH_ASKPASS`, `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, `SSH_CONNECTION`, `WINDOWID`, `XAUTHORITY`. `SSH_CONNECTION` is there; `SSH_TTY` is not.
+
+  So the choice of variable in the tmux query is load-bearing, not incidental. The top-level check can use either variable; the tmux fallback can only use `SSH_CONNECTION`, and querying `SSH_TTY` through tmux would fail on every correctly configured system. `lua/config/terminal.lua` on `feat/add-remote-session-profile` already queries the right one — this records *why*, so nobody simplifies the two checks into one later.
+
+  Not a defect. **Fold it into the `Remote Session Detection` section of `other/architecture.adoc` when that branch merges**; it is here rather than there to avoid editing a page the branch is already rewriting.
+
 - **`nvim_list_wins()` is global across tabpages, and four call sites assume it is not.** Confirmed headlessly: with two tabpages open, `nvim_list_wins()` returns both tabs' windows while `nvim_tabpage_list_wins(0)` returns only the current tab's. Harmless today because nothing in this configuration creates a second tabpage — and live the moment anyone does, which is exactly what the tabpage exploration above proposes.
 
   | Site | Behaviour once a second tabpage exists |
