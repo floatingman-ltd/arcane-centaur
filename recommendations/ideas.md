@@ -4,11 +4,13 @@
 
 Agreed running order. Details live in the sections below; this is just the queue.
 
-1. **Editing at distance — GitHub issues #187–192** — *Things we'd like to add*. Six open enhancements that are really one theme with a dependency order. `#189` is the enabler and should land first; `#191` is a project in its own right and should land last. Two caveats not recorded in the issues themselves make the sequencing matter — see the entry.
+1. **Visual buffer tabbing / full-screen panels** — *Things we'd like to add*, entry 2. **Explored 2026-09-11 and ready to propose.** Moved to the head of the queue on the user's instruction the same day, ahead of the editing-at-distance issues. The exploration rejected the right-hand sidebar the request started from and landed on native tabpages for the console plus avante's existing `zen_mode()` for avante. One decision is open before a proposal can be written (⑤: what `<leader>T` becomes), and one prerequisite defect should land first or alongside — `nvim_list_wins()` is tabpage-blind at four call sites, see *Things that seem broken*.
 
-2. **Lua cheatsheet** — *Things we'd like to add*, entry 1d. Lua is the only language in `nav.adoc` with a Guide and no Cheatsheet. Docs-only, no runtime risk, no TEST_PLAN section; the cheapest item in this file. Queued 2026-09-11 ahead of Terraform deliberately, so the inconsistency closes before new languages add to it.
-3. **Terraform support** — *Things we'd like to add*, entry 1c. Every answer is official and `conform` already ships `terraform_fmt`. One decision is open before implementation: how the `terraform` binary is provided, given it is not installed and the containers principle. Kept as a change entirely separate from the Lua work.
-4. **JavaScript / TypeScript** — *Things we'd like to add*, entry 1a. **Explore before proposing.** The unknowns are real — `ts_ls` versus `vtsls`, prettier versus biome, and whether to run `eslint` as a second server against the same buffer, which this configuration has never done. Scoping it as a proposal without settling those would produce a proposal that has to be rewritten.
+2. **Editing at distance — GitHub issues #187–192** — *Things we'd like to add*. Six open enhancements that are really one theme with a dependency order. `#189` is the enabler and should land first; `#191` is a project in its own right and should land last. Two caveats not recorded in the issues themselves make the sequencing matter — see the entry.
+
+3. **Lua cheatsheet** — *Things we'd like to add*, entry 1d. Lua is the only language in `nav.adoc` with a Guide and no Cheatsheet. Docs-only, no runtime risk, no TEST_PLAN section; the cheapest item in this file. Queued 2026-09-11 ahead of Terraform deliberately, so the inconsistency closes before new languages add to it.
+4. **Terraform support** — *Things we'd like to add*, entry 1c. Every answer is official and `conform` already ships `terraform_fmt`. One decision is open before implementation: how the `terraform` binary is provided, given it is not installed and the containers principle. Kept as a change entirely separate from the Lua work.
+5. **JavaScript / TypeScript** — *Things we'd like to add*, entry 1a. **Explored 2026-09-11; still not ready to propose.** The exploration found that the three original unknowns (`ts_ls` vs `vtsls`, prettier vs biome, eslint as a second server) are all downstream of one unanswered question: whether this is for editing the occasional JS file or for real frontend application work. Those are a weekend and a project respectively. It also found that the Node dependency is already carried and that `javascript` is already a loaded filetype, so two arguments against it turned out to be false. See the entry for what a proposal would need.
 
 Shipped work is **deleted from this file**, not archived in it. The record lives in three places
 that are already authoritative: the implementation in `openspec/changes/archive/<date>-<name>/`, the
@@ -51,15 +53,34 @@ Everything else in this file is unranked and can be picked up opportunistically.
 
    ---
 
-   **1a. JavaScript + TypeScript — one piece of work, and the largest of the four.** Grouped deliberately: for frontend work the toolchain is shared, and splitting them would duplicate every surface above.
+   **1a. JavaScript + TypeScript — explored 2026-09-11, deliberately not proposed.** Grouped as one piece of work: for frontend the toolchain is shared, and splitting them would duplicate every surface above. The exploration changed the shape of this entry enough that the original scoping is superseded rather than extended.
 
-   The size comes from breadth rather than difficulty. **Four filetypes** (`javascript`, `typescript`, `javascriptreact`, `typescriptreact`) before counting `json`, `css` and `html`, which frontend work drags in and of which only `html` has an ftplugin today. **Treesitter** needs `javascript`, `typescript`, `tsx` and `jsdoc` at minimum. **Formatting** is a decision, not a default — prettier is conventional, biome is the faster single-binary alternative, and picking one commits the repo to a Node-ecosystem dependency it does not currently carry.
+   **Correction to what this entry first claimed.** It said picking a formatter "commits the repo to a Node-ecosystem dependency it does not currently carry." That was wrong. The dependency is already carried: `lua/plugins/html.lua` builds `bracey.vim` with `npm install --prefix server`, node v24.14.0 is installed, and Neovim resolves it — `vim.fn.exepath("node")` returns `~/.nvm/versions/node/v24.14.0/bin/node`. One argument against this work therefore does not exist.
 
-   **The LSP question is the real fork.** `ts_ls` is the direct successor to tsserver; `vtsls` wraps it and is what most large setups have moved to. Either way a second server is usually wanted — `eslint` — and this configuration has never run two servers against one buffer, so `on_attach` sharing and diagnostic precedence would both be exercised for the first time.
+   **`javascript` is already a filetype this config loads a plugin for.** bracey declares `ft = { "html", "css", "javascript" }`, and `after/ftplugin/html.lua` binds `<localleader>p`/`x`/`r` to the live preview. There is a frontend foothold already; this would extend it rather than start cold.
 
-   **Not blocked on the containers principle**, though it looks like it should be. Language servers are editor tooling, not services — `fsautocomplete`, `marksman` and `lua_ls` all already run on the host. Node would join them. The principle bites on anything *served*, and there the existing `bracey.vim` live-preview and `http_preview` surfaces already exist to build on.
+   **The central finding, which reframes all three of the open questions.** JavaScript/TypeScript would be the first language here whose toolchain is *project-defined* rather than *editor-defined*:
 
-   Worth noting there is already a frontend foothold: `after/ftplugin/html.lua` and bracey. This would be extending that rather than starting cold.
+   | Language | Who chooses the formatter |
+   |---|---|
+   | F# | the config — Fantomas, via the LSP |
+   | Lua | the config — stylua |
+   | Lisp family | the config — LSP format |
+   | Terraform | nobody; `terraform fmt` is the only answer |
+   | **JS/TS** | **the repository you open** |
+
+   Formatting a repo with prettier when its CI runs biome does not produce a style disagreement, it produces a failing pipeline and a diff touching every file. So *prettier versus biome* is not a preference question — it is **does this config impose a formatter, or detect the project's?** `conform` supports either, but `formatters_by_ft` as written here is a static global table, a shape that assumes the editor decides. The same reframing applies to eslint: its config is per-project, so the real question is whether the server attaches conditionally on one existing, not whether it attaches at all.
+
+   **The two-server question is not virgin territory, and the existing stance is narrower than it looks.** `openspec/specs/dotnet-debugging` requires that enabling easy-dotnet "SHALL NOT start a second C# language server", with exactly one client on a `.cs` buffer. That was about two *rival* servers answering the same questions. `eslint` and `ts_ls` are complementary — types and navigation versus lint rules and fixes. Whether the existing requirement means "never two clients on a buffer" or "never two servers answering the same question" is a decision about intent, not something readable off the spec. The second reading is the defensible one, but it should be stated deliberately if this proceeds.
+
+   **What blocks a proposal is none of the three original questions.** It is the one underneath them: *what is JS/TS for here?*
+
+   - **Editing the occasional JS file** — `package.json`, config files, whatever bracey previews. `ts_ls` plus a formatter, no jsx, no eslint, no DAP. Small, and arguably already three-quarters justified by bracey's existence.
+   - **Real frontend application work** — the framework choice then drives everything. React means `tsx`/`jsx` and two more filetypes; Vue means `volar` and a different server entirely; Svelte means a third. A dev-server story follows, which is where the containers principle finally does bite. That is a project, not a language addition.
+
+   Related and worth answering at the same time: **is there a real project driving this?** Every language here arrived for a reason — F# and Haskell for REPL work, Lua because the configuration is written in it, AsciiDoc because the documentation is. JS/TS arriving "because frontend" with no repository to point at is how four filetypes get maintained and opened twice a year.
+
+   **Two smaller threads surfaced and left open.** node is nvm-managed, so `exepath` is version-pinned and an nvm upgrade moves it silently — anything spawned by conform or an LSP follows `$PATH` at spawn time, which is the same class of trap as `nvim` being a shell alias. And `after/ftplugin/html.lua` uses `<localleader>p`/`x`/`r` for preview while every language ftplugin uses `<localleader>s*` for a REPL; if JS/TS lands with a node REPL, that inconsistency needs resolving or entrenching.
 
    **1b. Assembler — the smallest surface and the largest unanswered question.** Everything hinges on something the wish list never said: *which* assembler, and what for.
 
@@ -75,17 +96,61 @@ Everything else in this file is unranked and can be picked up opportunistically.
 
    **1d. Lua — already ~90% done; this is a finishing job, not an addition.** It has `lua_ls` with a full workspace configuration (as of `configure-lua-ls-workspace`), `stylua` in conform, the `lua` treesitter parser, `after/ftplugin/lua.lua`, `docs/.../languages/lua.adoc`, and three capability specs — `lua-lsp`, `lua-ftplugin`, `lua-formatting`.
 
-   **What is actually missing is the cheatsheet.** There is no `lua-cheatsheet.adoc`, and `nav.adoc` shows the gap unambiguously: every other language reads `Guide` then `Cheatsheet`, while Lua reads `Guide` alone. That is a docs task of a few hours with no runtime risk, and it is the single cheapest item in this entire wish list.
+   **~~What is actually missing is the cheatsheet.~~ Written 2026-09-11**, closing the `Guide` / `Cheatsheet` asymmetry that made Lua the odd one out in `nav.adoc`.
 
-   Two smaller gaps behind it. There is **no REPL binding** — Neovim's own `:lua` is always there, and Conjure has a Neovim-Lua client that would fit the existing Conjure setup. And there is **no DAP support**; `jbyuki/one-small-step-for-vimkind` is the standard adapter for debugging Neovim Lua specifically, which is what Lua is used for in this repository.
+   **The driver, recorded 2026-09-11 because it is obvious now and invisible in six months: Battle for Wesnoth add-ons.** The user plays occasionally and would build Lua tooling out in order to write or modify enhancements. That answers, for Lua, the *"is a real project driving this?"* question that entry 1a leaves open for JavaScript/TypeScript — and it changes which gaps are worth closing, because add-on Lua runs inside the Wesnoth engine rather than inside Neovim.
+
+   **It also corrects this entry's own earlier suggestion.** `jbyuki/one-small-step-for-vimkind` debugs Lua running *inside Neovim*, so it is useless for Wesnoth work. The debugging gap is therefore both harder to close and less valuable than first recorded: Wesnoth offers an in-game Lua console and `wesnoth.message`, and print-debugging is the realistic fallback unless it exposes a debug protocol nobody here has looked for.
+
+   **What Wesnoth work would actually want, cheapest first:**
+
+   . **`wesnoth` in `diagnostics.globals`** — and likely `wml` and `gui` too. Exactly the fix already applied twice, for `vim` and then `pandoc`: each embedding host injects its own global, and `lua_ls` reports every line as `Undefined global` until told which host it is looking at. One line, and most of the practical benefit.
+   . **Check whether LuaLS type definitions exist for the Wesnoth API**, from the project or the community. If they do, pointing `workspace.library` at them buys completion and hover over `wesnoth.units.*` — the same difference `$VIMRUNTIME` made for configuration work, which is the gap between "no false errors" and "actually useful". Nobody has looked; do that before assuming either way.
+   . **WML is the larger unknown.** Add-ons are mostly `.cfg` files in Wesnoth Markup Language with Lua embedded in `[lua]` tags. That is a separate filetype, with no treesitter parser and no language server as far as anyone here knows. Depending on the split in what actually gets written, WML support may matter more than anything on the Lua side.
+   . **Testing is more tractable than debugging** — Wesnoth has a scenario-based unit-test mode (`wesnoth --unit-test`), which is a command to wire up rather than a protocol to implement. Separately, `plenary.nvim` is already loaded at startup as a transitive dependency and already provides `:PlenaryBustedFile` and `:PlenaryBustedDirectory`, undocumented and unbound — that covers plain Lua libraries, not Wesnoth scenarios.
+
+   **The honest caveat, recorded rather than argued away.** "From time to time, as time permits" is hobby cadence, and tooling for something opened occasionally rots between uses — the same trap entry 1a names for JavaScript/TypeScript. The difference is that the cheap end here is genuinely cheap. Do step 1, possibly step 2, and stop; let actual use say whether WML support or a test runner earns its keep.
+
+   There is still **no REPL binding**, which matters less than it appears: Neovim is itself the Lua runtime, so `:lua`, `:lua =`, `:luafile %` and `:source %` stand in for one, and the cheatsheet now says so outright rather than leaving the absence to look like an omission.
 
    ---
 
    **If these are ever ranked:** Lua's cheatsheet first, because it closes a visible inconsistency for almost nothing. Terraform second, because every answer is official and the REPL fit is genuinely nice. JavaScript/TypeScript third and treated as a project, since it introduces a Node dependency and the first two-server buffer. Assembler last, and not costed at all until the purpose question is answered.
 
-2. some sort of visual buffer tabbing:
-   - the sidebar panels for claude.cli and avanate.nvim are awkward to read, it seems both would like to be "full screen" 
-   - the terminal at the bottom of the screen requires scrolling, it too would like a "full screen"
+2. **visual buffer tabbing — explored 2026-09-11; the answer is probably native tabpages, and the original framing was wrong.**
+
+   The note this replaces read: the sidebar panels for claude.cli and avante.nvim are awkward to read and both seem to want to be "full screen"; the terminal at the bottom of the screen requires scrolling and wants the same. The request that prompted the exploration was more specific — a **tabbed buffer control on the right side of the screen**, sitting where nvim-tree sits on the left, listing open buffers including the console and the avante buffer, with the avante entry needing to remain *interactive with a text buffer*. The motivation is remote work: locally the console problem is solved by opening another terminal-emulator tab, and over a single SSH connection that is not available.
+
+   **The finding that decides the design: avante can never be a tab.** `M.sidebars` is keyed by tabpage handle (`avante/init.lua:501-507`), `Sidebar:new(id)` documents `id` as "the tabpage id retrieved from `api.nvim_get_current_tabpage()`" (`avante/sidebar.lua:157`), and `Sidebar:initialize()` binds `code.winid`/`code.bufnr` to whatever window is current at open time. An avante opened in its own tabpage therefore gets its own sidebar instance bound to that tab's scratch buffer, not to your code. The "shared context" objection is structural, not a preference.
+
+   **Avante already ships the full-screen behaviour, and ships it correctly.** `require("avante.api").zen_mode()` (alias of `full_view_ask`, `avante/api.lua:120-131`, default binding `<leader>az` per `avante/config.lua:923`) calls `Sidebar:toggle_code_window()`, which sets the code window's **width to 0** rather than closing it and stashes every non-sidebar window's dimensions in `win_size_store` for restore. `code.winid` stays valid, so apply-diff, selection and `auto_add_current_file` keep working, and `Sidebar:close()` un-maximizes first so the layout cannot be stranded. This is exactly the trap a generic buffer-list control would fall into: closing the code window to make room would sever the binding.
+
+   **So the two halves of this entry have different answers, and that is the correct decomposition rather than a compromise.** The console is context-free — a shell does not care which buffer you were in — so it takes a dedicated tabpage. Avante is context-bound and stays in the code tab, made large by zen mode. The "tabbed control" then collapses into Neovim's native tabline, which only ever has to list *tabs*, never buffers.
+
+   **The cost comparison seals it.** A permanent right-hand sidebar costs 25-30 columns always — roughly 35% of an 80-column SSH terminal, which is in direct tension with the full-screen goal that motivated it. `showtabline` is at its default `1` and `tabline` is `""`, so the native strip costs one row and only appears once a second tab exists. Cheaper *and* better-behaved.
+
+   **No off-the-shelf plugin does the sidebar version anyway.** `bufferline.nvim` and `tabby.nvim` are horizontal-only. `neo-tree.nvim` has a `buffers` source and can sit `position = "right"` — the closest fit — but it enumerates listed file buffers, so avante's unlisted nui buffers would never appear and a custom source would be most of the work. `folke/edgy.nvim` (stacked, collapsible titled panels in one edge) is the only serious candidate and was **not** investigated; its Neovim 0.12 status is unknown and CLAUDE.md's API-drift warning makes that a real question. Only worth reopening if tabpages are rejected.
+
+   **What would remain to build, if tabpages are adopted:**
+
+   | # | Item | Note |
+   |---|---|---|
+   | ① | `nvim_list_wins()` → `nvim_tabpage_list_wins(0)` | a **defect in shipped behaviour** — see *Things that seem broken*. Standalone, four lines, and a prerequisite for all of the below |
+   | ② | tab labels | the default tabline would render a console tab as `term://…//4213:/bin/zsh`. lualine is installed with its `tabline` section unused, and `add-remote-session-profile` is already adding `options.refresh` for `statusline`/`tabline`/`winbar` — land that first and the budget is already there |
+   | ③ | tab navigation keymaps + which-key entries | `gt`/`gT` work natively but are bound and described nowhere, so which-key cannot surface them |
+   | ④ | a create-or-switch way to reach the console tab | must be idempotent, like `<leader>L` is |
+   | ⑤ | decide `<leader>T`'s fate | see below — the one genuinely open decision |
+   | ⑥ | nvim-tree `tab.sync` | currently unset, so it is undecided whether a new tab gets a tree. A console tab should not have one |
+
+   **⑤ is the open decision.** A single global `term_buf` means a bottom split and a console tab would show the *same* shell. Three readings: **keep both** (`<leader>T` stays the 15-line glance, the tab is where you work, one shell two viewports); **`<leader>T` becomes "go to the console tab"** (the bottom split disappears and `ide-layout`'s *Full-width terminal toggle* requirement is rewritten rather than extended); or **two shells** (the glance keeps `term_buf`, the tab gets its own — more state, but the glance stops scrolling away what you were doing).
+
+   **Reading ⑤ as "the console tab replaces the split" would retire the reduced-width terminal defect** recorded under *Things that seem broken* instead of fixing it, which is the cheapest available outcome. Weigh that before anyone touches the current geometry.
+
+   **Unsettled, one live session away from an answer:** does zen mode behave under the IDE layout? `toggle_code_window` only zeroes *widths* in vertical layout, and the terminal is a full-width `botright` row — a different axis — so 15 lines of shell probably survive underneath "full screen" avante. It also closes every floating window unconditionally on the way in. Headless probing of whether the default `<leader>az` binding actually lands was **inconsistent across runs** and should not be trusted; the `<Plug>(AvanteZenMode)` map and the `zen_mode()` API exist regardless, so the capability is reachable either way.
+
+   **Spec impact.** This modifies `openspec/specs/ide-layout/spec.md`, three of whose requirements name the bottom split by geometry. Depending on ⑤ it either extends or replaces *Full-width terminal toggle*. Item ① is arguably its own hotfix — a defect in shipped behaviour, not a new capability — and does not need the rest of this to be worth doing.
+
+   **Also open:** is one console tab enough, or do you want several (a shell per concern — build, logs, git — which is the tmux habit and which tabpages do natively)? That turns ④ into a create-or-switch-*which* problem and pushes toward naming tabs.
 3. signature help, and a way to browse method overloads. Today there is no way to see a method's
    other overloads. Roslyn collapses them into a *single* completion item and just notes the count
    ("+16 overloads"), so the completion documentation window cannot page through them — it renders
@@ -230,6 +295,21 @@ use before deciding.
 
 ## Things that seem broken
 
+- **`nvim_list_wins()` is global across tabpages, and four call sites assume it is not.** Confirmed headlessly: with two tabpages open, `nvim_list_wins()` returns both tabs' windows while `nvim_tabpage_list_wins(0)` returns only the current tab's. Harmless today because nothing in this configuration creates a second tabpage — and live the moment anyone does, which is exactly what the tabpage exploration above proposes.
+
+  | Site | Behaviour once a second tabpage exists |
+  |---|---|
+  | `lua/keymaps.lua:133` `toggle_terminal` | `<leader>T` in tab 2 finds tab 1's terminal window, **closes it there**, and returns. Tab 2 gets no terminal and tab 1 silently loses its own — no error, nothing on screen in the tab you are looking at |
+  | `lua/keymaps.lua:156` `ide_layout` | `editor_win` may be picked from another tabpage, and the closing `nvim_set_current_win(editor_win)` then **switches you to that tabpage** |
+  | `lua/keymaps.lua:171` `ide_layout` | tab 1's terminal counts as "visible", so `<leader>L` in tab 2 opens no terminal there |
+  | `lua/plugins/nvim-tree.lua:57` `QuitPre` guard | tab 1's editor window lands in `remaining`, hits the early `return`, and **the guard disables itself** — in precisely the situation where nvim-tree can be left as a lone full-width window |
+
+  `lua/keymaps.lua:227` (`:Bd`) uses the same call and is **correct as written**: clearing the target buffer out of every window in every tabpage before `bdelete` is the intended behaviour. Do not change that one.
+
+  The fix is `nvim_list_wins()` → `nvim_tabpage_list_wins(0)` at the four sites above. It is correct independently of whether the tabpage work proceeds, and it contradicts `openspec/specs/ide-layout/spec.md`'s *Tree never left as the last window* requirement, which is written without any tabpage qualifier.
+
+  **Not ours to fix, but present:** `claudecode.nvim` has the same blindness at `lua/claudecode/terminal/native.lua:33`, `:181` and `:265`, so a Claude Code session in one tab is discoverable and mutable from another.
+
 - the terminal opens at **reduced width when toggled from inside the tree window**, instead of full width. Measured in a 171-column terminal: opened from the text pane `winwidth(0)` is 171 (correct); opened from the tree it is 140 — which is 171 minus the 30-column tree minus its separator, i.e. the split lands below the *editor column* rather than spanning the screen. The tree stays full height beside it.
 
   This contradicts an existing requirement. `openspec/specs/ide-layout/spec.md` — *Requirement: Full-width terminal toggle* — says the terminal SHALL open full-width at the bottom "regardless of which window has focus when invoked", with a scenario explicitly stating "not inside the tree column". `toggle_terminal` in `lua/keymaps.lua` does use `botright split`, which should be unconditional, so something is relocating the window afterwards; nvim-tree re-establishing its own layout on `WinNew` is the obvious suspect but is **unconfirmed**. Not reproducible headlessly — a scripted run with the same arrangement produced a correct full-width 171 split, so the trigger is not understood.
@@ -237,6 +317,8 @@ use before deciding.
   `<leader>L` (IDE layout assembly) is **not** affected — it opens its terminal full-width through the same `botright split` code, which narrows the fault to `toggle_terminal` invoked with focus already in the tree window rather than to the split call itself.
 
   Found during `fix-tree-terminal-keymaps` validation (TEST_PLAN TK.3/TK.4) and deliberately **not fixed there**: the terminal panel's split approach is itself under review (see the full-screen panel idea above), so effort spent on the current geometry may be wasted. Revisit if the panel survives in its present form.
+
+  **Update 2026-09-11:** that review has now happened — see entry 2 under *Things we'd like to add*. If decision ⑤ there goes the way of "the console tab replaces the bottom split", this defect is retired rather than fixed. Do not spend effort on it until ⑤ is answered.
 
 - **spell suggestions never reach the blink menu, because blink filters them out.** **Reviewed and accepted as-is — see *Declined* above. Kept for the analysis, not as pending work.** Typing a misspelled word and pressing `<C-n>` shows nothing. Reported as "worked when the word was incomplete, does nothing once it is complete", which is exactly the shape of the bug.
 
