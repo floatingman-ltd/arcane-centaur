@@ -6,7 +6,7 @@ This file exists because `openspec/TEST_PLAN.md` records deferrals *inside the s
 
 Two entries below record work believed to exist that **does not** — `reorganize-per-plugin-docs` and `document-setup-prerequisites`. Both were checked while compiling this file. That is the strongest argument for the file existing: deferrals tracked only in notes decay into deferrals tracked nowhere.
 
-> **Active work, paused — read this first.** `add-remote-session-profile` is the only change in flight. Code complete and pushed on `feat/add-remote-session-profile`; validation blocked on the remote host being rebuilt as of 2026-09-11, expected back around 2026-09-25. Full state in **group C** below, cases in `openspec/TEST_PLAN.md` § `Change · add-remote-session-profile`. Everything else in this file is older and unblocked.
+> **Active work, paused — read this first.** Two changes are in flight, both code-complete and pushed, both waiting on a live session rather than on any remaining implementation. `add-remote-session-profile` is blocked on the remote host being rebuilt as of 2026-09-11, expected back around 2026-09-25. `add-terraform-support` is not blocked on anything — it was paused on 2026-09-21 by choice, and can resume whenever someone has Neovim open. Full state for both in **group C** below; cases in `openspec/TEST_PLAN.md` under each change's section. Everything else in this file is older and unblocked.
 
 **A tick in `TEST_PLAN.md` does not always mean a human looked.** Where a box was closed on programmatic evidence with the human check deferred, it is listed below. That is deliberate and recorded in each case, but it means the plan reads greener than reality.
 
@@ -50,7 +50,7 @@ Genuinely incomplete, and each says so in place.
 
 ---
 
-## C. Blocked on hardware or environment
+## C. Changes in flight, paused mid-validation
 
 **`add-remote-session-profile` — remote validation. Blocked on the remote host, which is being rebuilt as of 2026-09-11; expected back around 2026-09-25.** This is the one live piece of work in the repository, and it is paused rather than abandoned.
 
@@ -67,6 +67,25 @@ The code is complete and pushed: branch `feat/add-remote-session-profile`, commi
 `RS.4` is the one worth the setup effort. It is the case the second detection step exists for: a tmux session started *before* the SSH connection hosts a Neovim with no `SSH_*` variables at all, because a process's environment is fixed when it starts and tmux cannot update panes that already exist. The mechanism was reproduced locally on 2026-09-10 by recreating the same asymmetry — pane created first, `tmux set-environment SSH_CONNECTION` set afterwards, `is_remote` read `true` from a pane whose own environment had zero `SSH_*` entries — but never over a real link, which is the whole point of the case.
 
 `RS.10` is a feel-test of `<Esc>` latency at `ttimeoutlen=100` and has no headless equivalent at all. Record the verdict rather than just ticking it; 75 ms is the recorded fallback if 100 ms proves intolerable.
+
+### `add-terraform-support` — live validation outstanding. Paused 2026-09-21, not blocked.
+
+Adds Terraform and HCL as a supported language: `terraformls`, format-on-save, treesitter parsers, a `terraform console` REPL, guide and cheatsheet. Branch `feat/add-terraform-support`, pushed through `eb61325`. 29 of 39 tasks done — everything through documentation. The remaining ten are the live walk plus post-merge close-out.
+
+**The toolchain question that held this change up is settled.** It sat behind "the `terraform` binary is not installed" for ten days. It now is: a pinned `hashicorp/terraform:1.16.3` behind `docker/terraform/terraform`, with `terraform-ls` 0.39.0 and `hclfmt` native. Nothing about this change is waiting on an install any more.
+
+**To resume, read `openspec/TEST_PLAN.md` § `Change · add-terraform-support`.** Nine cases, `TF.1`–`TF.9`, none ticked. The fixture is committed at `testdocs/terraform-project/` and is deliberately provider-free, so `terraform init -backend=false` completes offline in about a second.
+
+| Case | State |
+|---|---|
+| `TF.1`, `TF.3`, `TF.4`, `TF.6`, `TF.7`, `TF.8` | Headless evidence gathered and recorded. A live session should confirm quickly. |
+| `TF.2` | **No headless equivalent.** Rendered highlight colours and the column-0-on-newline indent symptom both need eyes. |
+| `TF.5` | **No headless equivalent.** The REPL split opening, which-key surfacing the maps, and the console answering `module.greeting.greeting`. |
+| `TF.9` | **The regression case, and the reason to be careful here.** iron.nvim moved out of `lua/plugins/dotnet.lua` into `lua/plugins/iron.lua`. The F# and C# REPLs are asserted unchanged on a headless reading of `repl_definition`, which is not the same as sending a line to `dotnet fsi` and watching it evaluate. |
+
+`TF.9` is the one worth the setup effort. Everything else in this change is new surface, where a mistake shows up as a feature that does not work; `TF.9` covers existing surface, where a mistake shows up as something that used to work and now does not.
+
+Two decisions were settled during implementation and are recorded as blockquotes against tasks 0.8 and 3.3 rather than only here. The wrapper mounts the enclosing git repository rather than `$PWD`, measured against a module referenced as `../../modules/thing`. And conform's `hcl` formatter needs `hclfmt`, which conform does not bundle and `hashicorp/hcl` publishes no release of — built from source via a containerised Go toolchain, installed natively. Without that second finding the `hcl` mapping would have formatted nothing, silently, and the change would have shipped looking complete.
 
 > **One defect was already found and fixed during implementation**, and its regression case is `RS.7`. Adding `User GitSignsUpdate` to lualine's `options.refresh.events` looks correct and is not: lualine builds that list into one command with `string.format("autocmd %s %s %s %s", ...)`, so the space splits the event list and everything after it becomes the pattern — leaving all ten real events bound to the pattern `GitSignsUpdate` instead of `*`, and the statusline silently not refreshing on cursor movement. Fixed by using dedicated autocommands in a `LualineAsyncRefresh` augroup. If a future change revisits lualine's refresh wiring, this is the trap.
 
@@ -133,6 +152,7 @@ Recorded here because they are the places where the plan is greenest relative to
 - **`install-language-servers` PR/review/merge boxes** — ticked on the evidence of `72a20ef fix/install language servers (#184)` in `main`'s history, not on a fresh observation. Flagged in place; correct them if the record is wrong.
 - **The three `LS.10`/`MA.6`/`FI.8` documentation boxes** — see group A.
 - **`add-fsharp-indent` `FI.6`** — passed live, and notably *without* the intermittent `.fsx` project-options error appearing. Its absence in one run is not evidence the flake is fixed.
+- **`add-terraform-support` tasks 0.3-0.5, 1.3, 2.3, 3.2-3.5, 4.2** — ticked 2026-09-21 on headless runs against the appimage plus direct CLI invocation: server attach, formatter availability, format-on-save at 499 ms, file ownership, absolute-path resolution, both `indents.scm` queries present, and clean degradation with `PATH=/usr/bin:/bin`. Real evidence, but no live session yet. `TEST_PLAN.md` § `Change · add-terraform-support` is the human pass and none of its boxes are ticked.
 
 ---
 
