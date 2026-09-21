@@ -16,6 +16,8 @@ local HIGHLIGHT_FILETYPES = {
   "http",
   "cs",
   "haskell",
+  "terraform",
+  "hcl",
 }
 
 return {
@@ -45,6 +47,8 @@ return {
         "http",
         "c_sharp",
         "haskell",
+        "terraform",
+        "hcl",
       })
 
       -- Treesitter indenting is only usable where nvim-treesitter ships an

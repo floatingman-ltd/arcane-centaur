@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+# terraform CLI wrapper. Runs hashicorp/terraform via Docker; no native
+# terraform install required. Symlink this onto $PATH as `terraform`:
+#
+#   ln -s ~/.config/nvim/docker/terraform/terraform ~/.local/bin/terraform
+#
+# terraform-ls is NOT containerised — it is a language server, editor
+# machinery in the same category as lua_ls and fsautocomplete, and runs
+# natively. See openspec/changes/add-terraform-support/design.md, D4.
+set -euo pipefail
+
+# Pinned rather than :latest, so `terraform fmt` cannot change its output
+# underneath the repository without a commit here.
+IMAGE="hashicorp/terraform:1.16.3"
+
+# Identity mount: the directory is mounted at the SAME path inside the
+# container as outside. A renamed mount (-v "$PWD:/work" -w /work) breaks
+# absolute paths, and terraform-ls passes absolute paths — measured failing
+# 2026-09-11 with "No file or directory at ../tmp/.../main.tf".
+#
+# Mount the repository root, not $PWD, so a module referenced as
+# ../modules/foo resolves. $PWD stays the working directory either way, so
+# the identity property holds for both.
+if MOUNT=$(git rev-parse --show-toplevel 2>/dev/null); then :; else MOUNT="$PWD"; fi
+
+# A dedicated HOME. --user leaves the container process with no home
+# directory of its own, and terraform writes plugin caches and credentials
+# to $HOME; without this they land nowhere and are lost between runs.
+TF_HOME="${TF_DOCKER_HOME:-$HOME/.local/share/terraform-docker}"
+mkdir -p "$TF_HOME"
+
+# -t only when stdin is a terminal. `terraform console` wants a TTY;
+# conform pipes `terraform fmt -no-color -` over stdin and must not get one.
+TTY_FLAG=()
+[[ -t 0 ]] && TTY_FLAG=(-t)
+
+# --user keeps anything terraform writes (.terraform/, lock files, files
+# formatted in place) owned by the invoking user rather than root.
+exec docker run --rm -i "${TTY_FLAG[@]}" \
+  --user "$(id -u):$(id -g)" \
+  -v "$MOUNT:$MOUNT" \
+  -v "$TF_HOME:$TF_HOME" \
+  -e HOME="$TF_HOME" \
+  -w "$PWD" \
+  "$IMAGE" "$@"

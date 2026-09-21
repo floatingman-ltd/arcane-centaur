@@ -57,6 +57,17 @@ vim.lsp.enable("marksman")
 vim.lsp.config("janet_lsp", { on_attach = on_attach, capabilities = capabilities })
 vim.lsp.enable("janet_lsp")
 
+-- Terraform LSP (requires: terraform-ls on $PATH)
+--
+-- terraform-ls runs natively while the `terraform` CLI it shells out to runs in
+-- a container (docker/terraform/terraform). That split is deliberate -- a
+-- language server is editor machinery, like lua_ls and fsautocomplete -- but it
+-- is why the wrapper mounts the working tree at the same path inside and out:
+-- the server passes absolute host paths, and a renamed mount makes them
+-- unresolvable to the container.
+vim.lsp.config("terraformls", { on_attach = on_attach, capabilities = capabilities })
+vim.lsp.enable("terraformls")
+
 -- C# LSP (roslyn.nvim manages the server; we attach shared keymaps here)
 -- Requires the Roslyn server binary on $PATH — see docs/modules/ROOT/pages/languages/dotnet.adoc.
 --
