@@ -1,6 +1,5 @@
--- iron.nvim: REPL interaction for the languages whose REPL is a plain
--- subprocess rather than a network connection (Conjure owns the Lisp family,
--- which speaks to a running image over a socket).
+-- iron.nvim: REPL interaction for languages whose REPL is a plain subprocess.
+-- (Conjure owns the Lisp family, which speaks to a running image over a socket.)
 --
 -- Lived in lua/plugins/dotnet.lua until Terraform joined it. Extracted rather
 -- than extended in place: iron takes a single `iron.setup()` and lazy.nvim does
@@ -38,15 +37,13 @@ return {
               command = { "csharprepl", "--useTerminalPaletteTheme" },
             },
             terraform = {
-              -- `terraform console` is a genuine REPL, which is why Terraform fits
-              -- this convention rather than needing a new one. It is not a scratch
-              -- buffer though: expressions evaluate against real state, and in an
-              -- uninitialised directory it answers very little. Documented in the
-              -- guide so the difference is not met by surprise.
+              -- `terraform console` is a real REPL, so Terraform fits this
+              -- convention without needing a new one. It is not a scratch buffer:
+              -- expressions evaluate against real state, and an uninitialised
+              -- directory answers very little. Stated in the guide.
               --
               -- Runs through the Docker wrapper like every other terraform
-              -- invocation here, so the REPL starts a container that lives as long
-              -- as the session.
+              -- invocation, so the REPL holds a container open for the session.
               command = { "terraform", "console" },
             },
           },

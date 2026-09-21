@@ -3,8 +3,8 @@
 This configuration provides LSP support, format-on-save and a `terraform console`
 REPL for Terraform and HCL, via `terraform-ls`, `terraform fmt` and iron.nvim.
 
-The `terraform` CLI itself runs in a container rather than on the host — see
-xref:#the-container-split[The container split] for what that means in practice.
+The `terraform` CLI runs in a container, not on the host — see
+xref:#the-container-split[The container split].
 
 *Quick navigation*
 
@@ -79,10 +79,9 @@ has no schema to complete against.
 `terraform` and `terraform-vars` buffers are formatted by `terraform fmt` on
 every save, through conform.nvim. `hcl` buffers are formatted by `hclfmt`.
 
-Those are two different filetypes with two different formatters, and the split is
-deliberate: Neovim maps `.tf` to `terraform` and `.hcl` to `hcl`, and
-`terraform fmt` does not parse generic HCL. Applying it to a `.hcl` file would
-fail rather than reformat it.
+Two filetypes, two formatters. Neovim maps `.tf` to `terraform` and `.hcl` to
+`hcl`, and `terraform fmt` does not parse generic HCL — applied to a `.hcl` file
+it fails instead of reformatting.
 
 [cols=",",options="header",]
 |===
@@ -95,15 +94,14 @@ Indent settings for Terraform buffers (set in `after/ftplugin/terraform.lua`):
 else would be undone on the next write.
 
 Formatting is *not* deferred to the language server, which is how the Lisp family
-and F# are handled here. `terraform fmt` is defined by the same project that
-defines the language, so it is the authoritative answer rather than one of
-several.
+and F# are handled here. `terraform fmt` ships from the same project as the
+language, so it is authoritative.
 
 [NOTE]
 ====
 Format-on-save takes roughly *500 ms* for Terraform files, against conform's
 2000 ms timeout. That is container start-up, paid on every write; a native binary
-would be 10-30 ms. It is the accepted cost of the container split below.
+would be 10-30 ms.
 
 `.hcl` files do not pay it — `hclfmt` is a native binary.
 ====
@@ -137,10 +135,9 @@ REPLs all evaluate in a scratch environment, where the worst case of a mistake i
 a confusing answer.
 
 `terraform console` reads your actual state file. Expressions referring to
-resources, data sources or outputs report what is really deployed. It is closer
-to a query tool than to a scratchpad.
+resources, data sources or outputs report what is really deployed.
 
-It does not apply changes — the console is read-only — but treat it as pointed at
+It cannot apply changes — the console is read-only — but treat it as pointed at
 production, because it is.
 ====
 
@@ -184,14 +181,14 @@ repository's containers-first rule covers.
 |A formatter the editor spawns on every write, in the same category as `stylua`.
 |===
 
-The consequence worth knowing: a native process invoking a containerised CLI must
-agree with it on what a path means. `terraform-ls` passes absolute host paths, so
-the wrapper mounts the working tree *at the same path inside the container as
-outside*, and drops to the invoking user so nothing it writes ends up root-owned.
+A native process invoking a containerised CLI must agree with it on what a path
+means. `terraform-ls` passes absolute host paths, so the wrapper mounts the
+working tree *at the same path inside the container as outside*, and drops to the
+invoking user so nothing it writes ends up root-owned.
 
-The wrapper mounts the enclosing git repository rather than just the current
-directory, so a module referenced as `../../modules/thing` resolves. Mounting only
-the working directory is the obvious shortcut and it breaks exactly there.
+It mounts the enclosing git repository, not just the current directory, so a
+module referenced as `../../modules/thing` resolves. Mounting only the working
+directory breaks there.
 
 '''''
 
@@ -224,9 +221,8 @@ an empty string means conform found nothing to run.
 reported; only schema-backed completion is missing.
 
 *`Unable to evaluate directory symlink: lstat ../../modules`.* The wrapper mounted
-the working directory rather than the repository root. This happens when the
-directory is not inside a git repository — the wrapper falls back to `$PWD`, and
-anything outside it is invisible to the container.
+the working directory, not the repository root. It falls back to `$PWD` outside a
+git repository, and anything above `$PWD` is then invisible to the container.
 
 *Formatting is slow on the first write of a session.* The container image is
 being loaded. Subsequent writes are the ~500 ms steady state.
@@ -258,9 +254,9 @@ command -v terraform
 terraform version
 ----
 
-The image tag is pinned inside the wrapper rather than tracking `latest`, so
-`terraform fmt` cannot change its output underneath the repository without a
-commit. To move to a newer Terraform, edit `IMAGE` in that file.
+The image tag is pinned inside the wrapper, so `terraform fmt` cannot change its
+output underneath the repository without a commit. To move to a newer Terraform,
+edit `IMAGE` in that file.
 
 === Installing terraform-ls
 
@@ -330,10 +326,10 @@ Docker is required, since the `terraform` CLI runs in a container.
 The `terraform` binary is needed by *both* the formatter and the language server,
 not only the formatter.
 
-That is the easier half to guess wrong. `terraform-ls` shells out to `terraform`
-for validation and for provider schema work, so without the wrapper on `$PATH`
-you lose schema-backed completions and diagnostics as well as formatting — and
-both fail quietly rather than reporting a missing binary.
+`terraform-ls` shells out to `terraform` for validation and provider schema work,
+so without the wrapper on `$PATH` you lose schema-backed completions and
+diagnostics as well as formatting. Both fail quietly; neither reports a missing
+binary.
 ====
 
 Everything degrades gracefully. With none of these installed, Terraform files

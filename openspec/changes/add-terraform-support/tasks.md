@@ -10,7 +10,7 @@
 - [X] 0.6 Install `terraform-ls` **natively** — it is editor tooling, in the same category as `lua_ls` and `marksman`, and is deliberately not containerised
 - [X] 0.7 Record the image tag and the `terraform-ls` version; every language guide states what it was validated against
 - [X] 0.8 Decide whether the wrapper should mount a repository root rather than `$PWD`, so that `../modules/foo` references resolve. This is the most likely real-world failure and will not show up in a single-directory fixture
-  > **Decided 2026-09-21: mount the enclosing git repository, `-w "$PWD"`, falling back to `$PWD` outside a repository.** Measured both ways against a fixture with `envs/dev` referencing `../../modules/thing`. A `$PWD`-only mount fails with `Unable to evaluate directory symlink: lstat ../../modules: no such file or directory`; a repository-root mount initialises cleanly. The identity property holds either way, since only the mount *root* widens. Spec delta updated to require it.
+  > **Decided 2026-09-21: mount the enclosing git repository, `-w "$PWD"`, falling back to `$PWD` outside a repository.** Measured both ways against a fixture with `envs/dev` referencing `../../modules/thing`. A `$PWD`-only mount fails with `Unable to evaluate directory symlink: lstat ../../modules: no such file or directory`; a repository-root mount initialises cleanly. Only the mount *root* widens, so the identity property holds either way. Spec delta updated.
 
 ## 1. Language server
 
@@ -25,7 +25,7 @@
 - [X] 2.1 Add `terraform` and `hcl` to the `ts.install{...}` list in `lua/plugins/treesitter.lua`
 - [ ] 2.2 Confirm both parsers install and highlighting is active in a `.tf` and a `.hcl` buffer
 - [X] 2.3 Check whether either parser ships an `indents.scm`. The `has_indent_query` helper in that file resolves this at runtime, so no list needs editing — but confirm the outcome, since treesitter indenting without a query is worse than none
-  > Both ship one — `queries/terraform/indents.scm` and `queries/hcl/indents.scm` each resolve to 1 runtime file. Treesitter indenting is therefore active for both, which is the wanted outcome and needed no edit.
+  > Both ship one — `queries/terraform/indents.scm` and `queries/hcl/indents.scm` each resolve to 1 runtime file. Treesitter indenting is active for both. No edit needed.
 
 ## 3. Formatting
 
@@ -33,10 +33,10 @@
 - [X] 3.2 Confirm a badly-formatted `.tf` file is rewritten on save
 - [X] 3.3 Confirm a `.hcl` file uses the `hcl` formatter and not `terraform_fmt`
   > Confirmed: a `.hcl` buffer reports filetype `hcl` and formatter `hcl`, and is reformatted on write.
-  > **Gap found here, 2026-09-21.** conform's `hcl` formatter runs `hclfmt`, a binary conform does *not* bundle and `hashicorp/hcl` publishes no prebuilt release of — so the mapping the design specified would have silently done nothing. Built it from source in a `golang:1.25-alpine` container and installed the resulting static binary to `~/.local/bin`; `docker/terraform/build-hclfmt.sh` reproduces this. The binary runs natively, per the repository rule that formatters are editor machinery; only the toolchain is containerised. Spec delta updated to state it.
+  > **Gap found here, 2026-09-21.** conform's `hcl` formatter runs `hclfmt`, a binary conform does *not* bundle and `hashicorp/hcl` publishes no prebuilt release of, so the mapping the design specified would have silently done nothing. Built from source in a `golang:1.25-alpine` container, static binary installed to `~/.local/bin`; `docker/terraform/build-hclfmt.sh` reproduces it. The binary runs natively, per the repository rule that formatters are editor machinery; only the toolchain is containerised. Spec delta updated.
 - [X] 3.4 Confirm that with `terraform` absent, writing a buffer leaves it unchanged and does not block the write or spam errors
 - [X] 3.5 Measure format-on-save latency and record the number — especially if D4 resolved to the Docker wrapper, where container start-up is paid on every write
-  > **499 ms** for a `.tf` write in a live buffer (warm image), against conform's 2000 ms timeout. Consistent with the 530-606 ms the design measured at the CLI. `.hcl` writes do not pay it — `hclfmt` is native.
+  > **499 ms** for a `.tf` write in a live buffer (warm image), against conform's 2000 ms timeout. Consistent with the 530-606 ms the design measured at the CLI. `.hcl` writes do not pay it; `hclfmt` is native.
 
 ## 4. Filetype plugin
 
@@ -59,7 +59,7 @@
 
 - [X] 6.1 Add a `## Change · add-terraform-support` section to `openspec/TEST_PLAN.md` with branch, prerequisites, and numbered `Prepare` / `Validate` / `Raise PR & merge` / `Post-merge` subsections
 - [X] 6.2 Decide the REPL fixture: either a `testdocs/` Terraform fixture that has been through `terraform init`, or accept that the REPL case only covers stateless expressions. Record which, and why
-  > **Decided 2026-09-21: a `testdocs/terraform-project/` fixture, using no provider.** The reason the second option was on the table is that `terraform init` normally downloads a provider, which makes the fixture slow and network-dependent. A module-only configuration sidesteps that — `terraform init -backend=false` completes offline in about a second — while still giving the console real state to read: `module.greeting.greeting` answers `"Hello, arcane-centaur!"`. So the REPL is exercised against module state rather than only arithmetic, at no cost. The fixture doubles as the `../../modules` case for the wrapper's mount root.
+  > **Decided 2026-09-21: a `testdocs/terraform-project/` fixture, using no provider.** The second option was on the table because `terraform init` normally downloads a provider, making the fixture slow and network-dependent. A module-only configuration avoids that — `terraform init -backend=false` completes offline in about a second — and still gives the console real state to read: `module.greeting.greeting` answers `"Hello, arcane-centaur!"`. The REPL is exercised against module state, not just arithmetic. The fixture doubles as the `../../modules` case for the wrapper's mount root.
 - [ ] 6.3 Walk every step in a live session
 - [ ] 6.4 Confirm no other language regressed — open an F#, Lua and markdown buffer and check diagnostics, formatting and keymaps behave as before
 - [ ] 6.5 Tick each `- [ ]` only once genuinely confirmed, logging any defect and its fix inline as a blockquote note

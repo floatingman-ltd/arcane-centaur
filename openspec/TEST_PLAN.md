@@ -3855,9 +3855,9 @@ Put the cursor on a `vim.fn.*` call — `vim.fn.setreg` at `lua/config/util.lua:
 
 Adds Terraform and HCL as a supported language: `terraformls`, format-on-save via `terraform fmt` and `hclfmt`, `terraform` and `hcl` treesitter parsers, an ftplugin with a `terraform console` REPL, and a guide and cheatsheet.
 
-**What makes this change unlike the other language additions.** The `terraform` CLI runs in a container while `terraform-ls` and `hclfmt` run natively, so several steps below exist to test the seam between them rather than the editor wiring. The wrapper mounts the enclosing git repository at an identical path inside and out; both halves of that are load-bearing, and `TF.7` is the case that fails if either is dropped.
+**Unlike the other language additions**, the `terraform` CLI runs in a container while `terraform-ls` and `hclfmt` run natively, so several steps below test the seam between them and not the editor wiring. The wrapper mounts the enclosing git repository at an identical path inside and out; `TF.7` fails if either half is dropped.
 
-**iron.nvim moved.** It was configured in `lua/plugins/dotnet.lua` and is now `lua/plugins/iron.lua`, because it serves Terraform as well as F# and C#. No behaviour was intended to change, so `TF.9` re-checks the F# and C# REPLs rather than assuming.
+**iron.nvim moved** from `lua/plugins/dotnet.lua` to `lua/plugins/iron.lua`, now that it serves Terraform as well as F# and C#. No behaviour was intended to change; `TF.9` re-checks the F# and C# REPLs.
 
 **Prerequisites:**
 - Docker running. The `terraform` CLI is containerised.
@@ -3892,7 +3892,7 @@ Open `testdocs/terraform-project/envs/dev/main.tf`.
 - [ ] `example.hcl` is highlighted too, via the separate `hcl` parser
 - [ ] Pressing `o` inside a block indents to 2 spaces rather than dropping to column 0
 
-> Both parsers ship an `indents.scm`, so `has_indent_query` enables treesitter indenting for them. Column 0 on newline is the symptom of that check going wrong — it is the exact defect the helper was written for in C#.
+> Both parsers ship an `indents.scm`, so `has_indent_query` enables treesitter indenting for them. Column 0 on newline is the symptom of that check going wrong — the defect the helper was written for in C#.
 
 #### TF.3 — Format-on-save rewrites a Terraform file
 
@@ -3919,7 +3919,7 @@ In `testdocs/terraform-project/envs/dev/main.tf`:
 - [ ] `<localleader>ss` opens `terraform console` in a split at the bottom, 15 lines tall
 - [ ] Pressing `<localleader>` shows the `s` maps in which-key, each with a description
 - [ ] Stateless expressions answer: `1 + 1` → `2`, `upper("x")` → `"X"`, `max(3, 7)` → `7`
-- [ ] `module.greeting.greeting` → `"Hello, arcane-centaur!"` — the console is reading real module state, which is the property that distinguishes it from every other REPL here
+- [ ] `module.greeting.greeting` → `"Hello, arcane-centaur!"` — the console is reading real module state
 - [ ] `<localleader>sl` sends the current line from the buffer into the console
 - [ ] `<localleader>sq` closes it cleanly, leaving no stray window
 - [ ] `<localleader>sr` restarts it
@@ -3936,9 +3936,9 @@ Start Neovim with `env PATH="/usr/bin:/bin" nvim testdocs/terraform-project/envs
 
 #### TF.7 — The container seam
 
-This is the part that has no analogue in any other language here.
+No other language here has this.
 
-- [ ] From `testdocs/terraform-project/envs/dev`, `terraform init -backend=false` resolves `../../modules/greeting` — the module is above the working directory, and only the repository-root mount can see it
+- [ ] From `testdocs/terraform-project/envs/dev`, `terraform init -backend=false` resolves `../../modules/greeting` — above the working directory, so only the repository-root mount sees it
 - [ ] `terraform fmt "$PWD/badly-formatted.tf"` works with an absolute path, which is what `terraform-ls` passes
 - [ ] Nothing written by terraform is root-owned: `find . -user root` inside the fixture returns nothing
 - [ ] Running `terraform` from a directory outside any git repository still works, falling back to a `$PWD` mount
@@ -3954,7 +3954,7 @@ This is the part that has no analogue in any other language here.
 
 #### TF.9 — No other language regressed
 
-iron.nvim moved out of `lua/plugins/dotnet.lua` into `lua/plugins/iron.lua`, so the .NET REPLs are the specific risk.
+iron.nvim moved out of `lua/plugins/dotnet.lua` into `lua/plugins/iron.lua`, so the .NET REPLs are the risk.
 
 - [ ] F# — open `testdocs/hello.fsx`, `<localleader>sl` still sends to `dotnet fsi`, `fsautocomplete` still attaches, format-on-save still works
 - [ ] C# — open `testdocs/csharp-project`, roslyn still attaches, `<localleader>tt`/`tr`/`tb` still bound, the REPL still opens
@@ -3965,7 +3965,7 @@ iron.nvim moved out of `lua/plugins/dotnet.lua` into `lua/plugins/iron.lua`, so 
 ### Raise PR & merge
 
 - [ ] Every box above ticked
-- [ ] `gh pr create --title "Add Terraform support"` — pass `--title` explicitly; `--fill` would use the branch name, this branch having more than one commit
+- [ ] `gh pr create --title "Add Terraform support"` — pass `--title` explicitly; with more than one commit `--fill` uses the branch name
 - [ ] PR merged
 
 ### Post-merge
@@ -3973,4 +3973,4 @@ iron.nvim moved out of `lua/plugins/dotnet.lua` into `lua/plugins/iron.lua`, so 
 - [ ] `git pull --rebase` on `main` — `--delete-branch` skips its local half silently when main has unpushed commits
 - [ ] Remove the Terraform entry from the priority queue in `recommendations/ideas.md` and trim entry 1c
 - [ ] `openspec archive add-terraform-support`
-- [ ] Write the Purpose for each of the three new capabilities **by hand, immediately** — archiving leaves a `TBD` placeholder no delta can fill, and this change creates three of them
+- [ ] Write the Purpose for each of the three new capabilities **by hand, immediately** — archiving leaves a `TBD` placeholder no delta can fill

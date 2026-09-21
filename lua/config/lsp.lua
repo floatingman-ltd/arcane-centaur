@@ -60,11 +60,10 @@ vim.lsp.enable("janet_lsp")
 -- Terraform LSP (requires: terraform-ls on $PATH)
 --
 -- terraform-ls runs natively while the `terraform` CLI it shells out to runs in
--- a container (docker/terraform/terraform). That split is deliberate -- a
--- language server is editor machinery, like lua_ls and fsautocomplete -- but it
--- is why the wrapper mounts the working tree at the same path inside and out:
--- the server passes absolute host paths, and a renamed mount makes them
--- unresolvable to the container.
+-- a container (docker/terraform/terraform) -- a language server is editor
+-- machinery, like lua_ls and fsautocomplete. That split is why the wrapper
+-- mounts the working tree at the same path inside and out: the server passes
+-- absolute host paths, which a renamed mount makes unresolvable.
 vim.lsp.config("terraformls", { on_attach = on_attach, capabilities = capabilities })
 vim.lsp.enable("terraformls")
 
