@@ -1,10 +1,8 @@
 == Working with Terraform
 
-This configuration provides LSP support, format-on-save and a `terraform console`
-REPL for Terraform and HCL, via `terraform-ls`, `terraform fmt` and iron.nvim.
+This configuration provides LSP support, format-on-save and a `terraform console` REPL for Terraform and HCL, via `terraform-ls`, `terraform fmt` and iron.nvim.
 
-The `terraform` CLI runs in a container, not on the host — see
-xref:#the-container-split[The container split].
+The `terraform` CLI runs in a container, not on the host — see xref:#the-container-split[The container split].
 
 *Quick navigation*
 
@@ -44,20 +42,15 @@ nvim main.tf
 |`<leader>ca` |Code action
 |`<leader>e` |Show diagnostics
 |===
-. *Format on save* — `terraform fmt` runs automatically when you write a `.tf`
-  file. Manual format: `<leader>f` in normal or visual mode.
-. *Open the REPL* — `<localleader>ss` starts `terraform console` in a split at
-  the bottom of the screen. `<localleader>` is `,`.
+. *Format on save* — `terraform fmt` runs automatically when you write a `.tf` file. Manual format: `<leader>f` in normal or visual mode.
+. *Open the REPL* — `<localleader>ss` starts `terraform console` in a split at the bottom of the screen. `<localleader>` is `,`.
 
 '''''
 
 [[lsp]]
 == LSP
 
-`terraformls` is configured in `lua/config/lsp.lua` and attaches automatically
-when a Terraform buffer is opened. It provides completions for providers and
-resource arguments, diagnostics, go-to-definition across modules, and hover
-documentation pulled from the provider schema.
+`terraformls` is configured in `lua/config/lsp.lua` and attaches automatically when a Terraform buffer is opened. It provides completions for providers and resource arguments, diagnostics, go-to-definition across modules, and hover documentation pulled from the provider schema.
 
 Verify the server is attached with:
 
@@ -66,22 +59,16 @@ Verify the server is attached with:
 :lua =vim.lsp.get_clients({bufnr=0})
 ----
 
-Completions for a provider's resources only appear once that provider has been
-downloaded, which means after `terraform init` in the directory you are editing.
-Before that the server still parses the file and reports syntax errors, but it
-has no schema to complete against.
+Completions for a provider's resources only appear once that provider has been downloaded, which means after `terraform init` in the directory you are editing. Before that the server still parses the file and reports syntax errors, but it has no schema to complete against.
 
 '''''
 
 [[formatting]]
 == Formatting
 
-`terraform` and `terraform-vars` buffers are formatted by `terraform fmt` on
-every save, through conform.nvim. `hcl` buffers are formatted by `hclfmt`.
+`terraform` and `terraform-vars` buffers are formatted by `terraform fmt` on every save, through conform.nvim. `hcl` buffers are formatted by `hclfmt`.
 
-Two filetypes, two formatters. Neovim maps `.tf` to `terraform` and `.hcl` to
-`hcl`, and `terraform fmt` does not parse generic HCL — applied to a `.hcl` file
-it fails instead of reformatting.
+Two filetypes, two formatters. Neovim maps `.tf` to `terraform` and `.hcl` to `hcl`, and `terraform fmt` does not parse generic HCL — applied to a `.hcl` file it fails instead of reformatting.
 
 [cols=",",options="header",]
 |===
@@ -89,19 +76,13 @@ it fails instead of reformatting.
 |`<leader>f` |Format buffer or visual selection
 |===
 
-Indent settings for Terraform buffers (set in `after/ftplugin/terraform.lua`):
-2-space tabs, spaces only. That matches what `terraform fmt` enforces — anything
-else would be undone on the next write.
+Indent settings for Terraform buffers (set in `after/ftplugin/terraform.lua`): 2-space tabs, spaces only. That matches what `terraform fmt` enforces — anything else would be undone on the next write.
 
-Formatting is *not* deferred to the language server, which is how the Lisp family
-and F# are handled here. `terraform fmt` ships from the same project as the
-language, so it is authoritative.
+Formatting is *not* deferred to the language server, which is how the Lisp family and F# are handled here. `terraform fmt` ships from the same project as the language, so it is authoritative.
 
 [NOTE]
 ====
-Format-on-save takes roughly *500 ms* for Terraform files, against conform's
-2000 ms timeout. That is container start-up, paid on every write; a native binary
-would be 10-30 ms.
+Format-on-save takes roughly *500 ms* for Terraform files, against conform's 2000 ms timeout. That is container start-up, paid on every write; a native binary would be 10-30 ms.
 
 `.hcl` files do not pay it — `hclfmt` is a native binary.
 ====
@@ -111,8 +92,7 @@ would be 10-30 ms.
 [[repl]]
 == REPL
 
-`<localleader>ss` opens `terraform console` in a 15-line split at the bottom of
-the screen, using the same iron.nvim convention F# uses for `dotnet fsi`.
+`<localleader>ss` opens `terraform console` in a 15-line split at the bottom of the screen, using the same iron.nvim convention F# uses for `dotnet fsi`.
 
 [cols=",",options="header",]
 |===
@@ -129,21 +109,14 @@ the screen, using the same iron.nvim convention F# uses for `dotnet fsi`.
 
 [IMPORTANT]
 ====
-*`terraform console` evaluates against real state.* This is a genuine difference
-from every other REPL in this configuration — `dotnet fsi`, GHCi and the Lisp
-REPLs all evaluate in a scratch environment, where the worst case of a mistake is
-a confusing answer.
+*`terraform console` evaluates against real state.* This is a genuine difference from every other REPL in this configuration — `dotnet fsi`, GHCi and the Lisp REPLs all evaluate in a scratch environment, where the worst case of a mistake is a confusing answer.
 
-`terraform console` reads your actual state file. Expressions referring to
-resources, data sources or outputs report what is really deployed.
+`terraform console` reads your actual state file. Expressions referring to resources, data sources or outputs report what is really deployed.
 
-It cannot apply changes — the console is read-only — but treat it as pointed at
-production, because it is.
+It cannot apply changes — the console is read-only — but treat it as pointed at production, because it is.
 ====
 
-In an uninitialised directory the console still starts, but answers very little:
-anything referring to a provider, module or resource fails until `terraform init`
-has run. Stateless expressions work anywhere:
+In an uninitialised directory the console still starts, but answers very little: anything referring to a provider, module or resource fails until `terraform init` has run. Stateless expressions work anywhere:
 
 [source,hcl]
 ----
@@ -182,13 +155,9 @@ repository's containers-first rule covers.
 |===
 
 A native process invoking a containerised CLI must agree with it on what a path
-means. `terraform-ls` passes absolute host paths, so the wrapper mounts the
-working tree *at the same path inside the container as outside*, and drops to the
-invoking user so nothing it writes ends up root-owned.
+means. `terraform-ls` passes absolute host paths, so the wrapper mounts the working tree *at the same path inside the container as outside*, and drops to the invoking user so nothing it writes ends up root-owned.
 
-It mounts the enclosing git repository, not just the current directory, so a
-module referenced as `../../modules/thing` resolves. Mounting only the working
-directory breaks there.
+It mounts the enclosing git repository, not just the current directory, so a module referenced as `../../modules/thing` resolves. Mounting only the working directory breaks there.
 
 '''''
 
@@ -196,13 +165,9 @@ directory breaks there.
 == Typical Workflow
 
 . Open a module — `nvim envs/dev/main.tf`. `terraform-ls` attaches.
-. Run `terraform init` once in that directory, from a shell or via
-  `<localleader>ss` then `:!terraform init`, so the provider schema is available
-  and completions become useful.
-. Edit. Completions come from the provider schema; `gd` jumps into module
-  sources; diagnostics appear inline.
-. Write the file. `terraform fmt` rewrites it canonically — expect the ~500 ms
-  pause.
+. Run `terraform init` once in that directory, from a shell or via `<localleader>ss` then `:!terraform init`, so the provider schema is available and completions become useful.
+. Edit. Completions come from the provider schema; `gd` jumps into module sources; diagnostics appear inline.
+. Write the file. `terraform fmt` rewrites it canonically — expect the ~500 ms pause.
 . Check an expression against real state with `<localleader>ss` and the console.
 . `<localleader>sq` to close the REPL.
 
@@ -211,25 +176,15 @@ directory breaks there.
 [[troubleshooting]]
 == Troubleshooting
 
-*Nothing formats and no error appears.* The `terraform` wrapper is not on `$PATH`.
-This degrades silently by design — the write completes, the buffer is left
-unchanged, and nothing is logged. Check with `:lua =vim.fn.exepath("terraform")`;
-an empty string means conform found nothing to run.
+*Nothing formats and no error appears.* The `terraform` wrapper is not on `$PATH`. This degrades silently by design — the write completes, the buffer is left unchanged, and nothing is logged. Check with `:lua =vim.fn.exepath("terraform")`; an empty string means conform found nothing to run.
 
-*No completions for provider resources.* The directory has not been through
-`terraform init`, so `terraform-ls` has no schema. Syntax errors are still
-reported; only schema-backed completion is missing.
+*No completions for provider resources.* The directory has not been through `terraform init`, so `terraform-ls` has no schema. Syntax errors are still reported; only schema-backed completion is missing.
 
-*`Unable to evaluate directory symlink: lstat ../../modules`.* The wrapper mounted
-the working directory, not the repository root. It falls back to `$PWD` outside a
-git repository, and anything above `$PWD` is then invisible to the container.
+*`Unable to evaluate directory symlink: lstat ../../modules`.* The wrapper mounted the working directory, not the repository root. It falls back to `$PWD` outside a git repository, and anything above `$PWD` is then invisible to the container.
 
-*Formatting is slow on the first write of a session.* The container image is
-being loaded. Subsequent writes are the ~500 ms steady state.
+*Formatting is slow on the first write of a session.* The container image is being loaded. Subsequent writes are the ~500 ms steady state.
 
-*Files owned by root.* The wrapper is not passing `--user`, or is being bypassed
-by a `terraform` binary earlier on `$PATH`. Check `command -v terraform` resolves
-to the wrapper.
+*Files owned by root.* The wrapper is not passing `--user`, or is being bypassed by a `terraform` binary earlier on `$PATH`. Check `command -v terraform` resolves to the wrapper.
 
 '''''
 
@@ -238,8 +193,7 @@ to the wrapper.
 
 === The terraform wrapper
 
-The wrapper lives in the repository at `docker/terraform/terraform`. Symlink it
-onto `$PATH`:
+The wrapper lives in the repository at `docker/terraform/terraform`. Symlink it onto `$PATH`:
 
 [source,sh]
 ----
@@ -254,15 +208,11 @@ command -v terraform
 terraform version
 ----
 
-The image tag is pinned inside the wrapper, so `terraform fmt` cannot change its
-output underneath the repository without a commit. To move to a newer Terraform,
-edit `IMAGE` in that file.
+The image tag is pinned inside the wrapper, so `terraform fmt` cannot change its output underneath the repository without a commit. To move to a newer Terraform, edit `IMAGE` in that file.
 
 === Installing terraform-ls
 
-Download the release binary (check
-https://github.com/hashicorp/terraform-ls/releases[releases] for the current
-version):
+Download the release binary (check https://github.com/hashicorp/terraform-ls/releases[releases] for the current version):
 
 [source,sh]
 ----
@@ -284,9 +234,7 @@ terraform-ls --version
 
 Only needed if you edit `.hcl` files; Terraform's own `.tf` files do not use it.
 
-`hashicorp/hcl` publishes no prebuilt binaries, so `hclfmt` has to be compiled.
-The repository ships a script that does this in a container, so no Go toolchain
-is installed on the host:
+`hashicorp/hcl` publishes no prebuilt binaries, so `hclfmt` has to be compiled. The repository ships a script that does this in a container, so no Go toolchain is installed on the host:
 
 [source,sh]
 ----
@@ -305,10 +253,7 @@ hclfmt --version
 [[prerequisites]]
 == Prerequisites
 
-Terraform-specific tools only. Base requirements — Neovim itself, git, a C
-compiler for the Treesitter parsers — are in
-xref:getting-started.adoc[Getting Started]; the cross-language view is in
-xref:languages/setup.adoc#terraform[Language Setup].
+Terraform-specific tools only. Base requirements — Neovim itself, git, a C compiler for the Treesitter parsers — are in xref:getting-started.adoc[Getting Started]; the cross-language view is in xref:languages/setup.adoc#terraform[Language Setup].
 
 Docker is required, since the `terraform` CLI runs in a container.
 
@@ -323,18 +268,12 @@ Docker is required, since the `terraform` CLI runs in a container.
 
 [IMPORTANT]
 ====
-The `terraform` binary is needed by *both* the formatter and the language server,
-not only the formatter.
+The `terraform` binary is needed by *both* the formatter and the language server, not only the formatter.
 
-`terraform-ls` shells out to `terraform` for validation and provider schema work,
-so without the wrapper on `$PATH` you lose schema-backed completions and
-diagnostics as well as formatting. Both fail quietly; neither reports a missing
-binary.
+`terraform-ls` shells out to `terraform` for validation and provider schema work, so without the wrapper on `$PATH` you lose schema-backed completions and diagnostics as well as formatting. Both fail quietly; neither reports a missing binary.
 ====
 
-Everything degrades gracefully. With none of these installed, Terraform files
-still open, still highlight via Treesitter, and still honour the indent settings;
-Neovim starts with no errors and no LSP client attaches.
+Everything degrades gracefully. With none of these installed, Terraform files still open, still highlight via Treesitter, and still honour the indent settings; Neovim starts with no errors and no LSP client attaches.
 
 === Validated against
 
