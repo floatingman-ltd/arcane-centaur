@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Untitled :: Arcane Centaur Docs</title>
+    <link rel="canonical" href="https://floatingman-ltd.github.io/arcane-centaur/arcane-centaur/other/terminals-ssh-tmux-mosh.html">
+    <meta name="generator" content="Antora 3.2.0">
+    <link rel="stylesheet" href="../../_/css/site.css">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://floatingman-ltd.github.io/arcane-centaur">Arcane Centaur Docs</a>
+      <button class="navbar-burger" aria-controls="topbar-nav" aria-expanded="false" aria-label="Toggle main menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="#">Home</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Products</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Product A</a>
+            <a class="navbar-item" href="#">Product B</a>
+            <a class="navbar-item" href="#">Product C</a>
+          </div>
+        </div>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Services</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Service A</a>
+            <a class="navbar-item" href="#">Service B</a>
+            <a class="navbar-item" href="#">Service C</a>
+          </div>
+        </div>
+        <div class="navbar-item">
+          <span class="control">
+            <a class="button is-primary" href="#">Download</a>
+          </span>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="arcane-centaur" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../index.html">Arcane Centaur</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Home</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../getting-started.html">Getting Started</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Languages</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../languages/setup.html">Language Setup</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">.NET</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../languages/dotnet.html">Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../languages/dotnet-cheatsheet.html">Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Lisp Family</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../languages/lisp.html">Lisp / Clojure / Scheme / Fennel</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../languages/lisp-cheatsheet.html">Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../languages/janet.html">Janet Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../languages/janet-cheatsheet.html">Janet Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Haskell</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../languages/haskell.html">Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../languages/haskell-cheatsheet.html">Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Lua</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../languages/lua.html">Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../languages/lua-cheatsheet.html">Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Editor Core</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../editor/editing.html">Editing Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../editor/navigation.html">Navigation Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../editor/code-intelligence.html">Code Intelligence Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Git</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../editor/git/vim-fugitive.html">vim-fugitive</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../editor/git/gitsigns.html">gitsigns</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../editor/git/diffview.html">diffview</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../editor/clipboard.html">Clipboard</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">AI &amp; Automation</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../ai/ai-tools.html">AI Tools Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../ai/ai-tools-cheatsheet.html">AI Tools Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Content Creation</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/markdown.html">Markdown Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/markdown-cheatsheet.html">Markdown Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/asciidoc.html">AsciiDoc Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/asciidoc-cheatsheet.html">AsciiDoc Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/diagrams.html">Diagrams &amp; PlantUML</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/presentations.html">Presentations (MARP)</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/rest.html">REST / HTTP Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/rest-cheatsheet.html">REST Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Project Tooling</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../tooling/jira.html">Jira Integration</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../tooling/confluence.html">Confluence Publishing</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Other</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="architecture.html">Architecture</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="1">
+    <a class="nav-link" href="terminals-ssh-tmux-mosh.html">Terminals, SSH, tmux and mosh</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="contributing.html">Contributing to Docs</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="jira-project-map.html">Jira Project Map</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Arcane Centaur</span>
+    <span class="version"></span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <div class="title"><a href="../index.html">Arcane Centaur</a></div>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Arcane Centaur</a></li>
+    <li>Other</li>
+    <li><a href="terminals-ssh-tmux-mosh.html">Terminals, SSH, tmux and mosh</a></li>
+  </ul>
+</nav>
+<div class="edit-this-page"><a href="file:///antora/docs/modules/ROOT/pages/other/terminals-ssh-tmux-mosh.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<div class="sect1">
+<h2 id="_terminals_ssh_tmux_and_mosh"><a class="anchor" href="#_terminals_ssh_tmux_and_mosh"></a>Terminals, SSH, tmux and mosh</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Background for anyone reading <code>lua/config/terminal.lua</code> and wondering why detecting "is this session remote?" takes two steps and still has gaps.</p>
+</div>
+<div class="paragraph">
+<p>Every factual claim here is either quoted from a manual page you can read on your own machine or cited at the bottom. Where sources disagreed, the page says so.</p>
+</div>
+<div class="paragraph">
+<p><strong>Quick navigation</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#plain-english">In plain English</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">What all this is, without the jargon</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#the-device-pair">The device pair</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">What a terminal actually is</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#escape-sequences">Escape sequences</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">How a byte stream carries commands</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#ssh">SSH</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Channels, pty requests, and the <code>SSH_</code> variables</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#tmux">tmux</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Why a pane&#8217;s environment freezes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#mosh">mosh</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Replacing the transport</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#combinations">Combinations</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">What each stack gives and costs</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#this-config">In this config</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Where the detection code fits</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#citations">Citations</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sources, and two to check first</p></td>
+</tr>
+</tbody>
+</table>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="plain-english"><a class="anchor" href="#plain-english"></a>In plain English</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A terminal is a text window you type commands into. Before it was a window it was furniture: a keyboard and a screen, wired to a computer in another room. Everything about how terminals behave today descends from that arrangement, and a surprising amount of the awkwardness is furniture that never got thrown out.</p>
+</div>
+<div class="paragraph">
+<p>The wire carried one thing: a stream of characters, in both directions. You typed, characters went down the wire, the computer sent characters back, the screen displayed them. There was no concept of a window, a colour, or a cursor position. Anything beyond plain text had to be smuggled through the same stream of characters, disguised as text the screen would recognise as an instruction instead of printing.</p>
+</div>
+<div class="paragraph">
+<p>That trick is still how it works. When a program clears your screen, it sends a short run of characters beginning with an invisible one called Escape. Your terminal recognises the pattern and clears the screen instead of printing it. Colours, cursor movement, even copying to your clipboard all work this way. The stream is still just characters; the meaning is a convention both ends agreed on decades ago.</p>
+</div>
+<div class="paragraph">
+<p>This explains the first oddity. The Escape key sends exactly the same character that begins those instructions. When your editor receives one, it cannot tell whether you pressed Escape or whether an instruction is arriving one character at a time. Its only option is to wait a moment and see if more follows. That wait is a setting, and over a slow connection it is the difference between an editor that feels responsive and one that mangles your arrow keys.</p>
+</div>
+<div class="paragraph">
+<p>Now put the computer in another building. <strong>SSH</strong> is the standard way to reach it: it opens a secure connection and gives you a terminal on the far machine, as though you were sitting at it. It has one inherited weakness. The connection is tied to your network address, so if you close your laptop or move from Wi-Fi to a phone hotspot, the connection does not pause — it dies, and your work dies with it.</p>
+</div>
+<div class="paragraph">
+<p><strong>tmux</strong> answers that. It runs on the far machine and holds your session for you. Your programs are attached to tmux instead of to your connection, so when the connection drops they carry on. You reconnect, reattach, and everything is where you left it. It also splits one terminal into several panes, which matters when you only have the one connection.</p>
+</div>
+<div class="paragraph">
+<p><strong>mosh</strong> answers the same problem differently: it replaces the connection itself with one that is not tied to your network address, so moving networks is invisible. It also guesses what your keystrokes will look like and shows them immediately instead of waiting for the round trip, which makes a distant machine feel local. The trade is that it deliberately does less than SSH, including keeping no scrollback history — so people usually run mosh and tmux together, each covering what the other lacks.</p>
+</div>
+<div class="paragraph">
+<p>The rest of this page is the detail underneath that summary.</p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="the-device-pair"><a class="anchor" href="#the-device-pair"></a>The device pair</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A pseudoterminal is two character devices, not one. From <code>pty(7)</code>:</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>A pseudoterminal (sometimes abbreviated "pty") is a pair of virtual character devices that provide a bidirectional communication channel. One end of the channel is called the master; the other end is called the slave.</p>
+</div>
+<div class="paragraph">
+<p>&#8230;&#8203;writing the interrupt character (usually control-C) to the master device would cause an interrupt signal (SIGINT) to be generated for the foreground process group that is connected to the slave.</p>
+</div>
+</blockquote>
+</div>
+<div class="paragraph">
+<p>Ctrl-C is not a message. It is the byte <code>0x03</code>, and something between the two ends turns it into a signal. That something is the line discipline, configured per device through <code>termios</code>.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>  WHAT HAPPENS WHEN YOU PRESS Ctrl-C
+
+  terminal emulator          kernel                            program
+  -----------------   ----------------------------------   --------------
+
+                      +--------+    +-------------------+
+   writes 0x03  ----&gt; | MASTER |---&gt;|  LINE DISCIPLINE  |
+                      +--------+    |                   |
+                                    |  ICANON set?      |
+                                    |   |- buffer line  |
+                                    |   |- handle ^H    |
+                                    |   `- 0x03 = SIGINT ----&gt; foreground
+                                    +---------+---------+      process group
+                                              |
+                                              v
+                                         +--------+
+                                         | SLAVE  |----&gt; read() returns
+                                         |/dev/pts|      (or never does --
+                                         +--------+       the byte became
+                                                          a signal instead)</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The program never sees <code>0x03</code>. The kernel consumed it and raised a signal. Turn off <code>ICANON</code> and the same byte arrives as ordinary input, which is why an editor can bind Ctrl-C to something of its own.</p>
+</div>
+<div class="paragraph">
+<p>The switch that matters is <code>ICANON</code>. From <code>termios(3)</code>:</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>The setting of the ICANON canon flag in c_lflag determines whether the terminal is operating in canonical mode (ICANON set) or noncanonical mode (ICANON unset). By default, ICANON is set.</p>
+</div>
+<div class="paragraph">
+<p>In canonical mode: Input is made available line by line.</p>
+</div>
+</blockquote>
+</div>
+<div class="paragraph">
+<p>In canonical mode the kernel buffers a line, handles backspace, and delivers the whole line when you press Enter. In non-canonical mode every keystroke passes straight through with no editing and often no signal generation.</p>
+</div>
+<div class="paragraph">
+<p>Every full-screen program — Neovim, tmux, <code>less</code> — switches the terminal to non-canonical mode and takes over line editing, signal handling and display itself. Neovim is not drawing in a terminal. It is reading bytes and writing bytes that the emulator at the other end interprets.</p>
+</div>
+<div class="paragraph">
+<p><strong>To read next:</strong> <code>termios(3)</code>, <code>tty_ioctl(4)</code>, <code>setsid(2)</code> and <code>credentials(7)</code>. The job control model — controlling terminal, foreground process group, <code>SIGTTIN</code> and <code>SIGTTOU</code> — explains most surprises around background jobs stopping unexpectedly.</p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="escape-sequences"><a class="anchor" href="#escape-sequences"></a>Escape sequences</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The stream carries data and commands together, separated by escape sequences. Three families cover most of what an editor uses:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Family</th>
+<th class="tableblock halign-left valign-top">Form</th>
+<th class="tableblock halign-left valign-top">Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CSI</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ESC [ &#8230;&#8203; &lt;final&gt;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Cursor movement, colours (SGR), erase</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">OSC</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ESC ] Ps ; Pt ST</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Requests to the system side — window title, clipboard</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DEC private modes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>CSI ? Pm h</code> / <code>l</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Feature toggles</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Two private modes, quoted from xterm&#8217;s <code>ctlseqs</code>:</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p><code>Ps = 2 0 0 4</code> &#8594; Set bracketed paste mode, xterm.</p>
+</div>
+</blockquote>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p><code>Ps = 1 0 0 4</code> &#8594; Send FocusIn/FocusOut events, xterm.</p>
+</div>
+</blockquote>
+</div>
+<div class="paragraph">
+<p>Bracketed paste is why editors stopped mangling indentation on paste. The terminal wraps pasted text in <code>ESC[200~</code> and <code>ESC[201~</code>, so the editor can distinguish typing from pasting.</p>
+</div>
+<div class="sect2">
+<h3 id="_osc_52"><a class="anchor" href="#_osc_52"></a>OSC 52</h3>
+<div class="paragraph">
+<p>The sequence this configuration uses for the clipboard. Format: <code>ESC ] 52 ; Pc ; &lt;base64&gt; BEL</code>, where <code>Pc</code> selects the target — <code>c</code> for CLIPBOARD, <code>p</code> for PRIMARY.</p>
+</div>
+<div class="paragraph">
+<p>Because it travels in band, it works through anything that passes bytes. That is why it reaches your clipboard over SSH with no X forwarding and no helper binary installed on the far machine. It is also why terminals gate it: a program that can write to your clipboard by printing characters is a security decision, and xterm disables it by default.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_the_escape_ambiguity"><a class="anchor" href="#_the_escape_ambiguity"></a>The Escape ambiguity</h3>
+<div class="paragraph">
+<p><code>ESC</code> is both a key and the first byte of nearly every sequence, and nothing distinguishes them except waiting. Neovim&#8217;s help states it directly:</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>if <code>&lt;Esc&gt;</code> (the \x1b byte) is received and 'ttimeout' is set, Nvim waits 'ttimeoutlen' milliseconds for the terminal to complete a key code sequence. If no input arrives before the timeout, a single <code>&lt;Esc&gt;</code> is assumed. Many TUI cursor key codes start with <code>&lt;Esc&gt;</code>.</p>
+</div>
+</blockquote>
+</div>
+<div class="paragraph">
+<p>The default is 50 ms. The timeout is racing network jitter, not typing speed:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>  PRESSING Escape                      sends: 1b
+
+    t=0ms     1b arrives
+    t=50ms    nothing followed  --&gt; decision: the Escape key   OK
+
+
+  PRESSING Up arrow                    sends: 1b 5b 41   ( ESC [ A )
+
+    local, no latency
+    t=0.0ms   1b arrives
+    t=0.1ms   5b arrives
+    t=0.2ms   41 arrives        --&gt; decision: Up arrow         OK
+
+    remote, jittery link, ttimeoutlen still 50
+    t=0ms     1b arrives
+    t=50ms    timeout fires     --&gt; decision: the Escape key   WRONG
+    t=70ms    5b arrives        --&gt; leaves insert mode, types [
+    t=71ms    41 arrives        --&gt; types A</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>That bottom case is the one people describe as "my arrow keys print letters over SSH". Raise the value and it goes away; raise it too far and leaving insert mode drags. <code>add-remote-session-profile</code> makes it conditional for that reason.</p>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="ssh"><a class="anchor" href="#ssh"></a>SSH</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The connection layer (RFC 4254) multiplexes channels:</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>All terminal sessions, forwarded connections, etc., are channels. Either side may open a channel. Multiple channels are multiplexed into a single connection.</p>
+</div>
+</blockquote>
+</div>
+<div class="paragraph">
+<p>Four requests matter here:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong><code>pty-req</code></strong> (§6.2) asks the server to allocate a pty, carrying the <code>TERM</code> value, character dimensions, pixel dimensions and encoded terminal modes. <code>ssh_config(5)</code> notes that <code>TERM</code> is special: "the TERM environment variable is always sent whenever a pseudo-terminal is requested as it is required by the protocol".</p>
+</li>
+<li>
+<p><strong><code>window-change</code></strong> (§6.7) is sent on resize, and is how <code>SIGWINCH</code> reaches the remote program.</p>
+</li>
+<li>
+<p><strong><code>env</code></strong> (§6.4) passes environment variables. The RFC warns against allowing this freely: "Uncontrolled setting of environment variables in a privileged process can be a security hazard. It is recommended that implementations either maintain a list of allowable variable names&#8230;&#8203;" This is why <code>SendEnv</code> on the client needs a matching <code>AcceptEnv</code> on the server, and why passing arbitrary variables usually does nothing.</p>
+</li>
+<li>
+<p><strong><code>shell</code></strong> and <strong><code>exec</code></strong> (§6.5) start the session&#8217;s program.</p>
+</li>
+</ul>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>  YOUR MACHINE                       REMOTE MACHINE
+  ------------------------           -----------------------------------
+
+  terminal emulator
+        |
+        | pty (local)
+        v
+   ssh client ===== TCP/22, encrypted =====&gt; sshd
+                                              |
+              one channel, several requests:  | forks the session, and
+                |- pty-req  TERM + dimensions |   sets, for THIS process:
+                |- env      allow-listed only |
+                |- shell                      |     SSH_CONNECTION
+                `- window-change  on resize   |     SSH_TTY   (pty only)
+                                              |     SSH_CLIENT
+                                              v
+                                         pty (remote)
+                                              |
+                                              v
+                                          your shell</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The variables are set by <code>sshd</code> on the process it forks, and inherited by that process&#8217;s children. Nothing propagates them to a process that was already running — which is the whole of the tmux problem below.</p>
+</div>
+<div class="sect2">
+<h3 id="_the_ssh_variables"><a class="anchor" href="#_the_ssh_variables"></a>The SSH_ variables</h3>
+<div class="paragraph">
+<p><code>sshd</code> sets these in the session it spawns. From <code>ssh(1)</code>:</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p><strong>SSH_CONNECTION</strong> Identifies the client and server ends of the connection. The variable contains four space-separated values: client IP address, client port number, server IP address, and server port number.</p>
+</div>
+</blockquote>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p><strong>SSH_TTY</strong> This is set to the name of the tty (path to the device) associated with the current shell or command. If the current session has no tty, this variable is not set.</p>
+</div>
+</blockquote>
+</div>
+<div class="paragraph">
+<p>A consequence follows from the second definition. <code>SSH_TTY</code> tests interactive <strong>and</strong> remote together: <code>ssh host command</code> gets no tty and therefore no <code>SSH_TTY</code>, while still receiving <code>SSH_CONNECTION</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_what_tcp_costs"><a class="anchor" href="#_what_tcp_costs"></a>What TCP costs</h3>
+<div class="paragraph">
+<p>SSH runs over TCP and inherits two properties.</p>
+</div>
+<div class="paragraph">
+<p>The connection is bound to the address 4-tuple. Change address — sleep the laptop, move from Wi-Fi to cellular — and the connection is dead, not suspended.</p>
+</div>
+<div class="paragraph">
+<p>Head-of-line blocking means one lost packet stalls everything queued behind it, so a lossy link stutters instead of degrading smoothly. Combined with the Escape timeout above, this is the mechanism behind SSH feeling bad on poor Wi-Fi.</p>
+</div>
+<div class="paragraph">
+<p><code>ServerAliveInterval</code> (default 0, disabled) detects a dead peer. It does not help a session survive an address change.</p>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="tmux"><a class="anchor" href="#tmux"></a>tmux</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>tmux is a client/server program. The server owns the sessions, windows and panes, each pane holding its own pty, and it keeps running when every client has detached. That is the persistence feature, and also the source of the environment problem.</p>
+</div>
+<div class="paragraph">
+<p>A process&#8217;s environment is fixed when it starts. A shell in a pane created on Monday keeps Monday&#8217;s environment permanently. SSH in on Tuesday and attach, and that pane&#8217;s shell still has no <code>SSH_CONNECTION</code>, because nothing can edit another process&#8217;s environment after the fact.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>  MONDAY -- sitting at the machine, no SSH anywhere
+
+    tmux server
+       `-- session "work"
+              `-- pane A   SSH_CONNECTION unset
+                             ^
+                             `--- this environment is now frozen, forever
+
+
+  TUESDAY -- you SSH in and attach to the same session
+
+    sshd --&gt; shell   SSH_CONNECTION = "10.0.0.5 51234 10.0.0.9 22"
+                |
+                | tmux attach
+                v
+    tmux server
+       |
+       |-- SESSION ENVIRONMENT   SSH_CONNECTION set
+       |      ^                  (update-environment copies it on attach)
+       |      |
+       |      `--- consulted only when a NEW pane is created
+       |
+       `-- session "work"
+              |-- pane A   SSH_CONNECTION still unset   &lt;- Monday's process
+              `-- pane B   SSH_CONNECTION set           &lt;- created just now
+
+    Neovim running in pane A can see nothing.
+    `tmux show-environment SSH_CONNECTION` knows the answer.</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>That gap is why remote detection needs a second step: ask the tmux server, because the pane cannot answer for itself.</p>
+</div>
+<div class="paragraph">
+<p>tmux keeps a session environment separate from any pane&#8217;s. From <code>tmux(1)</code>:</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p><strong>update-environment[] variable</strong> Set list of environment variables to be copied into the session environment when a new session is created or an existing session is attached. Any variables that do not exist in the source environment are set to be removed from the session environment (as if -r was given to the set-environment command).</p>
+</div>
+</blockquote>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p><strong>show-environment</strong> &#8230;&#8203; Variables removed from the environment are prefixed with '-'.</p>
+</div>
+</blockquote>
+</div>
+<div class="paragraph">
+<p>Three consequences:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>New panes receive the current session environment, so a pane created after attaching over SSH does see <code>SSH_CONNECTION</code>. Older panes never will. Measured 2026-09-21 on tmux 3.4: a pre-existing pane reported 0 matching variables, a newly created pane in the same session reported 1.</p>
+</li>
+<li>
+<p>The <code>-</code> prefix is the only way to tell "unset" from "the query failed". Both exit 0.</p>
+</li>
+<li>
+<p>A stale value does not persist. Attaching from a local terminal with no <code>SSH_CONNECTION</code> triggers the removal clause above, so the variable is cleared rather than left over. This holds only while <code>SSH_CONNECTION</code> stays in <code>update-environment</code>.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The default <code>update-environment</code> on tmux 3.4 is <code>DISPLAY</code>, <code>KRB5CCNAME</code>, <code>SSH_ASKPASS</code>, <code>SSH_AUTH_SOCK</code>, <code>SSH_AGENT_PID</code>, <code>SSH_CONNECTION</code>, <code>WINDOWID</code>, <code>XAUTHORITY</code>. <code>SSH_CONNECTION</code> is present and <code>SSH_TTY</code> is not, which constrains any detection code: the top-level check may use either variable, the tmux query can only use <code>SSH_CONNECTION</code>.</p>
+</div>
+<div class="paragraph">
+<p><strong>To read next:</strong> why <code>SSH_AUTH_SOCK</code> is in that list. Agent forwarding through a long-lived tmux session is the classic failure — the socket path changes with each connection while old panes keep pointing at a dead socket. The usual fix is a stable symlink refreshed on attach.</p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="mosh"><a class="anchor" href="#mosh"></a>mosh</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>mosh keeps SSH for authentication and replaces everything after it.</p>
+</div>
+<div class="paragraph">
+<p><strong>Bootstrap.</strong> The <code>mosh</code> wrapper connects over SSH, starts <code>mosh-server</code>, receives a key and port, and closes the SSH connection. Credentials are the same ones SSH would use.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>  PHASE 1 -- bootstrap, over SSH
+
+    mosh client ----- ssh -----&gt; starts mosh-server
+                &lt;---- session key + UDP port -----
+                      ssh connection CLOSES
+                                          ^
+                                          `--- no SSH_ variables survive
+                                               this point
+
+
+  PHASE 2 -- the session itself, no SSH involved
+
+    mosh client &lt;==== UDP 60001-60999 ====&gt; mosh-server
+                      AES-128 / OCB3
+                      heartbeat at least every 3s
+                      screen-state diffs, not a byte stream
+
+
+  ROAMING -- the session is keyed, not addressed
+
+    wifi   192.168.1.40 ==\
+                           &gt;== same session continues uninterrupted
+    4G      10.44.9.2   ==/</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Phase 1 closing is the detail that matters for this repository: a mosh session has no <code>SSH_TTY</code> and no <code>SSH_CONNECTION</code>, so the usual detection finds nothing.</p>
+</div>
+<div class="paragraph">
+<p><strong>Transport.</strong> UDP, encrypted and authenticated with AES-128 in OCB3 mode. On ports, the sources disagree: mosh.org&#8217;s main text says the server takes "the first available UDP port, starting at 60001 and stopping at 60999", while its FAQ says 60000-61000. Check <code>mosh-server(1)</code> on a real installation before relying on either.</p>
+</div>
+<div class="paragraph">
+<p><strong>Roaming.</strong> The client sends datagrams with increasing sequence numbers and a heartbeat at least every three seconds. The session is identified by key instead of address 4-tuple, so changing address does not end it.</p>
+</div>
+<div class="paragraph">
+<p><strong>Predictive echo.</strong> The client models what the server will do and echoes speculatively, correcting when the real response arrives. This is what makes a distant machine feel local.</p>
+</div>
+<div class="paragraph">
+<p><strong>State synchronisation.</strong> mosh synchronises screen state, not a byte stream. A client that falls behind skips to the current frame instead of replaying everything, which is why flooding output is interruptible under mosh and slow to abandon under SSH.</p>
+</div>
+<div class="sect2">
+<h3 id="_what_it_gives_up"><a class="anchor" href="#_what_it_gives_up"></a>What it gives up</h3>
+<div class="paragraph">
+<p><strong>Scrollback.</strong> mosh synchronises only the visible state of the terminal. The FAQ&#8217;s own recommendation is to run tmux or screen on the remote side.</p>
+</div>
+<div class="paragraph">
+<p><strong>Port forwarding, agent forwarding and X11 forwarding.</strong> Not supported. The mosh.org FAQ does not state this; the citation is the Arch <code>mosh(1)</code> manual page and the upstream issue tracker, so verify it if it matters to you.</p>
+</div>
+<div class="paragraph">
+<p><strong>Non-UTF-8 locales.</strong> mosh refuses to start unless both ends have a UTF-8 environment, a deliberate choice to implement one terminal emulator correctly instead of many edge cases.</p>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="combinations"><a class="anchor" href="#combinations"></a>Combinations</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Stack</th>
+<th class="tableblock halign-left valign-top">Survives network change</th>
+<th class="tableblock halign-left valign-top">Survives client death</th>
+<th class="tableblock halign-left valign-top">Scrollback</th>
+<th class="tableblock halign-left valign-top">Forwarding</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ssh</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The terminal&#8217;s own</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ssh</code> + tmux</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No — reattach by hand</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">tmux&#8217;s</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mosh</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">None</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mosh</code> + tmux</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">tmux&#8217;s</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>mosh with tmux is the common pairing because each covers the other&#8217;s gap: mosh fixes the transport, tmux supplies persistence and scrollback. The cost is losing forwarding altogether, so agent and port forwarding have to come from elsewhere.</p>
+</div>
+<div class="paragraph">
+<p>Stacked up, the full arrangement is deeper than it looks:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>  mosh + tmux + Neovim, end to end
+
+  terminal emulator
+     |  pty 1   local
+     v
+  mosh client
+     |
+     |  UDP, roaming, screen-state sync
+     v
+  mosh-server
+     |  pty 2   remote
+     v
+  tmux client ---- unix socket ----&gt; tmux server
+                                        |  pty 3   one per pane
+                                        v
+                                     Neovim
+                                        |  pty 4   only if you :terminal
+                                        v
+                                      shell</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Neovim sits three pseudoterminals and two protocols away from your keyboard, and every layer between is free to rewrite what passes through. That is why "is this session remote?" has no single reliable answer.</p>
+</div>
+<div class="paragraph">
+<p>That combination is also the hardest case for remote detection. Under mosh there are no <code>SSH_</code> variables in the session at all, because the SSH connection was closed during bootstrap. Running tmux under mosh does not help either, since the attaching mosh client has no <code>SSH_CONNECTION</code> to contribute.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The detection in <code>lua/config/terminal.lua</code> would report a mosh session as <strong>local</strong>. This is reasoned from the bootstrap behaviour described above and has not been tested against a running mosh installation.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="this-config"><a class="anchor" href="#this-config"></a>In this config</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><code>lua/config/terminal.lua</code> answers two separate questions. <code>is_console</code> asks whether a display is available; <code>is_remote</code> asks whether the session crosses a network. Neither implies the other.</p>
+</div>
+<div class="paragraph">
+<p>The SSH and tmux sections above are the reason <code>detect_remote</code> has two steps rather than one. The Escape ambiguity is the reason <code>ttimeoutlen</code> is the first setting that changes when a session turns out to be remote.</p>
+</div>
+<div class="paragraph">
+<p>See <a href="architecture.html" class="xref page">Architecture</a> for the flag list. The detection rule itself is documented in that page&#8217;s <strong>Remote Session Detection</strong> section, which arrives with <code>add-remote-session-profile</code>; until that change merges, <code>lua/config/terminal.lua</code> is the only description of it.</p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="citations"><a class="anchor" href="#citations"></a>Citations</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Readable on your own machine:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 66.6666%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Claim</th>
+<th class="tableblock halign-left valign-top">Command</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pty master/slave pair, Ctrl-C to SIGINT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>man 7 pty</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Canonical and non-canonical mode</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>man 3 termios</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>SSH_CONNECTION</code> and <code>SSH_TTY</code> definitions</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>man ssh</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>SendEnv</code>, <code>ServerAliveInterval</code>, TERM always sent</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>man ssh_config</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>update-environment</code>, <code>show-environment</code> dash prefix</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>man tmux</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ttimeoutlen</code> default and Escape disambiguation</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:help 'ttimeoutlen'</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Online:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://datatracker.ietf.org/doc/html/rfc4254">RFC 4254 — SSH Connection Protocol</a>. Channels §5, <code>pty-req</code> §6.2, <code>env</code> §6.4, <code>shell</code> and <code>exec</code> §6.5, <code>window-change</code> §6.7.</p>
+</li>
+<li>
+<p><a href="https://man.openbsd.org/ssh.1">ssh(1)</a> and <a href="https://man.openbsd.org/tmux.1">tmux(1)</a>, OpenBSD.</p>
+</li>
+<li>
+<p><a href="https://invisible-island.net/xterm/ctlseqs/ctlseqs.html">xterm Control Sequences</a>. The canonical reference for CSI, OSC and DEC private modes, bracketed paste 2004 and focus events 1004.</p>
+</li>
+<li>
+<p><a href="https://iterm2.com/3.4/documentation-escape-codes.html">iTerm2 escape code documentation</a>. OSC 52 selection parameters.</p>
+</li>
+<li>
+<p><a href="https://github.com/tmux/tmux/wiki/Clipboard">tmux wiki: Clipboard</a>. OSC 52 passthrough and <code>allow-passthrough</code>.</p>
+</li>
+<li>
+<p><a href="https://mosh.org/">mosh.org</a>. AES-128/OCB3, port range, roaming heartbeat, predictive echo, UTF-8 requirement, visible-state-only synchronisation.</p>
+</li>
+<li>
+<p><a href="https://mosh.org/mosh-paper.pdf">Mosh: An Interactive Remote Shell for Mobile Clients</a>, USENIX ATC 2012. The State Synchronization Protocol design.</p>
+</li>
+<li>
+<p><a href="https://man.archlinux.org/man/mosh.1.en">mosh(1), Arch manual pages</a>. The statement that X11 and port forwarding are unsupported.</p>
+</li>
+<li>
+<p><a href="https://github.com/mobile-shell/mosh/issues/41">mosh issue #41, X forwarding</a> and <a href="https://github.com/mobile-shell/mosh/issues/120">issue #120, agent forwarding</a>. Upstream reasoning.</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="_two_claims_to_check_first"><a class="anchor" href="#_two_claims_to_check_first"></a>Two claims to check first</h3>
+<div class="paragraph">
+<p>The mosh port range, where mosh.org&#8217;s own two pages disagree.</p>
+</div>
+<div class="paragraph">
+<p>The OSC 52 byte format. The fetch of <code>ctlseqs</code> used while writing this page truncated before the OSC 52 definition, so the format given above comes from secondary sources and should be confirmed against xterm&#8217;s documentation directly.</p>
+</div>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>This page was built using the Antora default UI.</p>
+  <p>The source code for this UI is licensed under the terms of the MPL-2.0 license.</p>
+</footer>
+<script id="site-script" src="../../_/js/site.js" data-ui-root-path="../../_"></script>
+<script async src="../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>
