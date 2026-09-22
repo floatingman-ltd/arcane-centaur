@@ -1,0 +1,320 @@
+== Terminals, SSH, tmux and mosh
+
+Background for anyone reading `lua/config/terminal.lua` and wondering why detecting "is this session remote?" takes two steps and still has gaps.
+
+Every factual claim here is either quoted from a manual page you can read on your own machine or cited at the bottom. Where sources disagreed, the page says so.
+
+*Quick navigation*
+
+[cols="1,3"]
+|===
+| xref:#plain-english[In plain English] | What all this is, without the jargon
+| xref:#the-device-pair[The device pair] | What a terminal actually is
+| xref:#escape-sequences[Escape sequences] | How a byte stream carries commands
+| xref:#ssh[SSH] | Channels, pty requests, and the `SSH_` variables
+| xref:#tmux[tmux] | Why a pane's environment freezes
+| xref:#mosh[mosh] | Replacing the transport
+| xref:#combinations[Combinations] | What each stack gives and costs
+| xref:#this-config[In this config] | Where the detection code fits
+| xref:#citations[Citations] | Sources, and two to check first
+|===
+
+'''''
+
+[[plain-english]]
+== In plain English
+
+A terminal is a text window you type commands into. Before it was a window it was furniture: a keyboard and a screen, wired to a computer in another room. Everything about how terminals behave today descends from that arrangement, and a surprising amount of the awkwardness is furniture that never got thrown out.
+
+The wire carried one thing: a stream of characters, in both directions. You typed, characters went down the wire, the computer sent characters back, the screen displayed them. There was no concept of a window, a colour, or a cursor position. Anything beyond plain text had to be smuggled through the same stream of characters, disguised as text the screen would recognise as an instruction instead of printing.
+
+That trick is still how it works. When a program clears your screen, it sends a short run of characters beginning with an invisible one called Escape. Your terminal recognises the pattern and clears the screen instead of printing it. Colours, cursor movement, even copying to your clipboard all work this way. The stream is still just characters; the meaning is a convention both ends agreed on decades ago.
+
+This explains the first oddity. The Escape key sends exactly the same character that begins those instructions. When your editor receives one, it cannot tell whether you pressed Escape or whether an instruction is arriving one character at a time. Its only option is to wait a moment and see if more follows. That wait is a setting, and over a slow connection it is the difference between an editor that feels responsive and one that mangles your arrow keys.
+
+Now put the computer in another building. **SSH** is the standard way to reach it: it opens a secure connection and gives you a terminal on the far machine, as though you were sitting at it. It has one inherited weakness. The connection is tied to your network address, so if you close your laptop or move from Wi-Fi to a phone hotspot, the connection does not pause — it dies, and your work dies with it.
+
+**tmux** answers that. It runs on the far machine and holds your session for you. Your programs are attached to tmux instead of to your connection, so when the connection drops they carry on. You reconnect, reattach, and everything is where you left it. It also splits one terminal into several panes, which matters when you only have the one connection.
+
+**mosh** answers the same problem differently: it replaces the connection itself with one that is not tied to your network address, so moving networks is invisible. It also guesses what your keystrokes will look like and shows them immediately instead of waiting for the round trip, which makes a distant machine feel local. The trade is that it deliberately does less than SSH, including keeping no scrollback history — so people usually run mosh and tmux together, each covering what the other lacks.
+
+The rest of this page is the detail underneath that summary.
+
+'''''
+
+[[the-device-pair]]
+== The device pair
+
+A pseudoterminal is two character devices, not one. From `pty(7)`:
+
+____
+A pseudoterminal (sometimes abbreviated "pty") is a pair of virtual character devices that provide a bidirectional communication channel. One end of the channel is called the master; the other end is called the slave.
+
+...writing the interrupt character (usually control-C) to the master device would cause an interrupt signal (SIGINT) to be generated for the foreground process group that is connected to the slave.
+____
+
+Ctrl-C is not a message. It is the byte `0x03`, and something between the two ends turns it into a signal. That something is the line discipline, configured per device through `termios`.
+
+The switch that matters is `ICANON`. From `termios(3)`:
+
+____
+The setting of the ICANON canon flag in c_lflag determines whether the terminal is operating in canonical mode (ICANON set) or noncanonical mode (ICANON unset). By default, ICANON is set.
+
+In canonical mode: Input is made available line by line.
+____
+
+In canonical mode the kernel buffers a line, handles backspace, and delivers the whole line when you press Enter. In non-canonical mode every keystroke passes straight through with no editing and often no signal generation.
+
+Every full-screen program — Neovim, tmux, `less` — switches the terminal to non-canonical mode and takes over line editing, signal handling and display itself. Neovim is not drawing in a terminal. It is reading bytes and writing bytes that the emulator at the other end interprets.
+
+*To read next:* `termios(3)`, `tty_ioctl(4)`, `setsid(2)` and `credentials(7)`. The job control model — controlling terminal, foreground process group, `SIGTTIN` and `SIGTTOU` — explains most surprises around background jobs stopping unexpectedly.
+
+'''''
+
+[[escape-sequences]]
+== Escape sequences
+
+The stream carries data and commands together, separated by escape sequences. Three families cover most of what an editor uses:
+
+[cols="1,1,2",options="header"]
+|===
+|Family |Form |Purpose
+
+|CSI
+|`ESC [ ... <final>`
+|Cursor movement, colours (SGR), erase
+
+|OSC
+|`ESC ] Ps ; Pt ST`
+|Requests to the system side — window title, clipboard
+
+|DEC private modes
+|`CSI ? Pm h` / `l`
+|Feature toggles
+|===
+
+Two private modes, quoted from xterm's `ctlseqs`:
+
+____
+`Ps = 2 0 0 4` -> Set bracketed paste mode, xterm.
+____
+
+____
+`Ps = 1 0 0 4` -> Send FocusIn/FocusOut events, xterm.
+____
+
+Bracketed paste is why editors stopped mangling indentation on paste. The terminal wraps pasted text in `ESC[200~` and `ESC[201~`, so the editor can distinguish typing from pasting.
+
+=== OSC 52
+
+The sequence this configuration uses for the clipboard. Format: `ESC ] 52 ; Pc ; <base64> BEL`, where `Pc` selects the target — `c` for CLIPBOARD, `p` for PRIMARY.
+
+Because it travels in band, it works through anything that passes bytes. That is why it reaches your clipboard over SSH with no X forwarding and no helper binary installed on the far machine. It is also why terminals gate it: a program that can write to your clipboard by printing characters is a security decision, and xterm disables it by default.
+
+=== The Escape ambiguity
+
+`ESC` is both a key and the first byte of nearly every sequence, and nothing distinguishes them except waiting. Neovim's help states it directly:
+
+____
+if `<Esc>` (the \x1b byte) is received and 'ttimeout' is set, Nvim waits 'ttimeoutlen' milliseconds for the terminal to complete a key code sequence. If no input arrives before the timeout, a single `<Esc>` is assumed. Many TUI cursor key codes start with `<Esc>`.
+____
+
+The default is 50 ms. The timeout is racing network jitter, not typing speed, which is why remote sessions want a higher value: too low over a laggy link and an arrow key arrives as `<Esc>` followed by stray characters. Too high and leaving insert mode drags. `add-remote-session-profile` makes the value conditional for that reason.
+
+'''''
+
+[[ssh]]
+== SSH
+
+The connection layer (RFC 4254) multiplexes channels:
+
+____
+All terminal sessions, forwarded connections, etc., are channels. Either side may open a channel. Multiple channels are multiplexed into a single connection.
+____
+
+Four requests matter here:
+
+- *`pty-req`* (§6.2) asks the server to allocate a pty, carrying the `TERM` value, character dimensions, pixel dimensions and encoded terminal modes. `ssh_config(5)` notes that `TERM` is special: "the TERM environment variable is always sent whenever a pseudo-terminal is requested as it is required by the protocol".
+- *`window-change`* (§6.7) is sent on resize, and is how `SIGWINCH` reaches the remote program.
+- *`env`* (§6.4) passes environment variables. The RFC warns against allowing this freely: "Uncontrolled setting of environment variables in a privileged process can be a security hazard. It is recommended that implementations either maintain a list of allowable variable names..." This is why `SendEnv` on the client needs a matching `AcceptEnv` on the server, and why passing arbitrary variables usually does nothing.
+- *`shell`* and *`exec`* (§6.5) start the session's program.
+
+=== The SSH_ variables
+
+`sshd` sets these in the session it spawns. From `ssh(1)`:
+
+____
+*SSH_CONNECTION* Identifies the client and server ends of the connection. The variable contains four space-separated values: client IP address, client port number, server IP address, and server port number.
+____
+
+____
+*SSH_TTY* This is set to the name of the tty (path to the device) associated with the current shell or command. If the current session has no tty, this variable is not set.
+____
+
+A consequence follows from the second definition. `SSH_TTY` tests interactive *and* remote together: `ssh host command` gets no tty and therefore no `SSH_TTY`, while still receiving `SSH_CONNECTION`.
+
+=== What TCP costs
+
+SSH runs over TCP and inherits two properties.
+
+The connection is bound to the address 4-tuple. Change address — sleep the laptop, move from Wi-Fi to cellular — and the connection is dead, not suspended.
+
+Head-of-line blocking means one lost packet stalls everything queued behind it, so a lossy link stutters instead of degrading smoothly. Combined with the Escape timeout above, this is the mechanism behind SSH feeling bad on poor Wi-Fi.
+
+`ServerAliveInterval` (default 0, disabled) detects a dead peer. It does not help a session survive an address change.
+
+'''''
+
+[[tmux]]
+== tmux
+
+tmux is a client/server program. The server owns the sessions, windows and panes, each pane holding its own pty, and it keeps running when every client has detached. That is the persistence feature, and also the source of the environment problem.
+
+A process's environment is fixed when it starts. A shell in a pane created on Monday keeps Monday's environment permanently. SSH in on Tuesday and attach, and that pane's shell still has no `SSH_CONNECTION`, because nothing can edit another process's environment after the fact.
+
+tmux keeps a session environment separate from any pane's. From `tmux(1)`:
+
+____
+*update-environment[] variable* Set list of environment variables to be copied into the session environment when a new session is created or an existing session is attached. Any variables that do not exist in the source environment are set to be removed from the session environment (as if -r was given to the set-environment command).
+____
+
+____
+*show-environment* ... Variables removed from the environment are prefixed with '-'.
+____
+
+Three consequences:
+
+. New panes receive the current session environment, so a pane created after attaching over SSH does see `SSH_CONNECTION`. Older panes never will. Measured 2026-09-21 on tmux 3.4: a pre-existing pane reported 0 matching variables, a newly created pane in the same session reported 1.
+. The `-` prefix is the only way to tell "unset" from "the query failed". Both exit 0.
+. A stale value does not persist. Attaching from a local terminal with no `SSH_CONNECTION` triggers the removal clause above, so the variable is cleared rather than left over. This holds only while `SSH_CONNECTION` stays in `update-environment`.
+
+The default `update-environment` on tmux 3.4 is `DISPLAY`, `KRB5CCNAME`, `SSH_ASKPASS`, `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, `SSH_CONNECTION`, `WINDOWID`, `XAUTHORITY`. `SSH_CONNECTION` is present and `SSH_TTY` is not, which constrains any detection code: the top-level check may use either variable, the tmux query can only use `SSH_CONNECTION`.
+
+*To read next:* why `SSH_AUTH_SOCK` is in that list. Agent forwarding through a long-lived tmux session is the classic failure — the socket path changes with each connection while old panes keep pointing at a dead socket. The usual fix is a stable symlink refreshed on attach.
+
+'''''
+
+[[mosh]]
+== mosh
+
+mosh keeps SSH for authentication and replaces everything after it.
+
+*Bootstrap.* The `mosh` wrapper connects over SSH, starts `mosh-server`, receives a key and port, and closes the SSH connection. Credentials are the same ones SSH would use.
+
+*Transport.* UDP, encrypted and authenticated with AES-128 in OCB3 mode. On ports, the sources disagree: mosh.org's main text says the server takes "the first available UDP port, starting at 60001 and stopping at 60999", while its FAQ says 60000-61000. Check `mosh-server(1)` on a real installation before relying on either.
+
+*Roaming.* The client sends datagrams with increasing sequence numbers and a heartbeat at least every three seconds. The session is identified by key instead of address 4-tuple, so changing address does not end it.
+
+*Predictive echo.* The client models what the server will do and echoes speculatively, correcting when the real response arrives. This is what makes a distant machine feel local.
+
+*State synchronisation.* mosh synchronises screen state, not a byte stream. A client that falls behind skips to the current frame instead of replaying everything, which is why flooding output is interruptible under mosh and slow to abandon under SSH.
+
+=== What it gives up
+
+*Scrollback.* mosh synchronises only the visible state of the terminal. The FAQ's own recommendation is to run tmux or screen on the remote side.
+
+*Port forwarding, agent forwarding and X11 forwarding.* Not supported. The mosh.org FAQ does not state this; the citation is the Arch `mosh(1)` manual page and the upstream issue tracker, so verify it if it matters to you.
+
+*Non-UTF-8 locales.* mosh refuses to start unless both ends have a UTF-8 environment, a deliberate choice to implement one terminal emulator correctly instead of many edge cases.
+
+'''''
+
+[[combinations]]
+== Combinations
+
+[cols="1,1,1,1,1",options="header"]
+|===
+|Stack |Survives network change |Survives client death |Scrollback |Forwarding
+
+|`ssh`
+|No
+|No
+|The terminal's own
+|Yes
+
+|`ssh` + tmux
+|No — reattach by hand
+|Yes
+|tmux's
+|Yes
+
+|`mosh`
+|Yes
+|No
+|None
+|No
+
+|`mosh` + tmux
+|Yes
+|Yes
+|tmux's
+|No
+|===
+
+mosh with tmux is the common pairing because each covers the other's gap: mosh fixes the transport, tmux supplies persistence and scrollback. The cost is losing forwarding altogether, so agent and port forwarding have to come from elsewhere.
+
+That combination is also the hardest case for remote detection. Under mosh there are no `SSH_` variables in the session at all, because the SSH connection was closed during bootstrap. Running tmux under mosh does not help either, since the attaching mosh client has no `SSH_CONNECTION` to contribute.
+
+[WARNING]
+====
+The detection in `lua/config/terminal.lua` would report a mosh session as *local*. This is reasoned from the bootstrap behaviour described above and has not been tested against a running mosh installation.
+====
+
+'''''
+
+[[this-config]]
+== In this config
+
+`lua/config/terminal.lua` answers two separate questions. `is_console` asks whether a display is available; `is_remote` asks whether the session crosses a network. Neither implies the other.
+
+The SSH and tmux sections above are the reason `detect_remote` has two steps rather than one. The Escape ambiguity is the reason `ttimeoutlen` is the first setting that changes when a session turns out to be remote.
+
+See xref:other/architecture.adoc[Architecture] for the flag list. The detection rule itself is documented in that page's *Remote Session Detection* section, which arrives with `add-remote-session-profile`; until that change merges, `lua/config/terminal.lua` is the only description of it.
+
+'''''
+
+[[citations]]
+== Citations
+
+Readable on your own machine:
+
+[cols="2,1",options="header"]
+|===
+|Claim |Command
+
+|pty master/slave pair, Ctrl-C to SIGINT
+|`man 7 pty`
+
+|Canonical and non-canonical mode
+|`man 3 termios`
+
+|`SSH_CONNECTION` and `SSH_TTY` definitions
+|`man ssh`
+
+|`SendEnv`, `ServerAliveInterval`, TERM always sent
+|`man ssh_config`
+
+|`update-environment`, `show-environment` dash prefix
+|`man tmux`
+
+|`ttimeoutlen` default and Escape disambiguation
+|`:help 'ttimeoutlen'`
+|===
+
+Online:
+
+- https://datatracker.ietf.org/doc/html/rfc4254[RFC 4254 — SSH Connection Protocol]. Channels §5, `pty-req` §6.2, `env` §6.4, `shell` and `exec` §6.5, `window-change` §6.7.
+- https://man.openbsd.org/ssh.1[ssh(1)] and https://man.openbsd.org/tmux.1[tmux(1)], OpenBSD.
+- https://invisible-island.net/xterm/ctlseqs/ctlseqs.html[xterm Control Sequences]. The canonical reference for CSI, OSC and DEC private modes, bracketed paste 2004 and focus events 1004.
+- https://iterm2.com/3.4/documentation-escape-codes.html[iTerm2 escape code documentation]. OSC 52 selection parameters.
+- https://github.com/tmux/tmux/wiki/Clipboard[tmux wiki: Clipboard]. OSC 52 passthrough and `allow-passthrough`.
+- https://mosh.org/[mosh.org]. AES-128/OCB3, port range, roaming heartbeat, predictive echo, UTF-8 requirement, visible-state-only synchronisation.
+- https://mosh.org/mosh-paper.pdf[Mosh: An Interactive Remote Shell for Mobile Clients], USENIX ATC 2012. The State Synchronization Protocol design.
+- https://man.archlinux.org/man/mosh.1.en[mosh(1), Arch manual pages]. The statement that X11 and port forwarding are unsupported.
+- https://github.com/mobile-shell/mosh/issues/41[mosh issue #41, X forwarding] and https://github.com/mobile-shell/mosh/issues/120[issue #120, agent forwarding]. Upstream reasoning.
+
+=== Two claims to check first
+
+The mosh port range, where mosh.org's own two pages disagree.
+
+The OSC 52 byte format. The fetch of `ctlseqs` used while writing this page truncated before the OSC 52 definition, so the format given above comes from secondary sources and should be confirmed against xterm's documentation directly.

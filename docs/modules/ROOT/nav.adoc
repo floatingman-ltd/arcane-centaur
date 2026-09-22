@@ -48,5 +48,6 @@
 
 .Other
 * xref:other/architecture.adoc[Architecture]
+* xref:other/terminals-ssh-tmux-mosh.adoc[Terminals, SSH, tmux and mosh]
 * xref:other/contributing.adoc[Contributing to Docs]
 * xref:other/jira-project-map.adoc[Jira Project Map]
