@@ -55,6 +55,31 @@ ____
 
 Ctrl-C is not a message. It is the byte `0x03`, and something between the two ends turns it into a signal. That something is the line discipline, configured per device through `termios`.
 
+....
+  WHAT HAPPENS WHEN YOU PRESS Ctrl-C
+
+  terminal emulator          kernel                            program
+  -----------------   ----------------------------------   --------------
+
+                      +--------+    +-------------------+
+   writes 0x03  ----> | MASTER |--->|  LINE DISCIPLINE  |
+                      +--------+    |                   |
+                                    |  ICANON set?      |
+                                    |   |- buffer line  |
+                                    |   |- handle ^H    |
+                                    |   `- 0x03 = SIGINT ----> foreground
+                                    +---------+---------+      process group
+                                              |
+                                              v
+                                         +--------+
+                                         | SLAVE  |----> read() returns
+                                         |/dev/pts|      (or never does --
+                                         +--------+       the byte became
+                                                          a signal instead)
+....
+
+The program never sees `0x03`. The kernel consumed it and raised a signal. Turn off `ICANON` and the same byte arrives as ordinary input, which is why an editor can bind Ctrl-C to something of its own.
+
 The switch that matters is `ICANON`. From `termios(3)`:
 
 ____
@@ -119,7 +144,30 @@ ____
 if `<Esc>` (the \x1b byte) is received and 'ttimeout' is set, Nvim waits 'ttimeoutlen' milliseconds for the terminal to complete a key code sequence. If no input arrives before the timeout, a single `<Esc>` is assumed. Many TUI cursor key codes start with `<Esc>`.
 ____
 
-The default is 50 ms. The timeout is racing network jitter, not typing speed, which is why remote sessions want a higher value: too low over a laggy link and an arrow key arrives as `<Esc>` followed by stray characters. Too high and leaving insert mode drags. `add-remote-session-profile` makes the value conditional for that reason.
+The default is 50 ms. The timeout is racing network jitter, not typing speed:
+
+....
+  PRESSING Escape                      sends: 1b
+
+    t=0ms     1b arrives
+    t=50ms    nothing followed  --> decision: the Escape key   OK
+
+
+  PRESSING Up arrow                    sends: 1b 5b 41   ( ESC [ A )
+
+    local, no latency
+    t=0.0ms   1b arrives
+    t=0.1ms   5b arrives
+    t=0.2ms   41 arrives        --> decision: Up arrow         OK
+
+    remote, jittery link, ttimeoutlen still 50
+    t=0ms     1b arrives
+    t=50ms    timeout fires     --> decision: the Escape key   WRONG
+    t=70ms    5b arrives        --> leaves insert mode, types [
+    t=71ms    41 arrives        --> types A
+....
+
+That bottom case is the one people describe as "my arrow keys print letters over SSH". Raise the value and it goes away; raise it too far and leaving insert mode drags. `add-remote-session-profile` makes it conditional for that reason.
 
 '''''
 
@@ -138,6 +186,31 @@ Four requests matter here:
 - *`window-change`* (§6.7) is sent on resize, and is how `SIGWINCH` reaches the remote program.
 - *`env`* (§6.4) passes environment variables. The RFC warns against allowing this freely: "Uncontrolled setting of environment variables in a privileged process can be a security hazard. It is recommended that implementations either maintain a list of allowable variable names..." This is why `SendEnv` on the client needs a matching `AcceptEnv` on the server, and why passing arbitrary variables usually does nothing.
 - *`shell`* and *`exec`* (§6.5) start the session's program.
+
+....
+  YOUR MACHINE                       REMOTE MACHINE
+  ------------------------           -----------------------------------
+
+  terminal emulator
+        |
+        | pty (local)
+        v
+   ssh client ===== TCP/22, encrypted =====> sshd
+                                              |
+              one channel, several requests:  | forks the session, and
+                |- pty-req  TERM + dimensions |   sets, for THIS process:
+                |- env      allow-listed only |
+                |- shell                      |     SSH_CONNECTION
+                `- window-change  on resize   |     SSH_TTY   (pty only)
+                                              |     SSH_CLIENT
+                                              v
+                                         pty (remote)
+                                              |
+                                              v
+                                          your shell
+....
+
+The variables are set by `sshd` on the process it forks, and inherited by that process's children. Nothing propagates them to a process that was already running — which is the whole of the tmux problem below.
 
 === The SSH_ variables
 
@@ -172,6 +245,39 @@ tmux is a client/server program. The server owns the sessions, windows and panes
 
 A process's environment is fixed when it starts. A shell in a pane created on Monday keeps Monday's environment permanently. SSH in on Tuesday and attach, and that pane's shell still has no `SSH_CONNECTION`, because nothing can edit another process's environment after the fact.
 
+....
+  MONDAY -- sitting at the machine, no SSH anywhere
+
+    tmux server
+       `-- session "work"
+              `-- pane A   SSH_CONNECTION unset
+                             ^
+                             `--- this environment is now frozen, forever
+
+
+  TUESDAY -- you SSH in and attach to the same session
+
+    sshd --> shell   SSH_CONNECTION = "10.0.0.5 51234 10.0.0.9 22"
+                |
+                | tmux attach
+                v
+    tmux server
+       |
+       |-- SESSION ENVIRONMENT   SSH_CONNECTION set
+       |      ^                  (update-environment copies it on attach)
+       |      |
+       |      `--- consulted only when a NEW pane is created
+       |
+       `-- session "work"
+              |-- pane A   SSH_CONNECTION still unset   <- Monday's process
+              `-- pane B   SSH_CONNECTION set           <- created just now
+
+    Neovim running in pane A can see nothing.
+    `tmux show-environment SSH_CONNECTION` knows the answer.
+....
+
+That gap is why remote detection needs a second step: ask the tmux server, because the pane cannot answer for itself.
+
 tmux keeps a session environment separate from any pane's. From `tmux(1)`:
 
 ____
@@ -200,6 +306,34 @@ The default `update-environment` on tmux 3.4 is `DISPLAY`, `KRB5CCNAME`, `SSH_AS
 mosh keeps SSH for authentication and replaces everything after it.
 
 *Bootstrap.* The `mosh` wrapper connects over SSH, starts `mosh-server`, receives a key and port, and closes the SSH connection. Credentials are the same ones SSH would use.
+
+....
+  PHASE 1 -- bootstrap, over SSH
+
+    mosh client ----- ssh -----> starts mosh-server
+                <---- session key + UDP port -----
+                      ssh connection CLOSES
+                                          ^
+                                          `--- no SSH_ variables survive
+                                               this point
+
+
+  PHASE 2 -- the session itself, no SSH involved
+
+    mosh client <==== UDP 60001-60999 ====> mosh-server
+                      AES-128 / OCB3
+                      heartbeat at least every 3s
+                      screen-state diffs, not a byte stream
+
+
+  ROAMING -- the session is keyed, not addressed
+
+    wifi   192.168.1.40 ==\
+                           >== same session continues uninterrupted
+    4G      10.44.9.2   ==/
+....
+
+Phase 1 closing is the detail that matters for this repository: a mosh session has no `SSH_TTY` and no `SSH_CONNECTION`, so the usual detection finds nothing.
 
 *Transport.* UDP, encrypted and authenticated with AES-128 in OCB3 mode. On ports, the sources disagree: mosh.org's main text says the server takes "the first available UDP port, starting at 60001 and stopping at 60999", while its FAQ says 60000-61000. Check `mosh-server(1)` on a real installation before relying on either.
 
@@ -252,6 +386,32 @@ mosh keeps SSH for authentication and replaces everything after it.
 |===
 
 mosh with tmux is the common pairing because each covers the other's gap: mosh fixes the transport, tmux supplies persistence and scrollback. The cost is losing forwarding altogether, so agent and port forwarding have to come from elsewhere.
+
+Stacked up, the full arrangement is deeper than it looks:
+
+....
+  mosh + tmux + Neovim, end to end
+
+  terminal emulator
+     |  pty 1   local
+     v
+  mosh client
+     |
+     |  UDP, roaming, screen-state sync
+     v
+  mosh-server
+     |  pty 2   remote
+     v
+  tmux client ---- unix socket ----> tmux server
+                                        |  pty 3   one per pane
+                                        v
+                                     Neovim
+                                        |  pty 4   only if you :terminal
+                                        v
+                                      shell
+....
+
+Neovim sits three pseudoterminals and two protocols away from your keyboard, and every layer between is free to rewrite what passes through. That is why "is this session remote?" has no single reliable answer.
 
 That combination is also the hardest case for remote detection. Under mosh there are no `SSH_` variables in the session at all, because the SSH connection was closed during bootstrap. Running tmux under mosh does not help either, since the attaching mosh client has no `SSH_CONNECTION` to contribute.
 
