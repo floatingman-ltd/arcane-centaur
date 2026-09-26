@@ -48,6 +48,7 @@
 
 .Other
 * xref:other/architecture.adoc[Architecture]
+* xref:other/remote-sessions-intro.adoc[Remote Sessions: an Introduction]
 * xref:other/terminals-ssh-tmux-mosh.adoc[Terminals, SSH, tmux and mosh]
 * xref:other/contributing.adoc[Contributing to Docs]
 * xref:other/jira-project-map.adoc[Jira Project Map]

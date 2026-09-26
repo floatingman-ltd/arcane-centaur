@@ -1,0 +1,321 @@
+== Remote sessions: an introduction
+
+A starting point for working on another machine from a terminal. It covers what SSH, tmux and mosh each do, how they fit together, and the commands you actually type. The mechanics underneath (pseudoterminals, escape sequences, why a tmux pane's environment freezes) are in xref:other/terminals-ssh-tmux-mosh.adoc[Terminals, SSH, tmux and mosh]. Read this page first and that one when something behaves strangely.
+
+*Quick navigation*
+
+[cols="1,3"]
+|===
+| xref:#the-pieces[The pieces] | What each program is for, and where it runs
+| xref:#ssh[SSH] | Connecting, keys, the config file, forwarding
+| xref:#tmux[tmux] | Sessions that outlive the connection, windows and panes
+| xref:#mosh[mosh] | A connection that survives changing networks
+| xref:#together[Putting them together] | Everyday recipes
+| xref:#which[Which to use] | Picking a stack
+|===
+
+'''''
+
+[[the-pieces]]
+== The pieces
+
+Five programs are involved, and each one does a single job.
+
+[cols="1,2,1",options="header"]
+|===
+|Program |Its job |Runs on
+
+|*Terminal emulator* +
+(Windows Terminal, WezTerm, kitty, iTerm2...)
+|Draws text on your screen and turns your keystrokes into bytes. It knows nothing about the machine at the other end.
+|Your machine
+
+|*Shell* +
+(`bash`, `zsh`)
+|Reads the commands you type and runs them.
+|Wherever you are logged in
+
+|*SSH* +
+(`ssh` client, `sshd` server)
+|Opens an encrypted connection to another machine and gives you a shell there. It also handles logging in.
+|Client on yours, server on the remote
+
+|*tmux*
+|Keeps your shells and programs running on the remote machine when you disconnect, and splits one terminal into several windows and panes.
+|The remote machine
+
+|*mosh*
+|Replaces SSH's connection with one that survives sleep, roaming between networks and bad Wi-Fi, and echoes your typing without waiting for the round trip.
+|Both ends
+|===
+
+How they stack when you use all of them:
+
+....
+  YOUR MACHINE                          REMOTE MACHINE
+  --------------------                  ---------------------------------
+
+  terminal emulator
+        |
+        v
+  ssh  or  mosh  ====== network ======>  sshd / mosh-server
+                                              |
+                                              v
+                                         tmux  (keeps running if you leave)
+                                              |
+                                              +-- window 1: nvim
+                                              +-- window 2: shell | shell
+....
+
+The point to take away: *SSH and mosh are how you get there; tmux is what you find when you arrive.* They solve different problems, which is why they are so often used together.
+
+'''''
+
+[[ssh]]
+== SSH
+
+SSH ("secure shell") logs you in to another machine over an encrypted connection. Everything you type goes to a shell on that machine, and everything it prints comes back to your terminal. It is installed almost everywhere; the client is `ssh` and the server is `sshd`.
+
+The weakness to know about: the connection is tied to your network address. If your laptop sleeps or you change networks, the connection drops and anything running in it is killed. tmux and mosh exist to fix that.
+
+=== Connecting
+
+[source,sh]
+----
+ssh alice@build-box              # log in as alice
+ssh build-box                    # same username as locally
+ssh -p 2222 alice@build-box      # server on a non-standard port
+ssh build-box uptime             # run one command and come back
+ssh -t build-box htop            # one command that needs a full terminal
+exit                             # or Ctrl-D, to log out
+----
+
+`-t` matters when the command is interactive. Without it, `ssh host command` runs with no terminal attached, so full-screen programs like `htop`, `nvim` or `tmux` refuse to start or misbehave.
+
+=== Keys instead of passwords
+
+A key pair is a private file that stays on your machine and a public file you copy to each server. Once set up you log in without typing a password.
+
+[source,sh]
+----
+ssh-keygen -t ed25519            # creates ~/.ssh/id_ed25519 and id_ed25519.pub
+ssh-copy-id alice@build-box      # appends the .pub file to the server's
+                                 # ~/.ssh/authorized_keys
+----
+
+Set a passphrase when `ssh-keygen` asks, and let `ssh-agent` remember it for the session (`ssh-add` adds a key to the agent) so you type it once rather than on every connection.
+
+=== The config file
+
+`~/.ssh/config` gives hosts short names and saves you repeating flags. Every option is described in `man ssh_config`.
+
+[source]
+----
+Host build
+    HostName build-box.example.com
+    User alice
+    Port 2222
+    IdentityFile ~/.ssh/id_ed25519
+----
+
+After that, `ssh build` does what the long command did. The same name works in `scp`, `rsync`, `git` remotes and mosh, since they all use SSH underneath.
+
+=== Copying files
+
+[source,sh]
+----
+scp notes.txt build:~/           # copy to the remote home directory
+scp build:~/log.txt .            # copy back
+rsync -av src/ build:~/src/      # sync a directory, sending only changes
+----
+
+=== Forwarding and jumping
+
+[source,sh]
+----
+ssh -L 8080:localhost:3000 build # your localhost:8080 reaches port 3000 on build
+ssh -J bastion build             # hop through bastion to reach build
+ssh -A build                     # let build use your local ssh-agent keys
+----
+
+`-L` is the one you will use most: it makes a web server or database on the remote machine appear on a local port. `-A` is convenient but trusts the remote machine with your keys for as long as you are connected, so use it only on machines you control.
+
+=== When it hangs
+
+If a connection freezes, usually because the network went away, type these three keys at the start of a line: *Enter*, then *~*, then *.* (full stop). That tells your local `ssh` client to give up immediately instead of waiting for a timeout. `~` is only recognised at the beginning of a line, which is why Enter comes first. *~?* lists the other escape commands.
+
+'''''
+
+[[tmux]]
+== tmux
+
+tmux ("terminal multiplexer") runs on the remote machine and holds your terminal sessions for you. Your programs are attached to tmux rather than to your SSH connection, so when the connection drops they keep running. You reconnect, reattach, and your editor, your build and your scrollback are exactly where you left them.
+
+It also lets one terminal hold many shells, which is why people use it locally too.
+
+=== Sessions, windows and panes
+
+....
+  session "work"              <- survives disconnection; you attach to this
+    |
+    +-- window 0 "edit"        <- like a browser tab; one fills the screen
+    |     +-- pane: nvim
+    |
+    +-- window 1 "build"
+          +-- pane: make       <- a window can be split into panes
+          +-- pane: tail -f log
+....
+
+A *session* is the thing that persists. A *window* is a full-screen tab inside it. A *pane* is a split within a window. You can have several sessions, each with several windows.
+
+=== From the shell
+
+[source,sh]
+----
+tmux                             # start a new, unnamed session
+tmux new -s work                 # start a session called "work"
+tmux ls                          # list sessions
+tmux attach -t work              # reattach to "work"
+tmux new -A -s work              # attach to "work", creating it if needed
+tmux kill-session -t work        # end a session and everything in it
+----
+
+`tmux new -A -s work` is the one to remember. The `-A` flag "makes new-session behave like attach-session if session-name already exists" (`man tmux`), so the same command works whether or not the session is already running.
+
+=== Inside tmux: the prefix key
+
+Once inside, tmux listens for a *prefix* key. By default it is *Ctrl-b*. You press Ctrl-b, let go, then press the command key. The table shows tmux 3.4's defaults with no configuration file (there is no `~/.tmux.conf` on this machine).
+
+[cols="1,3",options="header"]
+|===
+|Keys |Action
+
+|`Ctrl-b d` |*Detach* — leave everything running and return to the shell
+|`Ctrl-b c` |New window
+|`Ctrl-b n` / `Ctrl-b p` |Next / previous window
+|`Ctrl-b 0`...`9` |Jump to window by number
+|`Ctrl-b w` |Pick a window from a list
+|`Ctrl-b s` |Pick a session from a list
+|`Ctrl-b ,` |Rename the current window
+|`Ctrl-b %` |Split into left and right panes
+|`Ctrl-b "` |Split into top and bottom panes
+|`Ctrl-b` arrow |Move to the pane in that direction
+|`Ctrl-b o` |Cycle to the next pane
+|`Ctrl-b z` |Zoom the current pane to full screen, and back
+|`Ctrl-b x` |Close the current pane (asks first)
+|`Ctrl-b [` |Scroll mode — arrows or PageUp to scroll, `q` to leave
+|`Ctrl-b ?` |List every key binding
+|===
+
+Detaching is not the same as exiting. `Ctrl-b d` leaves the session running for later; typing `exit` in the last pane ends the session.
+
+[NOTE]
+====
+Inside Neovim, `Ctrl-b` scrolls up a page. Under tmux that key goes to tmux first, so in Neovim you press it twice (`Ctrl-b Ctrl-b`) to send one through. Many people move the prefix to `Ctrl-a` or `Ctrl-Space` in `~/.tmux.conf` for this reason.
+====
+
+'''''
+
+[[mosh]]
+== mosh
+
+mosh ("mobile shell") fixes SSH's connection problem at the source. It uses SSH only to log in, then switches to its own connection, which is not tied to your network address. Close the laptop, open it on a different network, and the session is still there, usually before you have finished typing.
+
+It also shows your keystrokes immediately rather than waiting for the remote machine to echo them, so a slow or distant server feels local. Guesses it is unsure of are underlined until confirmed.
+
+What it gives up, deliberately:
+
+* *No scrollback.* mosh sends only what is currently on screen. Run tmux inside it to get history back.
+* *No port or agent forwarding.* Use plain SSH for those.
+* *Needs mosh installed on both ends*, a UTF-8 locale on both, and the server's firewall open for UDP (by default mosh uses a port in the 60000–61000 range; see xref:other/terminals-ssh-tmux-mosh.adoc#mosh[the detail page] for the exact bounds, which the sources disagree on).
+
+=== Commands
+
+mosh is not installed on this machine, so these are taken from `mosh(1)` and https://mosh.org/[mosh.org] rather than tried here.
+
+[source,sh]
+----
+mosh alice@build-box                     # connect, just like ssh
+mosh build                               # ~/.ssh/config names work too
+mosh --ssh="ssh -p 2222" build-box       # pass options to the SSH login step
+mosh build -- tmux new -A -s work        # connect straight into tmux
+----
+
+To get out of a frozen mosh session, press *Ctrl-^* then *.* — the equivalent of SSH's `~.`.
+
+'''''
+
+[[together]]
+== Putting them together
+
+*Work on a server that survives disconnects:*
+
+[source,sh]
+----
+ssh build
+tmux new -A -s work        # first time creates it, later times reattach
+# ... work ...
+# Ctrl-b d to leave, or just close the lid
+----
+
+Reconnecting later is the same two commands. If the connection died rather than you detaching, tmux still has the session; `tmux new -A -s work` picks it up.
+
+*Do the same in one step:*
+
+[source,sh]
+----
+ssh -t build tmux new -A -s work
+----
+
+`-t` is required here because tmux needs a terminal.
+
+*On a laptop, or on flaky Wi-Fi:*
+
+[source,sh]
+----
+mosh build -- tmux new -A -s work
+----
+
+mosh keeps the connection alive across networks, and tmux gives you scrollback and keeps things running if the laptop is off for the night.
+
+*Reach a web app running on the server:*
+
+[source,sh]
+----
+ssh -L 8080:localhost:3000 build
+# then open http://localhost:8080 locally
+----
+
+This one has to be plain SSH, since mosh does not forward ports. A second SSH connection alongside your mosh session is the usual answer.
+
+'''''
+
+[[which]]
+== Which to use
+
+[cols="2,3",options="header"]
+|===
+|Situation |Use
+
+|A quick command, or copying a file |`ssh` on its own, or `scp` / `rsync`
+|Long-running work: builds, editors, anything you would hate to lose |`ssh` + tmux
+|Laptop, travel, mobile data or poor Wi-Fi |mosh + tmux
+|Port forwarding or agent forwarding |`ssh` (mosh cannot)
+|Several shells side by side, even locally |tmux
+|===
+
+The trade-offs are laid out in full in xref:other/terminals-ssh-tmux-mosh.adoc#combinations[Combinations].
+
+'''''
+
+== In this config
+
+Neovim needs to know whether it is running over one of these connections, because it changes how keys and the clipboard should behave. `lua/config/terminal.lua` works that out, and xref:other/terminals-ssh-tmux-mosh.adoc[Terminals, SSH, tmux and mosh] explains why the answer takes two steps under tmux and is currently wrong under mosh.
+
+== Further reading
+
+Everything on this page can be checked on your own machine:
+
+* `man ssh`, `man ssh_config`, `man ssh-keygen` — the SSH client, its config file and key generation
+* `man tmux` — every command and option; `Ctrl-b ?` lists the key bindings in a running session
+* `man mosh` once mosh is installed, or https://mosh.org/[mosh.org]

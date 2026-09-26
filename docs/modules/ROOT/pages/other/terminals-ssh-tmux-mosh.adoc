@@ -2,6 +2,8 @@
 
 Background for anyone reading `lua/config/terminal.lua` and wondering why detecting "is this session remote?" takes two steps and still has gaps.
 
+New to these tools? Start with xref:other/remote-sessions-intro.adoc[Remote sessions: an introduction], which covers what each one does and the everyday commands. This page is the mechanism underneath.
+
 Every factual claim here is either quoted from a manual page you can read on your own machine or cited at the bottom. Where sources disagreed, the page says so.
 
 *Quick navigation*
