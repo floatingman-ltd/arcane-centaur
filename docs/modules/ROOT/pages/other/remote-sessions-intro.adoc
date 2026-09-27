@@ -286,7 +286,49 @@ ssh -L 8080:localhost:3000 build
 # then open http://localhost:8080 locally
 ----
 
-This one has to be plain SSH, since mosh does not forward ports. A second SSH connection alongside your mosh session is the usual answer.
+This one has to be plain SSH, since mosh does not forward ports.
+
+[[web-dev-with-mosh]]
+=== Web development over mosh
+
+If you use mosh for the terminal, web traffic has to travel over a second connection alongside it. There are three common ways to set that up.
+
+*1. An SSH tunnel next to mosh.* This is the simplest option.
+
+[source,sh]
+----
+mosh build -- tmux new -A -s work        # terminal, as usual
+ssh -N -L 3000:localhost:3000 build      # tunnel only: -N runs no shell
+----
+
+Then browse to `http://localhost:3000`. Dev-server hot reload uses websockets, which work fine through the tunnel.
+
+The catch is that the tunnel is ordinary SSH. When you change networks, mosh carries on but the tunnel dies. A config entry makes restarting it one short command:
+
+[source]
+----
+Host build-tunnel
+    HostName build-box.example.com
+    LocalForward 3000 localhost:3000
+    LocalForward 5173 localhost:5173
+    ServerAliveInterval 15
+    ExitOnForwardFailure yes
+----
+
+`ssh -fN build-tunnel` then starts it in the background. `ServerAliveInterval` makes a dead link show up within seconds rather than minutes. `ExitOnForwardFailure` makes `ssh` quit instead of running on with a forward it could not set up, for example when the local port is already taken. `autossh -M 0 -fN build-tunnel` goes a step further and restarts the tunnel on its own whenever it drops. `autossh` is a separate package, and `-M 0` tells it to rely on `ServerAliveInterval` to spot a dead link instead of opening a monitoring port of its own.
+
+*2. A private network: Tailscale or WireGuard.* This is the closest match to mosh. Put both machines on the same private network, start the dev server listening on the network rather than only on `127.0.0.1` (`vite --host`, `next dev -H 0.0.0.0`), and browse to `http://build:3000` directly. There is no tunnel to maintain, any new port just works, and WireGuard survives changes of network much as mosh does. Most people who use mosh every day end up here.
+
+[CAUTION]
+====
+Listening on `0.0.0.0` exposes the dev server on *every* network the remote machine is on, not only the private one. On a shared LAN, either bind to the Tailscale address alone or block the port in the firewall.
+====
+
+*3. A public tunnel: `cloudflared` or `ngrok`.* Use this to show work to someone else or to receive webhooks. It puts your dev server on the public internet, so don't use it for day-to-day work.
+
+For occasional remote web work, option 1 is enough. If you do it regularly, set up option 2.
+
+Neither `autossh` nor Tailscale is installed on this machine, so these commands have not been tried here. They come from `man ssh_config` and each tool's documentation.
 
 '''''
 
@@ -300,7 +342,7 @@ This one has to be plain SSH, since mosh does not forward ports. A second SSH co
 |A quick command, or copying a file |`ssh` on its own, or `scp` / `rsync`
 |Long-running work: builds, editors, anything you would hate to lose |`ssh` + tmux
 |Laptop, travel, mobile data or poor Wi-Fi |mosh + tmux
-|Port forwarding or agent forwarding |`ssh` (mosh cannot)
+|Port forwarding or agent forwarding |`ssh` (mosh cannot; see xref:#web-dev-with-mosh[Web development over mosh])
 |Several shells side by side, even locally |tmux
 |===
 
