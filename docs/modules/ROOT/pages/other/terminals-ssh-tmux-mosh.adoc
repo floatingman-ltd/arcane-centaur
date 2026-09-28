@@ -429,6 +429,8 @@ The detection in `lua/config/terminal.lua` would report a mosh session as *local
 
 The SSH and tmux sections above are the reason `detect_remote` has two steps rather than one. The Escape ambiguity is the reason `ttimeoutlen` is the first setting that changes when a session turns out to be remote.
 
+For the tmux, SSH and mosh settings themselves, see xref:other/remote-editing-setup.adoc[Remote Editing Setup].
+
 See xref:other/architecture.adoc[Architecture] for the flag list. The detection rule itself is documented in that page's *Remote Session Detection* section, which arrives with `add-remote-session-profile`; until that change merges, `lua/config/terminal.lua` is the only description of it.
 
 '''''
