@@ -1,0 +1,242 @@
+== Remote Editing Setup
+
+The settings on this page sit outside the Neovim configuration: a tmux config on the remote host, an SSH config on the machine you type at, and mosh if the link is slow or unreliable. The Neovim config detects some of what they do but cannot set any of it.
+
+For why each piece exists, see xref:other/terminals-ssh-tmux-mosh.adoc[Terminals, SSH, tmux and mosh]. This page is the configuration; that one is the background.
+
+The examples use `devbox` as the remote host's alias.
+
+*Quick navigation*
+
+[cols="1,3"]
+|===
+| xref:#choose[Choosing a stack] | mosh + tmux, or SSH + tmux
+| xref:#tmux[tmux on the remote host] | `~/.tmux.conf`, and what each line fixes
+| xref:#ssh[SSH on your machine] | Connection reuse and keep-alives
+| xref:#ports[Preview ports] | Forwarding the browser previews
+| xref:#mosh[mosh] | Installing, UDP, and what it cannot carry
+| xref:#detection[What the config detects] | How each stack looks from inside Neovim
+|===
+
+'''''
+
+[[choose]]
+== Choosing a stack
+
+Run tmux on the remote host in every case. It keeps the session alive when the connection drops, and it is what you reattach to.
+
+Over the link, use **mosh** if UDP reaches the host and **SSH** if it does not. mosh shows keystrokes before the round trip completes and survives a change of network. It forwards no ports, so the browser previews need a separate SSH connection alongside it — see xref:#ports[Preview ports].
+
+[cols="1,2,2",options="header"]
+|===
+|Stack |Use when |Previews
+
+|`mosh` + tmux
+|UDP is open to the host
+|Need a second connection: `ssh -N devbox`
+
+|`ssh` + tmux
+|UDP is blocked, or mosh is not installed
+|Forwarded by the same connection
+|===
+
+'''''
+
+[[tmux]]
+== tmux on the remote host
+
+Put this in `~/.tmux.conf` on the remote host:
+
+[source,sh]
+----
+set -g  default-terminal "tmux-256color"
+set -as terminal-features ",xterm-256color:RGB"
+set -sg escape-time 10
+set -g  focus-events on
+set -g  set-clipboard on
+----
+
+Reload a running server with `tmux source ~/.tmux.conf`. `focus-events` needs clients to detach and reattach before it takes effect, per `tmux(1)`.
+
+[cols="1,3",options="header"]
+|===
+|Line |What it fixes
+
+|`default-terminal`
+|Already the default on tmux 3.4 (measured). Set explicitly so an older tmux behaves the same.
+
+|`terminal-features ... RGB`
+|Without it, tmux sends 256 colours to the outer terminal instead of 24-bit colour. Measured on tmux 3.4 with the outer `TERM=xterm-256color`: the client's features list had no `RGB` until this line was added. Replace `xterm-256color` with whatever `$TERM` is *outside* tmux on your machine; that is what the pattern matches. On tmux older than 3.2 use `set -as terminal-overrides ",xterm-256color:Tc"` instead.
+
+|`escape-time 10`
+|tmux waits this long after `Esc` to see whether a key sequence follows. The default is 500 ms, which puts half a second on every `<Esc>` in Neovim before Neovim's own `ttimeoutlen` starts. Neovim's `:checkhealth` reports anything above 300 ms as an error and suggests 10.
+
+|`focus-events on`
+|Passes focus changes through to Neovim. `:checkhealth` warns that `'autoread'` may not work without it.
+
+|`set-clipboard on`
+|The default, `external`, makes tmux ignore the OSC 52 sequence Neovim sends when you yank, so the yank never reaches your machine's clipboard. See xref:editor/clipboard.adoc#osc52[Clipboard: SSH / TTY / Console].
+|===
+
+Leave `update-environment` at its default. It contains `SSH_CONNECTION`, which is how the config recognises a tmux session you attached to over SSH after it was created — see xref:#detection[What the config detects].
+
+To start or reattach in one command:
+
+[source,sh]
+----
+tmux new-session -A -s main
+----
+
+`-A` makes `new-session` attach if a session with that name already exists.
+
+'''''
+
+[[ssh]]
+== SSH on your machine
+
+Put this in `~/.ssh/config` on the machine you type at:
+
+[source,text]
+----
+Host devbox
+    HostName devbox.example.com
+    LocalForward 8090  localhost:8090
+    LocalForward 8880  localhost:8880
+    LocalForward 37717 localhost:37717
+    LocalForward 8092  localhost:8092
+    LocalForward 8093  localhost:8093
+
+Host *
+    ControlMaster auto
+    ControlPath ~/.ssh/cm-%C
+    ControlPersist 10m
+    ServerAliveInterval 30
+----
+
+The `LocalForward` lines are explained under xref:#ports[Preview ports].
+
+[cols="1,3",options="header"]
+|===
+|Option |Effect
+
+|`ControlMaster auto`
+|The first connection to a host opens a control socket. Later connections to the same host reuse it instead of doing a fresh handshake, which on a slow link costs several visible round trips.
+
+|`ControlPath ~/.ssh/cm-%C`
+|Where the socket lives. `ssh_config(5)` asks for a path that includes `%h`, `%p` and `%r`, or `%C`, which is a hash of all of them, in a directory other users cannot write to.
+
+|`ControlPersist 10m`
+|Keeps the shared connection open for 10 minutes after the last session using it closes. `ssh -O check devbox` shows whether one is running; `ssh -O exit devbox` closes it.
+
+|`ServerAliveInterval 30`
+|Sends a keep-alive through the encrypted channel after 30 seconds of silence. With `ServerAliveCountMax` at its default of 3, a dead connection is dropped after about 90 seconds instead of hanging.
+|===
+
+`Compression yes` is also an option (the default is `no`). It is likely to help on a slow link and cost CPU on a fast one. It has not been measured with this setup.
+
+[NOTE]
+====
+`ExitOnForwardFailure` defaults to `no`, so a forward that cannot bind its local port is skipped and the session carries on without it. Set it to `yes` if you would rather the connection fail loudly.
+====
+
+'''''
+
+[[ports]]
+== Preview ports
+
+The browser previews start a server on the machine running Neovim. Over SSH that is the remote host, and your browser is on the other end. Each server listens only on `127.0.0.1` there, so nothing is exposed to the network, and a `LocalForward` for the same port number makes the URL Neovim prints work unchanged in your local browser.
+
+[cols="1,1,2",options="header"]
+|===
+|Port |Feature |Started by
+
+|8090
+|Markdown project preview (markserv)
+|`,sp` / `:MdServerPreview`, container in `docker/markserv/`
+
+|8880
+|MARP preview server
+|`,mp` / `:MarpPreview`, container in `docker/marp/`
+
+|37717
+|MARP live reload
+|Same container; the browser page connects to it to refresh
+
+|8092
+|Single-file AsciiDoc preview
+|`,p` / `,pp` in an AsciiDoc buffer
+
+|8093
+|Full Antora site preview
+|`,pa` in an AsciiDoc buffer
+|===
+
+Under mosh, which forwards nothing, open the forwards with a second connection and leave it running:
+
+[source,sh]
+----
+ssh -N devbox
+----
+
+`-N` runs no remote command, so the connection only carries the forwards.
+
+The ports are fixed in the configuration, which is why a static list works. If one becomes dynamic, this table stops being enough.
+
+[WARNING]
+====
+If the same containers also run on your own machine, the local port is already taken and that forward fails. Stop the local container, or change the local side of the forward (`LocalForward 18090 localhost:8090`) and edit the port in the URL by hand.
+====
+
+In a remote session with no display, Neovim does not try to open a browser. It shows the URL as a notification and copies it to the `+` register. The exception is a remote host running WSL: the config tries the Windows opener there, and whether `WSL_DISTRO_NAME` is set in an SSH session into WSL is still unmeasured (see `openspec/DEFERRED_VERIFICATION.md`). With `set-clipboard on` in tmux, that copy reaches your machine's clipboard through OSC 52.
+
+The markdown `,p` preview (markdown-preview.nvim) does not appear here: the plugin does not load in a session without a display, and `,p` opens an in-editor popup instead.
+
+'''''
+
+[[mosh]]
+== mosh
+
+mosh has to be installed on both machines: `mosh` on yours and `mosh-server` on the remote host. It starts over SSH, so it uses the same `~/.ssh/config` entry:
+
+[source,sh]
+----
+mosh devbox -- tmux new-session -A -s main
+----
+
+Three things to know before relying on it:
+
+* **UDP.** The firewall has to let UDP through to the remote host. `mosh(1)` gives the default range as 60000–61000; mosh.org's own pages disagree with each other, as the xref:other/terminals-ssh-tmux-mosh.adoc#mosh[primer] notes. Pinning one port with `mosh -p 60001 devbox` means opening only that one.
+* **No forwarding.** `mosh(1)`: "mosh does not support X forwarding or the non-interactive uses of SSH, including port forwarding or sshfs." Agent forwarding is also absent. Use `ssh -N devbox` for the preview ports.
+* **UTF-8.** mosh needs a UTF-8 locale on both ends and tries to arrange one. If it refuses to start with a locale error, set `LANG` to a `.UTF-8` locale on the remote host.
+
+None of the mosh behaviour on this page has been run against a real mosh installation from this config; it comes from `mosh(1)` and the sources cited in the primer.
+
+'''''
+
+[[detection]]
+== What the config detects
+
+`lua/config/terminal.lua` sets `is_remote` from the `SSH_TTY` and `SSH_CONNECTION` variables, and inside tmux asks the tmux server for `SSH_CONNECTION`. A remote session gets a longer `ttimeoutlen` and a slower statusline refresh. That detection arrives with the `add-remote-session-profile` change and has not yet been validated over a real remote link.
+
+[cols="1,1,3",options="header"]
+|===
+|Stack |`is_remote` |Why
+
+|`ssh`
+|true
+|`sshd` sets both variables.
+
+|`ssh` + tmux, session created over SSH
+|true
+|The pane inherits the variables.
+
+|`ssh` + tmux, session created locally and attached over SSH later
+|true
+|The pane has neither variable, but the tmux server holds the attaching client's `SSH_CONNECTION`, because it is in `update-environment`.
+
+|`mosh`, or `mosh` + tmux
+|false
+|mosh closes the SSH connection once it has started `mosh-server`, so neither variable exists. Reasoned from how mosh starts, not tested.
+|===
+
+Colour is a separate question. Over SSH the terminal-detection code in `terminal.lua` cannot identify your terminal, so `has_truecolor` is false and the config uses Neovim's default colorscheme instead of TokyoNight. tmux does not change that: measured on tmux 3.4, a pane has no `COLORTERM` set, with or without the `RGB` feature. Fixing it is GitHub issue #191. The `RGB` line in the tmux config is still worth having for everything else you run in tmux, and for when #191 lands.
