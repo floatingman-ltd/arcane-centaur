@@ -22,7 +22,7 @@ Before deleting an entry, check its facts are recorded in one of those three pla
 entry is the only place something is written down, that thing is in the wrong place: move it, then
 delete the entry.
 
-**Declined** — decisions taken, not work waiting:
+**Declined** — decisions taken, not work waiting. Things that were adopted and then removed are in `tried-and-backed-out.md` instead:
 
 - ~~Spell suggestions never reach the blink menu~~ — **not applying the fix; current behaviour accepted.** The analysis below stands and the one-line change still works, but it was reviewed and judged not worth its trade-off: `keep_all_entries = true` stops filtering spelling suggestions *at all*, so every word of three or more characters would offer the full `spellsuggest` list while `'spell'` is on. Noisier in exactly the prose buffers where spelling help matters. Native `z=` in normal mode already lists suggestions, and `<C-x>s` is available in insert mode. **Open to revisiting** if the absence starts to bite in practice — the detailed entry is kept below precisely so a change of heart does not have to re-derive it.
 
@@ -299,7 +299,7 @@ use before deciding.
 
   **Usage is light.** The only `.http` request file under `~` (excluding package caches) is `testdocs/hello.http`, a fixture added 2026-07-08. kulala's cache in `~/.cache/nvim/kulala/` was last written 2026-03-25, the day it was installed. That covers this machine only.
 
-  **History: this is the second REST client.** `rest-nvim/rest.nvim` went in first, on 2026-03-25 (`41ed231`), and was replaced by kulala the same afternoon after three attempts to get it to install. rest.nvim v3 pulls `nvim-nio`, `mimetypes` and `xml2lua` from LuaRocks via its rockspec, and the build of its `tree-sitter-http` rock failed. `73cc013` excluded that rock and added `nvim-nio`/`fidget.nvim` as lazy dependencies, `5cd9989` switched to rockspec-based dependencies for v3, and `1d4c8d2` (*replace rest.nvim with kulala.nvim to fix luarocks tree-sitter-http build failure*) gave up on it — kulala had no LuaRocks dependencies and installed as a plain git plugin. kulala brought its own snag: it compiles a `kulala_http` treesitter grammar on first launch and needs the `tree-sitter` CLI for that; without it `setup()` fails and every keymap silently does nothing (`5c29091`, `9e458bb`, now the Troubleshooting section of `content/rest.adoc`). `best-of-breed-evaluation.md` later rated kulala KEEP on the strength of active development, which no longer holds.
+  **History: this is the second REST client.** rest.nvim was tried first and failed to install; see `tried-and-backed-out.md`. kulala needs the `tree-sitter` CLI to compile its `kulala_http` grammar on first launch, or `setup()` fails and every keymap silently does nothing (Troubleshooting section of `content/rest.adoc`). `best-of-breed-evaluation.md` rated kulala KEEP on the strength of active development, which no longer holds.
 
   **Replacement candidates**, activity from the GitHub API on 2026-09-29:
 
