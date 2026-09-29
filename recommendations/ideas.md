@@ -293,6 +293,33 @@ use before deciding.
 
   Deferred deliberately: see how it feels in daily use first.
 
+- **kulala.nvim's upstream repository is gone, and the plugin now runs from a frozen local copy.** Found 2026-09-29 when `:Lazy sync` failed on it with `fatal: could not read Username for 'https://github.com': terminal prompts disabled`. That message is git's response to a 404, not a credentials problem: `github.com/mistweaverco/kulala.nvim` returns 404 on both the web page and the API, while the `mistweaverco` account and its other repositories (`kulala-ls`, `kulala-cmp-graphql.nvim`, `kulala-github-action`) are still public. getkulala.net still links to the dead URL.
+
+  **What was done** (`f0ca665`, straight to main): the existing clone, at lockfile commit `dcad056` (2026-08-29), was copied to `~/.local/share/nvim/vendor/kulala.nvim`, and `lua/plugins/rest.lua` loads it with `dir =`. lazy.nvim runs no git on a `dir` plugin outside its own root, and does not lock it, so kulala has left `lazy-lock.json`. Two lighter fixes were tried first and did not work: `pin = true` stops the checkout but lazy still fetches, and a `dir` pointing inside `~/.local/share/nvim/lazy/` is still handled as a git plugin (lazy also tried a checkout against the partial clone's missing blobs). `Lazy! sync` exits 0 with no `fatal` lines afterwards, and opening an `.http` file loads kulala from the vendor path. The sync then removed the old clone from lazy's root, so the vendor directory is the only copy on this machine. **A fresh machine has no REST client** until that directory is put in place by hand; `content/rest.adoc` says so. No TEST_PLAN section was written — checked headlessly only.
+
+  **Usage is light.** The only `.http` request file under `~` (excluding package caches) is `testdocs/hello.http`, a fixture added 2026-07-08. kulala's cache in `~/.cache/nvim/kulala/` was last written 2026-03-25, the day it was installed. That covers this machine only.
+
+  **History: this is the second REST client.** `rest-nvim/rest.nvim` went in first, on 2026-03-25 (`41ed231`), and was replaced by kulala the same afternoon after three attempts to get it to install. rest.nvim v3 pulls `nvim-nio`, `mimetypes` and `xml2lua` from LuaRocks via its rockspec, and the build of its `tree-sitter-http` rock failed. `73cc013` excluded that rock and added `nvim-nio`/`fidget.nvim` as lazy dependencies, `5cd9989` switched to rockspec-based dependencies for v3, and `1d4c8d2` (*replace rest.nvim with kulala.nvim to fix luarocks tree-sitter-http build failure*) gave up on it — kulala had no LuaRocks dependencies and installed as a plain git plugin. kulala brought its own snag: it compiles a `kulala_http` treesitter grammar on first launch and needs the `tree-sitter` CLI for that; without it `setup()` fails and every keymap silently does nothing (`5c29091`, `9e458bb`, now the Troubleshooting section of `content/rest.adoc`). `best-of-breed-evaluation.md` later rated kulala KEEP on the strength of active development, which no longer holds.
+
+  **Replacement candidates**, activity from the GitHub API on 2026-09-29:
+
+  | Option | Last push | Stars | Format | Needs |
+  |---|---|---|---|---|
+  | `rest-nvim/rest.nvim` | 2025-12-27 | 2062 | `.http` | `curl`, `tree-sitter-http`, LuaRocks deps (lazy ≥ v11) |
+  | `jellydn/hurl.nvim` | 2026-09-25 | 259 | `.hurl` | `hurl` CLI, `nui.nvim`, `plenary.nvim`, treesitter `hurl` |
+  | `oysandvik94/curl.nvim` | 2026-02-25 | 179 | `.curl` (raw curl commands) | `curl` |
+  | `BlackLight/nvim-http` | 2026-01-13 | 115 | `.http` | not checked |
+  | `andycowan/kulala.nvim` | 2026-09-27 | 5 | `.http` | as kulala |
+
+  Ruled out: `diepm/vim-rest-console` (last push 2024-02-29) and `httpyac.nvim` (404).
+
+  - **rest.nvim** keeps the `.http` files and the workflow, but it is the plugin that already failed to install here, and its LuaRocks route is the part that failed. Last release 3.13.0 (2025-06-11), last commit 2025-12-12. Retrying it means proving the rock build works under Neovim 0.12 first.
+  - **hurl.nvim** is the most active, and Hurl can assert on responses, which suits scripted API checks. Requests move to Hurl's format, so `testdocs/hello.http` would need rewriting. Hurl publishes `ghcr.io/orange-opensource/hurl`, so under the containers-first rule the CLI would sit behind a wrapper on `$PATH` the way `terraform` does — same-path mount and `--user`.
+  - **curl.nvim** is the smallest: it runs curl commands from a buffer. No environments or JetBrains-style request files.
+  - **The andycowan fork** was created 2026-09-27 as a "personal recovery fork". Its history is rewritten — the commit matching `dcad056` is `ace7819` there — and its newest commits are "Recover personal fork and use independently hosted dependencies". kulala downloads parsers and binaries, so that commit changes where code comes from, under a single unknown maintainer. Do not adopt it without reading that diff.
+
+  **Recommendation: leave it on the vendor copy for now.** It works and usage does not justify a change. If a maintained client is wanted, hurl.nvim is the better bet given rest.nvim's history here; either is a full change (branch, OpenSpec proposal, TEST_PLAN section, and the four docs pages that name kulala: `content/rest.adoc`, `content/rest-cheatsheet.adoc`, `editor/keybindings.adoc`, `other/architecture.adoc`). Revisit if the upstream repository reappears, in which case restore `"mistweaverco/kulala.nvim"` in `rest.lua` and delete the vendor copy.
+
 ## Things that seem broken
 
 - **The clipboard provider is chosen without asking whether the session is remote, and `is_wsl` wins first.** `lua/options.lua` branches `is_wsl` -> `win32yank.exe`, then `is_console` -> OSC 52, then Neovim's auto-detection. `is_remote` is not consulted at any point.

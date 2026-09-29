@@ -295,6 +295,8 @@ Caveat: the `lazy = false` implicit in the file-level globals (`vim.g.mkdp_previ
 
 [kulala.nvim](https://github.com/mistweaverco/kulala.nvim) supports HTTP, gRPC, GraphQL, WebSocket, and Streaming. Active development — versions 6.0.7 and 6.1.0 shipped in May 2025. The JetBrains `.http` spec support is a distinguishing feature. No competitor in Neovim matches its protocol breadth.
 
+**Update 2026-09-29:** the upstream repository now returns 404, so "active development" no longer holds. The plugin runs from a frozen local copy at `dcad056`; the replacement options and the rest.nvim history are in `ideas.md` under *Things to keep an eye on*.
+
 ---
 
 ## Group 16 — AI Assistance
@@ -375,7 +377,7 @@ TokyoNight is actively maintained, has first-class support from plugin authors (
 | nvim-lspconfig | LSP config | KEEP (best-of-breed) | — | Standard |
 | conform.nvim | Formatting | KEEP (best-of-breed) | — | Best formatter plugin |
 | nvim-treesitter | Syntax/folding | KEEP (best-of-breed) | — | Mandatory |
-| kulala.nvim | HTTP client | KEEP (best-of-breed) | — | Actively maintained |
+| kulala.nvim | HTTP client | KEEP (best-of-breed) — **upstream 404 as of 2026-09-29, running from a local copy** | — | ~~Actively maintained~~ see ideas.md |
 | which-key.nvim | Keymap help | KEEP (best-of-breed) | — | Standard |
 | tokyonight.nvim | Colorscheme | KEEP (best-of-breed) | — | Well-maintained |
 | markdown-preview.nvim | MD browser preview | KEEP (good, minor caveats) | — | WSL-aware config |

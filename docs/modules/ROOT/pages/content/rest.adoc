@@ -202,7 +202,7 @@ subsequent starts will use the cached parser and load instantly.
 [[configuration]]
 == Configuration
 
-NOTE: Since 2026-09-29 the upstream repository `github.com/mistweaverco/kulala.nvim` returns 404, so lazy.nvim cannot fetch it. `lua/plugins/rest.lua` loads a local copy (commit `dcad056`) from `~/.local/share/nvim/vendor/kulala.nvim` via `dir =` instead of the GitHub spec shown below. A machine without that directory has no REST client until the copy is put there or the spec is switched back to a reachable repository.
+NOTE: As of 2026-09-29 the upstream repository `github.com/mistweaverco/kulala.nvim` returns 404, so lazy.nvim cannot fetch it. `lua/plugins/rest.lua` loads a local copy (commit `dcad056`) from `~/.local/share/nvim/vendor/kulala.nvim` via `dir =` instead of the GitHub spec shown below. A machine without that directory has no REST client until the copy is put there or the spec is switched back to a reachable repository.
 
 kulala.nvim is configured via `opts` in `lua/plugins/rest.lua`. The
 defaults are sensible for most use cases. To customise:
