@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Untitled :: Arcane Centaur Docs</title>
+    <link rel="canonical" href="https://floatingman-ltd.github.io/arcane-centaur/arcane-centaur/other/remote-sessions-intro.html">
+    <meta name="generator" content="Antora 3.2.1">
+    <link rel="stylesheet" href="../../_/css/site.css">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://floatingman-ltd.github.io/arcane-centaur">Arcane Centaur Docs</a>
+      <button class="navbar-burger" aria-controls="topbar-nav" aria-expanded="false" aria-label="Toggle main menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="#">Home</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Products</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Product A</a>
+            <a class="navbar-item" href="#">Product B</a>
+            <a class="navbar-item" href="#">Product C</a>
+          </div>
+        </div>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Services</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Service A</a>
+            <a class="navbar-item" href="#">Service B</a>
+            <a class="navbar-item" href="#">Service C</a>
+          </div>
+        </div>
+        <div class="navbar-item">
+          <span class="control">
+            <a class="button is-primary" href="#">Download</a>
+          </span>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="arcane-centaur" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../index.html">Arcane Centaur</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Home</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../getting-started.html">Getting Started</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Languages</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../languages/setup.html">Language Setup</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">.NET</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../languages/dotnet.html">Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../languages/dotnet-cheatsheet.html">Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Lisp Family</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../languages/lisp.html">Lisp / Clojure / Scheme / Fennel</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../languages/lisp-cheatsheet.html">Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../languages/janet.html">Janet Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../languages/janet-cheatsheet.html">Janet Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Haskell</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../languages/haskell.html">Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../languages/haskell-cheatsheet.html">Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Lua</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../languages/lua.html">Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../languages/lua-cheatsheet.html">Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Editor Core</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../editor/editing.html">Editing Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../editor/navigation.html">Navigation Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../editor/code-intelligence.html">Code Intelligence Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Git</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../editor/git/vim-fugitive.html">vim-fugitive</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../editor/git/gitsigns.html">gitsigns</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../editor/git/diffview.html">diffview</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../editor/git/lazygit.html">LazyGit</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../editor/clipboard.html">Clipboard</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">AI &amp; Automation</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../ai/ai-tools.html">AI Tools Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../ai/ai-tools-cheatsheet.html">AI Tools Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Content Creation</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/markdown.html">Markdown Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/markdown-cheatsheet.html">Markdown Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/asciidoc.html">AsciiDoc Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/asciidoc-cheatsheet.html">AsciiDoc Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/diagrams.html">Diagrams &amp; PlantUML</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/presentations.html">Presentations (MARP)</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/rest.html">REST / HTTP Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/rest-cheatsheet.html">REST Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Project Tooling</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../tooling/jira.html">Jira Integration</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../tooling/confluence.html">Confluence Publishing</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Other</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="architecture.html">Architecture</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="1">
+    <a class="nav-link" href="remote-sessions-intro.html">Remote Sessions: an Introduction</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="terminals-ssh-tmux-mosh.html">Terminals, SSH, tmux and mosh</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="contributing.html">Contributing to Docs</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="jira-project-map.html">Jira Project Map</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Arcane Centaur</span>
+    <span class="version"></span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <div class="title"><a href="../index.html">Arcane Centaur</a></div>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Arcane Centaur</a></li>
+    <li>Other</li>
+    <li><a href="remote-sessions-intro.html">Remote Sessions: an Introduction</a></li>
+  </ul>
+</nav>
+<div class="edit-this-page"><a href="file:///antora/docs/modules/ROOT/pages/other/remote-sessions-intro.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<div class="sect1">
+<h2 id="_remote_sessions_an_introduction"><a class="anchor" href="#_remote_sessions_an_introduction"></a>Remote sessions: an introduction</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A starting point for working on another machine from a terminal. It covers what SSH, tmux and mosh each do, how they fit together, and the commands you actually type. The mechanics underneath (pseudoterminals, escape sequences, why a tmux pane&#8217;s environment freezes) are in <a href="terminals-ssh-tmux-mosh.html" class="xref page">Terminals, SSH, tmux and mosh</a>. Read this page first and that one when something behaves strangely.</p>
+</div>
+<div class="paragraph">
+<p><strong>Quick navigation</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#the-pieces">The pieces</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">What each program is for, and where it runs</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#ssh">SSH</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Connecting, keys, the config file, forwarding</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#tmux">tmux</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sessions that outlive the connection, windows and panes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#mosh">mosh</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A connection that survives changing networks</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#together">Putting them together</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Everyday recipes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#which">Which to use</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Picking a stack</p></td>
+</tr>
+</tbody>
+</table>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="the-pieces"><a class="anchor" href="#the-pieces"></a>The pieces</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Five programs are involved, and each one does a single job.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 50%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Program</th>
+<th class="tableblock halign-left valign-top">Its job</th>
+<th class="tableblock halign-left valign-top">Runs on</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Terminal emulator</strong><br>
+(Windows Terminal, WezTerm, kitty, iTerm2&#8230;&#8203;)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Draws text on your screen and turns your keystrokes into bytes. It knows nothing about the machine at the other end.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Your machine</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Shell</strong><br>
+(<code>bash</code>, <code>zsh</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Reads the commands you type and runs them.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Wherever you are logged in</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>SSH</strong><br>
+(<code>ssh</code> client, <code>sshd</code> server)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Opens an encrypted connection to another machine and gives you a shell there. It also handles logging in.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Client on yours, server on the remote</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>tmux</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Keeps your shells and programs running on the remote machine when you disconnect, and splits one terminal into several windows and panes.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The remote machine</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>mosh</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Replaces SSH&#8217;s connection with one that survives sleep, roaming between networks and bad Wi-Fi, and echoes your typing without waiting for the round trip.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Both ends</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>How they stack when you use all of them:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>  YOUR MACHINE                          REMOTE MACHINE
+  --------------------                  ---------------------------------
+
+  terminal emulator
+        |
+        v
+  ssh  or  mosh  ====== network ======&gt;  sshd / mosh-server
+                                              |
+                                              v
+                                         tmux  (keeps running if you leave)
+                                              |
+                                              +-- window 1: nvim
+                                              +-- window 2: shell | shell</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The point to take away: <strong>SSH and mosh are how you get there; tmux is what you find when you arrive.</strong> They solve different problems, which is why they are so often used together.</p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="ssh"><a class="anchor" href="#ssh"></a>SSH</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>SSH ("secure shell") logs you in to another machine over an encrypted connection. Everything you type goes to a shell on that machine, and everything it prints comes back to your terminal. It is installed almost everywhere; the client is <code>ssh</code> and the server is <code>sshd</code>.</p>
+</div>
+<div class="paragraph">
+<p>The weakness to know about: the connection is tied to your network address. If your laptop sleeps or you change networks, the connection drops and anything running in it is killed. tmux and mosh exist to fix that.</p>
+</div>
+<div class="sect2">
+<h3 id="_connecting"><a class="anchor" href="#_connecting"></a>Connecting</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">ssh alice@build-box              # log in as alice
+ssh build-box                    # same username as locally
+ssh -p 2222 alice@build-box      # server on a non-standard port
+ssh build-box uptime             # run one command and come back
+ssh -t build-box htop            # one command that needs a full terminal
+exit                             # or Ctrl-D, to log out</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>-t</code> matters when the command is interactive. Without it, <code>ssh host command</code> runs with no terminal attached, so full-screen programs like <code>htop</code>, <code>nvim</code> or <code>tmux</code> refuse to start or misbehave.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_keys_instead_of_passwords"><a class="anchor" href="#_keys_instead_of_passwords"></a>Keys instead of passwords</h3>
+<div class="paragraph">
+<p>A key pair is a private file that stays on your machine and a public file you copy to each server. Once set up you log in without typing a password.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">ssh-keygen -t ed25519            # creates ~/.ssh/id_ed25519 and id_ed25519.pub
+ssh-copy-id alice@build-box      # appends the .pub file to the server's
+                                 # ~/.ssh/authorized_keys</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Set a passphrase when <code>ssh-keygen</code> asks, and let <code>ssh-agent</code> remember it for the session (<code>ssh-add</code> adds a key to the agent) so you type it once rather than on every connection.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_the_config_file"><a class="anchor" href="#_the_config_file"></a>The config file</h3>
+<div class="paragraph">
+<p><code>~/.ssh/config</code> gives hosts short names and saves you repeating flags. Every option is described in <code>man ssh_config</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">Host build
+    HostName build-box.example.com
+    User alice
+    Port 2222
+    IdentityFile ~/.ssh/id_ed25519</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>After that, <code>ssh build</code> does what the long command did. The same name works in <code>scp</code>, <code>rsync</code>, <code>git</code> remotes and mosh, since they all use SSH underneath.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_copying_files"><a class="anchor" href="#_copying_files"></a>Copying files</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">scp notes.txt build:~/           # copy to the remote home directory
+scp build:~/log.txt .            # copy back
+rsync -av src/ build:~/src/      # sync a directory, sending only changes</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_forwarding_and_jumping"><a class="anchor" href="#_forwarding_and_jumping"></a>Forwarding and jumping</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">ssh -L 8080:localhost:3000 build # your localhost:8080 reaches port 3000 on build
+ssh -J bastion build             # hop through bastion to reach build
+ssh -A build                     # let build use your local ssh-agent keys</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>-L</code> is the one you will use most: it makes a web server or database on the remote machine appear on a local port. <code>-A</code> is convenient but trusts the remote machine with your keys for as long as you are connected, so use it only on machines you control.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_when_it_hangs"><a class="anchor" href="#_when_it_hangs"></a>When it hangs</h3>
+<div class="paragraph">
+<p>If a connection freezes, usually because the network went away, type these three keys at the start of a line: <strong>Enter</strong>, then <strong>~</strong>, then <strong>.</strong> (full stop). That tells your local <code>ssh</code> client to give up immediately instead of waiting for a timeout. <code>~</code> is only recognised at the beginning of a line, which is why Enter comes first. <strong>~?</strong> lists the other escape commands.</p>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="tmux"><a class="anchor" href="#tmux"></a>tmux</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>tmux ("terminal multiplexer") runs on the remote machine and holds your terminal sessions for you. Your programs are attached to tmux rather than to your SSH connection, so when the connection drops they keep running. You reconnect, reattach, and your editor, your build and your scrollback are exactly where you left them.</p>
+</div>
+<div class="paragraph">
+<p>It also lets one terminal hold many shells, which is why people use it locally too.</p>
+</div>
+<div class="sect2">
+<h3 id="_sessions_windows_and_panes"><a class="anchor" href="#_sessions_windows_and_panes"></a>Sessions, windows and panes</h3>
+<div class="literalblock">
+<div class="content">
+<pre>  session "work"              &lt;- survives disconnection; you attach to this
+    |
+    +-- window 0 "edit"        &lt;- like a browser tab; one fills the screen
+    |     +-- pane: nvim
+    |
+    +-- window 1 "build"
+          +-- pane: make       &lt;- a window can be split into panes
+          +-- pane: tail -f log</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>A <strong>session</strong> is the thing that persists. A <strong>window</strong> is a full-screen tab inside it. A <strong>pane</strong> is a split within a window. You can have several sessions, each with several windows.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_from_the_shell"><a class="anchor" href="#_from_the_shell"></a>From the shell</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">tmux                             # start a new, unnamed session
+tmux new -s work                 # start a session called "work"
+tmux ls                          # list sessions
+tmux attach -t work              # reattach to "work"
+tmux new -A -s work              # attach to "work", creating it if needed
+tmux kill-session -t work        # end a session and everything in it</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>tmux new -A -s work</code> is the one to remember. The <code>-A</code> flag "makes new-session behave like attach-session if session-name already exists" (<code>man tmux</code>), so the same command works whether or not the session is already running.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_inside_tmux_the_prefix_key"><a class="anchor" href="#_inside_tmux_the_prefix_key"></a>Inside tmux: the prefix key</h3>
+<div class="paragraph">
+<p>Once inside, tmux listens for a <strong>prefix</strong> key. By default it is <strong>Ctrl-b</strong>. You press Ctrl-b, let go, then press the command key. The table shows tmux 3.4&#8217;s defaults with no configuration file (there is no <code>~/.tmux.conf</code> on this machine).</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Keys</th>
+<th class="tableblock halign-left valign-top">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Ctrl-b d</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Detach</strong> — leave everything running and return to the shell</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Ctrl-b c</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">New window</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Ctrl-b n</code> / <code>Ctrl-b p</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Next / previous window</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Ctrl-b 0</code>&#8230;&#8203;<code>9</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Jump to window by number</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Ctrl-b w</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pick a window from a list</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Ctrl-b s</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pick a session from a list</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Ctrl-b ,</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rename the current window</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Ctrl-b %</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Split into left and right panes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Ctrl-b "</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Split into top and bottom panes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Ctrl-b</code> arrow</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Move to the pane in that direction</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Ctrl-b o</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Cycle to the next pane</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Ctrl-b z</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Zoom the current pane to full screen, and back</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Ctrl-b x</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Close the current pane (asks first)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Ctrl-b [</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Scroll mode — arrows or PageUp to scroll, <code>q</code> to leave</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Ctrl-b ?</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">List every key binding</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Detaching is not the same as exiting. <code>Ctrl-b d</code> leaves the session running for later; typing <code>exit</code> in the last pane ends the session.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Inside Neovim, <code>Ctrl-b</code> scrolls up a page. Under tmux that key goes to tmux first, so in Neovim you press it twice (<code>Ctrl-b Ctrl-b</code>) to send one through. Many people move the prefix to <code>Ctrl-a</code> or <code>Ctrl-Space</code> in <code>~/.tmux.conf</code> for this reason.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="mosh"><a class="anchor" href="#mosh"></a>mosh</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>mosh ("mobile shell") fixes SSH&#8217;s connection problem at the source. It uses SSH only to log in, then switches to its own connection, which is not tied to your network address. Close the laptop, open it on a different network, and the session is still there, usually before you have finished typing.</p>
+</div>
+<div class="paragraph">
+<p>It also shows your keystrokes immediately rather than waiting for the remote machine to echo them, so a slow or distant server feels local. Guesses it is unsure of are underlined until confirmed.</p>
+</div>
+<div class="paragraph">
+<p>What it gives up, deliberately:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>No scrollback.</strong> mosh sends only what is currently on screen. Run tmux inside it to get history back.</p>
+</li>
+<li>
+<p><strong>No port or agent forwarding.</strong> Use plain SSH for those.</p>
+</li>
+<li>
+<p><strong>Needs mosh installed on both ends</strong>, a UTF-8 locale on both, and the server&#8217;s firewall open for UDP (by default mosh uses a port in the 60000–61000 range; see <a href="terminals-ssh-tmux-mosh.html#mosh" class="xref page">the detail page</a> for the exact bounds, which the sources disagree on).</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="_commands"><a class="anchor" href="#_commands"></a>Commands</h3>
+<div class="paragraph">
+<p>mosh is not installed on this machine, so these are taken from <code>mosh(1)</code> and <a href="https://mosh.org/">mosh.org</a> rather than tried here.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">mosh alice@build-box                     # connect, just like ssh
+mosh build                               # ~/.ssh/config names work too
+mosh --ssh="ssh -p 2222" build-box       # pass options to the SSH login step
+mosh build -- tmux new -A -s work        # connect straight into tmux</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To get out of a frozen mosh session, press <strong>Ctrl-^</strong> then <strong>.</strong> — the equivalent of SSH&#8217;s <code>~.</code>.</p>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="together"><a class="anchor" href="#together"></a>Putting them together</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><strong>Work on a server that survives disconnects:</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">ssh build
+tmux new -A -s work        # first time creates it, later times reattach
+# ... work ...
+# Ctrl-b d to leave, or just close the lid</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Reconnecting later is the same two commands. If the connection died rather than you detaching, tmux still has the session; <code>tmux new -A -s work</code> picks it up.</p>
+</div>
+<div class="paragraph">
+<p><strong>Do the same in one step:</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">ssh -t build tmux new -A -s work</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>-t</code> is required here because tmux needs a terminal.</p>
+</div>
+<div class="paragraph">
+<p><strong>On a laptop, or on flaky Wi-Fi:</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">mosh build -- tmux new -A -s work</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>mosh keeps the connection alive across networks, and tmux gives you scrollback and keeps things running if the laptop is off for the night.</p>
+</div>
+<div class="paragraph">
+<p><strong>Reach a web app running on the server:</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">ssh -L 8080:localhost:3000 build
+# then open http://localhost:8080 locally</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This one has to be plain SSH, since mosh does not forward ports.</p>
+</div>
+<div class="sect2">
+<h3 id="web-dev-with-mosh"><a class="anchor" href="#web-dev-with-mosh"></a>Web development over mosh</h3>
+<div class="paragraph">
+<p>If you use mosh for the terminal, web traffic has to travel over a second connection alongside it. There are three common ways to set that up.</p>
+</div>
+<div class="paragraph">
+<p><strong>1. An SSH tunnel next to mosh.</strong> This is the simplest option.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">mosh build -- tmux new -A -s work        # terminal, as usual
+ssh -N -L 3000:localhost:3000 build      # tunnel only: -N runs no shell</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then browse to <code><a href="http://localhost:3000" class="bare">http://localhost:3000</a></code>. Dev-server hot reload uses websockets, which work fine through the tunnel.</p>
+</div>
+<div class="paragraph">
+<p>The catch is that the tunnel is ordinary SSH. When you change networks, mosh carries on but the tunnel dies. A config entry makes restarting it one short command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">Host build-tunnel
+    HostName build-box.example.com
+    LocalForward 3000 localhost:3000
+    LocalForward 5173 localhost:5173
+    ServerAliveInterval 15
+    ExitOnForwardFailure yes</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>ssh -fN build-tunnel</code> then starts it in the background. <code>ServerAliveInterval</code> makes a dead link show up within seconds rather than minutes. <code>ExitOnForwardFailure</code> makes <code>ssh</code> quit instead of running on with a forward it could not set up, for example when the local port is already taken. <code>autossh -M 0 -fN build-tunnel</code> goes a step further and restarts the tunnel on its own whenever it drops. <code>autossh</code> is a separate package, and <code>-M 0</code> tells it to rely on <code>ServerAliveInterval</code> to spot a dead link instead of opening a monitoring port of its own.</p>
+</div>
+<div class="paragraph">
+<p><strong>2. A private network: Tailscale or WireGuard.</strong> This is the closest match to mosh. Put both machines on the same private network, start the dev server listening on the network rather than only on <code>127.0.0.1</code> (<code>vite --host</code>, <code>next dev -H 0.0.0.0</code>), and browse to <code><a href="http://build:3000" class="bare">http://build:3000</a></code> directly. There is no tunnel to maintain, any new port just works, and WireGuard survives changes of network much as mosh does. Most people who use mosh every day end up here.</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Listening on <code>0.0.0.0</code> exposes the dev server on <strong>every</strong> network the remote machine is on, not only the private one. On a shared LAN, either bind to the Tailscale address alone or block the port in the firewall.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><strong>3. A public tunnel: <code>cloudflared</code> or <code>ngrok</code>.</strong> Use this to show work to someone else or to receive webhooks. It puts your dev server on the public internet, so don&#8217;t use it for day-to-day work.</p>
+</div>
+<div class="paragraph">
+<p>For occasional remote web work, option 1 is enough. If you do it regularly, set up option 2.</p>
+</div>
+<div class="paragraph">
+<p>Neither <code>autossh</code> nor Tailscale is installed on this machine, so these commands have not been tried here. They come from <code>man ssh_config</code> and each tool&#8217;s documentation.</p>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="which"><a class="anchor" href="#which"></a>Which to use</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 40%;">
+<col style="width: 60%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Situation</th>
+<th class="tableblock halign-left valign-top">Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A quick command, or copying a file</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ssh</code> on its own, or <code>scp</code> / <code>rsync</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Long-running work: builds, editors, anything you would hate to lose</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ssh</code> + tmux</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Laptop, travel, mobile data or poor Wi-Fi</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">mosh + tmux</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Port forwarding or agent forwarding</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ssh</code> (mosh cannot; see <a href="#web-dev-with-mosh">Web development over mosh</a>)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Several shells side by side, even locally</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">tmux</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The trade-offs are laid out in full in <a href="terminals-ssh-tmux-mosh.html#combinations" class="xref page">Combinations</a>.</p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_in_this_config"><a class="anchor" href="#_in_this_config"></a>In this config</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Neovim needs to know whether it is running over one of these connections, because it changes how keys and the clipboard should behave. <code>lua/config/terminal.lua</code> works that out, and <a href="terminals-ssh-tmux-mosh.html" class="xref page">Terminals, SSH, tmux and mosh</a> explains why the answer takes two steps under tmux and is currently wrong under mosh.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_further_reading"><a class="anchor" href="#_further_reading"></a>Further reading</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Everything on this page can be checked on your own machine:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>man ssh</code>, <code>man ssh_config</code>, <code>man ssh-keygen</code> — the SSH client, its config file and key generation</p>
+</li>
+<li>
+<p><code>man tmux</code> — every command and option; <code>Ctrl-b ?</code> lists the key bindings in a running session</p>
+</li>
+<li>
+<p><code>man mosh</code> once mosh is installed, or <a href="https://mosh.org/">mosh.org</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>This page was built using the Antora default UI.</p>
+  <p>The source code for this UI is licensed under the terms of the MPL-2.0 license.</p>
+</footer>
+<script id="site-script" src="../../_/js/site.js" data-ui-root-path="../../_"></script>
+<script async src="../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

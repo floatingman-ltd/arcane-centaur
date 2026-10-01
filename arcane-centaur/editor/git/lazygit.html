@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Untitled :: Arcane Centaur Docs</title>
+    <link rel="canonical" href="https://floatingman-ltd.github.io/arcane-centaur/arcane-centaur/editor/git/lazygit.html">
+    <meta name="generator" content="Antora 3.2.1">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://floatingman-ltd.github.io/arcane-centaur">Arcane Centaur Docs</a>
+      <button class="navbar-burger" aria-controls="topbar-nav" aria-expanded="false" aria-label="Toggle main menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="#">Home</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Products</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Product A</a>
+            <a class="navbar-item" href="#">Product B</a>
+            <a class="navbar-item" href="#">Product C</a>
+          </div>
+        </div>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Services</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Service A</a>
+            <a class="navbar-item" href="#">Service B</a>
+            <a class="navbar-item" href="#">Service C</a>
+          </div>
+        </div>
+        <div class="navbar-item">
+          <span class="control">
+            <a class="button is-primary" href="#">Download</a>
+          </span>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="arcane-centaur" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../../index.html">Arcane Centaur</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../index.html">Home</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../getting-started.html">Getting Started</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Languages</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../languages/setup.html">Language Setup</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">.NET</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/dotnet.html">Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/dotnet-cheatsheet.html">Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Lisp Family</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/lisp.html">Lisp / Clojure / Scheme / Fennel</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/lisp-cheatsheet.html">Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/janet.html">Janet Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/janet-cheatsheet.html">Janet Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Haskell</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/haskell.html">Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/haskell-cheatsheet.html">Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Lua</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/lua.html">Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../languages/lua-cheatsheet.html">Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Editor Core</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../editing.html">Editing Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../navigation.html">Navigation Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../code-intelligence.html">Code Intelligence Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Git</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="vim-fugitive.html">vim-fugitive</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="gitsigns.html">gitsigns</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="diffview.html">diffview</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="lazygit.html">LazyGit</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../clipboard.html">Clipboard</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">AI &amp; Automation</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../ai/ai-tools.html">AI Tools Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../ai/ai-tools-cheatsheet.html">AI Tools Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Content Creation</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../content/markdown.html">Markdown Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../content/markdown-cheatsheet.html">Markdown Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../content/asciidoc.html">AsciiDoc Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../content/asciidoc-cheatsheet.html">AsciiDoc Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../content/diagrams.html">Diagrams &amp; PlantUML</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../content/presentations.html">Presentations (MARP)</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../content/rest.html">REST / HTTP Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../content/rest-cheatsheet.html">REST Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Project Tooling</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../tooling/jira.html">Jira Integration</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../tooling/confluence.html">Confluence Publishing</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Other</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../other/architecture.html">Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../other/remote-sessions-intro.html">Remote Sessions: an Introduction</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../other/terminals-ssh-tmux-mosh.html">Terminals, SSH, tmux and mosh</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../other/contributing.html">Contributing to Docs</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../other/jira-project-map.html">Jira Project Map</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Arcane Centaur</span>
+    <span class="version"></span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <div class="title"><a href="../../index.html">Arcane Centaur</a></div>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">Arcane Centaur</a></li>
+    <li>Editor Core</li>
+    <li>Git</li>
+    <li><a href="lazygit.html">LazyGit</a></li>
+  </ul>
+</nav>
+<div class="edit-this-page"><a href="file:///antora/docs/modules/ROOT/pages/editor/git/lazygit.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<div class="sect1">
+<h2 id="_lazygit"><a class="anchor" href="#_lazygit"></a>LazyGit</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Run <a href="https://github.com/jesseduffield/lazygit">LazyGit</a> in a floating window over the editor.
+LazyGit puts status, files, branches, commits and stash on one screen, with menus for rebase,
+cherry-pick, stash and branch work — the things that take several separate commands in the other
+git tools here.</p>
+</div>
+<div class="paragraph">
+<p>It complements rather than replaces them: <a href="vim-fugitive.html" class="xref page">vim-fugitive</a> for
+<code>:Git</code> commands and blame, <a href="gitsigns.html" class="xref page">gitsigns</a> for changes as you type,
+<a href="diffview.html" class="xref page">diffview</a> for reading a change file by file.</p>
+</div>
+<div class="sect2">
+<h3 id="_keymaps"><a class="anchor" href="#_keymaps"></a>Keymaps</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Keys</th>
+<th class="tableblock halign-left valign-top">Mode</th>
+<th class="tableblock halign-left valign-top">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;leader&gt;gg</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Normal</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LazyGit for the current buffer&#8217;s repository (<code>:LazyGit</code>)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;leader&gt;gf</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Normal</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LazyGit filtered to the current file&#8217;s history (<code>:LazyGitFile</code>)</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Inside the window every key goes to LazyGit, including <code>&lt;Esc&gt;</code> — which in other terminal
+buffers leaves terminal mode. Press <code>q</code> to quit LazyGit; the window closes with it. <code>?</code> lists
+LazyGit&#8217;s own keys for the panel you are in.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_which_repository"><a class="anchor" href="#_which_repository"></a>Which repository</h3>
+<div class="paragraph">
+<p><code>&lt;leader&gt;gg</code> opens the repository that contains the current buffer&#8217;s file. If the buffer has
+no file, or its file is outside any repository, it uses the repository containing Neovim&#8217;s
+working directory. If neither is in a repository, it shows a warning and opens nothing.</p>
+</div>
+<div class="paragraph">
+<p><code>&lt;leader&gt;gf</code> needs a file: it runs <code>lazygit -f &lt;file&gt;</code>, which filters the commits, reflog and
+stash panels to that file. LazyGit restricts some operations in this mode; the status bar shows
+<strong>Filtering by</strong> with a <strong>Reset</strong> link.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_editing_a_file_from_lazygit"><a class="anchor" href="#_editing_a_file_from_lazygit"></a>Editing a file from LazyGit</h3>
+<div class="paragraph">
+<p>Press <code>e</code> on a file — or on a line in the staging view — and the file opens in <strong>this</strong> Neovim, in
+the window you were in before opening LazyGit, at that line. The LazyGit window closes. No second
+Neovim is started.</p>
+</div>
+<div class="paragraph">
+<p>LazyGit refuses <code>e</code> on a directory row ("Cannot edit directories").</p>
+</div>
+<div class="paragraph">
+<p>Where LazyGit has to wait for the editor to exit, a Neovim does start inside the window, and
+LazyGit resumes when you quit it.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_colours"><a class="anchor" href="#_colours"></a>Colours</h3>
+<div class="paragraph">
+<p>LazyGit is coloured from the active TokyoNight style — change <code>style</code> in
+<code>lua/plugins/colorscheme.lua</code>, restart, and the next launch follows. Without truecolor (console
+mode) LazyGit uses its default colours.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_after_lazygit_closes"><a class="anchor" href="#_after_lazygit_closes"></a>After LazyGit closes</h3>
+<div class="paragraph">
+<p>Whatever you did in LazyGit is reflected straight away:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>buffers whose files changed on disk — a checkout, a reset, a stash pop — are reloaded</p>
+</li>
+<li>
+<p>gitsigns markers are refreshed, so committed changes lose their markers</p>
+</li>
+<li>
+<p>nvim-tree, if open, is reloaded</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_your_own_lazygit_config"><a class="anchor" href="#_your_own_lazygit_config"></a>Your own LazyGit config</h3>
+<div class="paragraph">
+<p>Your <code>config.yml</code> (in the directory <code>lazygit --print-config-dir</code> prints) still applies and is
+never written to. This integration adds its settings — the editor commands and the colours — in a
+separate file, <code>~/.local/state/nvim/lazygit/nvim.yml</code>, regenerated on each launch and passed only
+to the LazyGit started from Neovim through <code>LG_CONFIG_FILE</code>. Where both set the same key, the
+generated file wins. <code>lazygit</code> run from a shell is unaffected.</p>
+</div>
+<div class="paragraph">
+<p>The first launch shows LazyGit&#8217;s own welcome popup, and the first visit to the staging view a
+notice about hunk mode. Both appear once; dismiss them with <code>&lt;Enter&gt;</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_setup"><a class="anchor" href="#_setup"></a>Setup</h3>
+<div class="paragraph">
+<p><code>lazygit</code> must be on <code>$PATH</code> — see <a href="../../getting-started.html#lazygit" class="xref page">Getting started → LazyGit</a>.
+Without it both keymaps show an error and open nothing.</p>
+</div>
+<hr>
+<div class="paragraph">
+<p><em>In the editor, which-key shows these maps live as you type a prefix (built from each keymap&#8217;s
+<code>desc</code>), and <code>&lt;leader&gt;?</code> opens the context-aware cheatsheet. Configured in
+<code>lua/config/lazygit.lua</code>; the edit hand-off is <code>scripts/lazygit-edit.lua</code>.</em></p>
+</div>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>This page was built using the Antora default UI.</p>
+  <p>The source code for this UI is licensed under the terms of the MPL-2.0 license.</p>
+</footer>
+<script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>
