@@ -3846,3 +3846,64 @@ Put the cursor on a `vim.fn.*` call — `vim.fn.setreg` at `lua/config/util.lua:
 - [ ] Change archived — `lua-lsp` already has a real Purpose, so no placeholder needs writing this time
 - [ ] The eight surfaced findings remain recorded in `recommendations/ideas.md`; they are not shipped work and must not be deleted with this entry
 
+
+---
+
+## Hotfix · markserv-preview-mount-root
+
+**Branch:** none — committed straight to `main` as a hotfix.
+
+`,sp` built the preview URL relative to Neovim's working directory. When that differed from the directory the markserv container mounts at `/docs`, the URL was wrong and the server returned 404 — e.g. nvim started in `~/src/rmv` with `MD_DIR=~/src/rmv/docs` opened `/docs/_local/...` instead of `/_local/...`. `lua/config/mdpreview.lua` now reads the mount source from the container publishing port 8090 (`docker ps` + `docker inspect`) and builds the URL relative to that.
+
+**Prerequisites:**
+- markserv container running with a known `MD_DIR`, e.g. `MD_DIR=~/src/rmv/docs docker compose -f ~/.config/nvim/docker/markserv/docker-compose.yml up -d`
+
+### Prepare
+
+1. `git pull` on the test machine.
+2. `find . -name '*.lua' -print0 | xargs -0 luac -p` — expect no output.
+
+- [ ] Pulled; all Lua parses
+
+> Headless pass 2026-10-01 on the WSL machine, container mounted at `~/src/rmv`, `open_url` stubbed to print. From cwd `~/src/rmv` and from cwd `~/src/rmv/docs/_local`, `docs/_local/task/ml-215/session-primer.md` gave `http://localhost:8090/docs/_local/task/ml-215/session-primer.md` both times. From cwd `/tmp`, `testdocs/test.md` gave the "not under the served directory" warning and no URL. Each run took 71–130 ms from `:edit` to URL, including both `docker` calls. Not exercised: a mount at a subdirectory of the cwd, and the no-container fallback.
+
+### Validate
+
+#### MR.1 — cwd above the mount root
+
+1. `cd ~/src/rmv && nvim docs/_local/task/ml-215/desk-image-capture-flow.md`
+2. Press `,sp`.
+
+- [ ] Browser opens `http://localhost:8090/_local/task/ml-215/desk-image-capture-flow.md` and the page renders (no 404)
+
+#### MR.2 — cwd inside a subdirectory of the mount
+
+1. `cd ~/src/rmv/docs/_local/task && nvim ml-215/desk-image-capture-flow.md`
+2. Press `,sp`.
+
+- [ ] Same URL as MR.1; page renders
+
+#### MR.3 — cwd equal to the mount root (previous behaviour)
+
+1. `cd ~/src/rmv/docs && nvim _local/task/ml-215/desk-image-capture-flow.md`
+2. Press `,sp`.
+
+- [ ] Same URL as MR.1; page renders
+
+#### MR.4 — file outside the mount
+
+1. In the same session, `:e ~/.config/nvim/testdocs/test.md`, press `,sp`.
+
+- [ ] Warning `MdServerPreview: … is not under the served directory …`; no browser opens
+
+#### MR.5 — no container running
+
+1. `docker compose -f ~/.config/nvim/docker/markserv/docker-compose.yml down`
+2. Open a markdown file, press `,sp`.
+
+- [ ] Warning `MdServerPreview: no container publishing port 8090 found; using path relative to cwd`; browser opens the cwd-relative URL
+- [ ] Restart the container afterwards
+
+### Post-merge
+
+- [ ] All MR steps checked off

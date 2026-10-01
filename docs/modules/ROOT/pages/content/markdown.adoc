@@ -266,10 +266,12 @@ container silently mounts a path under
 `~/.config/nvim/docker/markserv/` — creating it if absent — and every
 request returns *not found*. Docker gives no warning.
 
-The mount root must also match the directory Neovim was started from,
-because the URL `,sp` builds is relative to Neovim's working directory.
-Mounting a subdirectory of your cwd produces the same *not found* even
-when the path is absolute.
+Neovim's working directory does not need to match the mount root. `,sp`
+reads the mounted directory from the running container (`docker inspect`)
+and builds the URL relative to it, so a file anywhere under the mount opens
+at the right path. A file outside the mount produces a warning instead of a
+URL. If no container is publishing port 8090, `,sp` warns and falls back
+to a path relative to Neovim's working directory.
 ====
 
 [WARNING]

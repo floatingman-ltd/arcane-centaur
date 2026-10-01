@@ -120,9 +120,10 @@ docker compose -f ~/.config/nvim/docker/markserv/docker-compose.yml up -d --buil
 ----
 
 To serve a directory other than `$PWD`, set `MD++_++DIR` — *always as an
-absolute path*, and matching the directory Neovim was started from. A
-relative value resolves against the compose file's directory and the
-container serves an empty tree:
+absolute path*. A relative value resolves against the compose file's
+directory and the container serves an empty tree. Neovim's working
+directory does not need to match: `,sp` builds the URL relative to the
+directory the container mounts.
 
 [source,sh]
 ----
