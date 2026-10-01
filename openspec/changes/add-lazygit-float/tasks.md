@@ -51,4 +51,5 @@
 ## 8. Test plan
 
 - [X] 8.1 Add `## Change · add-lazygit-float` to `openspec/TEST_PLAN.md` with Prepare / Validate / Raise PR & merge / Post-merge, one Validate case per spec scenario, including paths with a space, the `<leader>T` `<Esc>` regression check, and console mode.
-- [ ] 8.2 Walk every Validate case in a live Neovim session and tick only what is confirmed.
+- [X] 8.2 Walk every Validate case in a live Neovim session and tick only what is confirmed.
+  > Walked 2026-10-01. LG.1–LG.7 and LG.10 passed live; LG.8, LG.9, LG.11, LG.12 and LG.13 deferred by the user and recorded in `openspec/TEST_PLAN.md` and `openspec/DEFERRED_VERIFICATION.md`.
