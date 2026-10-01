@@ -3933,7 +3933,7 @@ Runs LazyGit in a floating terminal (`lua/config/lazygit.lua`, no plugin). `<lea
 2. `find . -name '*.lua' -print0 | xargs -0 luac -p` — expect no output.
 3. `lazygit --version` — expect `version=0.65.1` or later.
 
-- [ ] Branch checked out, all Lua parses, `lazygit` found
+- [X] Branch checked out, all Lua parses, `lazygit` found
 
 > Headless pass 2026-10-01 on the WSL machine, LazyGit 0.65.1, driving the float by RPC with `nvim_chan_send` / `nvim_input`. Passed: float opens on the repository; `e` on `it's.txt` and edit-at-line on `a b.txt` (line 3) open in the outer Neovim with the float closed; `-f a b.txt` shows "Filtering by 'a b.txt'"; `<Esc>` closes a LazyGit popup and stays in terminal mode while a `:term` buffer still goes to `nt`; a file changed on disk during LazyGit is reloaded on `q`; gitsigns hunks go 1 → 0 after a commit; no-repo, no-file and missing-binary give their messages and no window; with `CONFIG_DIR=/tmp/lgcfg` the job's `LG_CONFIG_FILE` is `/tmp/lgcfg/config.yml,…/nvim.yml` and the user file's checksum is unchanged; with `notermguicolors` the generated file has no theme; `lazy-lock.json` unchanged. Not exercised headlessly: anything visual (colours, float size, resize), nvim-tree reload, a real checkout through LazyGit's UI, keystroke timing.
 
@@ -3945,52 +3945,52 @@ All steps in a live Neovim, started in `/tmp/lgtest` unless stated.
 
 1. `nvim "a b.txt"`, press `<leader>gg`.
 
-- [ ] A centred float with a rounded border titled ` LazyGit ` covers most of the editor, in terminal mode, showing LazyGit for `/tmp/lgtest` with both files listed
-- [ ] which-key lists `<leader>gg` as *LazyGit* and `<leader>gf` as *LazyGit: file history*
+- [X] A centred float with a rounded border titled ` LazyGit ` covers most of the editor, in terminal mode, showing LazyGit for `/tmp/lgtest` with both files listed
+- [X] which-key lists `<leader>gg` as *LazyGit* and `<leader>gf` as *LazyGit: file history*
 
 #### LG.2 — Keys reach LazyGit
 
 1. In LazyGit, press `?` to open its keybindings menu, then `<Esc>`.
 2. Press `q`.
 
-- [ ] `<Esc>` closes the menu and the window stays in terminal mode (LazyGit still responds to `j`/`k`)
-- [ ] `q` quits LazyGit and the float closes, leaving the original window
+- [X] `<Esc>` closes the menu and the window stays in terminal mode (LazyGit still responds to `j`/`k`)
+- [X] `q` quits LazyGit and the float closes, leaving the original window
 
 #### LG.3 — `<Esc>` elsewhere is unchanged
 
 1. `<leader>T` to open the terminal split, then `<Esc>`.
 
-- [ ] The terminal switches to normal mode as before
+- [X] The terminal switches to normal mode as before
 
 #### LG.4 — Edit a file
 
 1. `<leader>gg`, select `it's.txt`, press `e`.
 
-- [ ] The float closes and `it's.txt` is open in the window that was current before, in normal mode
-- [ ] No nested Neovim appeared at any point
+- [X] The float closes and `it's.txt` is open in the window that was current before, in normal mode
+- [X] No nested Neovim appeared at any point
 
 #### LG.5 — Edit at a line, path with a space
 
 1. `<leader>gg`, select `a b.txt`, press `<Enter>` to open the staging view (dismiss the one-off hunk-mode notice with `<Enter>` if shown), then `e`.
 
-- [ ] `a b.txt` opens in the outer Neovim with the cursor on line 3 (the changed line)
+- [X] `a b.txt` opens in the outer Neovim with the cursor on line 3 (the changed line)
 
 #### LG.6 — File history
 
 1. With `a b.txt` current, press `<leader>gf`.
 2. Quit; `:enew`, press `<leader>gf`.
 
-- [ ] LazyGit opens with the status bar showing *Filtering by 'a b.txt'* and the commit list limited to that file
-- [ ] On the empty buffer: warning *LazyGit: buffer has no file*, no window
+- [X] LazyGit opens with the status bar showing *Filtering by 'a b.txt'* and the commit list limited to that file
+- [X] On the empty buffer: warning *LazyGit: buffer has no file*, no window
 
 #### LG.7 — Refresh on close
 
 1. With `a b.txt` open showing a gitsigns change marker on line 3 and nvim-tree open (`<leader>n`).
 2. `<leader>gg`, discard the change to `a b.txt` (select it, `d`, confirm), and create a file from LazyGit's `:` shell prompt: `touch new.txt`. Quit with `q`.
 
-- [ ] The buffer shows `3` on line 3 without `:e`
-- [ ] The gitsigns marker is gone
-- [ ] nvim-tree lists `new.txt`
+- [X] The buffer shows `3` on line 3 without `:e`
+- [X] The gitsigns marker is gone
+- [X] nvim-tree lists `new.txt`
 
 #### LG.8 — Colours follow TokyoNight
 
@@ -4000,11 +4000,15 @@ All steps in a live Neovim, started in `/tmp/lgtest` unless stated.
 - [ ] The active border is TokyoNight orange and the selected line uses the editor's visual-selection colour
 - [ ] After the style change the colours follow the new style without errors
 
+> **DEFERRED** 2026-10-01 by the user. Headless evidence only: with `style = "moon"` the generated `nvim.yml` held `activeBorderColor: ["#ff966c", "bold"]` and `selectedLineBgColor: ["#2d3f76"]`. Neither the rendered colours nor a style switch has been seen.
+
 #### LG.9 — Console mode
 
 1. Start Neovim in a console session (no truecolor; see `console-detection`), `<leader>gg`.
 
 - [ ] LazyGit opens with its default colours and no error
+
+> **DEFERRED** 2026-10-01 by the user. Headless evidence only: with `notermguicolors` set, the generated `nvim.yml` had no `theme` block. A real console session has not been tried.
 
 #### LG.10 — Your LazyGit config still applies
 
@@ -4012,9 +4016,9 @@ All steps in a live Neovim, started in `/tmp/lgtest` unless stated.
 2. `<leader>gg`.
 3. Quit, then run `lazygit` from a shell in `/tmp/lgtest`, then quit.
 
-- [ ] Inside Neovim the files panel is a flat list (no `▼ /` row) — your setting applied
-- [ ] Standalone `lazygit` uses its default colours, not TokyoNight
-- [ ] `sha256sum` of `config.yml` is unchanged; restore or remove the file afterwards
+- [X] Inside Neovim the files panel is a flat list (no `▼ /` row) — your setting applied
+- [X] Standalone `lazygit` uses its default colours, not TokyoNight
+- [X] `sha256sum` of `config.yml` is unchanged; restore or remove the file afterwards
 
 #### LG.11 — Not in a repository / LazyGit missing
 
@@ -4024,11 +4028,15 @@ All steps in a live Neovim, started in `/tmp/lgtest` unless stated.
 - [ ] Warning *LazyGit: not inside a git repository*, no window
 - [ ] Error naming `lazygit` and `getting-started.adoc`, no window; Neovim started without errors
 
+> **DEFERRED** 2026-10-01 by the user. Headless evidence only: from `/tmp` with an empty buffer, `open()` printed *LazyGit: not inside a git repository* and the window count stayed 1; with `~/.local/bin` removed from `$PATH`, it printed the `lazygit` not-found error and window and buffer counts stayed 1.
+
 #### LG.12 — Resize
 
 1. `<leader>gg`, then resize the terminal emulator window.
 
 - [ ] The float stays centred at about 90% of the new size
+
+> **DEFERRED** 2026-10-01 by the user. Not exercised at all — the `VimResized` handler has no headless evidence.
 
 #### LG.13 — Docs
 
@@ -4038,9 +4046,11 @@ All steps in a live Neovim, started in `/tmp/lgtest` unless stated.
 - [ ] `getting-started.html` has the LazyGit row in *Required per feature* and the install section
 - [ ] `<leader>?` (cheatsheet) shows the LazyGit section under Git
 
+> **DEFERRED** 2026-10-01 by the user. Partial evidence only: a local `./docker/antora/run.sh antora-playbook.yml` build on the branch produced `build/site/arcane-centaur/editor/git/lazygit.html`, linked from the nav, with no stray `++` escapes on the three changed pages, and `getting-started.html` contains the LazyGit install section. The rendered pages were not looked at, and `<leader>?` was not opened.
+
 ### Raise PR & merge
 
-- [ ] Every box above ticked, or explicitly deferred with a reason recorded here
+- [X] Every box above ticked, or explicitly deferred with a reason recorded here — Prepare and LG.1–LG.7, LG.10 passed live on 2026-10-01; LG.8, LG.9, LG.11, LG.12 and LG.13 deferred by the user, each noted in place and in `openspec/DEFERRED_VERIFICATION.md`
 - [ ] Mirror of `openspec/changes/add-lazygit-float/` on `main` refreshed to match the branch
 - [ ] `gh pr create --title "Run LazyGit in a floating window"` (more than one commit, so `--fill` would use the branch name)
 - [ ] PR merged
