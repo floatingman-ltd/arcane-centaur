@@ -1,0 +1,80 @@
+== LazyGit
+
+Run https://github.com/jesseduffield/lazygit[LazyGit] in a floating window over the editor.
+LazyGit puts status, files, branches, commits and stash on one screen, with menus for rebase,
+cherry-pick, stash and branch work — the things that take several separate commands in the other
+git tools here.
+
+It complements rather than replaces them: xref:editor/git/vim-fugitive.adoc[vim-fugitive] for
+`:Git` commands and blame, xref:editor/git/gitsigns.adoc[gitsigns] for changes as you type,
+xref:editor/git/diffview.adoc[diffview] for reading a change file by file.
+
+=== Keymaps
+
+[cols="1,1,2",options="header"]
+|===
+|Keys |Mode |Action
+|`++<++leader++>++gg` |Normal |LazyGit for the current buffer's repository (`:LazyGit`)
+|`++<++leader++>++gf` |Normal |LazyGit filtered to the current file's history (`:LazyGitFile`)
+|===
+
+Inside the window every key goes to LazyGit, including `++<++Esc++>++` — which in other terminal
+buffers leaves terminal mode. Press `q` to quit LazyGit; the window closes with it. `?` lists
+LazyGit's own keys for the panel you are in.
+
+=== Which repository
+
+`++<++leader++>++gg` opens the repository that contains the current buffer's file. If the buffer has
+no file, or its file is outside any repository, it uses the repository containing Neovim's
+working directory. If neither is in a repository, it shows a warning and opens nothing.
+
+`++<++leader++>++gf` needs a file: it runs `lazygit -f <file>`, which filters the commits, reflog and
+stash panels to that file. LazyGit restricts some operations in this mode; the status bar shows
+*Filtering by* with a *Reset* link.
+
+=== Editing a file from LazyGit
+
+Press `e` on a file — or on a line in the staging view — and the file opens in *this* Neovim, in
+the window you were in before opening LazyGit, at that line. The LazyGit window closes. No second
+Neovim is started.
+
+LazyGit refuses `e` on a directory row ("Cannot edit directories").
+
+Where LazyGit has to wait for the editor to exit, a Neovim does start inside the window, and
+LazyGit resumes when you quit it.
+
+=== Colours
+
+LazyGit is coloured from the active TokyoNight style — change `style` in
+`lua/plugins/colorscheme.lua`, restart, and the next launch follows. Without truecolor (console
+mode) LazyGit uses its default colours.
+
+=== After LazyGit closes
+
+Whatever you did in LazyGit is reflected straight away:
+
+* buffers whose files changed on disk — a checkout, a reset, a stash pop — are reloaded
+* gitsigns markers are refreshed, so committed changes lose their markers
+* nvim-tree, if open, is reloaded
+
+=== Your own LazyGit config
+
+Your `config.yml` (in the directory `lazygit --print-config-dir` prints) still applies and is
+never written to. This integration adds its settings — the editor commands and the colours — in a
+separate file, `~/.local/state/nvim/lazygit/nvim.yml`, regenerated on each launch and passed only
+to the LazyGit started from Neovim through `LG_CONFIG_FILE`. Where both set the same key, the
+generated file wins. `lazygit` run from a shell is unaffected.
+
+The first launch shows LazyGit's own welcome popup, and the first visit to the staging view a
+notice about hunk mode. Both appear once; dismiss them with `++<++Enter++>++`.
+
+=== Setup
+
+`lazygit` must be on `$PATH` — see xref:getting-started.adoc#lazygit[Getting started → LazyGit].
+Without it both keymaps show an error and open nothing.
+
+'''''
+
+_In the editor, which-key shows these maps live as you type a prefix (built from each keymap's
+`desc`), and `++<++leader++>++?` opens the context-aware cheatsheet. Configured in
+`lua/config/lazygit.lua`; the edit hand-off is `scripts/lazygit-edit.lua`._
