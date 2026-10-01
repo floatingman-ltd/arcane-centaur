@@ -50,6 +50,12 @@ Genuinely incomplete, and each says so in place.
 
 **`Hotfix · markserv-preview-mount-root` MR.1–MR.5 — `,sp` URL from the container mount.** TODO. Committed straight to `main` as `1fd9939` on 2026-10-01 with every box unticked. Only a headless pass exists, against a container mounting `~/src/rmv`. The user's setup is untested: a mount below the cwd (`MD_DIR=~/src/rmv/docs`, nvim started in `~/src/rmv`). So is the no-container fallback. The user may bench test later, or fix defects as they are reported.
 
+**`Change · add-lazygit-float` LG.8 and LG.9 — LazyGit colours.** Deferred by the user on 2026-10-01 during the live walk-through. LG.8 (TokyoNight colours render, and follow a `style` change) and LG.9 (default colours in a console session) have only headless evidence: the generated `nvim.yml` held the moon palette's hex values, and had no theme block under `notermguicolors`. Nobody has looked at the rendered colours.
+
+**`Change · add-lazygit-float` LG.11 and LG.12 — no-repository / missing-binary messages, and resize.** Deferred by the user on 2026-10-01 during the live walk-through. LG.11 has headless evidence (both messages shown, no window opened); LG.12 (float re-centres at about 90% on `VimResized`) has none.
+
+**`Change · add-lazygit-float` LG.13 — docs.** Deferred by the user on 2026-10-01. A local Antora build on the branch produced the LazyGit page and nav link, but nobody has looked at the rendered pages or at the `<leader>?` cheatsheet section.
+
 ---
 
 ## C. Changes in flight, paused mid-validation

@@ -391,6 +391,7 @@ leaves the rest of the config fully functional.
 |`claude` |All three AI features |xref:#claude-cli[see below]
 |`python3` |PlantUML diagram encoding |`sudo apt install -y python3`
 |`docker` |Nine containerized features |xref:#docker[see above]
+|`lazygit` |LazyGit float (`++<++leader++>++gg` / `++<++leader++>++gf`) |xref:#lazygit[see below]
 |===
 
 [[claude-cli]]
@@ -442,6 +443,26 @@ nvm alias default lts/*
 node --version
 npm --version
 ----
+
+[[lazygit]]
+=== LazyGit (optional — enables the LazyGit float)
+
+`++<++leader++>++gg` and `++<++leader++>++gf` run `lazygit` in a floating window. Without it they
+show an error and nothing else changes. Ubuntu 24.04 has no `lazygit` package, so install the
+binary from the GitHub release:
+
+[source,sh]
+----
+v=0.65.1
+curl -sLO https://github.com/jesseduffield/lazygit/releases/download/v$v/lazygit_${v}_linux_x86_64.tar.gz
+tar xzf lazygit_${v}_linux_x86_64.tar.gz lazygit
+install -m 755 lazygit ~/.local/bin/lazygit
+lazygit --version
+----
+
+The release also publishes `checksums.txt` for verifying the archive. It runs natively, not in
+Docker: like `git`, it is a host CLI the editor calls. See
+xref:editor/git/lazygit.adoc[LazyGit] for the editor integration.
 
 === Universal Ctags (optional — enables tag navigation)
 

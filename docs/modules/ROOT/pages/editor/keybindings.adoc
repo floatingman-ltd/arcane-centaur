@@ -22,8 +22,9 @@ xref:editor/clipboard.adoc[full guide]
 
 |Editing (Visual Mode {plus} Clipboard {plus} Comments {plus} Surround) |xref:editor/editing.adoc[editing]
 
-|Git (vim-fugitive {plus} gitsigns {plus} diffview) |xref:editor/git/vim-fugitive.adoc[vim-fugitive] ·
-xref:editor/git/gitsigns.adoc[gitsigns] · xref:editor/git/diffview.adoc[diffview]
+|Git (vim-fugitive {plus} gitsigns {plus} diffview {plus} LazyGit) |xref:editor/git/vim-fugitive.adoc[vim-fugitive] ·
+xref:editor/git/gitsigns.adoc[gitsigns] · xref:editor/git/diffview.adoc[diffview] ·
+xref:editor/git/lazygit.adoc[LazyGit]
 
 |Haskell (haskell-tools) |xref:languages/haskell-cheatsheet.adoc[haskell]
 
@@ -363,7 +364,7 @@ match of the misspelling it corrects, so blink discards it. Typing `recieve` and
 
 '''''
 
-=== Git — vim-fugitive {plus} gitsigns {plus} diffview.nvim
+=== Git — vim-fugitive {plus} gitsigns {plus} diffview.nvim {plus} LazyGit
 
 Each Git plugin documents its own keymaps on its own page:
 
@@ -372,6 +373,8 @@ that work inside the `:Git` status window
 * xref:editor/git/gitsigns.adoc[gitsigns] — hunk navigation, staging and resetting hunks, the hunk
 text object
 * xref:editor/git/diffview.adoc[diffview] — side-by-side diff, per-file history, merge conflicts
+* xref:editor/git/lazygit.adoc[LazyGit] — LazyGit in a floating window (`++<++leader++>++gg`), or
+on the current file's history (`++<++leader++>++gf`)
 
 '''''
 

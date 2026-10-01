@@ -115,6 +115,15 @@
 | `<leader>gH` | File history for current file |
 | `<leader>gX` | Close diff view |
 
+### LazyGit
+
+| Key | Action |
+|-----|--------|
+| `<leader>gg` | LazyGit (current repository) |
+| `<leader>gf` | LazyGit filtered to current file's history |
+| `e` (in LazyGit) | Open file in this Neovim at the line |
+| `q` (in LazyGit) | Quit LazyGit; buffers, gitsigns and tree refresh |
+
 ---
 
 ## Claude
