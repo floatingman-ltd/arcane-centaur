@@ -48,6 +48,8 @@ Genuinely incomplete, and each says so in place.
 
 **Conjure HUD / eval-popup fold behaviour.** In the `align-treesitter-providers` section: *"the Conjure HUD/eval-popup sub-step was not separately reported, so it is unverified rather than passed."* It needs a running REPL, which is the least accessible part of that step. The markdown float — the buffer type the original defect actually blamed — **was** exercised and is clean, so the specific regression is covered; the Conjure surface is not.
 
+**`Hotfix · markserv-preview-mount-root` MR.1–MR.5 — `,sp` URL from the container mount.** TODO. Committed straight to `main` as `1fd9939` on 2026-10-01 with every box unticked. Only a headless pass exists, against a container mounting `~/src/rmv`. The user's setup is untested: a mount below the cwd (`MD_DIR=~/src/rmv/docs`, nvim started in `~/src/rmv`). So is the no-container fallback. The user may bench test later, or fix defects as they are reported.
+
 ---
 
 ## C. Changes in flight, paused mid-validation

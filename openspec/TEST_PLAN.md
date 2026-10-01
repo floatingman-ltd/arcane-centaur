@@ -3863,7 +3863,7 @@ Put the cursor on a `vim.fn.*` call — `vim.fn.setreg` at `lua/config/util.lua:
 1. `git pull` on the test machine.
 2. `find . -name '*.lua' -print0 | xargs -0 luac -p` — expect no output.
 
-- [ ] Pulled; all Lua parses
+- [ ] Pulled; all Lua parses  _(TODO — deferred 2026-10-01; bench test later or respond to defects. Listed in `openspec/DEFERRED_VERIFICATION.md` group B.)_
 
 > Headless pass 2026-10-01 on the WSL machine, container mounted at `~/src/rmv`, `open_url` stubbed to print. From cwd `~/src/rmv` and from cwd `~/src/rmv/docs/_local`, `docs/_local/task/ml-215/session-primer.md` gave `http://localhost:8090/docs/_local/task/ml-215/session-primer.md` both times. From cwd `/tmp`, `testdocs/test.md` gave the "not under the served directory" warning and no URL. Each run took 71–130 ms from `:edit` to URL, including both `docker` calls. Not exercised: a mount at a subdirectory of the cwd, and the no-container fallback.
 
