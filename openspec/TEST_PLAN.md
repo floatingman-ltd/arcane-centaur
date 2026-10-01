@@ -4051,7 +4051,7 @@ All steps in a live Neovim, started in `/tmp/lgtest` unless stated.
 ### Raise PR & merge
 
 - [X] Every box above ticked, or explicitly deferred with a reason recorded here — Prepare and LG.1–LG.7, LG.10 passed live on 2026-10-01; LG.8, LG.9, LG.11, LG.12 and LG.13 deferred by the user, each noted in place and in `openspec/DEFERRED_VERIFICATION.md`
-- [ ] Mirror of `openspec/changes/add-lazygit-float/` on `main` refreshed to match the branch
+- [X] Mirror of `openspec/changes/add-lazygit-float/` on `main` refreshed to match the branch — `e6556cb`, 2026-10-01
 - [ ] `gh pr create --title "Run LazyGit in a floating window"` (more than one commit, so `--fill` would use the branch name)
 - [ ] PR merged
 
