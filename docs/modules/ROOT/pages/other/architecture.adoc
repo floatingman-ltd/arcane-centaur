@@ -138,6 +138,8 @@ where it is, and how the pieces fit together at startup.
 
 All plugins are managed by https://github.com/folke/lazy.nvim[lazy.nvim]. Specs live in `lua/plugins/` — one file per group.
 
+TIP: xref:other/extensions.adoc[Extensions] lists every installed plugin and every extension built in this configuration, each with a one-line purpose.
+
 === Colorscheme
 
 [cols="1,3"]

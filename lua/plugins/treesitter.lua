@@ -122,6 +122,10 @@ return {
         end
       end
 
+      local function desc(opts, text)
+        return vim.tbl_extend("force", opts, { desc = text })
+      end
+
       local function goto_previous_end(query)
         return function()
           move.goto_previous_end(query, "textobjects")
@@ -138,18 +142,18 @@ return {
             return
           end
           local opts = { buffer = args.buf }
-          vim.keymap.set({ "x", "o" }, "af", select_textobject("@function.outer"), opts)
-          vim.keymap.set({ "x", "o" }, "if", select_textobject("@function.inner"), opts)
-          vim.keymap.set({ "x", "o" }, "ac", select_textobject("@class.outer"), opts)
-          vim.keymap.set({ "x", "o" }, "ic", select_textobject("@class.inner"), opts)
-          vim.keymap.set({ "x", "o" }, "aa", select_textobject("@parameter.outer"), opts)
-          vim.keymap.set({ "x", "o" }, "ia", select_textobject("@parameter.inner"), opts)
+          vim.keymap.set({ "x", "o" }, "af", select_textobject("@function.outer"), desc(opts, "Around function"))
+          vim.keymap.set({ "x", "o" }, "if", select_textobject("@function.inner"), desc(opts, "Inside function"))
+          vim.keymap.set({ "x", "o" }, "ac", select_textobject("@class.outer"), desc(opts, "Around class"))
+          vim.keymap.set({ "x", "o" }, "ic", select_textobject("@class.inner"), desc(opts, "Inside class"))
+          vim.keymap.set({ "x", "o" }, "aa", select_textobject("@parameter.outer"), desc(opts, "Around parameter"))
+          vim.keymap.set({ "x", "o" }, "ia", select_textobject("@parameter.inner"), desc(opts, "Inside parameter"))
 
           -- ]c/[c intentionally NOT mapped — that's diff-mode change navigation.
-          vim.keymap.set({ "n", "x", "o" }, "]f", goto_next_start("@function.outer"), opts)
-          vim.keymap.set({ "n", "x", "o" }, "[f", goto_previous_start("@function.outer"), opts)
-          vim.keymap.set({ "n", "x", "o" }, "]F", goto_next_end("@function.outer"), opts)
-          vim.keymap.set({ "n", "x", "o" }, "[F", goto_previous_end("@function.outer"), opts)
+          vim.keymap.set({ "n", "x", "o" }, "]f", goto_next_start("@function.outer"), desc(opts, "Next function start"))
+          vim.keymap.set({ "n", "x", "o" }, "[f", goto_previous_start("@function.outer"), desc(opts, "Previous function start"))
+          vim.keymap.set({ "n", "x", "o" }, "]F", goto_next_end("@function.outer"), desc(opts, "Next function end"))
+          vim.keymap.set({ "n", "x", "o" }, "[F", goto_previous_end("@function.outer"), desc(opts, "Previous function end"))
         end,
       })
     end,

@@ -4060,3 +4060,101 @@ All steps in a live Neovim, started in `/tmp/lgtest` unless stated.
 - [X] `git checkout main && git pull`
 - [X] `<leader>gg` works on `main`
 - [X] Change archived; write the `lazygit-float` Purpose by hand straight after — `openspec/changes/archive/2026-10-01-add-lazygit-float/`
+
+## Change · label-which-key-entries
+
+**Branch:** `fix/which-key-coverage`
+
+Every keymap shown in the which-key popup now has a readable label. `lua/plugins/treesitter.lua` gives its text-object and function-motion maps a `desc`. `lua/plugins/which-key.lua` labels plugin maps that ship without one (vim-sexp, vim-unimpaired, iron.nvim, vim-asciidoctor, mkdnflow, fugitive's `y<C-G>`, haskell-tools' `ghc`) and names the `<leader>`/`<localleader>` prefixes, per filetype where the same prefix means different things. No keymap is added, removed or rebound.
+
+**Prerequisites:**
+- Scratch files: `/tmp/wk/a.clj`, `/tmp/wk/a.fsx`, `/tmp/wk/a.adoc`, `/tmp/wk/a.md`, `/tmp/wk/a.lua`, `/tmp/wk/a.puml` (empty is fine; `a.adoc` needs a `== Section` heading).
+- No new plugin. If `lazy-lock.json` changed because of this branch, something is wrong.
+
+### Prepare
+
+1. `git fetch origin && git checkout fix/which-key-coverage`
+2. `find . -name '*.lua' -print0 | xargs -0 luac -p` — expect no output.
+
+- [ ] Branch checked out, all Lua parses
+
+> Headless pass 2026-10-29: all plugins force-loaded, one buffer per filetype (text, asciidoctor, clojure, cs, fsharp, haskell, html, http, janet, lisp, lua, markdown, plantuml, scheme, fennel), which-key's tree built for modes `n`, `x`, `o` and each entry rendered through `which-key.view.item`. 9612 entries; 0 with an empty label, a `+N keymaps` count, or a raw `<Plug>`/`<SNR>`/`<sid>`/`call`/`iron_repl` label. No group label replaces the description of a map on the same key. Before the change the same filetypes had 1594 keymaps without a `desc`. Not exercised headlessly: the popup itself, keystroke timing.
+
+> Second headless pass 2026-10-30 on real files (`lua/keymaps.lua`, `openspec/TEST_PLAN.md`) with lua_ls / marksman and gitsigns attached, which the scratch buffers above lacked: 1283 entries, 0 unlabelled. This added the `<leader>h` *Git hunks*, `<leader>r` *Rename*, visual `<leader>h` and visual / operator-pending `<leader>i` *Select* groups, and made `gr` show *LSP: references* where LSP is attached.
+
+### Validate
+
+All steps in a live Neovim.
+
+#### WK.1 — Leader menu
+
+1. `nvim /tmp/wk/a.lua`, press `<Space>` and wait.
+
+- [ ] Every entry has a label; `a` *Avante*, `b` *Debug*, `g` *Git*, `o` *OpenSpec*, `x` *Trouble*; `?` shows *Open context-aware cheatsheet*
+- [ ] `<Space>g` shows `c` as *Claude*; `<Space>gc` lists the Claude maps
+
+#### WK.2 — Treesitter text objects
+
+1. In `a.lua`, press `v` then `a` and wait; then `<Esc>` and press `]` and wait.
+
+- [ ] `af` *Around function*, `ac` *Around class*, `aa` *Around parameter*
+- [ ] `]f` *Next function start*, `]F` *Next function end*
+
+#### WK.3 — Lisp buffer
+
+1. `nvim /tmp/wk/a.clj`, press `,` and wait; then `,e`. Press `<Esc>`, `v`, `,` and wait.
+
+- [ ] Normal `,`: `e` *Evaluate*, `l` shows *sexp: insert at list tail*, `c` shows *sexp: clone list*, `s` *nREPL session*, `w` *sexp: round head wrap element*
+- [ ] Normal `,e`: `e` *Evaluate current form*, `c` *Evaluate and comment*
+- [ ] Visual `,`: `e` *sexp: wrap element*, `c` *sexp: clone list*
+- [ ] `cse` shows *sexp: surround element* with `(` *… cursor at head*
+
+#### WK.4 — F# buffer (iron)
+
+1. `nvim /tmp/wk/a.fsx`, press `,s` and wait.
+
+- [ ] `c` *REPL: send motion*, `l` *REPL: send line*, `q` *REPL: exit*; none shows `iron_repl_…`
+- [ ] Back in the `a.clj` buffer, `,s` still shows Conjure's *Clone the current nREPL session* for `c`
+
+#### WK.5 — AsciiDoc, Markdown, PlantUML
+
+1. `a.adoc`: press `]` and wait; `v` `a` and wait.
+2. `a.md`: press `,` and wait; `<Space>a` and wait.
+3. `a.puml`: press `,` and wait.
+
+- [ ] AsciiDoc: `]]` *AsciiDoc: next section*; visual `ah` *AsciiDoc: around section*, `al` *AsciiDoc: around delimited block*
+- [ ] Markdown: `,c` *Confluence*, `,j` *Jira*, `,m` *MARP*; `<Space>a` *Avante / table align* listing both Avante and table-align maps
+- [ ] PlantUML: `,p` shows *Preview PlantUML diagram*, not *Preview*
+
+#### WK.6 — unimpaired
+
+1. In any buffer press `[` and wait, then `yo` and wait.
+
+- [ ] Entries such as `[e` *unimpaired: move up*, `[x` *unimpaired: xml encode*; no `<Esc>` entries listed
+
+#### WK.7 — Git and LSP buffer
+
+1. `nvim lua/keymaps.lua` from this repository; wait for lua_ls to attach. Press `<Space>` and wait, then `<Space>h`.
+
+- [ ] `<Space>`: `h` *Git hunks*, `r` *Rename*
+- [ ] `<Space>h`: `s` *Stage hunk*, `p` *Preview hunk*
+- [ ] `g` then wait: `r` shows *LSP: references*
+
+#### WK.8 — Docs
+
+1. Build the site: `./docker/antora/run.sh antora-playbook.yml`.
+
+- [ ] `editor/keybindings.adoc` TIP describes the labels and the per-filetype prefix names
+- [ ] `other/extensions.html` renders, *Extensions* appears under *Other* in the nav, and every plugin in `:Lazy` has a row
+- [ ] `other/architecture.html` Plugin Overview links to the Extensions page
+
+### Raise PR & merge
+
+- [ ] Every box above ticked, or explicitly deferred with a reason recorded here
+- [ ] `gh pr create --title "Label every which-key entry"` (more than one commit, so `--fill` would use the branch name)
+- [ ] PR merged
+
+### Post-merge
+
+- [ ] `git checkout main && git pull`
+- [ ] `<Space>` popup on `main` matches WK.1
