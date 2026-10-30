@@ -2,7 +2,7 @@
 
 *Leader* = `Space` · *LocalLeader* = `,` (in all language buffers)
 
-TIP: Press any prefix key (e.g. `Space`, `Space g`, `Space o`) and *pause* — **which-key** will pop up a menu showing all available keymaps and their descriptions. Keep typing to dismiss it instantly.
+TIP: Press any prefix key (e.g. `Space`, `Space g`, `Space o`) and *pause* — **which-key** will pop up a menu showing all available keymaps and their descriptions. Keep typing to dismiss it instantly. Plugin keymaps that ship without a description (vim-sexp, vim-unimpaired, iron.nvim, vim-asciidoctor, mkdnflow, haskell-tools' `ghc`) are labelled in `lua/plugins/which-key.lua`, and prefixes are named per filetype (`,c` is *Confluence* in Markdown and *Connection* in Lisp buffers). Where a prefix is itself a keymap, the menu shows the keymap's description instead of a group name.
 
 NOTE: Press `*<leader>?*` inside Neovim for an instant, context-aware keybinding reference — shows universal bindings plus language-specific bindings for the current filetype. Works in any terminal, including headless SSH sessions.
 
