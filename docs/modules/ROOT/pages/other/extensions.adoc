@@ -1,0 +1,123 @@
+== Extensions
+
+Every extension in this configuration, with its purpose in one line. *Built here* is code written for this configuration; *Added* is every third-party plugin lazy.nvim installs. The keys each one provides are in xref:editor/keybindings.adoc[Keybindings] and the which-key popup.
+
+[[built-here]]
+=== Built here
+
+[cols="1,3,1",options="header"]
+|===
+|Extension |Purpose |Guide
+|`config/cheatsheet.lua` |Opens a context-aware cheatsheet and guide picker for the current filetype in a float (`<leader>?`), and renders any Markdown buffer in a popup (`:MarkdownPopup`). |xref:editor/keybindings.adoc[Keybindings]
+|`config/claude_cli.lua` |Sends a selection to the `claude` CLI to suggest a shell command or explain code, and shows the answer in a float (`<leader>gcs`, `<leader>gce`). |xref:ai/ai-tools.adoc[AI Tools]
+|`config/research.lua` |Asks the `claude` CLI a free-form question, either grounded in this configuration's keymaps and cheatsheets or general, and shows the answer in a float (`<leader>?l`, `<leader>?a`). |xref:ai/ai-tools.adoc[AI Tools]
+|`config/lazygit.lua` + `scripts/lazygit-edit.lua` |Runs LazyGit in a floating terminal and opens files picked in it in the surrounding Neovim (`<leader>gg`, `<leader>gf`). |xref:editor/git/lazygit.adoc[LazyGit]
+|`config/openspec.lua` |Runs the OpenSpec CLI from the editor to create, list and show the status of changes (`<leader>os`). |—
+|`config/jira.lua` |Creates Jira Tasks and Stories from the current Markdown file or selection through the Jira Cloud REST API. |xref:tooling/jira.adoc[Jira]
+|`config/confluence.lua` + `scripts/confluence_*` |Publishes a Markdown file to its Confluence page, pulls a page back to Markdown, and fetches page comments. |xref:tooling/confluence.adoc[Confluence]
+|`config/marp.lua` |Exports a Markdown slide deck to PDF, HTML or PPTX and opens a live preview, using the MARP container. |xref:content/presentations.adoc[Presentations]
+|`config/mdpdf.lua` |Exports Markdown to PDF with PlantUML and Mermaid diagrams rendered, using Pandoc in Docker. |xref:content/markdown.adoc[Markdown]
+|`config/mdpreview.lua` |Opens the current Markdown file in the markserv container so links between pages work in the browser. |xref:content/markdown.adoc[Markdown]
+|`config/http_preview.lua` |Serves generated preview HTML over `http://127.0.0.1` from Neovim itself, so sandboxed browsers that refuse `file://` can show it. |—
+|AsciiDoc / Antora preview (`after/ftplugin/asciidoctor.lua`) |Renders the current AsciiDoc file, or the whole Antora site, in Docker and opens it in the browser (`,p`, `,pa`). |xref:content/asciidoc.adoc[AsciiDoc]
+|PlantUML preview (`lua/plugins/plantuml.lua`) |Previews the current PlantUML diagram as an image from the local PlantUML server, or as ASCII art (`,p`, `<leader>pa`). |xref:content/diagrams.adoc[Diagrams]
+|`config/lsp.lua` |Configures and starts every language server with one shared `on_attach` and shared capabilities. |xref:editor/code-intelligence.adoc[Code Intelligence]
+|`config/fsharp_indent.lua` + `indent/fsharp.vim` |Gives F# indent-as-you-type, using a vendored upstream indent script with treesitter in place of its syntax lookups. |xref:languages/dotnet.adoc#fsharp-indent[.NET]
+|`config/terminal.lua` |Detects the terminal emulator and exposes capability flags (Nerd Font, undercurl) so the rest of the configuration can adapt. |xref:other/terminals-ssh-tmux-mosh.adoc[Terminals]
+|Terminal split, IDE layout and `:Bd` (`lua/keymaps.lua`) |Toggles a reusable terminal split (`<leader>T`), opens tree + editor + terminal in one key (`<leader>L`), and deletes a buffer without closing its window. |xref:editor/navigation.adoc[Navigation]
+|which-key labels (`lua/plugins/which-key.lua`) |Labels plugin keymaps that ship without a description and names every prefix group, per filetype where a prefix means different things. |xref:editor/keybindings.adoc[Keybindings]
+|`config/util.lua` |Shared helpers, such as the floating scratch window used by several of the modules above. |—
+|===
+
+[[added]]
+=== Added
+
+[cols="1,3,1",options="header"]
+|===
+|Plugin |Purpose |Guide
+
+3+h|Core and UI
+|https://github.com/folke/lazy.nvim[lazy.nvim] |Installs, pins and lazy-loads every other plugin. |xref:other/architecture.adoc[Architecture]
+|https://github.com/folke/tokyonight.nvim[tokyonight.nvim] |Colour scheme. |—
+|https://github.com/folke/which-key.nvim[which-key.nvim] |Pops up the keys available after a pause on any prefix. |xref:editor/keybindings.adoc[Keybindings]
+|https://github.com/nvim-lualine/lualine.nvim[lualine.nvim] |Status line with mode, Git diff counts and diagnostics. |—
+|https://github.com/nvim-tree/nvim-tree.lua[nvim-tree.lua] |File explorer sidebar. |xref:editor/navigation.adoc[Navigation]
+|https://github.com/nvim-tree/nvim-web-devicons[nvim-web-devicons] |File-type icons for the tree, status line and pickers. |—
+|https://github.com/ibhagwan/fzf-lua[fzf-lua] |Fuzzy finder for files, text, buffers, diagnostics and more. |xref:editor/navigation.adoc[Navigation]
+|https://github.com/folke/trouble.nvim[trouble.nvim] |Panel listing diagnostics, symbols, LSP references, quickfix and location lists (`<leader>x`). |xref:editor/code-intelligence.adoc[Code Intelligence]
+|https://github.com/folke/todo-comments.nvim[todo-comments.nvim] |Highlights and lists `TODO`/`FIXME`/`HACK`/`NOTE`/`WARN` comments. |xref:editor/code-intelligence.adoc[Code Intelligence]
+
+3+h|Editing
+|https://github.com/nvim-treesitter/nvim-treesitter[nvim-treesitter] |Installs treesitter parsers for syntax highlighting and indentation. |—
+|https://github.com/nvim-treesitter/nvim-treesitter-textobjects[nvim-treesitter-textobjects] |Function, class and parameter text objects and motions (`af`, `]f`), outside Lisp buffers. |xref:editor/editing.adoc[Editing]
+|https://github.com/kevinhwang91/nvim-ufo[nvim-ufo] |Folding from LSP folding ranges, falling back to treesitter and indent. |xref:editor/navigation.adoc[Navigation]
+|https://github.com/kevinhwang91/promise-async[promise-async] |Async library nvim-ufo depends on. |—
+|https://github.com/kylechui/nvim-surround[nvim-surround] |Adds, changes and deletes surrounding quotes, brackets and tags (`ys`, `cs`, `ds`). |xref:editor/editing.adoc[Editing]
+|https://github.com/tpope/vim-unimpaired[vim-unimpaired] |Paired `[`/`]` keys for buffers, lists, line moves and option toggles. |xref:editor/editing.adoc[Editing]
+|https://github.com/tpope/vim-repeat[vim-repeat] |Lets `.` repeat plugin commands. |—
+
+3+h|Completion, LSP and formatting
+|https://github.com/neovim/nvim-lspconfig[nvim-lspconfig] |Default settings for each language server. |xref:editor/code-intelligence.adoc[Code Intelligence]
+|https://github.com/saghen/blink.cmp[blink.cmp] |Completion menu fed by LSP, buffer, path and snippet sources. |xref:editor/code-intelligence.adoc[Code Intelligence]
+|https://github.com/saghen/blink.compat[blink.compat] |Lets blink.cmp use nvim-cmp sources. |—
+|https://github.com/f3fora/cmp-spell[cmp-spell] |Spelling suggestions as a completion source when `spell` is on. |—
+|https://github.com/stevearc/conform.nvim[conform.nvim] |Formats on save and on demand (`<leader>f`). |xref:editor/code-intelligence.adoc[Code Intelligence]
+
+3+h|Git
+|https://github.com/tpope/vim-fugitive[vim-fugitive] |Git commands inside Neovim (`:G`). |xref:editor/git/vim-fugitive.adoc[vim-fugitive]
+|https://github.com/lewis6991/gitsigns.nvim[gitsigns.nvim] |Change markers in the sign column, with hunk staging and blame. |xref:editor/git/gitsigns.adoc[gitsigns]
+|https://github.com/sindrets/diffview.nvim[diffview.nvim] |Side-by-side diffs and file history. |xref:editor/git/diffview.adoc[diffview]
+
+3+h|Debugging
+|https://github.com/mfussenegger/nvim-dap[nvim-dap] |Debug Adapter Protocol client: breakpoints, stepping and a REPL (`<F5>`, `<leader>b`). |xref:languages/dotnet.adoc[.NET]
+|https://github.com/rcarriga/nvim-dap-ui[nvim-dap-ui] |Panels for scopes, stacks, breakpoints and watches during a debug session. |xref:languages/dotnet.adoc[.NET]
+|https://github.com/nvim-neotest/nvim-nio[nvim-nio] |Async library nvim-dap-ui depends on. |—
+
+3+h|Lisp family
+|https://github.com/Olical/conjure[conjure] |Evaluates Lisp, Clojure, Scheme, Fennel and Janet code in a running REPL. |xref:languages/lisp.adoc[Lisp]
+|https://github.com/PaterJason/cmp-conjure[cmp-conjure] |Completion from the connected Conjure REPL. |xref:languages/lisp.adoc[Lisp]
+|https://github.com/guns/vim-sexp[vim-sexp] |Structural editing of S-expressions. |xref:languages/lisp.adoc[Lisp]
+|https://github.com/tpope/vim-sexp-mappings-for-regular-people[vim-sexp-mappings-for-regular-people] |Shorter keys for vim-sexp (`>)`, `<(`, `cse(`). |xref:languages/lisp-cheatsheet.adoc[Lisp Cheatsheet]
+|https://github.com/gpanders/nvim-parinfer[nvim-parinfer] |Keeps parentheses balanced from indentation. |xref:languages/lisp.adoc[Lisp]
+|https://github.com/HiPhish/rainbow-delimiters.nvim[rainbow-delimiters.nvim] |Colours nested brackets by depth. |xref:languages/lisp.adoc[Lisp]
+
+3+h|.NET and Haskell
+|https://github.com/seblyng/roslyn.nvim[roslyn.nvim] |Runs Microsoft's Roslyn language server for C#. |xref:languages/dotnet.adoc[.NET]
+|https://github.com/GustavEikaas/easy-dotnet.nvim[easy-dotnet.nvim] |Builds, runs and tests .NET projects and registers the netcoredbg debugger. |xref:languages/dotnet.adoc[.NET]
+|https://github.com/Vigemus/iron.nvim[iron.nvim] |Sends code to an F# or C# REPL in a split (`,s`). |xref:languages/dotnet.adoc[.NET]
+|https://github.com/mrcjkb/haskell-tools.nvim[haskell-tools.nvim] |Haskell language server, GHCi REPL and Hoogle search. |xref:languages/haskell.adoc[Haskell]
+
+3+h|AI
+|https://github.com/coder/claudecode.nvim[claudecode.nvim] |Runs a Claude Code session that can see the editor and propose diffs (`<leader>gc`). |xref:ai/ai-tools.adoc[AI Tools]
+|https://github.com/yetone/avante.nvim[avante.nvim] |Chat panel backed by a local Ollama model (`<leader>a`). |xref:ai/ai-tools.adoc[AI Tools]
+|https://github.com/MunifTanjim/nui.nvim[nui.nvim] |UI component library avante.nvim depends on. |—
+|https://github.com/nvim-lua/plenary.nvim[plenary.nvim] |Lua utility library used by avante.nvim, easy-dotnet.nvim and todo-comments.nvim. |—
+
+3+h|Content
+|https://github.com/habamax/vim-asciidoctor[vim-asciidoctor] |AsciiDoc syntax, folding and section motions. |xref:content/asciidoc.adoc[AsciiDoc]
+|https://github.com/jakewvincent/mkdnflow.nvim[mkdnflow.nvim] |Follows links between Markdown files and edits Markdown tables and lists. |xref:content/markdown.adoc[Markdown]
+|https://github.com/MeanderingProgrammer/render-markdown.nvim[render-markdown.nvim] |Renders Markdown in the buffer, and in the cheatsheet and popup floats. |xref:content/markdown.adoc[Markdown]
+|https://github.com/iamcco/markdown-preview.nvim[markdown-preview.nvim] |Live Markdown preview in the browser. |xref:content/markdown.adoc[Markdown]
+|https://github.com/aklt/plantuml-syntax[plantuml-syntax] |PlantUML syntax highlighting. |xref:content/diagrams.adoc[Diagrams]
+|https://github.com/turbio/bracey.vim[bracey.vim] |Live HTML preview in the browser that updates as you type. |—
+|kulala.nvim |HTTP client for `.http` files; loaded from a local copy because its GitHub repository returns 404. |xref:content/rest.adoc[REST]
+|===
+
+[[containers]]
+=== Supporting containers
+
+Services the extensions above call, built or configured under `docker/`.
+
+[cols="1,3",options="header"]
+|===
+|Container |Purpose
+|`antora` |Builds this documentation site.
+|`asciidoctor` |Converts AsciiDoc to HTML for the single-file preview.
+|`lisp-swank` |Common Lisp REPLs (SBCL, CCL, ECL, ABCL) serving Swank on port 4005 for Conjure.
+|`markserv` |Serves a directory of Markdown with working links between pages.
+|`marp` |Renders MARP slide decks.
+|`md2pdf` |Pandoc Lua filters that render PlantUML and Mermaid blocks during Markdown → PDF export.
+|`pandoc` |Wrapper that runs `pandoc` in Docker when it is not installed, for the docs conversion scripts.
+|`ollama` |Runs the local model avante.nvim talks to.
+|`plantuml-server` |Renders PlantUML diagrams for previews, PDF export and Confluence.
+|===
