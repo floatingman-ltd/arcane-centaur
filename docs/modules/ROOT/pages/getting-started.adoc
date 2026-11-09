@@ -6,11 +6,11 @@ This guide covers everything you need before opening this configuration for the 
 
 [cols="1,3"]
 |===
-| xref:#neovim[Neovim ≥ 0.12] | AppImage and tarball install methods
+| xref:#neovim[Neovim ≥ 0.12] | Tarball and AppImage install methods
+| xref:#required-everyone[Required for everyone] | The tools nothing works without — install before first launch
 | xref:#quick-start[Quick Start] | Clone the repo and launch Neovim
-| xref:#required-everyone[Required for everyone] | The tools nothing works without
-| xref:#required-per-feature[Required per feature] | Only if you use that feature
 | xref:#docker[Docker] | Required by AI tools, diagrams, Markdown export, and presentations
+| xref:#required-per-feature[Required per feature] | Only if you use that feature
 | xref:#docker-containers[Docker Containers] | Per-container start/stop reference
 | xref:#wsl[WSL] | Clipboard and browser integration
 | xref:languages/setup.adoc[Language Setup] | Per-language tools (LSP, REPL, formatter, debugger)
@@ -29,35 +29,41 @@ so you install only what you actually use.
 
 The system package manager (`apt`, `dnf`, etc.) and Snap often lag behind. Use one of the methods below to get a current release directly from GitHub.
 
-=== AppImage (simplest — runs without installation)
-
-[source,sh]
-----
-curl -LO https://github.com/neovim/neovim/releases/download/stable/nvim-linux-x86_64.appimage
-chmod u+x nvim-linux-x86_64.appimage
-
-# Optional: install system-wide so `nvim` works from anywhere
-sudo mv nvim-linux-x86_64.appimage /usr/local/bin/nvim
-----
-
-=== Tarball (extract anywhere, no root required)
+=== Tarball (recommended — no root, no FUSE)
 
 [source,sh]
 ----
 curl -LO https://github.com/neovim/neovim/releases/download/stable/nvim-linux-x86_64.tar.gz
-mkdir -p ~/.local
+mkdir -p ~/.local/bin
 tar -xzf nvim-linux-x86_64.tar.gz -C ~/.local
 
 # Symlink the binary into a directory on your PATH
 ln -sf ~/.local/nvim-linux-x86_64/bin/nvim ~/.local/bin/nvim
 ----
 
-Make sure `~/.local/bin` is on your `$PATH`:
+Make sure `~/.local/bin` is on your `$PATH`. Ubuntu's `~/.profile` adds it at login only if the
+directory already existed, so on a fresh account add it explicitly:
 
 [source,sh]
 ----
 echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
 source ~/.bashrc
+----
+
+=== AppImage (single file)
+
+AppImages need FUSE 2, which Ubuntu 22.04 and later do not install by default. Without it the
+AppImage exits with a `libfuse.so.2` error.
+
+[source,sh]
+----
+sudo apt install -y libfuse2t64   # Ubuntu 24.04; the package is libfuse2 on 22.04
+
+curl -LO https://github.com/neovim/neovim/releases/download/stable/nvim-linux-x86_64.appimage
+chmod u+x nvim-linux-x86_64.appimage
+
+# Optional: install system-wide so `nvim` works from anywhere
+sudo mv nvim-linux-x86_64.appimage /usr/local/bin/nvim
 ----
 
 === Verify
@@ -75,8 +81,151 @@ If you see an older version, run `which nvim` to check which binary is being lau
 
 ---
 
+[[system-deps]]
+[[required-everyone]]
+== Required for everyone
+
+Install these before first launch. Without them the config either fails to install plugins or
+loses core editing functionality.
+
+[source,sh]
+----
+sudo apt install -y \
+  build-essential \
+  git \
+  curl \
+  unzip \
+  lua5.1 \
+  luarocks \
+  ripgrep \
+  fzf \
+  wl-clipboard
+----
+
+Then install the xref:#tree-sitter-cli[tree-sitter CLI] and xref:#nodejs[Node.js]. Neither is in
+Ubuntu's apt at a usable version, and both are used by build steps that run on first launch.
+
+[cols="1,2"]
+|===
+|Package |Why it's needed
+|`build-essential` |A C compiler — *compiles Treesitter parsers*, plus native plugin components
+|`git` |lazy.nvim fetches plugins via git
+|`curl` |Used by install scripts and plugin build steps
+|`unzip` |Needed to extract some plugin archives
+|`lua5.1` |lazy.nvim's LuaRocks support checks for Lua 5.1 specifically
+|`luarocks` |Plugin dependency manager used by lazy.nvim
+|`ripgrep` |Backs the fuzzy picker's live grep, todo-comments, and trouble
+|`fzf` |Backs fzf-lua — the picker used for files, buffers, and symbols
+|`wl-clipboard` |System clipboard on a Wayland desktop (Ubuntu's default) — the config sets `clipboard=unnamedplus`. On X11 install `xclip` instead; under WSL see xref:#wsl[WSL]
+|`tree-sitter` CLI |Builds the Treesitter parsers — xref:#tree-sitter-cli[see below]
+|`node` + `npm` |bracey.vim's build step — xref:#nodejs[see below]
+|===
+
+[[c-compiler]]
+=== C compiler (build-essential)
+
+Treesitter parsers are *compiled from source on your machine* at install time, so a working
+`cc`/`gcc` is required for syntax highlighting, indentation, and the `af`/`if` text objects in
+every supported language.
+
+[IMPORTANT]
+====
+A missing C compiler *fails silently*. Parser installation aborts, and the only symptom is a file
+with no syntax highlighting — no error, no notification, nothing in `:messages`. If highlighting
+is missing for one language, check the compiler before anything else.
+====
+
+[source,sh]
+----
+sudo apt install -y build-essential   # Debian/Ubuntu
+cc --version                          # verify
+----
+
+Then confirm the parsers actually built:
+
+[source,vim]
+----
+:checkhealth nvim-treesitter
+----
+
+See xref:languages/setup.adoc#parsers[Language Setup → Treesitter parsers] for the full parser list.
+
+[[tree-sitter-cli]]
+=== tree-sitter CLI
+
+The nvim-treesitter `main` branch builds parsers with the `tree-sitter` CLI, and requires
+version *0.26.1 or later*. Ubuntu 24.04's `tree-sitter-cli` package is 0.20.8, which is too old.
+Install the release binary instead:
+
+[source,sh]
+----
+v=0.27.1
+curl -sLO https://github.com/tree-sitter/tree-sitter/releases/download/v$v/tree-sitter-linux-x64.gz
+gunzip tree-sitter-linux-x64.gz
+install -m 755 tree-sitter-linux-x64 ~/.local/bin/tree-sitter
+tree-sitter --version
+----
+
+`cargo install --locked tree-sitter-cli` also works if you have a Rust toolchain. nvim-treesitter's
+README advises against the npm package.
+
+Like a missing compiler, a missing or old CLI shows up only as files without highlighting.
+
+[[editor-binaries]]
+=== ripgrep and fzf
+
+These two are easy to overlook because nothing errors without them — the config just quietly
+loses its core navigation UX.
+
+[cols="1,2"]
+|===
+|Binary |What breaks without it
+|`rg` (ripgrep) |Live grep in the picker, the todo-comments list (`++<++leader++>++xT`), and trouble's search
+|`fzf` |fzf-lua itself — the picker used for files, buffers, git files, and symbols
+|===
+
+[source,sh]
+----
+sudo apt install -y ripgrep fzf     # Debian/Ubuntu
+# or: brew install ripgrep fzf
+----
+
+=== Terminal and Nerd Font (optional — enables icons)
+
+`nvim-tree` and `fzf-lua` show file-type icons when a patched
+https://www.nerdfonts.com/[Nerd Font] is installed *and* selected as the terminal
+font. Without one the config falls back to plain Unicode glyphs automatically, so
+icons are entirely optional — nothing errors.
+
+. Download a Nerd Font — _FiraCode Nerd Font_ is a good default — from
+https://www.nerdfonts.com/font-downloads.
+. Install it system-wide or for the current user.
+. Select it as your terminal's font. In GNOME Terminal that is
+_Preferences → Profiles → Custom font_; other emulators vary.
+
+Terminal capabilities are detected automatically in `lua/config/terminal.lua`, and
+`lua/options.lua` derives `vim.g.have_nerd_font` from that detection. Detection
+keys off environment variables the emulator sets, so it cannot always tell —
+GNOME Terminal in particular does not advertise Nerd Font support. If icons are
+missing despite a Nerd Font being selected, override it in `lua/options.lua`:
+
+[source,lua]
+----
+vim.g.have_nerd_font = true
+----
+
+The same detection drives true-colour and undercurl support. A bare TTY console
+supports neither, and the config degrades rather than rendering unreadably — see
+xref:other/architecture.adoc[Architecture] for the capability table.
+
+---
+
 [[quick-start]]
 == Quick Start
+
+Install everything in xref:#required-everyone[Required for everyone] first. lazy.nvim runs every
+plugin's build step on first launch, and a step that fails for want of a compiler, the tree-sitter
+CLI or `npm` has to be re-run by hand later.
 
 [arabic]
 . Clone the repository into your Neovim config directory:
@@ -85,6 +234,9 @@ If you see an older version, run `which nvim` to check which binary is being lau
 ----
 git clone https://github.com/floatingman-ltd/arcane-centaur ~/.config/nvim
 ----
++
+If you will push changes, clone over SSH instead:
+`git clone git@github.com:floatingman-ltd/arcane-centaur.git ~/.config/nvim`.
 . Launch Neovim:
 +
 [source,sh]
@@ -100,7 +252,7 @@ https://github.com/folke/lazy.nvim[lazy.nvim] bootstraps itself on first launch 
 :checkhealth
 ----
 +
-Review any `ERROR` items. `WARN` items for optional features (LSP servers, runtime tools) can be addressed as you enable each language.
+Review any `ERROR` items. `WARN` items for optional features (LSP servers, runtime tools) can be addressed as you enable each language. Run `:checkhealth nvim-treesitter` as well to confirm the parsers built.
 
 ---
 
@@ -143,6 +295,16 @@ Follow the official guide for your platform:
 * *Ubuntu / Debian:* https://docs.docker.com/engine/install/ubuntu/
 * *Other Linux:* https://docs.docker.com/engine/install/
 * *WSL2:* https://docs.docker.com/desktop/windows/wsl/ (Docker Desktop with WSL2 backend)
+
+On Linux, add yourself to the `docker` group so Docker runs without `sudo`. Every command in
+these docs, and every Docker call the config makes, assumes this:
+
+[source,sh]
+----
+sudo usermod -aG docker $USER
+# Log out and back in for the group to apply, then check:
+docker run --rm hello-world
+----
 
 === Installing Docker Compose
 
@@ -268,115 +430,6 @@ Ollama and the other services containerized on purpose. A fresh `docker run --rm
 
 ---
 
-[[system-deps]]
-[[required-everyone]]
-== Required for everyone
-
-Install these before first launch. Without them the config either fails to install plugins or
-loses core editing functionality.
-
-[source,sh]
-----
-sudo apt install -y \
-  build-essential \
-  git \
-  curl \
-  unzip \
-  lua5.4 \
-  luarocks \
-  ripgrep \
-  fzf
-----
-
-[cols="1,2"]
-|===
-|Package |Why it's needed
-|`build-essential` |A C compiler — *compiles Treesitter parsers*, plus native plugin components
-|`git` |lazy.nvim fetches plugins via git
-|`curl` |Used by install scripts and plugin build steps
-|`unzip` |Needed to extract some plugin archives
-|`lua5.4` |Required by lazy.nvim's LuaRocks support
-|`luarocks` |Plugin dependency manager used by lazy.nvim
-|`ripgrep` |Backs the fuzzy picker's live grep, todo-comments, and trouble
-|`fzf` |Backs fzf-lua — the picker used for files, buffers, and symbols
-|===
-
-[[c-compiler]]
-=== C compiler (build-essential)
-
-Treesitter parsers are *compiled from source on your machine* at install time, so a working
-`cc`/`gcc` is required for syntax highlighting, indentation, and the `af`/`if` text objects in
-every supported language.
-
-[IMPORTANT]
-====
-A missing C compiler *fails silently*. Parser installation aborts, and the only symptom is a file
-with no syntax highlighting — no error, no notification, nothing in `:messages`. If highlighting
-is missing for one language, check the compiler before anything else.
-====
-
-[source,sh]
-----
-sudo apt install -y build-essential   # Debian/Ubuntu
-cc --version                          # verify
-----
-
-Then confirm the parsers actually built:
-
-[source,vim]
-----
-:checkhealth nvim-treesitter
-----
-
-See xref:languages/setup.adoc#parsers[Language Setup → Treesitter parsers] for the full parser list.
-
-[[editor-binaries]]
-=== ripgrep and fzf
-
-These two are easy to overlook because nothing errors without them — the config just quietly
-loses its core navigation UX.
-
-[cols="1,2"]
-|===
-|Binary |What breaks without it
-|`rg` (ripgrep) |Live grep in the picker, the todo-comments list (`++<++leader++>++xT`), and trouble's search
-|`fzf` |fzf-lua itself — the picker used for files, buffers, git files, and symbols
-|===
-
-[source,sh]
-----
-sudo apt install -y ripgrep fzf     # Debian/Ubuntu
-# or: brew install ripgrep fzf
-----
-
-=== Terminal and Nerd Font (optional — enables icons)
-
-`nvim-tree` and `fzf-lua` show file-type icons when a patched
-https://www.nerdfonts.com/[Nerd Font] is installed *and* selected as the terminal
-font. Without one the config falls back to plain Unicode glyphs automatically, so
-icons are entirely optional — nothing errors.
-
-. Download a Nerd Font — _FiraCode Nerd Font_ is a good default — from
-https://www.nerdfonts.com/font-downloads.
-. Install it system-wide or for the current user.
-. Select it as your terminal's font. In GNOME Terminal that is
-_Preferences → Profiles → Custom font_; other emulators vary.
-
-Terminal capabilities are detected automatically in `lua/config/terminal.lua`, and
-`lua/options.lua` derives `vim.g.have_nerd_font` from that detection. Detection
-keys off environment variables the emulator sets, so it cannot always tell —
-GNOME Terminal in particular does not advertise Nerd Font support. If icons are
-missing despite a Nerd Font being selected, override it in `lua/options.lua`:
-
-[source,lua]
-----
-vim.g.have_nerd_font = true
-----
-
-The same detection drives true-colour and undercurl support. A bare TTY console
-supports neither, and the config degrades rather than rendering unreadably — see
-xref:other/architecture.adoc[Architecture] for the capability table.
-
 [[required-per-feature]]
 == Required per feature
 
@@ -386,10 +439,10 @@ leaves the rest of the config fully functional.
 [cols="1,2,2",options="header"]
 |===
 |Binary |Needed by |Install
-|`node` + `npm` |markdown-preview.nvim and bracey.vim build steps |xref:#nodejs[see below]
 |`make` |avante.nvim's build step |`sudo apt install -y make` (included in `build-essential`)
 |`claude` |All three AI features |xref:#claude-cli[see below]
 |`python3` |PlantUML diagram encoding |`sudo apt install -y python3`
+|`pandoc` + `jq` |Confluence publish and pull |`sudo apt install -y pandoc jq` — see xref:tooling/confluence.adoc#prerequisites[Confluence]
 |`docker` |Nine containerized features |xref:#docker[see above]
 |`lazygit` |LazyGit float (`++<++leader++>++gg` / `++<++leader++>++gf`) |xref:#lazygit[see below]
 |===
@@ -421,17 +474,16 @@ commands start failing.
 [[nodejs]]
 === Node.js and npm
 
-Required by the build steps of *two* plugins — `markdown-preview.nvim` and `bracey.vim` (live HTML
-preview). Both fail to build without it.
-
-Use https://github.com/nvm-sh/nvm[nvm] to install Node.js without root:
+Required by `bracey.vim`'s build step (`npm install`, live HTML preview), which runs on first
+launch and fails without it. `markdown-preview.nvim` downloads a prebuilt binary and does not need
+Node.
 
 Use https://github.com/nvm-sh/nvm[nvm] to install Node.js without root:
 
 [source,sh]
 ----
 # Install nvm
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.8/install.sh | bash
 source ~/.bashrc
 
 # Install and use the LTS release
@@ -535,4 +587,4 @@ See the xref:editor/clipboard.adoc[Clipboard guide] for provider setup per envir
 
 === A plugin requires a build step that fails
 
-Most build failures are caused by missing `build-essential` or `node`. Install the system deps above and run `:Lazy build <plugin-name>` to retry.
+Most build failures are caused by missing `build-essential` or `node`. Install the system deps above and run `:Lazy build <plugin-name>` to retry. For missing highlighting, check the C compiler and the tree-sitter CLI, then run `:TSUpdate`.
