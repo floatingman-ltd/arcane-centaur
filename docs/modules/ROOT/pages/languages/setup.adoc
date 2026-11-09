@@ -5,7 +5,7 @@ tools in the xref:#dotnet[.NET] section. Working with Lisp? The xref:#lisp[Lisp 
 Nothing here is needed until you actually open a file of that type — the config lazy-loads all
 language tooling by filetype.
 
-Base tools that *every* language needs — Neovim, git, curl, a C compiler, and the editor binaries
+Base tools that *every* language needs — Neovim, git, curl, a C compiler, the tree-sitter CLI, and the editor binaries
 `rg` and `fzf` — live in xref:getting-started.adoc[Getting Started]. Install those first.
 
 *Quick navigation*
@@ -275,13 +275,14 @@ Guide: xref:editor/code-intelligence.adoc[Code Intelligence]
 == Treesitter parsers
 
 Syntax highlighting, indentation, and the `af`/`if` text objects all come from Treesitter, and
-*parsers are compiled from source on your machine*. That means a working C compiler is a hard
-requirement for every language in the table above.
+*parsers are compiled from source on your machine*. That means a working C compiler and the
+`tree-sitter` CLI (0.26.1 or later) are hard requirements for every language in the table above.
 
-If `cc`/`gcc` is missing, parser installation fails and the only symptom you see is a file with
+If `cc`/`gcc` or the CLI is missing, parser installation fails and the only symptom you see is a file with
 no syntax highlighting — nothing announces the missing compiler. See
-xref:getting-started.adoc#c-compiler[Getting Started → C compiler] for the install command and
-how to verify.
+xref:getting-started.adoc#c-compiler[Getting Started → C compiler] and
+xref:getting-started.adoc#tree-sitter-cli[tree-sitter CLI] for the install commands and how to
+verify.
 
 The config installs these parsers automatically on first launch: `commonlisp`, `clojure`,
 `scheme`, `fennel`, `janet_simple`, `lua`, `fsharp`, `c_sharp`, `haskell`, `vim`, `http`,
