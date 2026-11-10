@@ -297,6 +297,8 @@ Caveat: the `lazy = false` implicit in the file-level globals (`vim.g.mkdp_previ
 
 **Update 2026-09-29:** the upstream repository now returns 404, so "active development" no longer holds. The plugin runs from a frozen local copy at `dcad056`; the replacement options and the rest.nvim history are in `ideas.md` under *Things to keep an eye on*.
 
+**Update 2026-11-10:** the repository was transferred, not deleted, and now lives at `dont-be-evil-company/kulala.nvim`. Development continues there, so "active development" holds again. The config pins `dcad056` because `main` has since replaced the engine with a Go daemon.
+
 ---
 
 ## Group 16 — AI Assistance
@@ -377,7 +379,7 @@ TokyoNight is actively maintained, has first-class support from plugin authors (
 | nvim-lspconfig | LSP config | KEEP (best-of-breed) | — | Standard |
 | conform.nvim | Formatting | KEEP (best-of-breed) | — | Best formatter plugin |
 | nvim-treesitter | Syntax/folding | KEEP (best-of-breed) | — | Mandatory |
-| kulala.nvim | HTTP client | KEEP (best-of-breed) — **upstream 404 as of 2026-09-29, running from a local copy** | — | ~~Actively maintained~~ see ideas.md |
+| kulala.nvim | HTTP client | KEEP (best-of-breed) — **moved to `dont-be-evil-company/`, pinned to `dcad056`** | — | Actively maintained; see ideas.md |
 | which-key.nvim | Keymap help | KEEP (best-of-breed) | — | Standard |
 | tokyonight.nvim | Colorscheme | KEEP (best-of-breed) | — | Well-maintained |
 | markdown-preview.nvim | MD browser preview | KEEP (good, minor caveats) | — | WSL-aware config |
@@ -423,5 +425,5 @@ TokyoNight is actively maintained, has first-class support from plugin authors (
 - [mini.surround documentation](https://nvim-mini.org/mini.nvim/readmes/mini-surround.html)
 - [LazyVim 14 — fzf-lua as new default](https://www.lorenzobettini.it/2024/12/lazyvim-14-some-new-and-breaking-features/)
 - [vim-sensible and Neovim](https://www.rogin.dev/blog/sensible-neovim/)
-- [kulala.nvim GitHub](https://github.com/mistweaverco/kulala.nvim)
+- [kulala.nvim GitHub](https://github.com/dont-be-evil-company/kulala.nvim)
 - [nvim-ufo GitHub](https://github.com/kevinhwang91/nvim-ufo)

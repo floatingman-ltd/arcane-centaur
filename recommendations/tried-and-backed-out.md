@@ -87,7 +87,7 @@ Not in scope:
 
 - **dressing.nvim:** dropped 2026-07-01 as avante's dependency because upstream archived it (`add671a`). `vim.ui.select`/`vim.ui.input` fall back to Neovim's native versions, which are fine on 0.12.
 - **avante.nvim pinned to v0.0.27:** held there because releases after it had no Linux binaries; lifted to `v0.1.*` on 2026-07-01 once binaries were published again (`add671a`).
-- **kulala.nvim:** upstream repository returns 404 as of 2026-09-29. Still in use, from a local copy at `~/.local/share/nvim/vendor/kulala.nvim` (`f0ca665`). Replacement options are in `ideas.md`.
+- **kulala.nvim:** upstream returned 404 from 2026-09-29. By 2026-11-10 it had been transferred to `dont-be-evil-company/kulala.nvim` (same repository id, same maintainer) and the old URL redirects. Back on a normal GitHub spec, pinned to `dcad056`. Details are in `ideas.md`.
 
 ## Proposed and abandoned
 

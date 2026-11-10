@@ -4207,3 +4207,67 @@ Mostly documentation: every user command that plugins define and a user would ty
 1. `git checkout main && git pull --rebase`
 
 - [ ] `<Space>h` still shows the new `D` label on `main`
+
+## Change · kulala-transferred-repo
+
+**Branch:** `fix/kulala-transferred-repo`
+
+`:Lazy` failed at every start on a machine without `~/.local/share/nvim/vendor/kulala.nvim` (`Local plugin does not exist at …`). The vendor copy existed because `mistweaverco/kulala.nvim` returned 404 on 2026-09-29. The repository has since been transferred to `dont-be-evil-company/kulala.nvim` (same repository id, same maintainer), and it contains the commit the vendor copy held. `lua/plugins/rest.lua` now uses that repository pinned to `dcad056`, and kulala is back in `lazy-lock.json`. Docs: the guide's configuration note and example, the cheatsheet's `:Kulala` command table (that commit defines no user commands, so it now lists the Lua functions), and the recommendation files.
+
+**Prerequisites:**
+- `testdocs/hello.http` in this repo.
+- Network access to github.com.
+- For RK.3, the machine that showed the error.
+
+### Prepare
+
+1. `git fetch origin && git checkout fix/kulala-transferred-repo`
+2. `find . -name '*.lua' -print0 | xargs -0 luac -p` — expect no output.
+
+- [X] Branch checked out, all Lua parses
+
+> Headless pass 2026-11-10: `Lazy! install` cloned `https://github.com/dont-be-evil-company/kulala.nvim.git` into `~/.local/share/nvim/lazy/kulala.nvim` at `dcad056`. With `testdocs/hello.http` open, `require("kulala")` resolved to `~/.local/share/nvim/lazy/kulala.nvim/lua/kulala/init.lua`. `Lazy! sync` left it at `dcad056`. Not exercised headlessly: the `:Lazy` window, a real request, the keymaps.
+
+### Validate
+
+#### RK.1 — `:Lazy` is clean on this machine
+
+1. Start `nvim`, run `:Lazy`.
+
+- [ ] No *Failed* section; `kulala.nvim` is listed (not loaded until an `.http` file opens)
+
+#### RK.2 — Requests still run
+
+1. `nvim testdocs/hello.http`, put the cursor on the first request, press `,r`.
+2. Press `,o` if the result pane is not already open.
+
+- [ ] A response appears in the result pane
+- [ ] `:lua print(debug.getinfo(require("kulala").run).source)` prints a path under `~/.local/share/nvim/lazy/kulala.nvim/`, not `vendor/`
+
+#### RK.3 — The machine that showed the error
+
+1. On that machine: `git pull`, check out the branch, start `nvim`.
+2. `:Lazy`, then `I` (install) if kulala shows as not installed.
+
+- [ ] kulala installs, and `:Lazy` shows no *Failed* section after a restart
+
+#### RK.4 — Docs build
+
+1. `./docker/antora/run.sh antora-playbook.yml`
+
+- [X] The build completes with no new warnings for the pages this branch touches
+
+> 2026-11-10: the same three warnings `main` produces (`code-intelligence.adoc` `name` ×2, `navigation.adoc` `pat` ×2, `dotnet.adoc` `feed`).
+
+### Raise PR & merge
+
+- [ ] Every box above is ticked
+- [ ] PR raised with an explicit `--title` (the branch has more than one commit)
+- [ ] Merged
+
+### Post-merge
+
+1. `git checkout main && git pull --rebase`
+2. Optional, once RK.3 passes: `rm -rf ~/.local/share/nvim/vendor/kulala.nvim` on this machine (nothing reads it now).
+
+- [ ] `:Lazy` is clean on `main`
