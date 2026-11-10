@@ -99,6 +99,23 @@ needed
 * *PlantUML* fenced code blocks via the PlantUML Docker server on
 `localhost:8080`
 
+=== Commands
+
+[width="100%",cols="39%,61%",options="header",]
+|===
+|Command |Action
+|`:MarkdownPreviewToggle` |Start or stop the preview (what `,p` runs in
+a GUI session)
+|`:MarkdownPreview` |Start the preview and open it in the browser
+|`:MarkdownPreviewStop` |Stop the preview server
+|===
+
+The commands are buffer-local to Markdown buffers. The plugin is not loaded
+in console sessions (neither `$DISPLAY` nor `$WAYLAND_DISPLAY` set), so
+there the commands do not exist and `,p` opens the popup instead. Under WSL
+the page opens through `wslview`, or `explorer.exe` when `wslview` is
+missing.
+
 === Limitation — cross-page links
 
 `markdown-preview.nvim` runs a minimal WebSocket server that serves
@@ -333,6 +350,46 @@ current window
 After opening a linked file with `++<++CR++>++`, press `,p` to toggle
 the single-file preview, or `,sp` to open it in the markserv server.
 
+=== mkdnflow commands without a keymap
+
+mkdnflow defines about 60 commands. Most are already behind a key; these
+are the ones you type:
+
+[width="100%",cols="39%,61%",options="header",]
+|===
+|Command |Action
+|`:MkdnTable \{cols} \{rows}` |Insert an empty table below the cursor line
+with a header row, a divider and `\{rows}` body rows. Add `noh` as a third
+argument for no header: `:MkdnTable 3 4 noh`
+
+|`:MkdnTableFormat` |Realign the table under the cursor so the pipes line
+up
+
+|`:MkdnDeadLinks` |List links in the current buffer whose target file does
+not exist, in the quickfix list. URLs and same-file `#anchor` links are
+skipped
+
+|`:MkdnDeadLinks notebook` |The same check across every `.md` file in the
+notebook (see below), run asynchronously
+
+|`:MkdnBacklinks` |Toggle a panel on the right listing every notebook file
+that links to the current file. `++<++CR++>++` jumps to the link, `q`
+closes the panel. It follows you as you switch buffers
+
+|`:MkdnTableFromSelection [\{delim}] [noh]` |Replace the selected lines of
+delimited text (comma, tab, semicolon or pipe) with a table. Run it on a visual
+range. The delimiter is detected unless given
+
+|`:MkdnTablePaste [\{delim}] [noh]` |Insert the system clipboard's delimited
+text as a table below the cursor line
+|===
+
+The *notebook* is the directory of the first Markdown file opened in the
+session, searched recursively. This config sets no root marker, so
+opening a file in another project does not move it.
+
+`:help mkdnflow` lists every command and its default keymap.
+
 '''''
 
 [[keybindings]]
@@ -425,6 +482,23 @@ Two things the previous `glow`-based preview could not do, which come free with 
 * *Content reflows on resize.* Resize the editor with the popup open and the text re-wraps to the new width.
 
 NOTE: The popup renders the *buffer*, not the file on disk, so unsaved changes are included. `glow` could only ever show the last saved version.
+
+=== The `:RenderMarkdown` command
+
+In-buffer rendering comes from render-markdown.nvim, which loads with the first Markdown buffer. `:RenderMarkdown` with no argument is `enable`; `Tab` completes the subcommands.
+
+[width="100%",cols="40%,60%",options="header",]
+|===
+|Command |Action
+|`:RenderMarkdown buf_toggle` |Toggle rendering in the current buffer only — what `,pp` runs
+|`:RenderMarkdown buf_enable` / `buf_disable` |Turn rendering on / off in the current buffer
+|`:RenderMarkdown toggle` |Toggle rendering in every Markdown buffer
+|`:RenderMarkdown enable` / `disable` |Turn rendering on / off in every Markdown buffer
+|`:RenderMarkdown preview` |Open a rendered copy of the buffer in a split beside it
+|`:RenderMarkdown expand` / `contract` |Show one more / one fewer line of raw markup above and below the cursor
+|`:RenderMarkdown config` |Print how the active configuration differs from the plugin defaults
+|`:RenderMarkdown log` |Open the plugin's log file
+|===
 
 === Closing an orphaned popup
 

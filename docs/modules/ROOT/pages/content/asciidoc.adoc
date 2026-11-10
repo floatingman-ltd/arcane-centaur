@@ -25,26 +25,69 @@ Powered by **`habamax/vim-asciidoctor`**, which provides:
   regex highlighter.
 - Section folding — `za`/`zc`/`zo`/`zM`/`zR` (standard Neovim fold keys).
 - Fenced-code-block highlighting: a `[source,lua]` block is highlighted as
-  Lua, `[source,fsharp]` as F#, and so on for `bash`, `python`, `clojure`,
-  `haskell`.
+  Lua, and so on for `bash`, `python`, `clojure`, `haskell`.
 
 Markup conceal is intentionally **off** (`asciidoctor_syntax_conceal = 0`)
-so raw markup stays visible while editing and does not conflict with markview
-when the in-buffer render is toggled on.
+so raw markup stays visible while editing. There is no in-buffer rendered view:
+markview.nvim is deferred until a tree-sitter AsciiDoc grammar is available.
 
 === Supported fenced languages
 
-`lua`, `bash`, `python`, `clojure`, `fsharp`, `haskell`
+`lua`, `bash`, `python`, `clojure`, `haskell`
 
+`[source,fsharp]` blocks are not highlighted: Vim ships no `syntax/fsharp.vim`, and
+vim-asciidoctor fails with `E484` on every `.adoc` open if a listed language has none.
 Add others by extending `asciidoctor_fenced_languages` in
 `lua/plugins/asciidoc.lua`.
 
-=== Disabling vim-asciidoctor compile commands
+[[vim-asciidoctor-commands]]
+=== vim-asciidoctor commands
 
-vim-asciidoctor ships `:Asciidoctor2HTML` / `:Asciidoctor2PDF` etc.
-These overlap with the Docker preview pipeline below and are disabled
-(`asciidoctor_extensions = {}`). Use the `<localleader>` preview maps
-instead.
+vim-asciidoctor defines these buffer-local commands in every `.adoc`
+buffer. They are *not* disabled: `asciidoctor_extensions = {}` only means
+no `-r` extension is passed to `asciidoctor`. They have no keymaps.
+
+[cols="2,3",options="header"]
+|===
+|Command |Action
+
+|`:Asciidoctor2HTML`
+|Run `asciidoctor` on the file through `:make`, writing `++<name>.html++` next to it
+
+|`:Asciidoctor2PDF`
+|Run `asciidoctor-pdf` the same way, writing `++<name>.pdf++`
+
+|`:Asciidoctor2DOCX`
+|Run `asciidoctor -b docbook` to write `++<name>.xml++`, then `pandoc` to convert it to `++<name>.docx++`
+
+|`:AsciidoctorOpenHTML` / `:AsciidoctorOpenPDF` / `:AsciidoctorOpenDOCX`
+|Open the `.html` / `.pdf` / `.docx` with the same base name, already beside the file; prints `doesn't exist!` if it is not there
+
+|`:AsciidoctorOpenRAW`
+|Open the `.adoc` file itself with the system's default application
+
+|`:AsciidoctorPasteImage`
+|Save the clipboard image as `++img_<name>_<n>.png++` in the `:imagesdir:` directory (or the file's directory if none is set) and insert an `image::` line below the cursor
+|===
+
+[WARNING]
+====
+These commands call native tools that this config does not install and
+does not list as prerequisites — the Docker preview below is the supported
+route:
+
+* `:Asciidoctor2HTML` and `:Asciidoctor2DOCX` need `asciidoctor` on
+  `$PATH`; `:Asciidoctor2PDF` needs `asciidoctor-pdf`; `:Asciidoctor2DOCX`
+  also needs `pandoc`. Without them `:make` puts
+  `command not found: asciidoctor` in the quickfix list and writes nothing.
+* `:AsciidoctorPasteImage` runs `gm convert clipboard:` (GraphicsMagick).
+  The plugin marks this Linux default as a placeholder, and `gm` is not
+  a prerequisite of this config. Set `g:asciidoctor_img_paste_command` to a working command
+  before relying on it.
+* The `Open` commands do not find Docker preview output: `,p` writes its
+  HTML to `~/.cache/nvim/asciidoc-preview/`, not beside the source. The
+  `Open` commands use `xdg-open`, or `cmd.exe /C start` under WSL.
+====
 
 '''''
 
@@ -90,12 +133,11 @@ Output goes to `build/site/` (gitignored).
 |File |Role
 
 |`lua/plugins/asciidoc.lua`
-|Lazy-loads vim-asciidoctor and markview on the `asciidoctor` filetype.
+|Lazy-loads vim-asciidoctor on the `asciidoctor` filetype.
 Registers the `asciidoctor` filetype and sets folding/fenced-code/conceal globals in `init`.
 
 |`after/ftplugin/asciidoctor.lua`
-|Buffer-local keymaps: Docker single-page preview (`,p`/`,pp`), Antora preview (`,pa`),
-markview toggle (`,mv`).
+|Buffer-local keymaps: Docker single-page preview (`,p`/`,pp`), Antora preview (`,pa`).
 |===
 
 '''''

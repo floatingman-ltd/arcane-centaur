@@ -35,6 +35,7 @@ the current buffer or selection.
 |===
 | xref:#quick-start[Quick Start] | Open a file, evaluate code
 | xref:#lsp[LSP] | janet-lsp setup
+| xref:#commands[Commands] | Conjure and parinfer commands
 | xref:#typical-workflow[Typical Workflow] | Day-to-day Janet in Neovim
 | xref:#troubleshooting[Troubleshooting] | REPL and LSP issues
 | xref:#prerequisites[Prerequisites] | Janet and jpm install
@@ -104,6 +105,55 @@ jpm install janet-lsp
 Make sure `janet-lsp` is on your `$PATH` (typically `~/.jpm/bin/`). See
 the xref:editor/code-intelligence.adoc[Code Intelligence cheatsheet]
 for shared LSP keybindings.
+
+'''''
+
+[[commands]]
+== Commands
+
+=== Conjure
+
+Most Conjure commands sit behind the `,` maps above. These are the ones
+worth typing:
+
+[cols="1,2",options="header"]
+|===
+|Command |Action
+|`:ConjureSchool` |Start Conjure's interactive tutorial
+|`:ConjureEval [code]` |Evaluate `code` in the Janet REPL; with a range
+(`:%ConjureEval`, or from a visual selection) evaluate those lines
+|`:ConjureLogToggle` |Open or close the log window; same as `,lg`
+|`:ConjureJanetStart` |Start the `janet -n -s` subprocess; same as `,cs`.
+If one is already running, it logs `Can't start, REPL is already running.`
+and does nothing
+|`:ConjureJanetStop` |Stop the subprocess; same as `,cS`
+|===
+
+`:ConjureConnect` is for network REPLs and is not implemented by the
+Janet stdio client this config uses. `:ConjureJanetStart` and
+`:ConjureJanetStop` are buffer-local to Janet buffers. `:help conjure`
+lists every command and map; `:help conjure-client-janet-stdio` covers
+the Janet client.
+
+=== Parinfer
+
+Parinfer runs in every Janet buffer unless switched off; it treats `#`
+as the comment character.
+
+[cols="1,2",options="header"]
+|===
+|Command |Action
+|`:ParinferOff` |Stop parinfer in the current buffer
+|`:ParinferOn` |Resume parinfer in the current buffer
+|`:ParinferToggle` |Switch parinfer on or off in the current buffer
+|`:ParinferOff!` / `:ParinferOn!` / `:ParinferToggle!` |Change the global
+default instead. Buffers already open keep their own setting; the global
+value applies to buffers opened afterwards
+|`:ParinferLog [file]` |Append each parinfer request and response to
+`file` as JSON; with no argument, stop logging
+|`:ParinferStats` |Show the minimum, maximum, mean and standard deviation
+of parinfer's run time in this buffer
+|===
 
 '''''
 

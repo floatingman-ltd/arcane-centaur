@@ -4158,3 +4158,52 @@ All steps in a live Neovim.
 
 - [ ] `git checkout main && git pull`
 - [ ] `<Space>` popup on `main` matches WK.1
+
+## Change · document-plugin-commands
+
+**Branch:** `docs/document-plugin-commands`
+
+Mostly documentation: every user command that plugins define and a user would type is now written as `:Command` in the guides and cheatsheets, and `:TodoTelescope` / `:GBrowse` are documented as unavailable with the reason. One runtime change: the which-key label of `<leader>hD` in `lua/plugins/git.lua` said *Diff this (staged)*, but the map calls `gs.diffthis("~")`, which gitsigns normalises to `HEAD~` — it diffs against the parent of `HEAD`, not the index or `HEAD`. Only the `desc` changes; the key's behaviour does not.
+
+**Prerequisites:**
+- A tracked file in a git repository whose `HEAD` has a parent commit (any file in this repo).
+- No new plugin. If `lazy-lock.json` changed because of this branch, something is wrong.
+
+### Prepare
+
+1. `git fetch origin && git checkout docs/document-plugin-commands`
+2. `find . -name '*.lua' -print0 | xargs -0 luac -p` — expect no output.
+
+- [X] Branch checked out, all Lua parses
+
+> Headless pass 2026-11-10: opened `init.lua`, waited for gitsigns to attach, `maparg(" hD", "n", false, true).desc` returned `"Diff this vs HEAD~ (parent commit)"`. Not exercised headlessly: the which-key popup, the diff split.
+
+### Validate
+
+#### HD.1 — `<leader>hD` label and behaviour
+
+1. `nvim lua/plugins/git.lua`, wait for the gitsigns signs column, press `<Space>h` and wait.
+2. Press `<Space>hD`.
+
+- [X] The popup shows `D` as *Diff this vs HEAD~ (parent commit)*
+- [X] A diff split opens, and its left side is the file as of `HEAD~` (`:echo bufname()` in that window ends in `HEAD~` or the parent commit's hash)
+
+#### HD.2 — Docs build
+
+1. `./docker/antora/run.sh antora-playbook.yml`
+
+- [X] The build completes with no new warnings for the pages this branch touches
+
+> 2026-11-10: three warnings, the same three `main` produces (`code-intelligence.adoc` `name` ×2, `navigation.adoc` `pat` ×2, `dotnet.adoc` `feed`). Four unescaped `{placeholders}` in `gitsigns.adoc` produced new warnings on the first build and were escaped.
+
+### Raise PR & merge
+
+- [X] Every box above is ticked
+- [ ] PR raised with an explicit `--title` (the branch has more than one commit)
+- [ ] Merged
+
+### Post-merge
+
+1. `git checkout main && git pull --rebase`
+
+- [ ] `<Space>h` still shows the new `D` label on `main`

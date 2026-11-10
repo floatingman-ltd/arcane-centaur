@@ -40,6 +40,7 @@ the current buffer or selection.
 |===
 | xref:#quick-start[Quick Start] | Start the REPL and evaluate code
 | xref:#lsp[LSP] | Language server notes
+| xref:#commands[Commands] | Conjure and parinfer commands
 | xref:#structural-editing[Structural Editing] | Slurp & barf reference
 | xref:#typical-workflow[Typical Workflow] | Day-to-day Lisp in Neovim
 | xref:#troubleshooting[Troubleshooting] | REPL connection issues
@@ -194,6 +195,63 @@ No Common Lisp LSP is configured by default in this repository. See the
 xref:editor/code-intelligence.adoc[Code Intelligence cheatsheet]
 for shared LSP keybindings that apply in buffers where an LSP client is
 attached.
+
+'''''
+
+[[commands]]
+== Commands
+
+=== Conjure
+
+Most Conjure commands sit behind the `,` maps above. These are the ones
+worth typing:
+
+[cols="1,2",options="header"]
+|===
+|Command |Action
+|`:ConjureSchool` |Start Conjure's interactive tutorial
+|`:ConjureEval [code]` |Evaluate `code` in the current buffer's language;
+with a range (`:%ConjureEval`, or from a visual selection) evaluate those
+lines
+|`:ConjureConnect [host] [port]` |Connect a network client to a REPL.
+Common Lisp defaults to `127.0.0.1:4005`; `:ConjureConnect 4006` or
+`:ConjureConnect host:port` dials elsewhere. Clojure (nREPL) also
+implements it; Scheme's stdio client does not
+|`:ConjureLogToggle` |Open or close the log window; same as `,lg`
+|`:ConjureCommonLispConnect` |Connect to Swank on the configured
+`127.0.0.1:4005`; same as `,cc`
+|`:ConjureCommonLispDisconnect` |Disconnect from Swank; same as `,cd`
+|`:ConjureSchemeStart` |Start the `mit-scheme` subprocess; same as `,cs`
+in a Scheme buffer
+|`:ConjureSchemeStop` |Stop the `mit-scheme` subprocess; same as `,cS`
+|===
+
+The client commands (`:ConjureCommonLisp…`, `:ConjureScheme…`) are
+buffer-local and exist only in buffers of that filetype. `:help conjure`
+lists every command and map; each client has its own page, e.g.
+`:help conjure-client-common-lisp-swank`,
+`:help conjure-client-clojure-nrepl`,
+`:help conjure-client-scheme-stdio`.
+
+=== Parinfer
+
+Parinfer runs in every Lisp, Clojure, Scheme, Fennel and Janet buffer
+unless switched off.
+
+[cols="1,2",options="header"]
+|===
+|Command |Action
+|`:ParinferOff` |Stop parinfer in the current buffer
+|`:ParinferOn` |Resume parinfer in the current buffer
+|`:ParinferToggle` |Switch parinfer on or off in the current buffer
+|`:ParinferOff!` / `:ParinferOn!` / `:ParinferToggle!` |Change the global
+default instead. Buffers already open keep their own setting; the global
+value applies to buffers opened afterwards
+|`:ParinferLog [file]` |Append each parinfer request and response to
+`file` as JSON; with no argument, stop logging
+|`:ParinferStats` |Show the minimum, maximum, mean and standard deviation
+of parinfer's run time in this buffer
+|===
 
 '''''
 
@@ -434,7 +492,6 @@ healthy, reconnect manually if you already have a `.lisp` buffer open:
 [cols=",",options="header",]
 |===
 |Keys |Action
-|`,cs` |Show current connection status
 |`,cc` |Connect (or reconnect) to Swank
 |===
 

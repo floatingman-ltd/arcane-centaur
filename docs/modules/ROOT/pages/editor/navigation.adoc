@@ -138,6 +138,45 @@ tab instead. Use `++<++leader++>++t`.
 NOTE: `++<++leader++>++t` used to toggle the terminal — that is now
 `++<++leader++>++T`. See <<terminal,Terminal>>.
 
+=== Commands
+
+[cols="2,1,3",options="header",]
+|===
+|Command |Keys |Action
+|`:NvimTreeToggle ++[++dir++]++` |`++<++leader++>++t` |Open and focus the
+tree, or close it. `dir` sets the root.
+
+|`:NvimTreeOpen ++[++dir++]++` |`++<++leader++>++n`, `Ctrl-n` |Open the
+tree, or focus it if already open. `dir` sets the root.
+
+|`:NvimTreeFocus` |— |Same as `:NvimTreeOpen` with no argument.
+
+|`:NvimTreeClose` |— |Close the tree.
+
+|`:NvimTreeFindFile++[++!++]++` |`Ctrl-f` |Open the tree, focus it, and
+move to the current buffer's file. With `!`, change the root when the file
+is outside it.
+
+|`:NvimTreeFindFileToggle++[++!++]++ ++[++dir++]++` |— |Close the tree if
+open; otherwise open it on the current buffer's file. `!` as for
+`:NvimTreeFindFile`.
+
+|`:NvimTreeRefresh` |— |Reload the tree (same as `R` inside it). Does
+nothing while the tree is closed.
+
+|`:NvimTreeCollapse` |— |Collapse every directory.
+
+|`:NvimTreeCollapseKeepBuffers` |— |Collapse every directory except those
+holding an open buffer.
+
+|`:NvimTreeResize ++<++n++>++` |— |Set the width to `n` columns, or change it
+by `{plus}n` / `-n`. The new width persists for the session; the configured
+width is 30.
+
+|`:NvimTreeClipboard` |— |Print the files marked with `x` (cut) or `c`
+(copy).
+|===
+
 [[inside-tree]]
 === Inside the Tree Window
 

@@ -25,6 +25,49 @@ Any git command works directly as `:Git ++<++args++>++`, or its short alias `:G 
 |`++<++leader++>++gp` |Normal |Git push
 |===
 
+=== File and history commands
+
+These act on the file in the current buffer. They are defined only once fugitive has loaded, which
+happens on the first `:Git` / `:G` or one of the keymaps above; until then `:Gread` and the rest
+are not editor commands.
+
+[cols="1,2",options="header"]
+|===
+|Command |Action
+|`:Gread` |Replace the buffer with the index version of the file, dropping unstaged edits. Nothing
+is written to disk until you save. `:Gread @:%` reads the version in `HEAD` instead.
+|`:Gwrite` |Write the buffer and stage it (`git add` on the file).
+|`:GMove \{dest}` |`git mv` the file and rename the buffer. `\{dest}` is relative to the
+repository root, or to the current directory if it starts with `./` or `../`. `!` passes `-f`.
+|`:GRename \{name}` |Like `:GMove`, but `\{name}` is relative to the file's own directory.
+|`:GDelete` |`git rm` the file and delete the buffer. `!` passes `-f`.
+|`:Ggrep \{args}` |Run `git grep`, load the matches into the quickfix list and jump to the
+first. `:Ggrep!` does not jump; `:Ggrep -q` opens the quickfix window instead of echoing the
+matches.
+|`:Gclog \{args}` |Load `git log` into the quickfix list, one entry per commit, and jump to the
+first. `!` does not jump.
+|`:0Gclog` |Load every past revision of the current file into the quickfix list.
+|`:'++<++,'++>++Gclog` |Load past revisions of the selected lines only (`git log -L`).
+|===
+
+Step through the results with `++]++q` / `++[++q` (vim-unimpaired). The full command list is in
+`:help fugitive`.
+
+[[gbrowse]]
+==== `:GBrowse` does not work here
+
+fugitive defines `:GBrowse` (open the file, commit or selected lines on the hosting site), but
+it only builds the URL through a separate handler plugin for each host, and none is installed.
+Running it fails with:
+
+----
+fugitive: no GBrowse handler installed for 'git@github.com:…'
+----
+
+No handler was ever added: fugitive arrived on 2026-03-10 (`d6fbda9`) and no commit mentions
+`:GBrowse` or a handler. Adding `tpope/vim-rhubarb` would cover GitHub remotes and
+`shumphrey/fugitive-gitlab.vim` GitLab remotes; either is a config change with its own test plan.
+
 === Inside the `:Git` status window
 
 These keys are fugitive's own — they work once the status window is open, and are not bound in

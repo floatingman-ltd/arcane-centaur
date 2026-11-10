@@ -33,6 +33,26 @@ call the commands directly:
 :DiffviewFileHistory      " history for every file, not just the current one
 ----
 
+=== Commands inside a diff view
+
+These act on the diffview tab you are in, both `:DiffviewOpen` and `:DiffviewFileHistory` views.
+
+[cols="1,2",options="header"]
+|===
+|Command |Action
+|`:DiffviewClose` |Close the diff view tab (as `++<++leader++>++gX`).
+|`:DiffviewToggleFiles` |Hide or show the file panel. Diffview's own `++<++leader++>++b` does
+the same inside the view.
+|`:DiffviewFocusFiles` |Move the cursor to the file panel, opening it if hidden. Diffview's own
+`++<++leader++>++e` does the same.
+|`:DiffviewRefresh` |Re-read the file list and change counts. Also `R` in the file panel.
+Diffview refreshes by itself after fugitive changes the repository.
+|`:DiffviewLog` |Open diffview's debug log (`~/.cache/nvim/diffview.log`) in a split.
+|===
+
+Only `:DiffviewOpen`, `:DiffviewFileHistory` and `:DiffviewClose` exist before diffview has
+loaded; the other four are defined once one of those, or a keymap above, has run.
+
 === File history
 
 `++<++leader++>++gH` lists every commit that touched the file you are in. Press `++<++CR++>++` on

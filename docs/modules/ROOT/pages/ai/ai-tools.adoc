@@ -128,6 +128,65 @@ Uses Neovim's native terminal provider (no snacks.nvim dependency).
 |`++<++leader++>++gcr` |Normal |Reject Claude's proposed diff
 |===
 
+=== Session Commands
+
+The plugin lazy-loads on the first of `:ClaudeCode`, `:ClaudeCodeFocus`,
+`:ClaudeCodeAdd`, `:ClaudeCodeSend`, `:ClaudeCodeDiffAccept`,
+`:ClaudeCodeDiffDeny`, `:ClaudeCodeCloseAllDiffs`, `:ClaudeCodeStatus`,
+`:ClaudeCodeStart` or `:ClaudeCodeStop` (the `cmd` list in
+`lua/plugins/claudecode.lua`). The other commands below exist only after it
+has loaded. Loading also starts the WebSocket server (`auto_start` is on by
+default).
+
+[cols="2,1,3",options="header",]
+|===
+|Command |Keys |Action
+|`:ClaudeCode ++[++args++]++` |`++<++leader++>++gcc` |Show or hide the
+session terminal, starting `claude` if it is not running. Arguments are
+appended to the `claude` command line.
+
+|`:ClaudeCodeFocus ++[++args++]++` |`++<++leader++>++gcf` |Move to the
+session terminal; if it already has focus, hide it.
+
+|`:ClaudeCodeOpen ++[++args++]++` |— |Open the session terminal.
+
+|`:ClaudeCodeClose` |— |Close the session terminal window.
+
+|`:ClaudeCodeAdd ++<++path++>++ ++[++start++]++ ++[++end++]++`
+|`++<++leader++>++gcb` runs `:ClaudeCodeAdd %` |Add a file or directory to
+Claude's context, optionally limited to a line range. `%` and `#` are
+expanded.
+
+|`:ClaudeCodeSend` |`++<++leader++>++gcv` |Send the visual selection (or a
+`:'++<++,'++>++` range) to Claude as an @-mention. In an nvim-tree buffer it
+adds the selected files instead.
+
+|`:ClaudeCodeTreeAdd` |— |In nvim-tree, add the file under the cursor (or
+the visually selected files) to Claude's context.
+
+|`:ClaudeCodeSendText++[++!++]++ ++<++text++>++` |— |Type `++<++text++>++`
+into the open session terminal and submit it. With `!`, insert it without
+submitting.
+
+|`:ClaudeCodeDiffAccept` |`++<++leader++>++gca` |Accept the proposed diff.
+
+|`:ClaudeCodeDiffDeny` |`++<++leader++>++gcr` |Reject the proposed diff.
+
+|`:ClaudeCodeCloseAllDiffs` |— |Close every pending diff. Diffs already
+accepted or saved stay open.
+
+|`:ClaudeCodeSelectModel ++[++args++]++` |— |Pick a model (Opus, Sonnet,
+Haiku or account default) and run `:ClaudeCode --model ++<++model++>++
+++[++args++]++`.
+
+|`:ClaudeCodeStart` |— |Start the WebSocket server.
+
+|`:ClaudeCodeStop` |— |Stop the WebSocket server.
+
+|`:ClaudeCodeStatus` |— |Report whether the server is running, and on
+which port.
+|===
+
 === Prerequisites
 
 The `claude` CLI must be on your `$PATH` (same requirement as the one-shot CLI commands).
@@ -295,6 +354,69 @@ native `vim.ui` for its select/input prompts.
 |`++<++leader++>++aa` |Open avante with the current provider (ollama)
 |`++<++leader++>++ao` |Select the ollama provider and open avante
 |`++<++C++>++s` |Submit the prompt (inside the avante input; `++<++CR++>++` inserts a newline)
+|===
+
+=== Commands
+
+avante loads on `VeryLazy`, so its commands exist shortly after startup.
+`++<++leader++>++aa` and `++<++leader++>++ao` call avante's Lua API rather
+than these commands.
+
+[cols="2,3",options="header",]
+|===
+|Command |Action
+|`:AvanteAsk ++[++position=…++]++ ++[++project_root=…++]++ ++[++question++]++`
+|Open the sidebar, as `++<++leader++>++aa` does. A question given as an
+argument is submitted. `position` is `left`, `right`, `top` or `bottom`.
+
+|`:AvanteChat ++[++args++]++` |Open the sidebar in chat mode. Takes the same
+arguments as `:AvanteAsk`.
+
+|`:AvanteChatNew ++[++args++]++` |Start a new chat in the sidebar.
+
+|`:AvanteToggle` |Show or hide the sidebar.
+
+|`:AvanteFocus` |Move focus between the sidebar and the code window.
+
+|`:AvanteRefresh` |Redraw the sidebar. Does nothing while the sidebar is
+closed or focused.
+
+|`:AvanteHistory` |Pick a saved chat and load it into the sidebar.
+
+|`:AvanteClear ++[++history\|cache++]++` |`history` (the default) clears
+the current chat. `cache` asks before deleting avante's history and cache
+directories.
+
+|`:AvanteStop` |Cancel the request in flight.
+
+|`:'++<++,'++>++AvanteEdit ++[++request++]++` |Open an edit prompt for the selected
+lines. A request given as an argument is submitted.
+
+|`:AvanteBuild ++[++source=true\|false++]++` |Rerun `make` in the plugin
+directory. The default downloads prebuilt binaries, as the spec's
+`build = "make"` does; `source=true` compiles and needs `cargo`.
+
+|`:AvanteSwitchProvider` |Pick a provider. The list holds every provider
+avante ships (`claude`, `openai`, ACP agents and others); only `ollama` is
+configured here.
+
+|`:AvanteModels` |Model picker. Not usable here: it skips `ollama`, because
+avante's ollama provider reports no credentials unless `is_env_set` is
+overridden. Change the model in `lua/plugins/avante.lua`.
+
+|`:AvanteSwitchSelectorProvider ++<++name++>++` |Set the picker backend for
+this session: `native` (default), `fzf_lua`, `mini_pick`, `snacks` or
+`telescope`. Of those, only fzf-lua is installed.
+
+|`:AvanteSwitchInputProvider ++<++name++>++` |Set the input backend for this
+session: `native` (default), `dressing` or `snacks`. Neither dressing.nvim nor
+snacks.nvim is installed.
+
+|`:AvanteACPModels` |Pick the model of an ACP agent. No ACP provider is
+configured here.
+
+|`:AvanteACPModes` |Pick the mode of an ACP agent. No ACP provider is
+configured here.
 |===
 
 === Ollama Setup

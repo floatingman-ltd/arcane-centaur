@@ -74,10 +74,26 @@ NOTE: This config uses the Janet *stdio client* (`janet -n -s`). Conjure spawns 
 |`ae` / `ie` |Visual / Operator |Outer / inner element
 |===
 
+== Commands
+
+[cols=",",options="header",]
+|===
+|Command |Action
+|`:ConjureSchool` |Interactive Conjure tutorial
+|`:ConjureEval [code]` / `:%ConjureEval` |Evaluate code / the whole buffer
+|`:ConjureLogToggle` |Toggle the log window (`,lg`)
+|`:ConjureJanetStart` / `:ConjureJanetStop` |Start / stop the Janet subprocess (`,cs` / `,cS`)
+|`:ParinferOff` / `:ParinferOn` / `:ParinferToggle` |Parinfer in this buffer (`!` = global default)
+|`:ParinferLog [file]` |Log parinfer to `file`; no argument stops logging
+|`:ParinferStats` |Parinfer run-time statistics for this buffer
+|===
+
+Full list: `:help conjure` and `:help conjure-client-janet-stdio`.
+
 == Other Active Plugins
 
 * *nvim-parinfer* — keeps parentheses balanced as you edit indentation
-(no keymaps)
+(no keymaps; see Commands above)
 * *rainbow-delimiters.nvim* — color-codes matching delimiters by depth
 (no keymaps)
 * *LSP* (`janet++_++lsp`) — see lsp.md

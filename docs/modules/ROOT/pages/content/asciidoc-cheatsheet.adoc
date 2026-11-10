@@ -53,8 +53,26 @@ Provided by `habamax/vim-asciidoctor`:
 
 * Section folding — use standard Neovim fold keys (`za`, `zc`, `zo`, `zM`, `zR`).
 * Fenced-code-block highlighting: `[source,lua]` highlights as Lua, etc.
-  Supported languages: `lua`, `bash`, `python`, `clojure`, `fsharp`, `haskell`.
+  Supported languages: `lua`, `bash`, `python`, `clojure`, `haskell` (no `fsharp`: Vim has no syntax file for it).
 * Markup conceal is off — raw markup stays visible while editing.
+
+'''''
+
+== vim-asciidoctor Commands
+
+No keymaps. These need native tools this config does not install — use
+`,p` instead. See xref:content/asciidoc.adoc#vim-asciidoctor-commands[the guide].
+
+[cols=",",options="header",]
+|===
+|Command |Action / needs
+|`:Asciidoctor2HTML` |Write `.html` beside the file — needs `asciidoctor`
+|`:Asciidoctor2PDF` |Write `.pdf` beside the file — needs `asciidoctor-pdf`
+|`:Asciidoctor2DOCX` |Write `.xml` then `.docx` beside the file — needs `asciidoctor` and `pandoc`
+|`:AsciidoctorOpenHTML` / `PDF` / `DOCX` |Open that output file if it exists
+|`:AsciidoctorOpenRAW` |Open the `.adoc` file with the system's default application
+|`:AsciidoctorPasteImage` |Save the clipboard image into `:imagesdir:` and insert `image::` — needs a working `g:asciidoctor_img_paste_command`
+|===
 
 '''''
 

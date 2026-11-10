@@ -88,6 +88,48 @@ Pick the source for the job:
 |Quickfix (`++<++leader++>++xq`) |The quickfix list — fill it first with `gr`, `:grep`, `:make`, or `:lua vim.diagnostic.setqflist()`
 |===
 
+=== The `:Trouble` command
+
+Every `++<++leader++>++x*` map is a call to `:Trouble`, which takes a mode,
+an action and options in that order:
+
+[source,vim]
+----
+:Trouble [mode] [action] [options]
+----
+
+`:Trouble` with no arguments opens a picker listing every mode. The action
+defaults to `open`; the maps use `toggle`. `close` and `refresh` are also
+accepted. `Tab` completes modes, actions and option names.
+
+[cols=",,",options="header",]
+|===
+|Mode |Shows |Map
+|`diagnostics` |LSP diagnostics for the workspace |`++<++leader++>++xx`
+|`symbols` |Document symbols of the current buffer |`++<++leader++>++xs`
+|`lsp` |Definitions, references, implementations, type definitions, declarations and incoming/outgoing calls of the symbol under the cursor |`++<++leader++>++xr`
+|`lsp_references`, `lsp_definitions`, `lsp_implementations`, … |One of the sections of `lsp` on its own |—
+|`qflist` (alias `quickfix`) |The quickfix list |`++<++leader++>++xq`
+|`loclist` |The current window's location list |`++<++leader++>++xl`
+|`todo` |Todo comments across the project (registered by todo-comments.nvim) |`++<++leader++>++xt`
+|===
+
+Options are `key=value` pairs, dotted for nested keys. Values may be Lua
+expressions:
+
+[cols=",",options="header",]
+|===
+|Command |Effect
+|`:Trouble diagnostics toggle filter.buf=0` |Diagnostics for the current buffer only — `buf=0` means the current buffer (`++<++leader++>++xX`)
+|`:Trouble symbols toggle focus=false` |Open the panel but leave the cursor in the code window (`++<++leader++>++xs`)
+|`:Trouble lsp toggle win.position=right` |Put the panel on the right instead of the bottom (`++<++leader++>++xr`)
+|`:Trouble diagnostics filter.severity=vim.diagnostic.severity.ERROR` |Errors only
+|===
+
+The `telescope`, `snacks` and `fzf` modes also appear in the completion
+list. They show results sent from those pickers, and nothing here sends
+any, so they open empty. Telescope and snacks.nvim are not installed.
+
 === Todo comments (todo-comments.nvim)
 
 https://github.com/folke/todo-comments.nvim[todo-comments.nvim] highlights
@@ -112,9 +154,33 @@ Two list views scan the whole project for these markers:
 * `++<++leader++>++xt` (`:TodoTrouble`) — todos in a Trouble panel, navigated exactly like the panels above.
 * `++<++leader++>++xT` (`:TodoFzfLua`) — todos in an fzf-lua fuzzy picker; type to filter, `Enter` to jump.
 
-NOTE: Both views search with *ripgrep*, so `rg` must be on your `PATH`; the
-fzf-lua view additionally needs the *fzf* binary. If either is missing the map
-reports it (`rg was not found` / `'fzf' not installed`) rather than listing todos.
+Two more commands put the same results into Vim's own lists, with no keymap:
+
+[cols=",",options="header",]
+|===
+|Command |Action
+|`:TodoQuickFix` |Fill the quickfix list with every todo and open it (`:copen`)
+|`:TodoLocList` |Fill the current window's location list and open it (`:lopen`)
+|===
+
+Both accept two arguments:
+
+* `cwd=++<++dir++>++` — search that directory instead of the working directory, e.g. `:TodoQuickFix cwd=~/projects/foo`.
+* `keywords=++<++list++>++` — comma-separated, case-sensitive, no spaces, e.g. `:TodoLocList keywords=TODO,FIX`. Aliases are matched literally: `keywords=FIX` does not find `FIXME:`, so list each alias you want.
+
+`:TodoQuickFix` output can then be opened in Trouble with `++<++leader++>++xq`.
+
+NOTE: All four search with *ripgrep*, so `rg` must be on your `PATH`; the
+fzf-lua view additionally needs the *fzf* binary. If either is missing the
+command reports it (`rg was not found` / `'fzf' not installed`) rather than listing todos.
+
+[[todo-telescope]]
+`:TodoTelescope` also appears in `:Todo++<++Tab++>++` completion but does not work here: todo-comments
+defines it unconditionally as `:Telescope todo-comments todo`, and Telescope is not installed, so it
+fails with `E492: Not an editor command: Telescope todo-comments todo`. It never worked in this
+config — Telescope was replaced by fzf-lua in 2025 and deleted on 2026-03-10, and todo-comments,
+added on 2026-07-01, was set up around `:TodoFzfLua` and `:TodoTrouble`. Use `++<++leader++>++xT`
+instead.
 
 NOTE: `[d`/`]d` and `<leader>e` (LSP diagnostics float) are unchanged.
 `]t`/`[t` are tag navigation, covered in <<tag-navigation>> below.
@@ -331,6 +397,20 @@ wildmenu `Tab` exists only on the command line: a habit built on it would fail i
 mode, which is the exact drift this keymap sets out to remove. Use `Ctrl-n` if you want one
 key that behaves the same in both places.
 
+=== The `:BlinkCmp` command
+
+[cols=",",options="header",]
+|===
+|Command |Action
+|`:BlinkCmp status` |Run `:checkhealth blink.cmp` — reports whether the Rust fuzzy matcher library is downloaded or built, and lists enabled and disabled sources
+|`:BlinkCmp build` |Build the fuzzy matcher from source with `cargo build --release`
+|`:BlinkCmp build-log` |Show the log of the last `:BlinkCmp build`
+|===
+
+This config pins `version = "1.*"`, so blink downloads a prebuilt matcher
+and `build` is not needed. `build` needs a Rust toolchain (`cargo`), which
+is not a listed prerequisite.
+
 _Configured in `lua/plugins/blink.lua`. LSP capabilities wired in `lua/config/lsp.lua`._
 
 '''''
@@ -359,7 +439,81 @@ Format-on-save is enabled automatically for the following filetypes:
 |Lua |`stylua`
 |===
 
-The formatter runs with a 2-second timeout on save. To disable
-format-on-save for a session, use `:ConformDisable`.
+The formatter runs with a 2-second timeout on save. There is no command to
+turn format-on-save off: `:ConformDisable` does not exist here. To save once
+without formatting, use `:noautocmd write`, which skips every write
+autocommand, not only conform's.
+
+=== `:ConformInfo`
+
+`:ConformInfo` opens a floating window listing the formatters for the current
+buffer (with `ready`, `unavailable` or `error` for each), any LSP client that
+can format it, the other configured formatters, the path of conform's log
+file and its last lines. Use it when a save does not format: a missing
+`stylua` shows as `unavailable`.
+
+conform loads only when a buffer of one of the filetypes above is opened, so
+`:ConformInfo` does not exist until then.
 
 _Configured in `lua/plugins/conform.lua`._
+
+'''''
+
+== Treesitter Parsers (nvim-treesitter)
+
+This config tracks nvim-treesitter's `main` branch. Parsers listed in
+`lua/plugins/treesitter.lua` are installed at startup if missing, and
+lazy.nvim runs `:TSUpdate` whenever it installs or updates nvim-treesitter. Parsers go to
+`~/.local/share/nvim/site/parser/`.
+
+[cols=",",options="header",]
+|===
+|Command |Action
+|`:TSInstall \{lang} …` |Download, build and install one or more parsers, asynchronously. Skips parsers already installed. `\{lang}` may also be a tier: `stable`, `unstable` or `all`
+|`:TSInstall! \{lang} …` |Reinstall even if already installed
+|`:TSUpdate [\{lang} …]` |Update installed parsers to the revision nvim-treesitter pins; all installed parsers when no argument is given
+|`:TSUninstall \{lang} …` |Delete the named parsers; `all` deletes every parser
+|`:TSLog` |Show the messages from previous install, update and uninstall runs
+|===
+
+`\{lang}` is the parser name, not the filetype: `commonlisp` for Lisp,
+`c_sharp` for C#, `janet_simple` for Janet. `Tab` completes it —
+`:TSInstall` offers every available parser, `:TSUpdate` and `:TSUninstall`
+only installed ones.
+
+`:TSUninstall` of a parser in the startup list lasts only until the next
+start, which installs it again. Remove it from the `ts.install({ … })` list
+in `lua/plugins/treesitter.lua` as well.
+
+Building a parser needs the `tree-sitter` CLI, a C compiler, `curl` and
+`tar` — see xref:getting-started.adoc#tree-sitter-cli[tree-sitter CLI]. When
+an install fails, `:TSLog` shows which step failed.
+
+'''''
+
+== Folding Commands (nvim-ufo)
+
+Fold keys are listed in the xref:editor/keybindings.adoc[Keybindings]
+cheatsheet. nvim-ufo computes the folds: LSP folding ranges first, then
+treesitter where the language has a fold query, else indent. Markdown uses
+treesitter then indent. AsciiDoc is left to vim-asciidoctor.
+
+These commands have no keymaps and are mainly for diagnosing folds that are
+missing or wrong:
+
+[cols=",",options="header",]
+|===
+|Command |Action
+|`:UfoInspect` |Show, for the current buffer, the fold status, main and fallback provider, the provider actually in use, the fold kinds present and the fold range under the cursor. Reports `Buffer N has not been attached.` if ufo is not managing the buffer
+|`:UfoDisableFold` |Stop updating folds for the current buffer; the folds already there are left in place
+|`:UfoEnableFold` |Resume computing folds for the current buffer and update them now
+|`:UfoDetach` |Detach ufo from the current buffer, turning off all its features there
+|`:UfoAttach` |Attach ufo to the current buffer again
+|`:UfoDisable` |Turn ufo off for every buffer
+|`:UfoEnable` |Turn ufo back on after `:UfoDisable`
+|===
+
+ufo loads on the first `BufReadPost`, so these commands exist once a file
+has been opened.
+
+_Configured in `lua/plugins/ufo.lua`._
