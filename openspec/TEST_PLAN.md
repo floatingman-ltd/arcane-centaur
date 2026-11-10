@@ -4234,22 +4234,22 @@ Mostly documentation: every user command that plugins define and a user would ty
 
 1. Start `nvim`, run `:Lazy`.
 
-- [ ] No *Failed* section; `kulala.nvim` is listed (not loaded until an `.http` file opens)
+- [X] No *Failed* section; `kulala.nvim` is listed (not loaded until an `.http` file opens)
 
 #### RK.2 — Requests still run
 
 1. `nvim testdocs/hello.http`, put the cursor on the first request, press `,r`.
 2. Press `,o` if the result pane is not already open.
 
-- [ ] A response appears in the result pane
-- [ ] `:lua print(debug.getinfo(require("kulala").run).source)` prints a path under `~/.local/share/nvim/lazy/kulala.nvim/`, not `vendor/`
+- [X] A response appears in the result pane
+- [X] `:lua print(debug.getinfo(require("kulala").run).source)` prints a path under `~/.local/share/nvim/lazy/kulala.nvim/`, not `vendor/`
 
 #### RK.3 — The machine that showed the error
 
 1. On that machine: `git pull`, check out the branch, start `nvim`.
 2. `:Lazy`, then `I` (install) if kulala shows as not installed.
 
-- [ ] kulala installs, and `:Lazy` shows no *Failed* section after a restart
+- [X] kulala installs, and `:Lazy` shows no *Failed* section after a restart
 
 #### RK.4 — Docs build
 
@@ -4261,7 +4261,7 @@ Mostly documentation: every user command that plugins define and a user would ty
 
 ### Raise PR & merge
 
-- [ ] Every box above is ticked
+- [X] Every box above is ticked
 - [ ] PR raised with an explicit `--title` (the branch has more than one commit)
 - [ ] Merged
 
