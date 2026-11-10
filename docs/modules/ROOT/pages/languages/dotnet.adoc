@@ -376,15 +376,142 @@ a `.sln` (or `.slnx`) alongside it. C# `.csproj` projects are discovered without
 
 === Easy-Dotnet Commands
 
-[width="100%",cols="50%,50%",options="header",]
+Every easy-dotnet action is a `:Dotnet` subcommand; `:Dotnet <Tab>` completes them. They are
+available once a `.cs` or `.fs` buffer has loaded the plugin.
+
+*Picking a project.* The plain form of a command opens a picker every time. The `default` form
+asks once, remembers the choice, and reuses it; `:Dotnet reset` forgets it.
+
+*Arguments.* `run`, `debug`, `watch`, `build`, `test` and `restore` accept trailing arguments.
+`release` or `debug` as the first argument is shorthand for `-c Release` / `-c Debug`, e.g.
+`:Dotnet build release`. For `build`, `test` and `restore` the rest go to the `dotnet` command
+line; for `run`, `debug` and `watch` they are passed through to the run.
+
+==== Run, debug, watch
+
+[cols="1,2",options="header"]
 |===
 |Command |Action
-|`:Dotnet run` |Run project (picker)
-|`:Dotnet test` |Test project (picker)
-|`:Dotnet build` |Build project (picker)
-|`:Dotnet restore` |Restore packages
-|`:Dotnet clean` |Clean project
+|`:Dotnet run` |Run a project (picker)
+|`:Dotnet run default` |Run the remembered project
+|`:Dotnet run profile` |Run a project with a launch profile from `launchSettings.json` (two pickers)
+|`:Dotnet run profile default` |Run the remembered project with a picked launch profile
+|`:Dotnet debug` |Start a debug session on a project (picker)
+|`:Dotnet debug default` |Debug the remembered project
+|`:Dotnet debug profile` |Debug a project with a picked launch profile
+|`:Dotnet debug profile default` |Debug the remembered project with a picked launch profile
+|`:Dotnet debug attach` |Attach the debugger to a running .NET process
+|`:Dotnet watch` |`dotnet watch` a project — rebuild and restart on save (picker)
+|`:Dotnet watch default` |`dotnet watch` the remembered project
 |===
+
+==== Build, test, restore, clean
+
+[cols="1,2",options="header"]
+|===
+|Command |Action
+|`:Dotnet build` |Build a project (picker), output in the managed terminal
+|`:Dotnet build default` |Build the remembered project
+|`:Dotnet build solution` |Build the whole solution
+|`:Dotnet build quickfix` |Build a project and put the errors in the quickfix list instead of a terminal
+|`:Dotnet build default quickfix` |As above, for the remembered project
+|`:Dotnet build solution quickfix` |As above, for the whole solution
+|`:Dotnet test` |Test a project (picker)
+|`:Dotnet test default` |Test the remembered project
+|`:Dotnet test solution` |Test the whole solution
+|`:Dotnet test run-settings set` |Pick a `.runsettings` file for a project; stored per project and applied to VSTest runs
+|`:Dotnet testrunner` |Open the test runner window (keys below)
+|`:Dotnet restore` |Restore packages for the solution
+|`:Dotnet clean` |Clean (picker)
+|===
+
+==== Packages, projects, solutions
+
+[cols="1,2",options="header"]
+|===
+|Command |Action
+|`:Dotnet add package` |Search NuGet and add a package to a project
+|`:Dotnet add package prerelease` |As above, including prerelease versions
+|`:Dotnet remove package` |Remove a package reference (picker)
+|`:Dotnet outdated` |In a `.csproj`, `.fsproj`, `Directory.Packages.props`, `Packages.props` or `Directory.Build.props` buffer, show each package's latest version as virtual text. Then `++<++leader++>++pu` upgrades the package under the cursor and `++<++leader++>++pa` upgrades all of them
+|`:Dotnet pack` |`dotnet pack -c Release`
+|`:Dotnet push` |Pack, then push the package
+|`:Dotnet new` |Create a project from a `dotnet new` template (picker)
+|`:Dotnet createfile <path>` |Create a file at `<path>` from a `dotnet new` item template (picker)
+|`:Dotnet solution select [path]` |Choose the solution easy-dotnet uses for this directory — picker, or the given path. For layouts where the `.sln` is outside the normal search depth
+|`:Dotnet solution add` |`dotnet sln add` a project (picker)
+|`:Dotnet solution remove` |`dotnet sln remove` a project (picker)
+|`:Dotnet secrets` |Open a project's user secrets (`dotnet user-secrets`) for editing
+|===
+
+In a `.csproj` / `.fsproj` buffer, `++<++leader++>++ar` adds a project reference (picker).
+
+==== Entity Framework
+
+These wrap `dotnet ef` with the `--project` / `--startup-project` arguments filled in. They need
+the `dotnet-ef` tool: `dotnet tool install -g dotnet-ef`.
+
+[cols="1,2",options="header"]
+|===
+|Command |Action
+|`:Dotnet ef migrations add <name>` |Add a migration
+|`:Dotnet ef migrations remove` |Remove the last migration
+|`:Dotnet ef migrations list` |List migrations
+|`:Dotnet ef database update` |Apply migrations up to the latest
+|`:Dotnet ef database update pick` |Apply migrations up to a picked one
+|`:Dotnet ef database drop` |Drop the database
+|===
+
+==== Diagnostics and terminal
+
+[cols="1,2",options="header"]
+|===
+|Command |Action
+|`:Dotnet diagnostic` |Load Roslyn diagnostics for a whole solution or project into Neovim's diagnostics (errors only, the default severity) — view with `++<++leader++>++xx`
+|`:Dotnet diagnostic errors` |As above, errors only
+|`:Dotnet diagnostic warnings` |As above, errors and warnings
+|`:Dotnet terminal toggle` |Toggle the managed run/build/test terminal
+|`:Dotnet terminal show` |Show it
+|`:Dotnet terminal hide` |Hide it
+|===
+
+==== Maintenance
+
+[cols="1,2",options="header"]
+|===
+|Command |Action
+|`:Dotnet reset` |Delete everything easy-dotnet has stored — remembered projects and solution. Use it when a picker keeps choosing the wrong project or solution
+|`:Dotnet _server start` / `stop` / `restart` |Control the `EasyDotnet` server process
+|`:Dotnet _server update` |Stop the server, reinstall the latest `EasyDotnet` tool, restart
+|`:Dotnet _server loglevel <level>` |Set the server log level: `off`, `error`, `warning`, `information`, `verbose`
+|`:Dotnet _server logdump` |Show the server log; `logdump buildserver` and `logdump stdout` show the build-server and stdout logs
+|`:checkhealth easy-dotnet` |Check the server tool and the other dependencies
+|===
+
+=== Test Runner Window
+
+`:Dotnet testrunner` opens a tree of every discovered test, grouped by solution, project, namespace
+and class. Discovery starts with the server, so the tree is usually populated before you open it.
+
+[cols=",",options="header",]
+|===
+|Keys |Action
+|`o` |Expand / collapse the node under the cursor
+|`E` / `W` |Expand all / collapse all
+|`]f` / `[f` |Next / previous failing test
+|`++<++leader++>++r` / `++<++leader++>++R` |Run the test under the cursor / run all
+|`++<++leader++>++d` |Debug the test under the cursor (set breakpoints first)
+|`++<++leader++>++p` |Peek the stack trace of a failed test
+|`++<++leader++>++g` |Go to the test's file
+|`++<++leader++>++e` |Show build errors after a failed build
+|`++<++C-r++>++` |Refresh the node
+|`++<++C-c++>++` |Cancel the running operation
+|`q` |Close
+|===
+
+In a test file, gutter signs mark test methods and classes once discovery finishes, and
+`++<++leader++>++r`, `++<++leader++>++d` and `++<++leader++>++p` run, debug, or peek the test or
+class under the cursor.
 
 '''''
 

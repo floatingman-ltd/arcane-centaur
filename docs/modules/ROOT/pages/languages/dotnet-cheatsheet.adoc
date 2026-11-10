@@ -83,3 +83,24 @@ The `++<++leader++>++b` mirrors exist for terminals that grab the F-keys (e.g. `
 |`,tr` |Run project (picker)
 |`,tb` |Build project (picker)
 |===
+
+`default` forms ask for the project once and reuse it; `:Dotnet reset` forgets it. `release` as
+the first argument builds `-c Release`. Full list in the xref:languages/dotnet.adoc#_easy_dotnet_commands[guide].
+
+[cols=",",options="header",]
+|===
+|Command |Action
+|`:Dotnet run` / `run default` |Run project
+|`:Dotnet debug` / `debug attach` |Debug project / attach to a process
+|`:Dotnet watch` |`dotnet watch` (rebuild on save)
+|`:Dotnet build quickfix` |Build, errors to the quickfix list
+|`:Dotnet build solution` |Build the solution
+|`:Dotnet test solution` |Test the solution
+|`:Dotnet testrunner` |Test runner window (`++<++leader++>++r` run, `++<++leader++>++d` debug, `++<++leader++>++p` stack trace, `q` close)
+|`:Dotnet add package` / `remove package` |Add / remove a NuGet package
+|`:Dotnet outdated` |Latest versions as virtual text (in `.csproj`); `++<++leader++>++pu` / `++<++leader++>++pa` upgrade
+|`:Dotnet solution select` |Choose the solution
+|`:Dotnet diagnostic` |Whole-solution diagnostics
+|`:Dotnet terminal toggle` |Show / hide the run/build/test terminal
+|`:Dotnet reset` |Clear remembered projects and solution
+|===
