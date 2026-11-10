@@ -1,0 +1,2011 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Untitled :: Arcane Centaur Docs</title>
+    <link rel="canonical" href="https://floatingman-ltd.github.io/arcane-centaur/arcane-centaur/languages/dotnet.html">
+    <meta name="generator" content="Antora 3.2.2">
+    <link rel="stylesheet" href="../../_/css/site.css">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://floatingman-ltd.github.io/arcane-centaur">Arcane Centaur Docs</a>
+      <button class="navbar-burger" aria-controls="topbar-nav" aria-expanded="false" aria-label="Toggle main menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="#">Home</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Products</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Product A</a>
+            <a class="navbar-item" href="#">Product B</a>
+            <a class="navbar-item" href="#">Product C</a>
+          </div>
+        </div>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Services</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Service A</a>
+            <a class="navbar-item" href="#">Service B</a>
+            <a class="navbar-item" href="#">Service C</a>
+          </div>
+        </div>
+        <div class="navbar-item">
+          <span class="control">
+            <a class="button is-primary" href="#">Download</a>
+          </span>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="arcane-centaur" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="../index.html">Arcane Centaur</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Home</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../getting-started.html">Getting Started</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Languages</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="setup.html">Language Setup</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">.NET</span>
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="dotnet.html">Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="dotnet-cheatsheet.html">Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Lisp Family</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lisp.html">Lisp / Clojure / Scheme / Fennel</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lisp-cheatsheet.html">Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="janet.html">Janet Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="janet-cheatsheet.html">Janet Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Haskell</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="haskell.html">Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="haskell-cheatsheet.html">Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Lua</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lua.html">Guide</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lua-cheatsheet.html">Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Editor Core</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../editor/editing.html">Editing Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../editor/navigation.html">Navigation Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../editor/code-intelligence.html">Code Intelligence Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Git</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../editor/git/vim-fugitive.html">vim-fugitive</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../editor/git/gitsigns.html">gitsigns</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../editor/git/diffview.html">diffview</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../editor/git/lazygit.html">LazyGit</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../editor/clipboard.html">Clipboard</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">AI &amp; Automation</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../ai/ai-tools.html">AI Tools Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../ai/ai-tools-cheatsheet.html">AI Tools Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Content Creation</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/markdown.html">Markdown Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/markdown-cheatsheet.html">Markdown Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/asciidoc.html">AsciiDoc Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/asciidoc-cheatsheet.html">AsciiDoc Cheatsheet</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/diagrams.html">Diagrams &amp; PlantUML</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/presentations.html">Presentations (MARP)</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/rest.html">REST / HTTP Guide</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../content/rest-cheatsheet.html">REST Cheatsheet</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Project Tooling</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../tooling/jira.html">Jira Integration</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../tooling/confluence.html">Confluence Publishing</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Other</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../other/architecture.html">Architecture</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../other/extensions.html">Extensions</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../other/remote-sessions-intro.html">Remote Sessions: an Introduction</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../other/terminals-ssh-tmux-mosh.html">Terminals, SSH, tmux and mosh</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../other/contributing.html">Contributing to Docs</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../other/jira-project-map.html">Jira Project Map</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Arcane Centaur</span>
+    <span class="version"></span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <div class="title"><a href="../index.html">Arcane Centaur</a></div>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Arcane Centaur</a></li>
+    <li>Languages</li>
+    <li>.NET</li>
+    <li><a href="dotnet.html">Guide</a></li>
+  </ul>
+</nav>
+<div class="edit-this-page"><a href="file:///antora/docs/modules/ROOT/pages/languages/dotnet.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<div class="sect1">
+<h2 id="_net_guide_c_and_f"><a class="anchor" href="#_net_guide_c_and_f"></a>.NET Guide (C# and F#)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Full support for C# and F# including LSP, REPL-driven development, and
+format-on-save. Both languages share the .NET SDK and the same iron.nvim
+REPL keymaps.</p>
+</div>
+<div class="paragraph">
+<p><strong>Quick navigation</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#quick-start">Quick Start</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Open a file and start the REPL</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#csharp-lsp">C# — LSP (Roslyn)</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Go-to-definition, hover, code actions</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#csharp-repl">C# — REPL (csharprepl)</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">REPL keymaps</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#csharp-formatting">C# — Formatting</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CSharpier format-on-save</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#fsharp-lsp">F# — LSP (fsautocomplete)</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Go-to-definition, hover, code actions</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#fsharp-repl">F# — REPL (dotnet fsi)</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">REPL keymaps</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#iron-commands">REPL Commands</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:Iron*</code> commands for both REPLs</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#fsharp-formatting">F# — Formatting</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">fsautocomplete format-on-save</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#workflow">Typical Workflow</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Side-by-side editor + REPL</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#setup">Setup</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">.NET SDK, language servers, and tools</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#prerequisites">Prerequisites</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">System requirements</p></td>
+</tr>
+</tbody>
+</table>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="quick-start"><a class="anchor" href="#quick-start"></a>Quick Start</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_c"><a class="anchor" href="#_c"></a>C#</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Open any <code>.cs</code> file — Roslyn attaches automatically.</p>
+</li>
+<li>
+<p>If the project has multiple <code>.sln</code> files, run <code>:Roslyn target</code> to
+pick the solution.</p>
+</li>
+<li>
+<p>Start the REPL with <code>,sl</code> on any line, or open it explicitly via
+iron.nvim&#8217;s <code>:IronRepl</code>.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_f"><a class="anchor" href="#_f"></a>F#</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Verify prerequisites:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">dotnet --version
+dotnet tool list -g | grep fsautocomplete</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Open a <code>.fs</code> source file — plugins and LSP attach automatically.</p>
+</li>
+<li>
+<p>Start the REPL with <code>,sl</code> on any line.</p>
+</li>
+</ol>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="csharp-lsp"><a class="anchor" href="#csharp-lsp"></a>C# — LSP (Roslyn)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>All standard LSP keybindings apply in <code>.cs</code> buffers:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Keys</th>
+<th class="tableblock halign-left valign-top">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>gd</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Go to definition</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>K</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Hover documentation</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>gr</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Find references</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;leader&gt;rn</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rename symbol</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;leader&gt;ca</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Code action (includes <em>Fix all</em>, <em>Nested actions</em>, <em>Complex edits</em>)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;leader&gt;e</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Show diagnostic float</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[d</code> / <code>]d</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Previous / next diagnostic</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Roslyn also supports:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Multiple solution files</strong> — use <code>:Roslyn target</code> to switch between them.</p>
+</li>
+<li>
+<p><strong>Source-generated files</strong> — navigates into generated code transparently.</p>
+</li>
+<li>
+<p><strong>Broad root detection</strong> — set <code>broad_search = true</code> in the plugin opts if your <code>.sln</code> lives above the project root.</p>
+</li>
+</ul>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="csharp-repl"><a class="anchor" href="#csharp-repl"></a>C# — REPL (csharprepl via iron.nvim)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>LocalLeader is <code>,</code> in <code>.cs</code> buffers.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Keys</th>
+<th class="tableblock halign-left valign-top">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,sl</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Send current line to REPL</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,sc</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Send motion or visual selection</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,sp</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Send current paragraph</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,sf</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Send entire file</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,s&lt;CR&gt;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Send carriage return</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,si</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Interrupt REPL</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,sq</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Quit / exit REPL</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,cl</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Clear REPL output</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The REPL opens as a horizontal split (15 lines high) at the bottom of the window.</p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="csharp-formatting"><a class="anchor" href="#csharp-formatting"></a>C# — Formatting (CSharpier)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Format-on-save is enabled automatically in <code>.cs</code> buffers via <code>conform.nvim</code>. Manual trigger:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Keys</th>
+<th class="tableblock halign-left valign-top">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;leader&gt;f</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Format buffer or visual selection</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>CSharpier is opinionated and zero-config — no project-level configuration file required.</p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="fsharp-lsp"><a class="anchor" href="#fsharp-lsp"></a>F# — LSP (fsautocomplete)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>fsautocomplete</code> server is configured in <code>lua/config/lsp.lua</code>. All
+standard LSP keybindings apply in <code>.fs</code>, <code>.fsx</code>, and <code>.fsi</code> buffers:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Keys</th>
+<th class="tableblock halign-left valign-top">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>gd</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Go to definition</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>K</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Hover documentation</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>gr</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Find references</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;leader&gt;rn</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rename symbol</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;leader&gt;ca</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Code action</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;leader&gt;e</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Show diagnostic float</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[d</code> / <code>]d</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Previous / next diagnostic</p></td>
+</tr>
+</tbody>
+</table>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="fsharp-repl"><a class="anchor" href="#fsharp-repl"></a>F# — REPL (dotnet fsi via iron.nvim)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>LocalLeader is <code>,</code> in F# buffers. The REPL opens as a horizontal split
+(15 lines high) at the bottom of the window.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Keys</th>
+<th class="tableblock halign-left valign-top">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,sl</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Send current line to <code>dotnet fsi</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,sc</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Send motion / visual selection</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,sp</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Send paragraph</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,sf</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Send entire file</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,s&lt;CR&gt;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Send carriage return</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,si</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Interrupt the REPL</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,sq</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Quit the REPL</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,cl</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Clear the REPL buffer</p></td>
+</tr>
+</tbody>
+</table>
+<div class="sect2">
+<h3 id="iron-commands"><a class="anchor" href="#iron-commands"></a>REPL Commands (C# and F#)</h3>
+<div class="paragraph">
+<p>iron.nvim loads with the first <code>.cs</code> or F# buffer; its commands exist from then on.
+<code>[ft]</code> defaults to the current buffer&#8217;s filetype — <code>cs</code> (csharprepl) or <code>fsharp</code>
+(<code>dotnet fsi</code>) — and <code>&lt;Tab&gt;</code> completes it.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Command</th>
+<th class="tableblock halign-left valign-top">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:IronRepl [ft]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Open the REPL in the bottom split; if it is already running, show
+or hide its window</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:IronReplHere [ft]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Open the REPL in the current window instead of a split</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:IronFocus [ft]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Move the cursor into the REPL window, starting the REPL if needed</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:IronHide [ft]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Close the REPL window; the REPL keeps running</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:IronRestart</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Start a fresh REPL of the same filetype and wipe the old one, without
+asking</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:IronSend {text}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Send <code>text</code> to the current filetype&#8217;s REPL</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:IronSend! {ft} {text}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Send <code>text</code> to the <code>ft</code> REPL, starting it if needed</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:IronWatch file</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">On every write of this buffer, send the whole file</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:IronWatch mark</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">On every write of this buffer, resend the region last sent with
+<code>,sl</code> / <code>,sc</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:IronAttach {ft}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Make this buffer send to the <code>ft</code> REPL whatever its own filetype,
+e.g. <code>:IronAttach fsharp</code> in a scratch buffer</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>There is no command to stop <code>:IronWatch</code>; <code>:lua require("iron.core").unwatch(0)</code> removes
+the watch from the current buffer.</p>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="fsharp-indent"><a class="anchor" href="#fsharp-indent"></a>F# — Indentation</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Pressing Enter after a line that opens a body — one ending in <code>=</code>, <code>&#8594;</code>,
+<code>then</code>, <code>else</code>, or a <code>match</code> arm — indents the new line one <code>shiftwidth</code>
+deeper. <code>==</code>, <code>&gt;&gt;</code> and <code>&lt;&lt;</code> work as reindent operators.</p>
+</div>
+<div class="paragraph">
+<p><strong>This comes from the editor, not from the language server.</strong> No language
+server supplies indentation; LSP has no indent-as-you-type concept.
+Indentation therefore keeps working with <code>fsautocomplete</code> absent, still
+starting, or unable to resolve options for a standalone <code>.fsx</code>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The implementation is a <strong>vendored</strong> third-party file, <code>indent/fsharp.vim</code>,
+taken from <a href="https://github.com/ionide/Ionide-vim">Ionide-vim</a> at a recorded
+commit. The plugin itself is deliberately <strong>not</strong> installed: only that one
+file is wanted, and the rest of the plugin duplicates configuration that
+already works here — it registers a second FsAutoComplete client, sets
+<code>fdm=syntax</code> in place of the LSP folds, ships a regex syntax file instead
+of treesitter, changes <code>commentstring</code>, and binds FSI keymaps that collide
+with iron.nvim.</p>
+</div>
+<div class="paragraph">
+<p>One function in the vendored file differs from upstream: its comment and
+string detection used <code>synID()</code>, which needs a Vim <code>:syntax</code> file and so
+was inert under treesitter highlighting. Read the file&#8217;s header before
+editing or refreshing it.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Commenting is fixed in the same place and for the same reason. Neovim ships no
+<code>ftplugin</code> for F#, so <code>commentstring</code> was unset and <code>&lt;leader&gt;</code>-style
+native commenting (<code>gcc</code>, <code>gc</code>) failed with <strong>comment string is empty</strong>. F# buffers
+now use <code>// %s</code>, with <code>comments</code> set so XML doc comments (<code>///</code>)
+are recognised ahead of plain line comments and <code>(* *)</code> blocks are handled.</p>
+</div>
+<div class="paragraph">
+<p>F# is the only language here that needs a hand-written indent script.
+nvim-treesitter ships no <code>indents.scm</code> for F#, and <code>smartindent</code> keys off
+<code>{</code>, <code>}</code> and <code>cinwords</code>, none of which F# uses.</p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="fsharp-formatting"><a class="anchor" href="#fsharp-formatting"></a>F# — Formatting (fsautocomplete)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Format-on-save is enabled via <code>conform.nvim</code> using the fsautocomplete formatter, which in turn
+delegates to <a href="https://fsprojects.github.io/fantomas/">Fantomas</a>.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>Fantomas must be installed separately</strong> — <code>dotnet tool install -g fantomas</code>. fsautocomplete does
+not ship it, and without it a write does not merely skip formatting: the server raises an
+interactive prompt</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">No Fantomas install was found.:
+1: Install locally
+2: Install globally</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>which blocks every save of an F# buffer.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>Format-on-save needs resolved project options, so it is unreliable on a
+standalone <code>.fsx</code> script.</strong> fsautocomplete resolves options per project; for a
+script outside any <code>.fsproj</code> that resolution intermittently cancels with</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">Error getting project options for &lt;path&gt; - A task was canceled.</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>after which Fantomas is never invoked and the buffer writes <strong>unformatted</strong> with
+nothing else in <code>:messages</code> to explain it. It is a race, so the same file may
+format one time and not the next.</p>
+</div>
+<div class="paragraph">
+<p>Inside a project it is reliable. If a script must be formatted, <code>&lt;leader&gt;f</code>
+after the server has settled is more dependable than relying on the write.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Fantomas applies its own house style, not just indentation repair — it will collapse multi-line
+<code>match</code> arms and <code>if</code>/<code>elif</code>/<code>else</code> chains onto single lines where they fit, and normalise
+<code>Rect (w, h)</code> to <code>Rect(w, h)</code>. Expect saved files to be restructured, not merely re-indented.</p>
+</div>
+<div class="paragraph">
+<p>Manual trigger:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Keys</th>
+<th class="tableblock halign-left valign-top">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;leader&gt;f</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Format buffer or visual selection</p></td>
+</tr>
+</tbody>
+</table>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="debugging"><a class="anchor" href="#debugging"></a>Debugging (nvim-dap + netcoredbg)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Breakpoint debugging for C# and F# is provided by <a href="https://github.com/mfussenegger/nvim-dap">nvim-dap</a><br>
+<a href="https://github.com/rcarriga/nvim-dap-ui">nvim-dap-ui</a> with the <a href="https://github.com/Samsung/netcoredbg">netcoredbg</a>
+adapter, which easy-dotnet auto-registers with nvim-dap once both are loaded (there is no
+hand-written <code>dap.adapters</code> entry — a session therefore only starts from a <code>.cs</code>/<code>.fsharp</code> buffer,
+where easy-dotnet is loaded).</p>
+</div>
+<div class="sect2">
+<h3 id="_prerequisites"><a class="anchor" href="#_prerequisites"></a>Prerequisites</h3>
+<div class="paragraph">
+<p><code>netcoredbg</code> is <strong>not</strong> a NuGet / <code>dotnet tool</code> package (there is no <code>dotnet tool install -g netcoredbg</code>).
+Download the prebuilt binary from the
+<a href="https://github.com/Samsung/netcoredbg/releases">Samsung/netcoredbg releases</a> and put it on your <code>$PATH</code>.</p>
+</div>
+<div class="paragraph">
+<p><strong>Linux / WSL2 (x64):</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"># Resolve the latest release tag, download the linux-amd64 build, and extract it
+NCDBG_VER=$(curl -s https://api.github.com/repos/Samsung/netcoredbg/releases/latest \
+  | grep '"tag_name"' | cut -d'"' -f4)
+curl -L "https://github.com/Samsung/netcoredbg/releases/download/${NCDBG_VER}/netcoredbg-linux-amd64.tar.gz" \
+  -o /tmp/netcoredbg.tar.gz
+mkdir -p ~/.local/share/netcoredbg
+tar -xzf /tmp/netcoredbg.tar.gz -C ~/.local/share/netcoredbg/
+
+# Locate the binary — the archive unpacks into a nested netcoredbg/ directory
+find ~/.local/share/netcoredbg -name netcoredbg -type f
+
+# Add that directory to PATH (~/.zshenv), then reload
+echo 'export PATH="$HOME/.local/share/netcoredbg/netcoredbg:$PATH"' &gt;&gt; ~/.zshenv
+exec zsh</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Verify it is on your <code>$PATH</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">netcoredbg --version</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Release 3.2.0-1092 unpacks to <code>~/.local/share/netcoredbg/netcoredbg/netcoredbg</code>. If <code>find</code> prints a
+different directory for a later release, put that directory on <code>PATH</code> instead.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_debug_keymaps"><a class="anchor" href="#_debug_keymaps"></a>Debug Keymaps</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Keys</th>
+<th class="tableblock halign-left valign-top">Mode</th>
+<th class="tableblock halign-left valign-top">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;F9&gt;</code> or <code>&lt;leader&gt;bb</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Normal</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Toggle breakpoint</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;F5&gt;</code> or <code>&lt;leader&gt;bc</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Normal</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Start or continue the debug session</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;F10&gt;</code> or <code>&lt;leader&gt;bv</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Normal</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Step over</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;F11&gt;</code> or <code>&lt;leader&gt;bi</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Normal</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Step into</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;F12&gt;</code> or <code>&lt;leader&gt;bo</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Normal</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Step out</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;S-F5&gt;</code> or <code>&lt;leader&gt;bt</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Normal</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Terminate debug session</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;leader&gt;bu</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Normal</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Toggle debug UI</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;leader&gt;br</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Normal</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Open debug REPL</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Every action has both a function-key and a <code>&lt;leader&gt;b</code> binding. The F-keys are the
+universal debugger idiom and work on server/SSH terminals; the <code>&lt;leader&gt;b</code> mirrors are for
+GUI terminal emulators that intercept function keys before Neovim sees them (commonly <code>&lt;F11&gt;</code> for
+fullscreen, <code>&lt;F10&gt;</code> for a menu). Both are always active — use whichever your terminal passes through.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The debug UI opens automatically when a session starts and closes on exit.
+Launch configurations are auto-discovered by easy-dotnet from the project structure
+(no hand-authored <code>launch.json</code> required).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="dap-commands"><a class="anchor" href="#dap-commands"></a>Debug Commands</h3>
+<div class="paragraph">
+<p>nvim-dap loads on the first debug key press, or when a <code>.cs</code>/<code>.fs</code> buffer loads
+easy-dotnet (which requires nvim-dap to register netcoredbg). The <code>:Dap*</code> commands exist
+from then on. The same commands work in Haskell buffers.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Command</th>
+<th class="tableblock halign-left valign-top">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:DapContinue</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Start a session, or resume a paused one; same as <code>&lt;F5&gt;</code> or
+<code>&lt;leader&gt;bc</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:DapNew [name&#8230;&#8203;]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Start a new session even if one is running; with names, start
+each launch configuration of that name</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:DapToggleBreakpoint</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set or remove a breakpoint on the current line; same as <code>&lt;F9&gt;</code> or
+<code>&lt;leader&gt;bb</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:DapClearBreakpoints</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Remove every breakpoint</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:DapStepOver</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Step over; same as <code>&lt;F10&gt;</code> or <code>&lt;leader&gt;bv</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:DapStepInto</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Step into; same as <code>&lt;F11&gt;</code> or <code>&lt;leader&gt;bi</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:DapStepOut</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Step out; same as <code>&lt;F12&gt;</code> or <code>&lt;leader&gt;bo</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:DapPause</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pause the current thread, or pick a thread to pause</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:DapRestartFrame</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Restart the current stack frame (if the adapter supports it)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:DapTerminate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">End the session and the debuggee; same as <code>&lt;S-F5&gt;</code> or
+<code>&lt;leader&gt;bt</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:DapDisconnect</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Detach from the session and leave the debuggee running</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:DapToggleRepl</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Open or close the nvim-dap REPL in its own split.
+<code>&lt;leader&gt;br</code> only opens it</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:DapEval</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Open a <code>dap-eval://</code> scratch split; type expressions and <code>:w</code> to evaluate.
+With a range (<code>:'&lt;,'&gt;DapEval</code>) the selected lines are copied in; <code>:DapEval!</code>
+evaluates at once</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:DapSetLogLevel {level}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set the nvim-dap log level (<code>TRACE</code>, <code>DEBUG</code>, <code>INFO</code>,
+<code>WARN</code>, <code>ERROR</code>)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:DapShowLog</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Open the nvim-dap log in a split</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><code>&lt;leader&gt;bu</code> (toggle debug UI) has no <code>:Dap</code> equivalent; it calls nvim-dap-ui.</p>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_testing_easy_dotnet"><a class="anchor" href="#_testing_easy_dotnet"></a>Testing (easy-dotnet)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="https://github.com/GustavEikaas/easy-dotnet.nvim">easy-dotnet.nvim</a> provides a
+.NET test runner, project picker, and solution management using fzf-lua. It does
+NOT manage the Roslyn LSP — roslyn.nvim remains the sole C# language server.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>easy-dotnet.nvim is a thin client over a separate <strong><code>EasyDotnet</code> server tool</strong>, which powers <strong>all</strong>
+its features (debug, test, run, build). Install it once:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">dotnet tool install -g EasyDotnet     # provides the `dotnet-easydotnet` executable
+dotnet-easydotnet -v                  # verify (needs ~/.dotnet/tools on PATH)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Without it, every <code>:Dotnet …</code> action (and <code>&lt;F5&gt;</code> debug) errors
+<code>'dotnet-easydotnet' is not executable</code>. Run <code>:checkhealth easy-dotnet</code> to confirm the server and
+the other dependencies (dap, fzf-lua, the <code>c_sharp</code> parser).</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_test_run_build_keymaps_c_and_f_buffers"><a class="anchor" href="#_test_run_build_keymaps_c_and_f_buffers"></a>Test / Run / Build Keymaps (C# and F# buffers)</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Keys</th>
+<th class="tableblock halign-left valign-top">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,tt</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Run tests for selected project</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,tr</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Run selected project</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,tb</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Build selected project</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Run/test output opens in a managed terminal that <strong>stays open on exit</strong> (we set
+<code>managed_terminal.auto_hide = false</code>; the default closes it the moment a run exits 0). Dismiss it
+with <code>q</code>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>easy-dotnet resolves the target project from Neovim&#8217;s <strong>current working directory</strong>
+(<code>vim.fn.getcwd()</code>), not the current buffer, and it caches one active project (shown in lualine).
+Open Neovim <strong>from the project&#8217;s directory</strong> (or <code>:lcd %:p:h</code>) so <code>,tr</code>/<code>,tt</code>/<code>,tb</code> act on the
+project you mean.</p>
+</div>
+<div class="paragraph">
+<p><strong>F# projects need a solution file.</strong> easy-dotnet&#8217;s runnable-project discovery is C#-oriented, so a
+standalone <code>.fsproj</code> isn&#8217;t found ("No runnable projects found") even though <code>dotnet run</code> works — add
+a <code>.sln</code> (or <code>.slnx</code>) alongside it. C# <code>.csproj</code> projects are discovered without one.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_easy_dotnet_commands"><a class="anchor" href="#_easy_dotnet_commands"></a>Easy-Dotnet Commands</h3>
+<div class="paragraph">
+<p>Every easy-dotnet action is a <code>:Dotnet</code> subcommand; <code>:Dotnet &lt;Tab&gt;</code> completes them. They are
+available once a <code>.cs</code> or <code>.fs</code> buffer has loaded the plugin.</p>
+</div>
+<div class="paragraph">
+<p><strong>Picking a project.</strong> The plain form of a command opens a picker every time. The <code>default</code> form
+asks once, remembers the choice, and reuses it; <code>:Dotnet reset</code> forgets it.</p>
+</div>
+<div class="paragraph">
+<p><strong>Arguments.</strong> <code>run</code>, <code>debug</code>, <code>watch</code>, <code>build</code>, <code>test</code> and <code>restore</code> accept trailing arguments.
+<code>release</code> or <code>debug</code> as the first argument is shorthand for <code>-c Release</code> / <code>-c Debug</code>, e.g.
+<code>:Dotnet build release</code>. For <code>build</code>, <code>test</code> and <code>restore</code> the rest go to the <code>dotnet</code> command
+line; for <code>run</code>, <code>debug</code> and <code>watch</code> they are passed through to the run.</p>
+</div>
+<div class="sect3">
+<h4 id="_run_debug_watch"><a class="anchor" href="#_run_debug_watch"></a>Run, debug, watch</h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Command</th>
+<th class="tableblock halign-left valign-top">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:Dotnet run</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Run a project (picker)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:Dotnet run default</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Run the remembered project</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:Dotnet run profile</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Run a project with a launch profile from <code>launchSettings.json</code> (two pickers)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:Dotnet run profile default</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Run the remembered project with a picked launch profile</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:Dotnet debug</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Start a debug session on a project (picker)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:Dotnet debug default</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Debug the remembered project</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:Dotnet debug profile</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Debug a project with a picked launch profile</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:Dotnet debug profile default</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Debug the remembered project with a picked launch profile</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:Dotnet debug attach</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Attach the debugger to a running .NET process</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:Dotnet watch</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>dotnet watch</code> a project — rebuild and restart on save (picker)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:Dotnet watch default</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>dotnet watch</code> the remembered project</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_build_test_restore_clean"><a class="anchor" href="#_build_test_restore_clean"></a>Build, test, restore, clean</h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Command</th>
+<th class="tableblock halign-left valign-top">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:Dotnet build</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Build a project (picker), output in the managed terminal</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:Dotnet build default</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Build the remembered project</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:Dotnet build solution</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Build the whole solution</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:Dotnet build quickfix</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Build a project and put the errors in the quickfix list instead of a terminal</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:Dotnet build default quickfix</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">As above, for the remembered project</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:Dotnet build solution quickfix</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">As above, for the whole solution</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:Dotnet test</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Test a project (picker)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:Dotnet test default</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Test the remembered project</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:Dotnet test solution</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Test the whole solution</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:Dotnet test run-settings set</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pick a <code>.runsettings</code> file for a project; stored per project and applied to VSTest runs</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:Dotnet testrunner</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Open the test runner window (keys below)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:Dotnet restore</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Restore packages for the solution</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:Dotnet clean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Clean (picker)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_packages_projects_solutions"><a class="anchor" href="#_packages_projects_solutions"></a>Packages, projects, solutions</h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Command</th>
+<th class="tableblock halign-left valign-top">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:Dotnet add package</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Search NuGet and add a package to a project</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:Dotnet add package prerelease</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">As above, including prerelease versions</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:Dotnet remove package</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Remove a package reference (picker)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:Dotnet outdated</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">In a <code>.csproj</code>, <code>.fsproj</code>, <code>Directory.Packages.props</code>, <code>Packages.props</code> or <code>Directory.Build.props</code> buffer, show each package&#8217;s latest version as virtual text. Then <code>&lt;leader&gt;pu</code> upgrades the package under the cursor and <code>&lt;leader&gt;pa</code> upgrades all of them</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:Dotnet pack</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>dotnet pack -c Release</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:Dotnet push</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pack, then push the package</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:Dotnet new</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Create a project from a <code>dotnet new</code> template (picker)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:Dotnet createfile &lt;path&gt;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Create a file at <code>&lt;path&gt;</code> from a <code>dotnet new</code> item template (picker)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:Dotnet solution select [path]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Choose the solution easy-dotnet uses for this directory — picker, or the given path. For layouts where the <code>.sln</code> is outside the normal search depth</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:Dotnet solution add</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>dotnet sln add</code> a project (picker)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:Dotnet solution remove</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>dotnet sln remove</code> a project (picker)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:Dotnet secrets</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Open a project&#8217;s user secrets (<code>dotnet user-secrets</code>) for editing</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>In a <code>.csproj</code> / <code>.fsproj</code> buffer, <code>&lt;leader&gt;ar</code> adds a project reference (picker).</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_entity_framework"><a class="anchor" href="#_entity_framework"></a>Entity Framework</h4>
+<div class="paragraph">
+<p>These wrap <code>dotnet ef</code> with the <code>--project</code> / <code>--startup-project</code> arguments filled in. They need
+the <code>dotnet-ef</code> tool: <code>dotnet tool install -g dotnet-ef</code>.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Command</th>
+<th class="tableblock halign-left valign-top">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:Dotnet ef migrations add &lt;name&gt;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Add a migration</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:Dotnet ef migrations remove</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Remove the last migration</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:Dotnet ef migrations list</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">List migrations</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:Dotnet ef database update</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Apply migrations up to the latest</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:Dotnet ef database update pick</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Apply migrations up to a picked one</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:Dotnet ef database drop</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Drop the database</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_diagnostics_and_terminal"><a class="anchor" href="#_diagnostics_and_terminal"></a>Diagnostics and terminal</h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Command</th>
+<th class="tableblock halign-left valign-top">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:Dotnet diagnostic</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Load Roslyn diagnostics for a whole solution or project into Neovim&#8217;s diagnostics (errors only, the default severity) — view with <code>&lt;leader&gt;xx</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:Dotnet diagnostic errors</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">As above, errors only</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:Dotnet diagnostic warnings</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">As above, errors and warnings</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:Dotnet terminal toggle</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Toggle the managed run/build/test terminal</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:Dotnet terminal show</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Show it</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:Dotnet terminal hide</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Hide it</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_maintenance"><a class="anchor" href="#_maintenance"></a>Maintenance</h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Command</th>
+<th class="tableblock halign-left valign-top">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:Dotnet reset</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Delete everything easy-dotnet has stored — remembered projects and solution. Use it when a picker keeps choosing the wrong project or solution</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:Dotnet _server start</code> / <code>stop</code> / <code>restart</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Start / stop / restart the <code>EasyDotnet</code> server process</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:Dotnet _server update</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Stop the server, reinstall the latest <code>EasyDotnet</code> tool, restart</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:Dotnet _server loglevel &lt;level&gt;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set the server log level: <code>off</code>, <code>error</code>, <code>warning</code>, <code>information</code>, <code>verbose</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:Dotnet _server logdump</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Show the server log; <code>logdump buildserver</code> and <code>logdump stdout</code> show the build-server and stdout logs</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:checkhealth easy-dotnet</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Check the server tool and the other dependencies</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_test_runner_window"><a class="anchor" href="#_test_runner_window"></a>Test Runner Window</h3>
+<div class="paragraph">
+<p><code>:Dotnet testrunner</code> opens a tree of every discovered test, grouped by solution, project, namespace
+and class. Discovery starts with the server, so the tree is usually populated before you open it.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Keys</th>
+<th class="tableblock halign-left valign-top">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>o</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Expand / collapse the node under the cursor</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>E</code> / <code>W</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Expand all / collapse all</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>]f</code> / <code>[f</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Next / previous failing test</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;leader&gt;r</code> / <code>&lt;leader&gt;R</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Run the test under the cursor / run all</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;leader&gt;d</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Debug the test under the cursor (set breakpoints first)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;leader&gt;p</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Peek the stack trace of a failed test</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;leader&gt;g</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Go to the test&#8217;s file</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;leader&gt;e</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Show build errors after a failed build</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;C-r&gt;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Refresh the node</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;C-c&gt;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Cancel the running operation</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>q</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Close</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>In a test file, gutter signs mark test methods and classes once discovery finishes, and
+<code>&lt;leader&gt;r</code>, <code>&lt;leader&gt;d</code> and <code>&lt;leader&gt;p</code> run, debug, or peek the test or
+class under the cursor.</p>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_typical_workflow"><a class="anchor" href="#_typical_workflow"></a>Typical Workflow</h2>
+<div class="sectionbody">
+<div class="literalblock">
+<div class="content">
+<pre> +------------------------------------------------------+
+ |  Neovim                                              |
+ |  +--------------------------+---------------------+  |
+ |  |  Program.cs / hello.fs   |  REPL               |  |
+ |  |                          |                     |  |
+ |  |  var x = 42;             |  &gt; var x = 42;      |  |
+ |  |  Console.WriteLine(x);   |  42                 |  |
+ |  |                          |                     |  |
+ |  |  ,sl to send line -------+                     |  |
+ |  +--------------------------+---------------------+  |
+ +------------------------------------------------------+</pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Open a <code>.cs</code> or <code>.fs</code> file — LSP starts and diagnostics appear.</p>
+</li>
+<li>
+<p>Send snippets to the REPL with <code>,sl</code> / <code>,sc</code> to explore APIs interactively.</p>
+</li>
+<li>
+<p><code>&lt;leader&gt;f</code> (or save) formats with CSharpier / fsautocomplete.</p>
+</li>
+<li>
+<p>Use <code>gd</code> / <code>gr</code> / <code>&lt;leader&gt;ca</code> for full IDE-style navigation and refactoring.</p>
+</li>
+</ol>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_troubleshooting"><a class="anchor" href="#_troubleshooting"></a>Troubleshooting</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_roslyn_does_not_attach"><a class="anchor" href="#_roslyn_does_not_attach"></a>Roslyn does not attach</h3>
+<div class="paragraph">
+<p>Check that <code>Microsoft.CodeAnalysis.LanguageServer</code> is on your <code>$PATH</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">which Microsoft.CodeAnalysis.LanguageServer</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If not found, re-run the install steps in <a href="#setup">Setup</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_fsautocomplete_does_not_attach"><a class="anchor" href="#_fsautocomplete_does_not_attach"></a>fsautocomplete does not attach</h3>
+<div class="paragraph">
+<p>Check that it&#8217;s installed:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">dotnet tool list -g | grep fsautocomplete</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Run <code>:lua =vim.lsp.get_clients({bufnr=0})</code> inside Neovim to check whether
+the server is attached to the current buffer. To open the LSP log:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-vim hljs" data-lang="vim">:lua vim.cmd('e ' .. vim.lsp.get_log_path())</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>:checkhealth lsp</code> gives a broader overview of LSP status.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_repl_does_not_open"><a class="anchor" href="#_repl_does_not_open"></a>REPL does not open</h3>
+<div class="paragraph">
+<p>Check that the REPL backend binary is on your <code>$PATH</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">which csharprepl      # C#
+dotnet fsi --version  # F#</code></pre>
+</div>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="setup"><a class="anchor" href="#setup"></a>Setup</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_installing_net_global_tools"><a class="anchor" href="#_installing_net_global_tools"></a>Installing .NET Global Tools</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">dotnet tool install -g csharpier    # C# formatter
+dotnet tool install -g csharprepl   # C# interactive REPL
+dotnet tool install -g fsautocomplete  # F# language server
+dotnet tool install -g fantomas     # F# formatter (fsautocomplete delegates to it)
+dotnet tool install -g EasyDotnet   # server tool for easy-dotnet.nvim</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To install whichever are missing and update the rest in one go:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">for t in csharpier csharprepl fsautocomplete fantomas EasyDotnet; do dotnet tool install -g $t || dotnet tool update -g $t; done
+dotnet tool list -g</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The commands land in <code>~/.dotnet/tools</code>, which must be on <code>$PATH</code> — see <a href="#dotnet-sdk">Installing .NET SDK</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_installing_the_roslyn_language_server"><a class="anchor" href="#_installing_the_roslyn_language_server"></a>Installing the Roslyn Language Server</h3>
+<div class="paragraph">
+<p>The Roslyn LSP is the official Microsoft C# language server used in
+VS Code&#8217;s C# Dev Kit. It is <strong>not</strong> installed via <code>dotnet tool install</code>,
+and it is <strong>not</strong> on the public nuget.org feed. It is published to
+Microsoft&#8217;s Azure DevOps <strong>vs-impl</strong> feed, and every release is a
+prerelease (there is no stable <code>5.x</code> — the newest is <code>5.4.0-2.26179.14</code>
+at the time of writing; there is no <code>5.5</code>/<code>5.6</code>).</p>
+</div>
+<div class="paragraph">
+<p><strong>Linux / WSL2 (x64):</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"># 1. Resolve the newest version from the Azure DevOps vs-impl feed
+PKG=microsoft.codeanalysis.languageserver.linux-x64
+FEED="https://pkgs.dev.azure.com/azure-public/vside/_packaging/vs-impl/nuget/v3/flat2/${PKG}"
+VERSION=$(curl -s "${FEED}/index.json" | tr ',' '\n' | grep -oE '[0-9][0-9.]+-[0-9.]+' | sort -V | tail -1)
+echo "Installing Roslyn LSP ${VERSION}"
+
+# 2. Download the linux-x64 package (self-contained native binary)
+mkdir -p ~/.local/share/roslyn
+curl -L "${FEED}/${VERSION}/${PKG}.${VERSION}.nupkg" -o /tmp/roslyn.nupkg
+
+# 3. Extract into the install directory and make executable (needs `unzip`)
+unzip -o -q /tmp/roslyn.nupkg -d ~/.local/share/roslyn
+chmod +x ~/.local/share/roslyn/content/LanguageServer/linux-x64/Microsoft.CodeAnalysis.LanguageServer
+
+# 4. Add to PATH (~/.zshenv — see Installing .NET SDK for why), then reload
+echo 'export PATH="$HOME/.local/share/roslyn/content/LanguageServer/linux-x64:$PATH"' &gt;&gt; ~/.zshenv
+exec zsh
+
+# 5. Verify
+Microsoft.CodeAnalysis.LanguageServer --version</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Browse all versions at <code>${FEED}/index.json</code>. The <code>nuget.org</code> package of
+the same name carries only a single stale prerelease — do not use it.
+To pin a specific version instead of auto-resolving the newest, set
+<code>VERSION=</code> manually (e.g. <code>VERSION=5.4.0-2.26179.14</code>).</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="prerequisites"><a class="anchor" href="#prerequisites"></a>Prerequisites</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<div class="title">NET-specific tools only. Base requirements — Neovim itself, git, <code>fzf</code>, a C compiler for the</div>
+<p>Treesitter parsers — are in <a href="../getting-started.html" class="xref page">Getting Started</a>; the cross-language view is
+in <a href="setup.html#dotnet" class="xref page">Language Setup</a>.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 34%;">
+<col style="width: 33%;">
+<col style="width: 33%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Dependency</th>
+<th class="tableblock halign-left valign-top">Purpose</th>
+<th class="tableblock halign-left valign-top">Install hint</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>.NET SDK 8 and/or 10</strong>, installed side by side in <code>~/.dotnet</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">C# and F# compiler, <code>dotnet fsi</code> REPL. The <strong>runtime must match the project&#8217;s <code>&lt;TargetFramework&gt;</code></strong> to run/debug.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#dotnet-sdk">Installing .NET SDK</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Roslyn LSP</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">C# language server (roslyn.nvim)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#setup">Installing the Roslyn Language Server</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>fsautocomplete</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">F# language server; drives formatting but delegates it to Fantomas</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>dotnet tool install -g fsautocomplete</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>fantomas</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">F# formatter. Required for F# format-on-save</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>dotnet tool install -g fantomas</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>csharprepl</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">C# REPL (iron.nvim)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>dotnet tool install -g csharprepl</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>csharpier</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">C# formatter</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>dotnet tool install -g csharpier</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>EasyDotnet</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Server tool easy-dotnet.nvim needs for solution management, run, and test</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>dotnet tool install -g EasyDotnet</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>netcoredbg</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">C#/F# debug adapter (nvim-dap)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#debugging">Debugging § Prerequisites</a> — a GitHub release binary, <strong>not</strong> a <code>dotnet tool</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="sect2">
+<h3 id="dotnet-sdk"><a class="anchor" href="#dotnet-sdk"></a>Installing .NET SDK</h3>
+<div class="paragraph">
+<p>Install every SDK you need — here .NET 8 and .NET 10 — side by side into <code>~/.dotnet</code> with
+Microsoft&#8217;s <code>dotnet-install.sh</code>. One <code>dotnet</code> then serves both: it builds with the newest SDK
+unless a repo&#8217;s <code>global.json</code> pins an older one, and runs each project on the runtime matching its
+<code>&lt;TargetFramework&gt;</code>.</p>
+</div>
+<div class="paragraph">
+<p><strong>Linux / WSL2 (Ubuntu):</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">curl -sSL https://dot.net/v1/dotnet-install.sh -o /tmp/dotnet-install.sh
+bash /tmp/dotnet-install.sh --channel 10.0 --install-dir ~/.dotnet
+bash /tmp/dotnet-install.sh --channel 8.0 --install-dir ~/.dotnet</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Re-running either <code>--channel</code> line later installs the latest patch next to the existing one.</p>
+</div>
+<div class="paragraph">
+<p>Then put the install on <code>$PATH</code>, together with <code>~/.dotnet/tools</code> where <code>dotnet tool install -g</code>
+puts its commands. Under zsh, use <code>~/.zshenv</code>: zsh reads it for every shell, including ones that
+do not descend from your interactive terminal (an <code>ssh host cmd</code>, <code>wsl.exe -e</code>, a scheduled job),
+whereas <code>~/.zshrc</code> is read only by interactive shells. <code>typeset -U</code> drops duplicate <code>$PATH</code>
+entries when shells nest.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">printf '%s\n' 'typeset -U path PATH' 'export DOTNET_ROOT="$HOME/.dotnet"' 'export PATH="$HOME/.dotnet:$HOME/.dotnet/tools:$PATH"' &gt;&gt; ~/.zshenv
+exec zsh</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Verify, from a fresh non-interactive shell:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">zsh -c 'echo $DOTNET_ROOT; command -v dotnet'   # ~/.dotnet and ~/.dotnet/dotnet
+dotnet --list-sdks                              # an 8.0.x and a 10.0.x line
+dotnet --list-runtimes                          # Microsoft.NETCore.App 8.0.x and 10.0.x</code></pre>
+</div>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>Do not mix this with Ubuntu&#8217;s apt packages.</strong> apt (<code>dotnet-sdk-8.0</code> and friends) installs to
+<code>/usr/lib/dotnet</code> and carries one version per package source, so it cannot supply 8 and 10 together
+on Ubuntu 24.04. It also writes <code>/etc/dotnet/install_location</code>, which points at <code>/usr/lib/dotnet</code>;
+a global tool started without <code>DOTNET_ROOT</code> set looks there, finds no .NET 10 runtime, and fails
+even though <code>dotnet --list-runtimes</code> in your shell lists one. Check for a leftover apt install:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">dpkg -l | grep -i dotnet                                   # should print nothing
+which -a dotnet; cat /etc/dotnet/install_location* 2&gt;/dev/null</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If <code>dpkg</code> lists packages, remove them (read apt&#8217;s removal list before confirming):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">sudo apt remove dotnet-sdk-8.0 dotnet-runtime-8.0 dotnet-host-8.0 dotnet-hostfxr-8.0 dotnet-apphost-pack-8.0 dotnet-targeting-pack-8.0 dotnet-templates-8.0</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you keep them, <code>DOTNET_ROOT</code> and the <code>~/.dotnet</code> entry ahead of <code>/usr/bin</code> on <code>$PATH</code> are what
+keep the apt copy out of the way.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Running or debugging a project needs the <strong>runtime that matches its <code>&lt;TargetFramework&gt;</code></strong>, not
+just any SDK. The 10.0 SDK builds a <code>net8.0</code> project, but running it needs
+<code>Microsoft.NETCore.App 8.0.x</code>, which the <code>--channel 8.0</code> install provides. Microsoft&#8217;s support for
+.NET 8 ended on 2026-11-10; .NET 10 is the current LTS. The editor toolchain here (roslyn.nvim,
+fsautocomplete, csharprepl, easy-dotnet, netcoredbg) works with either.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_verifying_the_toolchain"><a class="anchor" href="#_verifying_the_toolchain"></a>Verifying the toolchain</h3>
+<div class="paragraph">
+<p>Once the SDKs, global tools, Roslyn, and netcoredbg are installed, build and run one project per
+target framework:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">dotnet new console -f net8.0 -o /tmp/t8 &amp;&amp; dotnet run --project /tmp/t8      # Hello, World!
+dotnet new console -f net10.0 -o /tmp/t10 &amp;&amp; dotnet run --project /tmp/t10   # Hello, World!
+dotnet new console -lang F# -o /tmp/f10</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then, in Neovim:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><code>cd /tmp/t10 &amp;&amp; nvim Program.cs</code>, wait for the project to load, and run <code>:checkhealth vim.lsp</code> — it lists an active <code>roslyn</code> client.</p>
+</li>
+<li>
+<p><code>K</code> on <code>Console</code> opens hover documentation.</p>
+</li>
+<li>
+<p>Indent the <code>Console.WriteLine</code> line wrongly and <code>:w</code> — CSharpier restores it.</p>
+</li>
+<li>
+<p><code>&lt;F9&gt;</code> on that line, then <code>&lt;F5&gt;</code> — the debugger stops there and dap-ui opens. <code>&lt;S-F5&gt;</code> ends the session.</p>
+</li>
+<li>
+<p><code>cd /tmp/f10 &amp;&amp; nvim Program.fs</code> — <code>:checkhealth vim.lsp</code> lists <code>fsautocomplete</code>, and <code>:w</code> saves without a "No Fantomas install was found" prompt.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Clean up with <code>rm -rf /tmp/t8 /tmp/t10 /tmp/f10</code>.</p>
+</div>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>This page was built using the Antora default UI.</p>
+  <p>The source code for this UI is licensed under the terms of the MPL-2.0 license.</p>
+</footer>
+<script id="site-script" src="../../_/js/site.js" data-ui-root-path="../../_"></script>
+<script async src="../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>
