@@ -276,9 +276,12 @@ curl -L "https://github.com/Samsung/netcoredbg/releases/download/${NCDBG_VER}/ne
 mkdir -p ~/.local/share/netcoredbg
 tar -xzf /tmp/netcoredbg.tar.gz -C ~/.local/share/netcoredbg/
 
-# Add to your shell rc (~/.bashrc or ~/.zshrc), then reload:
-echo 'export PATH="$PATH:$HOME/.local/share/netcoredbg"' >> ~/.bashrc
-source ~/.bashrc
+# Locate the binary — the archive unpacks into a nested netcoredbg/ directory
+find ~/.local/share/netcoredbg -name netcoredbg -type f
+
+# Add that directory to PATH (~/.zshenv), then reload
+echo 'export PATH="$HOME/.local/share/netcoredbg/netcoredbg:$PATH"' >> ~/.zshenv
+exec zsh
 ----
 
 Verify it is on your `$PATH`:
@@ -290,8 +293,8 @@ netcoredbg --version
 
 [NOTE]
 ====
-If `netcoredbg --version` is not found afterward, the tarball extracted into a nested
-`netcoredbg/` subdirectory — point `PATH` at `~/.local/share/netcoredbg/netcoredbg` instead.
+Release 3.2.0-1092 unpacks to `~/.local/share/netcoredbg/netcoredbg/netcoredbg`. If `find` prints a
+different directory for a later release, put that directory on `PATH` instead.
 ====
 
 === Debug Keymaps
@@ -420,7 +423,7 @@ Check that `Microsoft.CodeAnalysis.LanguageServer` is on your `$PATH`:
 which Microsoft.CodeAnalysis.LanguageServer
 ----
 
-If not found, re-run the install steps in xref:#prerequisites[Prerequisites].
+If not found, re-run the install steps in xref:#setup[Setup].
 
 === fsautocomplete does not attach
 
@@ -464,7 +467,18 @@ dotnet tool install -g csharpier    # C# formatter
 dotnet tool install -g csharprepl   # C# interactive REPL
 dotnet tool install -g fsautocomplete  # F# language server
 dotnet tool install -g fantomas     # F# formatter (fsautocomplete delegates to it)
+dotnet tool install -g EasyDotnet   # server tool for easy-dotnet.nvim
 ----
+
+To install whichever are missing and update the rest in one go:
+
+[source,sh]
+----
+for t in csharpier csharprepl fsautocomplete fantomas EasyDotnet; do dotnet tool install -g $t || dotnet tool update -g $t; done
+dotnet tool list -g
+----
+
+The commands land in `~/.dotnet/tools`, which must be on `$PATH` — see <<dotnet-sdk,Installing .NET SDK>>.
 
 === Installing the Roslyn Language Server
 
@@ -489,13 +503,13 @@ echo "Installing Roslyn LSP ${VERSION}"
 mkdir -p ~/.local/share/roslyn
 curl -L "${FEED}/${VERSION}/${PKG}.${VERSION}.nupkg" -o /tmp/roslyn.nupkg
 
-# 3. Extract into the install directory and make executable
-unzip -o /tmp/roslyn.nupkg -d ~/.local/share/roslyn
+# 3. Extract into the install directory and make executable (needs `unzip`)
+unzip -o -q /tmp/roslyn.nupkg -d ~/.local/share/roslyn
 chmod +x ~/.local/share/roslyn/content/LanguageServer/linux-x64/Microsoft.CodeAnalysis.LanguageServer
 
-# 4. Add to PATH in your shell rc file, then reload
-echo 'export PATH="$HOME/.local/share/roslyn/content/LanguageServer/linux-x64:$PATH"' >> ~/.bashrc
-source ~/.bashrc
+# 4. Add to PATH (~/.zshenv — see Installing .NET SDK for why), then reload
+echo 'export PATH="$HOME/.local/share/roslyn/content/LanguageServer/linux-x64:$PATH"' >> ~/.zshenv
+exec zsh
 
 # 5. Verify
 Microsoft.CodeAnalysis.LanguageServer --version
@@ -521,7 +535,7 @@ in xref:languages/setup.adoc#dotnet[Language Setup].
 [width="100%",cols="34%,33%,33%",options="header",]
 |===
 |Dependency |Purpose |Install hint
-|*.NET SDK ≥ 8* (net8.0 or net10.0 — both LTS) |C# and F# compiler, `dotnet fsi` REPL. The **runtime must match the project's `<TargetFramework>`** to run/debug. |https://dotnet.microsoft.com/download
+|*.NET SDK 8 and/or 10*, installed side by side in `~/.dotnet` |C# and F# compiler, `dotnet fsi` REPL. The **runtime must match the project's `<TargetFramework>`** to run/debug. |<<dotnet-sdk,Installing .NET SDK>>
 |*Roslyn LSP* |C# language server (roslyn.nvim) |<<setup,Installing the Roslyn Language Server>>
 |*fsautocomplete* |F# language server; drives formatting but delegates it to Fantomas |`dotnet tool install -g fsautocomplete`
 |*fantomas* |F# formatter. Required for F# format-on-save |`dotnet tool install -g fantomas`
@@ -531,26 +545,99 @@ in xref:languages/setup.adoc#dotnet[Language Setup].
 |*netcoredbg* |C#/F# debug adapter (nvim-dap) |<<debugging,Debugging § Prerequisites>> — a GitHub release binary, *not* a `dotnet tool`
 |===
 
+[[dotnet-sdk]]
 === Installing .NET SDK
 
-Follow the official guide for Ubuntu / WSL:
+Install every SDK you need — here .NET 8 and .NET 10 — side by side into `~/.dotnet` with
+Microsoft's `dotnet-install.sh`. One `dotnet` then serves both: it builds with the newest SDK
+unless a repo's `global.json` pins an older one, and runs each project on the runtime matching its
+`<TargetFramework>`.
+
+*Linux / WSL2 (Ubuntu):*
 
 [source,sh]
 ----
-wget https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb
-sudo dpkg -i packages-microsoft-prod.deb
-sudo apt update && sudo apt install -y dotnet-sdk-8.0
+curl -sSL https://dot.net/v1/dotnet-install.sh -o /tmp/dotnet-install.sh
+bash /tmp/dotnet-install.sh --channel 10.0 --install-dir ~/.dotnet
+bash /tmp/dotnet-install.sh --channel 8.0 --install-dir ~/.dotnet
 ----
 
-Or download directly from https://dotnet.microsoft.com/download. `net10.0` (LTS to 2028) works
-equally well — swap the package for `dotnet-sdk-10.0`.
+Re-running either `--channel` line later installs the latest patch next to the existing one.
+
+Then put the install on `$PATH`, together with `~/.dotnet/tools` where `dotnet tool install -g`
+puts its commands. Under zsh, use `~/.zshenv`: zsh reads it for every shell, including ones that
+do not descend from your interactive terminal (an `ssh host cmd`, `wsl.exe -e`, a scheduled job),
+whereas `~/.zshrc` is read only by interactive shells. `typeset -U` drops duplicate `$PATH`
+entries when shells nest.
+
+[source,sh]
+----
+printf '%s\n' 'typeset -U path PATH' 'export DOTNET_ROOT="$HOME/.dotnet"' 'export PATH="$HOME/.dotnet:$HOME/.dotnet/tools:$PATH"' >> ~/.zshenv
+exec zsh
+----
+
+Verify, from a fresh non-interactive shell:
+
+[source,sh]
+----
+zsh -c 'echo $DOTNET_ROOT; command -v dotnet'   # ~/.dotnet and ~/.dotnet/dotnet
+dotnet --list-sdks                              # an 8.0.x and a 10.0.x line
+dotnet --list-runtimes                          # Microsoft.NETCore.App 8.0.x and 10.0.x
+----
+
+[WARNING]
+====
+*Do not mix this with Ubuntu's apt packages.* apt (`dotnet-sdk-8.0` and friends) installs to
+`/usr/lib/dotnet` and carries one version per package source, so it cannot supply 8 and 10 together
+on Ubuntu 24.04. It also writes `/etc/dotnet/install_location`, which points at `/usr/lib/dotnet`;
+a global tool started without `DOTNET_ROOT` set looks there, finds no .NET 10 runtime, and fails
+even though `dotnet --list-runtimes` in your shell lists one. Check for a leftover apt install:
+
+[source,sh]
+----
+dpkg -l | grep -i dotnet                                   # should print nothing
+which -a dotnet; cat /etc/dotnet/install_location* 2>/dev/null
+----
+
+If `dpkg` lists packages, remove them (read apt's removal list before confirming):
+
+[source,sh]
+----
+sudo apt remove dotnet-sdk-8.0 dotnet-runtime-8.0 dotnet-host-8.0 dotnet-hostfxr-8.0 dotnet-apphost-pack-8.0 dotnet-targeting-pack-8.0 dotnet-templates-8.0
+----
+
+If you keep them, `DOTNET_ROOT` and the `~/.dotnet` entry ahead of `/usr/bin` on `$PATH` are what
+keep the apt copy out of the way.
+====
 
 [NOTE]
 ====
-Debugging and running a project needs the **runtime that matches its `<TargetFramework>`**, not
-just any SDK. A net10 SDK builds a `net8.0` project, but running/debugging it also needs the
-net8.0 *runtime* (`dotnet --list-runtimes` should show `Microsoft.NETCore.App 8.0.x`; install with
-`sudo apt install dotnet-runtime-8.0`). The whole toolchain here (roslyn.nvim, fsautocomplete,
-csharprepl, easy-dotnet, netcoredbg) is SDK-version-agnostic — pick net8.0 or net10.0 and keep the
-project target and installed runtime in sync.
+Running or debugging a project needs the **runtime that matches its `<TargetFramework>`**, not
+just any SDK. The 10.0 SDK builds a `net8.0` project, but running it needs
+`Microsoft.NETCore.App 8.0.x`, which the `--channel 8.0` install provides. Microsoft's support for
+.NET 8 ended on 2026-11-10; .NET 10 is the current LTS. The editor toolchain here (roslyn.nvim,
+fsautocomplete, csharprepl, easy-dotnet, netcoredbg) works with either.
 ====
+
+=== Verifying the toolchain
+
+Once the SDKs, global tools, Roslyn, and netcoredbg are installed, build and run one project per
+target framework:
+
+[source,sh]
+----
+dotnet new console -f net8.0 -o /tmp/t8 && dotnet run --project /tmp/t8      # Hello, World!
+dotnet new console -f net10.0 -o /tmp/t10 && dotnet run --project /tmp/t10   # Hello, World!
+dotnet new console -lang F# -o /tmp/f10
+----
+
+Then, in Neovim:
+
+[arabic]
+. `cd /tmp/t10 && nvim Program.cs`, wait for the project to load, and run `:checkhealth vim.lsp` — it lists an active `roslyn` client.
+. `K` on `Console` opens hover documentation.
+. Indent the `Console.WriteLine` line wrongly and `:w` — CSharpier restores it.
+. `<F9>` on that line, then `<F5>` — the debugger stops there and dap-ui opens. `<S-F5>` ends the session.
+. `cd /tmp/f10 && nvim Program.fs` — `:checkhealth vim.lsp` lists `fsautocomplete`, and `:w` saves without a "No Fantomas install was found" prompt.
+
+Clean up with `rm -rf /tmp/t8 /tmp/t10 /tmp/f10`.
