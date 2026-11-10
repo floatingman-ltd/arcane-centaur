@@ -1,12 +1,12 @@
 return {
   {
-    -- github.com/mistweaverco/kulala.nvim returns 404 (checked 2026-09-29) and
-    -- every fetch fails. Load a copy of the last clone (commit dcad056) from
-    -- outside lazy's root, so lazy treats it as local and runs no git on it.
-    -- Restore "mistweaverco/kulala.nvim" once the repo is back or a trusted
-    -- mirror carries that commit.
-    dir = vim.fn.stdpath("data") .. "/vendor/kulala.nvim",
-    name = "kulala.nvim",
+    -- Upstream moved from mistweaverco/ to dont-be-evil-company/ (same GitHub
+    -- repo id 819582362, same maintainer; the old URL redirects). Pinned to
+    -- dcad056, the commit used here since 2026-08: main has since replaced the
+    -- engine with a Go daemon and removed Lua/TS scripting (125751e, e60b6d4).
+    -- Move the pin only as its own change.
+    "dont-be-evil-company/kulala.nvim",
+    commit = "dcad056448773ae5b54cadbfdbd188a599cfebd3",
     ft = { "http" },
     -- Keymaps are buffer-local <localleader> maps in after/ftplugin/http.lua.
     opts = {},

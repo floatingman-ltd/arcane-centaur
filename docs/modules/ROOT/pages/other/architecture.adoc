@@ -249,7 +249,7 @@ haskell-tools.nvim auto-discovers Haskell DAP configurations once nvim-dap is pr
 |https://github.com/iamcco/markdown-preview.nvim[markdown-preview.nvim] |Live Markdown preview in browser (GUI)
 |https://github.com/MeanderingProgrammer/render-markdown.nvim[render-markdown.nvim] |In-editor Markdown rendering; powers the popup preview and the cheatsheet float
 |https://github.com/aklt/plantuml-syntax[plantuml-syntax] |PlantUML syntax highlighting
-|https://github.com/mistweaverco/kulala.nvim[kulala.nvim] |HTTP/REST client for `.http` files
+|https://github.com/dont-be-evil-company/kulala.nvim[kulala.nvim] |HTTP/REST client for `.http` files
 |https://github.com/turbio/bracey.vim[bracey.vim] |Live HTML preview in browser
 |===
 

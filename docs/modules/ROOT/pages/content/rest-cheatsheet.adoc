@@ -17,18 +17,22 @@
 |`,s` |Normal |Open HTTP scratchpad
 |===
 
-== Commands Reference
+== Lua API
+
+kulala.nvim at the pinned commit defines no `:Kulala` command. Call the functions directly, for example `:lua require("kulala").inspect()`. The first five are also bound to the keys above.
 
 [cols=",",options="header",]
 |===
-|Command |Action
-|`:Kulala run` |Run request under cursor
-|`:Kulala replay` |Re-run last executed request
-|`:Kulala open` |Open result pane
-|`:Kulala inspect` |Inspect current request
-|`:Kulala copy` |Copy request as curl command
-|`:Kulala scratchpad` |Open HTTP scratchpad
-|`:Kulala search` |Search and jump to a request
+|Function |Action
+|`require("kulala").run()` |Run request under cursor
+|`require("kulala").run_all()` |Run all requests in the file
+|`require("kulala").replay()` |Re-run last executed request
+|`require("kulala").open()` |Open result pane
+|`require("kulala").scratchpad()` |Open HTTP scratchpad
+|`require("kulala").inspect()` |Inspect current request
+|`require("kulala").copy()` |Copy request as curl command
+|`require("kulala").from_curl()` |Paste a curl command from the clipboard as a request
+|`require("kulala").search()` |Search and jump to a request
 |===
 
 → xref:content/rest.adoc[Guide]

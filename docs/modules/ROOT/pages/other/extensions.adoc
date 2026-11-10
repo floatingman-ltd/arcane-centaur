@@ -100,7 +100,7 @@ Every extension in this configuration, with its purpose in one line. *Built here
 |https://github.com/iamcco/markdown-preview.nvim[markdown-preview.nvim] |Live Markdown preview in the browser. |xref:content/markdown.adoc[Markdown]
 |https://github.com/aklt/plantuml-syntax[plantuml-syntax] |PlantUML syntax highlighting. |xref:content/diagrams.adoc[Diagrams]
 |https://github.com/turbio/bracey.vim[bracey.vim] |Live HTML preview in the browser that updates as you type. |—
-|kulala.nvim |HTTP client for `.http` files; loaded from a local copy because its GitHub repository returns 404. |xref:content/rest.adoc[REST]
+|kulala.nvim |HTTP client for `.http` files; pinned to commit `dcad056` after upstream moved to `dont-be-evil-company/kulala.nvim` and rewrote its engine. |xref:content/rest.adoc[REST]
 |===
 
 [[containers]]
