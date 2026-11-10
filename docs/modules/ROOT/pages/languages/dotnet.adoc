@@ -332,12 +332,12 @@ different directory for a later release, put that directory on `PATH` instead.
 [cols=",,",options="header",]
 |===
 |Keys |Mode |Action
-|`<F9>` / `++<++leader++>++bb` |Normal |Toggle breakpoint
-|`<F5>` / `++<++leader++>++bc` |Normal |Continue / start debug session
-|`<F10>` / `++<++leader++>++bv` |Normal |Step over
-|`<F11>` / `++<++leader++>++bi` |Normal |Step into
-|`<F12>` / `++<++leader++>++bo` |Normal |Step out
-|`<S-F5>` / `++<++leader++>++bt` |Normal |Terminate debug session
+|`<F9>` or `++<++leader++>++bb` |Normal |Toggle breakpoint
+|`<F5>` or `++<++leader++>++bc` |Normal |Start or continue the debug session
+|`<F10>` or `++<++leader++>++bv` |Normal |Step over
+|`<F11>` or `++<++leader++>++bi` |Normal |Step into
+|`<F12>` or `++<++leader++>++bo` |Normal |Step out
+|`<S-F5>` or `++<++leader++>++bt` |Normal |Terminate debug session
 |`++<++leader++>++bu` |Normal |Toggle debug UI
 |`++<++leader++>++br` |Normal |Open debug REPL
 |===
@@ -364,19 +364,19 @@ from then on. The same commands work in Haskell buffers.
 [cols="1,2",options="header"]
 |===
 |Command |Action
-|`:DapContinue` |Start a session, or resume a paused one; same as `<F5>` /
+|`:DapContinue` |Start a session, or resume a paused one; same as `<F5>` or
 `++<++leader++>++bc`
 |`:DapNew [name...]` |Start a new session even if one is running; with names, start
 each launch configuration of that name
-|`:DapToggleBreakpoint` |Set or remove a breakpoint on the current line; same as `<F9>` /
+|`:DapToggleBreakpoint` |Set or remove a breakpoint on the current line; same as `<F9>` or
 `++<++leader++>++bb`
 |`:DapClearBreakpoints` |Remove every breakpoint
-|`:DapStepOver` |Step over; same as `<F10>` / `++<++leader++>++bv`
-|`:DapStepInto` |Step into; same as `<F11>` / `++<++leader++>++bi`
-|`:DapStepOut` |Step out; same as `<F12>` / `++<++leader++>++bo`
+|`:DapStepOver` |Step over; same as `<F10>` or `++<++leader++>++bv`
+|`:DapStepInto` |Step into; same as `<F11>` or `++<++leader++>++bi`
+|`:DapStepOut` |Step out; same as `<F12>` or `++<++leader++>++bo`
 |`:DapPause` |Pause the current thread, or pick a thread to pause
 |`:DapRestartFrame` |Restart the current stack frame (if the adapter supports it)
-|`:DapTerminate` |End the session and the debuggee; same as `<S-F5>` /
+|`:DapTerminate` |End the session and the debuggee; same as `<S-F5>` or
 `++<++leader++>++bt`
 |`:DapDisconnect` |Detach from the session and leave the debuggee running
 |`:DapToggleRepl` |Open or close the nvim-dap REPL in its own split.
@@ -548,7 +548,7 @@ the `dotnet-ef` tool: `dotnet tool install -g dotnet-ef`.
 |===
 |Command |Action
 |`:Dotnet reset` |Delete everything easy-dotnet has stored — remembered projects and solution. Use it when a picker keeps choosing the wrong project or solution
-|`:Dotnet _server start` / `stop` / `restart` |Control the `EasyDotnet` server process
+|`:Dotnet _server start` / `stop` / `restart` |Start / stop / restart the `EasyDotnet` server process
 |`:Dotnet _server update` |Stop the server, reinstall the latest `EasyDotnet` tool, restart
 |`:Dotnet _server loglevel <level>` |Set the server log level: `off`, `error`, `warning`, `information`, `verbose`
 |`:Dotnet _server logdump` |Show the server log; `logdump buildserver` and `logdump stdout` show the build-server and stdout logs

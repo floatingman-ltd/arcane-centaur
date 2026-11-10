@@ -86,13 +86,13 @@ the picker with any `:FzfLua ++<++command++>++` call.
 [cols=",",options="header",]
 |===
 |Keys |Action
-|`Ctrl-j` / `↓` |Move to next item
-|`Ctrl-k` / `↑` |Move to previous item
+|`Ctrl-j` or `↓` |Move to next item
+|`Ctrl-k` or `↑` |Move to previous item
 |`Enter` |Open selected file (default split)
 |`Ctrl-v` |Open selected file in vertical split
-|`Ctrl-s` / `Ctrl-x` |Open selected file in horizontal split
+|`Ctrl-s` or `Ctrl-x` |Open selected file in horizontal split
 |`Ctrl-t` |Open selected file in a new tab (the new tab has no tree — `gT` returns to this one)
-|`Ctrl-c` / `Esc` |Close the picker
+|`Ctrl-c` or `Esc` |Close the picker
 |`Ctrl-a` |Select all items
 |`Ctrl-d` |Deselect all items
 |===
@@ -295,7 +295,7 @@ command. Common real-world producers:
 sites with `++]++q` before renaming or deleting it.
 |`:lua vim.diagnostic.setqflist()` |All LSP errors/warnings across loaded buffers;
 step through them with `++]++q` and fix each in turn.
-|`:grep {pat}` / `:vimgrep /{pat}/ **/*.lua` |Project-wide text search. Review hits
+|`:grep {pat}` or `:vimgrep /{pat}/ **/*.lua` |Project-wide text search. Review hits
 with `++]++q`, then apply one edit to every match with `:cdo s/old/new/g \| update`.
 |`:make` |Compiler / build errors parsed via `errorformat` — jump straight to each
 failing line.
@@ -331,7 +331,7 @@ Prefix with `++[++o` to enable, `++]++o` to disable, `yo` to toggle.
 
 [cols=",",options="header",]
 |===
-|Keys |Option toggled
+|Keys |Option: enable / disable / toggle
 |`++[++oh` / `++]++oh` / `yoh` |`hlsearch` (search highlight)
 |`++[++oi` / `++]++oi` / `yoi` |`ignorecase`
 |`++[++on` / `++]++on` / `yon` |`number` (line numbers)

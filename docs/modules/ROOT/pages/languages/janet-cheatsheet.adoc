@@ -2,7 +2,7 @@
 
 *LocalLeader* = `,` in Janet buffers
 
-→ Back to xref:editor/keybindings.adoc[main cheatsheet] · xref:languages/janet.adoc[Full guide]
+→ Back to xref:editor/keybindings.adoc[main cheatsheet] · xref:languages/janet.adoc[Full guide] · xref:editor/keybindings.adoc#reading-tables[Reading these tables]
 
 NOTE: This config uses the Janet *stdio client* (`janet -n -s`). Conjure spawns it automatically on first evaluation; use `,cs`/`,cS` to restart it manually.
 
@@ -59,9 +59,9 @@ NOTE: This config uses the Janet *stdio client* (`janet -n -s`). Conjure spawns 
 |`++>++f` / `++<++f` |Normal |Swap form forward / backward
 |`++<++I` / `++>++I` |Normal |Insert at head / tail of current form
 |`dsf` |Normal |Splice — delete surrounding brackets
-|`cse(` or `cse)` |Normal / Visual |Wrap element in `()`
-|`cse++[++` or `cse++]++` |Normal / Visual |Wrap element in `++[]++`
-|`cse{` or `cse}` |Normal / Visual |Wrap element in `{}`
+|`cse(` or `cse)` |Normal, Visual |Wrap element in `()`
+|`cse++[++` or `cse++]++` |Normal, Visual |Wrap element in `++[]++`
+|`cse{` or `cse}` |Normal, Visual |Wrap element in `{}`
 |===
 
 == vim-sexp — Text Objects
@@ -69,9 +69,9 @@ NOTE: This config uses the Janet *stdio client* (`janet -n -s`). Conjure spawns 
 [cols=",,",options="header",]
 |===
 |Keys |Mode |Action
-|`af` / `if` |Visual / Operator |Outer / inner list (compound form)
-|`as` / `is` |Visual / Operator |Outer / inner string
-|`ae` / `ie` |Visual / Operator |Outer / inner element
+|`af` / `if` |Visual, Operator |Outer / inner list (compound form)
+|`as` / `is` |Visual, Operator |Outer / inner string
+|`ae` / `ie` |Visual, Operator |Outer / inner element
 |===
 
 == Commands
@@ -83,7 +83,7 @@ NOTE: This config uses the Janet *stdio client* (`janet -n -s`). Conjure spawns 
 |`:ConjureEval [code]` / `:%ConjureEval` |Evaluate code / the whole buffer
 |`:ConjureLogToggle` |Toggle the log window (`,lg`)
 |`:ConjureJanetStart` / `:ConjureJanetStop` |Start / stop the Janet subprocess (`,cs` / `,cS`)
-|`:ParinferOff` / `:ParinferOn` / `:ParinferToggle` |Parinfer in this buffer (`!` = global default)
+|`:ParinferOff` / `:ParinferOn` / `:ParinferToggle` |Turn Parinfer off / on / flip it, in this buffer (add `!` to set the global default)
 |`:ParinferLog [file]` |Log parinfer to `file`; no argument stops logging
 |`:ParinferStats` |Parinfer run-time statistics for this buffer
 |===

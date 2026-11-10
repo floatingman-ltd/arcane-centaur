@@ -253,13 +253,13 @@ which key accepted.
 [cols=",,",options="header",]
 |===
 |Keys |Mode |Action
-|`Ctrl-n` |Insert / Command-line |Open the completion menu when it is closed; select the next suggestion when it is already open
-|`Ctrl-p` |Insert / Command-line |Select previous suggestion
-|`Ctrl-y` |Insert / Command-line |Accept the highlighted suggestion, or the top one if none is highlighted
-|`Ctrl-e` |Insert / Command-line |Cancel — dismiss the menu and restore the text you typed
-|`Ctrl-k` |Insert / Command-line |Show the documentation window for the selected entry
-|`Ctrl-f` |Insert / Command-line |Scroll documentation preview down
-|`Ctrl-b` |Insert / Command-line |Scroll documentation preview up
+|`Ctrl-n` |Insert, Command-line |Open the completion menu when it is closed; select the next suggestion when it is already open
+|`Ctrl-p` |Insert, Command-line |Select previous suggestion
+|`Ctrl-y` |Insert, Command-line |Accept the highlighted suggestion, or the top one if none is highlighted
+|`Ctrl-e` |Insert, Command-line |Cancel — dismiss the menu and restore the text you typed
+|`Ctrl-k` |Insert, Command-line |Show the documentation window for the selected entry
+|`Ctrl-f` |Insert, Command-line |Scroll documentation preview down
+|`Ctrl-b` |Insert, Command-line |Scroll documentation preview up
 |===
 
 ==== The trigger key
@@ -362,7 +362,7 @@ own handler and coexists with the completion menu.
 [cols=",",options="header",]
 |===
 |Mode |Sources
-|`/` / `?` search |Buffer words
+|`/` or `?` search |Buffer words
 |`:` commands |File paths, then Ex commands
 |===
 
@@ -420,7 +420,7 @@ _Configured in `lua/plugins/blink.lua`. LSP capabilities wired in `lua/config/ls
 [width="100%",cols="34%,33%,33%",options="header",]
 |===
 |Keys |Mode |Action
-|`++<++leader++>++f` |Normal / Visual |Format buffer or selection (LSP-preferred)
+|`++<++leader++>++f` |Normal, Visual |Format buffer or selection (LSP-preferred)
 |===
 
 === Format-on-Save

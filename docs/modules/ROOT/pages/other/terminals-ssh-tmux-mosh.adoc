@@ -117,7 +117,7 @@ The stream carries data and commands together, separated by escape sequences. Th
 
 |DEC private modes
 |`CSI ? Pm h` / `l`
-|Feature toggles
+|Turn a feature on / off
 |===
 
 Two private modes, quoted from xterm's `ctlseqs`:

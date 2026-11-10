@@ -6,7 +6,7 @@
 
 *Leader* = `Space`
 
-→ Back to xref:editor/keybindings.adoc[main cheatsheet] · Full guide:
+→ Back to xref:editor/keybindings.adoc[main cheatsheet] · Full guide: · xref:editor/keybindings.adoc#reading-tables[Reading these tables]
 ../guides/haskell.md
 
 == GHCi REPL
@@ -40,10 +40,10 @@ Created when the first Haskell buffer opens; HLS need not be attached.
 |`:Haskell repl load [file]` / `reload` / `quit` |Load a file / send `:r` / quit
 |`:Haskell repl cword_type` / `cword_info` |Type / info of the word under the cursor
 |`:Haskell repl paste_type [reg]` / `paste_info [reg]` |Type / info of a register (default `"`)
-|`:Haskell projectFile` / `packageCabal` / `packageYaml` |Open the project / package file
+|`:Haskell projectFile` / `packageCabal` / `packageYaml` |Open `cabal.project` or `stack.yaml` / the `.cabal` file / `package.yaml`
 |`:Haskell log setLevel \{level}` |Set the log level
 |`:Haskell log openLog` / `openHlsLog` |Open the haskell-tools / HLS log
-|`:Hls start` / `stop` / `restart` |Control the HLS client
+|`:Hls start` / `stop` / `restart` |Start / stop / restart the HLS client
 |`:Hls evalAll` |Run all eval code lenses (same as `Space-ea`)
 |===
 

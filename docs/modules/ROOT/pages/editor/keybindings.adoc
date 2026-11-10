@@ -8,6 +8,21 @@ TIP: Press any prefix key (e.g. `Space`, `Space g`, `Space o`) and *pause* — *
 
 NOTE: Press `*<leader>?*` inside Neovim for an instant, context-aware keybinding reference — shows universal bindings plus language-specific bindings for the current filetype. Works in any terminal, including headless SSH sessions.
 
+[[reading-tables]]
+== Reading the tables
+
+The key tables on this site and in every cheatsheet follow three rules.
+
+[cols="1,2,3",options="header"]
+|===
+|Written as |Means |Example
+|`A or B` |Either key does the same thing |`++<++F9++>++` or `++<++leader++>++bb` — toggle breakpoint
+|`A / B` |One key per action, matched by position against the `/`-separated parts of the Action column |`++[++d` / `++]++d` — previous / next diagnostic: `++[++d` is previous, `++]++d` is next
+|`Normal, Visual` in the Mode column |The key works in every mode listed |`af` in Visual and Operator-pending mode
+|===
+
+`/` pairs are used only for counterpart actions — previous and next, on and off, inner and outer. Unrelated commands get a row each.
+
 == Plugin Cheatsheets
 
 [width="100%",cols="50%,50%",options="header",]
@@ -93,9 +108,9 @@ Active in **F#, Haskell, C#, Lua** buffers (disabled in Lisp-family — vim-sexp
 [cols=",,",options="header",]
 |===
 |Keys |Mode |Action
-|`af` / `if` |Op / Visual |Outer / inner function
-|`ac` / `ic` |Op / Visual |Outer / inner class
-|`aa` / `ia` |Op / Visual |Outer / inner argument
+|`af` / `if` |Op, Visual |Outer / inner function
+|`ac` / `ic` |Op, Visual |Outer / inner class
+|`aa` / `ia` |Op, Visual |Outer / inner argument
 |`++]++f` / `++[++f` |Normal |Next / previous function start
 |`++]++F` / `++[++F` |Normal |Next / previous function end
 |===
@@ -161,11 +176,11 @@ CAUTION: The terminal toggle is `++<++leader++>++T` (capital `T`). It moved off
 [cols=",,",options="header",]
 |===
 |Keys |Mode |Action
-|`++<++leader++>++y` |Normal / Visual |Yank to system clipboard
+|`++<++leader++>++y` |Normal, Visual |Yank to system clipboard
 
 |`++<++leader++>++Y` |Normal |Yank line to system clipboard
 
-|`++<++leader++>++d` |Normal / Visual |Cut to system clipboard
+|`++<++leader++>++d` |Normal, Visual |Cut to system clipboard
 
 |`++<++leader++>++p` |Normal |Paste from system clipboard (after cursor)
 
@@ -200,7 +215,7 @@ SSH/TTY sessions (OSC 52 — no external tool required).
 [width="100%",cols="34%,33%,33%",options="header",]
 |===
 |Keys |Mode |Action
-|`++<++leader++>++f` |Normal / Visual |Format buffer or selection
+|`++<++leader++>++f` |Normal, Visual |Format buffer or selection
 (LSP-preferred)
 |===
 
@@ -216,10 +231,10 @@ F++#++ buffers._
 [width="100%",cols="34%,33%,33%",options="header",]
 |===
 |Keys |Mode |Action
-|`++<++leader++>++gcs` |Normal / Visual |Claude CLI: suggest (floating
+|`++<++leader++>++gcs` |Normal, Visual |Claude CLI: suggest (floating
 window)
 
-|`++<++leader++>++gce` |Normal / Visual |Claude CLI: explain (floating
+|`++<++leader++>++gce` |Normal, Visual |Claude CLI: explain (floating
 window)
 |===
 
@@ -321,13 +336,13 @@ The same keys work in insert mode and at the `:` / `/` prompt.
 [cols=",,",options="header",]
 |===
 |Keys |Mode |Action
-|`Ctrl-n` |Insert / Command-line |Open the menu when closed; select next suggestion when open
-|`Ctrl-p` |Insert / Command-line |Select previous suggestion
-|`Ctrl-y` |Insert / Command-line |Accept the highlighted suggestion, or the top one if none is highlighted
-|`Ctrl-e` |Insert / Command-line |Dismiss the menu and restore what you typed
-|`Ctrl-k` |Insert / Command-line |Show the documentation window for the selected entry
-|`Ctrl-f` |Insert / Command-line |Scroll docs preview down
-|`Ctrl-b` |Insert / Command-line |Scroll docs preview up
+|`Ctrl-n` |Insert, Command-line |Open the menu when closed; select next suggestion when open
+|`Ctrl-p` |Insert, Command-line |Select previous suggestion
+|`Ctrl-y` |Insert, Command-line |Accept the highlighted suggestion, or the top one if none is highlighted
+|`Ctrl-e` |Insert, Command-line |Dismiss the menu and restore what you typed
+|`Ctrl-k` |Insert, Command-line |Show the documentation window for the selected entry
+|`Ctrl-f` |Insert, Command-line |Scroll docs preview down
+|`Ctrl-b` |Insert, Command-line |Scroll docs preview up
 |===
 
 NOTE: `Ctrl-n` is both the manual trigger and the select-next key. The menu auto-shows
@@ -359,7 +374,7 @@ match of the misspelling it corrects, so blink discards it. Typing `recieve` and
 |`z=` |Normal |Numbered suggestion list for the word under the cursor
 |`zg` / `zw` |Normal |Add word under cursor to the dictionary as good / wrong
 |`++[++s` / `++]++s` |Normal |Previous / next misspelling
-|`++[++os` / `++]++os` / `yos` |Normal |Disable / enable / toggle `spell` for the window
+|`++[++os` / `++]++os` / `yos` |Normal |Enable / disable / toggle `spell` for the window
 |===
 
 → xref:editor/code-intelligence.adoc#spelling[Why the menu does not offer corrections]
