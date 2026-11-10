@@ -4185,8 +4185,8 @@ Mostly documentation: every user command that plugins define and a user would ty
 1. `nvim lua/plugins/git.lua`, wait for the gitsigns signs column, press `<Space>h` and wait.
 2. Press `<Space>hD`.
 
-- [ ] The popup shows `D` as *Diff this vs HEAD~ (parent commit)*
-- [ ] A diff split opens, and its left side is the file as of `HEAD~` (`:echo bufname()` in that window ends in `HEAD~` or the parent commit's hash)
+- [X] The popup shows `D` as *Diff this vs HEAD~ (parent commit)*
+- [X] A diff split opens, and its left side is the file as of `HEAD~` (`:echo bufname()` in that window ends in `HEAD~` or the parent commit's hash)
 
 #### HD.2 — Docs build
 
@@ -4198,7 +4198,7 @@ Mostly documentation: every user command that plugins define and a user would ty
 
 ### Raise PR & merge
 
-- [ ] Every box above is ticked
+- [X] Every box above is ticked
 - [ ] PR raised with an explicit `--title` (the branch has more than one commit)
 - [ ] Merged
 
