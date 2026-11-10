@@ -2,7 +2,7 @@
 
 *LocalLeader* = `,` in `.cs`, `.fs`, `.fsx`, and `.fsi` buffers.
 
-→ Back to xref:index.adoc[main cheatsheet] · xref:languages/dotnet.adoc[Full guide]
+→ Back to xref:index.adoc[main cheatsheet] · xref:languages/dotnet.adoc[Full guide] · xref:editor/keybindings.adoc#reading-tables[Reading these tables]
 
 == REPL — iron.nvim
 
@@ -74,12 +74,12 @@ Prerequisites: netcoredbg (GitHub-release binary — *not* `dotnet tool`), the `
 [cols=",,",options="header",]
 |===
 |Keys |Mode |Action
-|`<F9>` / `++<++leader++>++bb` |Normal |Toggle breakpoint
-|`<F5>` / `++<++leader++>++bc` |Normal |Continue / start
-|`<F10>` / `++<++leader++>++bv` |Normal |Step over
-|`<F11>` / `++<++leader++>++bi` |Normal |Step into
-|`<F12>` / `++<++leader++>++bo` |Normal |Step out
-|`<S-F5>` / `++<++leader++>++bt` |Normal |Terminate
+|`<F9>` or `++<++leader++>++bb` |Normal |Toggle breakpoint
+|`<F5>` or `++<++leader++>++bc` |Normal |Start or continue debugging
+|`<F10>` or `++<++leader++>++bv` |Normal |Step over
+|`<F11>` or `++<++leader++>++bi` |Normal |Step into
+|`<F12>` or `++<++leader++>++bo` |Normal |Step out
+|`<S-F5>` or `++<++leader++>++bt` |Normal |Terminate
 |`++<++leader++>++bu` |Normal |Toggle debug UI
 |`++<++leader++>++br` |Normal |Open REPL
 |===
@@ -89,16 +89,19 @@ The `++<++leader++>++b` mirrors exist for terminals that grab the F-keys (e.g. `
 [cols=",",options="header",]
 |===
 |Command |Action
-|`:DapContinue` / `:DapToggleBreakpoint` |Same as `<F5>` / `<F9>`
+|`:DapContinue` |Same as `<F5>`
+|`:DapToggleBreakpoint` |Same as `<F9>`
 |`:DapStepOver` / `:DapStepInto` / `:DapStepOut` |Same as `<F10>` / `<F11>` / `<F12>`
 |`:DapTerminate` |Same as `<S-F5>`; ends the debuggee
 |`:DapDisconnect` |Detach, leave the debuggee running
 |`:DapNew [name...]` |Start another session
-|`:DapPause` / `:DapRestartFrame` |Pause a thread / restart the current frame
+|`:DapPause` |Pause a thread
+|`:DapRestartFrame` |Restart the current frame
 |`:DapClearBreakpoints` |Remove every breakpoint
 |`:DapToggleRepl` |Open / close the nvim-dap REPL
 |`:DapEval[!]` |Expression scratch buffer; `:w` evaluates (`!` evaluates at once)
-|`:DapSetLogLevel \{level}` / `:DapShowLog` |Set the log level / open the log
+|`:DapSetLogLevel \{level}` |Set the log level
+|`:DapShowLog` |Open the log
 |===
 
 '''''
@@ -119,7 +122,7 @@ the first argument builds `-c Release`. Full list in the xref:languages/dotnet.a
 [cols=",",options="header",]
 |===
 |Command |Action
-|`:Dotnet run` / `run default` |Run project
+|`:Dotnet run` / `run default` |Run a project picked from a list / the default project
 |`:Dotnet debug` / `debug attach` |Debug project / attach to a process
 |`:Dotnet watch` |`dotnet watch` (rebuild on save)
 |`:Dotnet build quickfix` |Build, errors to the quickfix list

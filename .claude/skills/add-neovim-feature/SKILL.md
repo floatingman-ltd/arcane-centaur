@@ -217,6 +217,11 @@ Structure:
 _Defined in `<source file>`._
 ```
 
+Table conventions (reader-facing version: `editor/keybindings.adoc#reading-tables`):
+- Alternatives that do the same thing: `` `<F9>` or `<leader>bb` ``.
+- Counterpart keys: `` `[d` / `]d` `` with the Action split the same way (`Previous / next diagnostic`). Never pair unrelated commands with `/`; give each a row.
+- Mode cells list modes with commas: `Normal, Visual`.
+
 ### 3c. Update `docs/modules/ROOT/pages/cheatsheets/index.adoc`
 
 1. Add a row to the **Plugin Cheatsheets** table:

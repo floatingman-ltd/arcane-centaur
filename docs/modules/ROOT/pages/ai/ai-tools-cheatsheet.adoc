@@ -3,7 +3,7 @@
 Covers in-editor keymaps for the *Claude CLI* (`claude`) and the
 *OpenSpec* workflow tool.
 
-*Leader* = `Space`
+*Leader* = `Space` · xref:editor/keybindings.adoc#reading-tables[Reading these tables]
 
 '''''
 
@@ -58,10 +58,10 @@ a floating window.
 [width="100%",cols="34%,33%,33%",options="header",]
 |===
 |Keys |Mode |Action
-|`++<++leader++>++gcs` |Normal / Visual |Ask Claude to suggest a shell
+|`++<++leader++>++gcs` |Normal, Visual |Ask Claude to suggest a shell
 command
 
-|`++<++leader++>++gce` |Normal / Visual |Ask Claude to explain the
+|`++<++leader++>++gce` |Normal, Visual |Ask Claude to explain the
 selected code
 |===
 

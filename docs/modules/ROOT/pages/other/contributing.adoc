@@ -75,6 +75,7 @@ Key rules:
 * `[[anchor]]` tag immediately before each `==` section heading.
 * Quick Start first, Prerequisites last.
 * Use `xref:` for internal links, never `link:`.
+* In key and command tables, write alternatives as `A or B` and counterpart keys as `A / B` with the Action split the same way (`Previous / next`). Mode cells list modes with commas. Unrelated commands get a row each. The reader-facing version is xref:editor/keybindings.adoc#reading-tables[Reading the tables].
 
 == Local Build
 

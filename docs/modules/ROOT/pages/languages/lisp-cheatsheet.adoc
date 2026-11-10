@@ -2,7 +2,7 @@
 
 *LocalLeader* = `,` in Lisp / Clojure / Scheme / Fennel buffers
 
-→ Back to xref:editor/keybindings.adoc[main cheatsheet] · Full guide: ../guides/lisp.md
+→ Back to xref:editor/keybindings.adoc[main cheatsheet] · Full guide: ../guides/lisp.md · xref:editor/keybindings.adoc#reading-tables[Reading these tables]
 · Janet-specific: janet.md
 
 == Common Lisp REPL Containers
@@ -110,10 +110,10 @@ docker compose -f ~/.config/nvim/docker/lisp-swank/docker-compose.yml down
 |`++<++I` |Normal |Insert at head of current form
 |`++>++I` |Normal |Insert at tail of current form
 |`dsf` |Normal |Splice — delete surrounding brackets
-|`cse(` or `cse)` |Normal / Visual |Wrap element in `()`
-|`cse++[++` or `cse++]++` |Normal / Visual |Wrap element in `++[]++`
-|`cse{` or `cse}` |Normal / Visual |Wrap element in `{}`
-|`W` / `B` / `E` |Normal / Visual / Operator |Next/prev element head; next element tail
+|`cse(` or `cse)` |Normal, Visual |Wrap element in `()`
+|`cse++[++` or `cse++]++` |Normal, Visual |Wrap element in `++[]++`
+|`cse{` or `cse}` |Normal, Visual |Wrap element in `{}`
+|`W` / `B` / `E` |Normal, Visual, Operator |Next element head / previous element head / next element tail
 |===
 
 == vim-sexp — Text Objects
@@ -121,10 +121,10 @@ docker compose -f ~/.config/nvim/docker/lisp-swank/docker-compose.yml down
 [cols=",,",options="header",]
 |===
 |Keys |Mode |Action
-|`af` / `if` |Visual / Operator |Outer / inner list (compound form), incl./excl. brackets
-|`aF` / `iF` |Visual / Operator |Outer / inner top-level list
-|`as` / `is` |Visual / Operator |Outer / inner string (incl./excl. quotes)
-|`ae` / `ie` |Visual / Operator |Outer / inner element (atom/string/comment/form)
+|`af` / `if` |Visual, Operator |Outer / inner list (compound form), incl./excl. brackets
+|`aF` / `iF` |Visual, Operator |Outer / inner top-level list
+|`as` / `is` |Visual, Operator |Outer / inner string (incl./excl. quotes)
+|`ae` / `ie` |Visual, Operator |Outer / inner element (atom/string/comment/form)
 |===
 
 == vim-sexp — Motions
@@ -132,9 +132,9 @@ docker compose -f ~/.config/nvim/docker/lisp-swank/docker-compose.yml down
 [cols=",,",options="header",]
 |===
 |Keys |Mode |Action
-|`(` / `)` |Normal / Visual / Operator |Move to paired brackets backward / forward
-|`++[++[` / `++]++]` |Normal / Visual / Operator |Previous / next top-level element
-|`++[++e` / `++]++e` |Normal / Visual / Operator |Select previous / next element
+|`(` / `)` |Normal, Visual, Operator |Move to paired brackets backward / forward
+|`++[++[` / `++]++]` |Normal, Visual, Operator |Previous / next top-level element
+|`++[++e` / `++]++e` |Normal, Visual, Operator |Select previous / next element
 |===
 
 ____
@@ -154,7 +154,7 @@ ____
 |`:ConjureLogToggle` |Toggle the log window (`,lg`)
 |`:ConjureCommonLispConnect` / `Disconnect` |Swank connect / disconnect (`,cc` / `,cd`)
 |`:ConjureSchemeStart` / `:ConjureSchemeStop` |Start / stop `mit-scheme` (`,cs` / `,cS`)
-|`:ParinferOff` / `:ParinferOn` / `:ParinferToggle` |Parinfer in this buffer (`!` = global default)
+|`:ParinferOff` / `:ParinferOn` / `:ParinferToggle` |Turn Parinfer off / on / flip it, in this buffer (add `!` to set the global default)
 |`:ParinferLog [file]` |Log parinfer to `file`; no argument stops logging
 |`:ParinferStats` |Parinfer run-time statistics for this buffer
 |===

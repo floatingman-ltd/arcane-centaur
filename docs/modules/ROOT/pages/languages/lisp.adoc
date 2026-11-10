@@ -244,8 +244,8 @@ unless switched off.
 |`:ParinferOff` |Stop parinfer in the current buffer
 |`:ParinferOn` |Resume parinfer in the current buffer
 |`:ParinferToggle` |Switch parinfer on or off in the current buffer
-|`:ParinferOff!` / `:ParinferOn!` / `:ParinferToggle!` |Change the global
-default instead. Buffers already open keep their own setting; the global
+|`:ParinferOff!` / `:ParinferOn!` / `:ParinferToggle!` |Turn the global
+default off / on / flip it. Buffers already open keep their own setting; the global
 value applies to buffers opened afterwards
 |`:ParinferLog [file]` |Append each parinfer request and response to
 `file` as JSON; with no argument, stop logging

@@ -2,7 +2,7 @@
 
 *LocalLeader* = `,` in `.http` buffers
 
-→ Back to xref:editor/keybindings.adoc[main cheatsheet]
+→ Back to xref:editor/keybindings.adoc[main cheatsheet] · xref:editor/keybindings.adoc#reading-tables[Reading these tables]
 
 == Running Requests
 

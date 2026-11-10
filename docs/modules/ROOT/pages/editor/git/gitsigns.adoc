@@ -31,8 +31,8 @@ The signs in the left column mean:
 [cols="1,1,2",options="header"]
 |===
 |Keys |Mode |Action
-|`++<++leader++>++hs` |Normal / Visual |Stage hunk (or selected lines)
-|`++<++leader++>++hr` |Normal / Visual |Reset hunk (or selected lines)
+|`++<++leader++>++hs` |Normal, Visual |Stage hunk (or selected lines)
+|`++<++leader++>++hr` |Normal, Visual |Reset hunk (or selected lines)
 |`++<++leader++>++hS` |Normal |Stage entire buffer
 |`++<++leader++>++hR` |Normal |Reset entire buffer
 |`++<++leader++>++hu` |Normal |Undo last stage
@@ -50,7 +50,7 @@ half of a messy change and leave the rest.
 [cols="1,1,2",options="header"]
 |===
 |Keys |Mode |Action
-|`++<++leader++>++ih` |Visual / Operator |Select current hunk
+|`++<++leader++>++ih` |Visual, Operator |Select current hunk
 |===
 
 Because it is a text object it composes with ordinary operators — `d++<++leader++>++ih` deletes
@@ -78,7 +78,7 @@ completes the subcommand names; `:Gitsigns` on its own opens a picker of them.
 default.
 |`:Gitsigns preview_hunk` |Show the hunk under the cursor in a float (as `++<++leader++>++hp`).
 |`:Gitsigns preview_hunk_inline` |Show the hunk's removed lines inline in the buffer.
-|`:Gitsigns stage_hunk` / `reset_hunk` |Stage or reset the hunk under the cursor. With a range,
+|`:Gitsigns stage_hunk` / `reset_hunk` |Stage / reset the hunk under the cursor. With a range,
 e.g. `:'++<++,'++>++Gitsigns stage_hunk`, only those lines.
 |`:Gitsigns diffthis \{base}` |Diff the file against `\{base}` in a split. No `\{base}` diffs
 against the index; `@` against `HEAD`; `~` against the commit before `HEAD` (gitsigns reads a
@@ -88,7 +88,7 @@ leading `~` as `HEAD~`).
 |`:Gitsigns setqflist all` |List the hunks of every modified file in the repository in the
 quickfix list and open it. No argument lists the current buffer only.
 |`:Gitsigns toggle_word_diff` |Highlight changed words inside changed lines.
-|`:Gitsigns toggle_linehl` / `toggle_numhl` |Highlight changed lines, or their line numbers.
+|`:Gitsigns toggle_linehl` / `toggle_numhl` |Toggle highlighting of changed lines / of their line numbers.
 |`:Gitsigns toggle_signs` |Hide or show the signs column.
 |===
 

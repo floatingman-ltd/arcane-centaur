@@ -30,9 +30,9 @@ just the unnamed register).
 [cols=",,",options="header",]
 |===
 |Keys |Mode |Action
-|`++<++leader++>++y` |Normal / Visual |Yank to system clipboard
+|`++<++leader++>++y` |Normal, Visual |Yank to system clipboard
 |`++<++leader++>++Y` |Normal |Yank line to system clipboard
-|`++<++leader++>++d` |Normal / Visual |Cut (delete) to system clipboard
+|`++<++leader++>++d` |Normal, Visual |Cut (delete) to system clipboard
 |`++<++leader++>++p` |Normal |Paste from system clipboard after cursor
 |`++<++leader++>++P` |Normal |Paste from system clipboard before cursor
 |===

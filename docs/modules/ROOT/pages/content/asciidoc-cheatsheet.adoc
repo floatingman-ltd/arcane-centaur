@@ -2,7 +2,7 @@
 
 *LocalLeader* = `,` in `.adoc` buffers (filetype: `asciidoctor`)
 
-→ Back to xref:editor/keybindings.adoc[main cheatsheet] ·
+→ Back to xref:editor/keybindings.adoc[main cheatsheet] · · xref:editor/keybindings.adoc#reading-tables[Reading these tables]
 xref:content/asciidoc.adoc[Full AsciiDoc guide]
 
 NOTE: AsciiDoc / Antora is the *source of truth* for documentation in this config. All docs pages live under `docs/modules/ROOT/pages/`. The nav entry point is `docs/modules/ROOT/nav.adoc`.
@@ -69,7 +69,7 @@ No keymaps. These need native tools this config does not install — use
 |`:Asciidoctor2HTML` |Write `.html` beside the file — needs `asciidoctor`
 |`:Asciidoctor2PDF` |Write `.pdf` beside the file — needs `asciidoctor-pdf`
 |`:Asciidoctor2DOCX` |Write `.xml` then `.docx` beside the file — needs `asciidoctor` and `pandoc`
-|`:AsciidoctorOpenHTML` / `PDF` / `DOCX` |Open that output file if it exists
+|`:AsciidoctorOpenHTML` / `PDF` / `DOCX` |Open the `.html` / `.pdf` / `.docx` with the same base name, if it exists
 |`:AsciidoctorOpenRAW` |Open the `.adoc` file with the system's default application
 |`:AsciidoctorPasteImage` |Save the clipboard image into `:imagesdir:` and insert `image::` — needs a working `g:asciidoctor_img_paste_command`
 |===

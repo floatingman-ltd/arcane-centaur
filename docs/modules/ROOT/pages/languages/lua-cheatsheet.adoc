@@ -1,6 +1,6 @@
 == Lua Cheatsheet (lua_ls {plus} stylua)
 
-→ Back to xref:editor/keybindings.adoc[main cheatsheet] · xref:languages/lua.adoc[Full guide]
+→ Back to xref:editor/keybindings.adoc[main cheatsheet] · xref:languages/lua.adoc[Full guide] · xref:editor/keybindings.adoc#reading-tables[Reading these tables]
 
 NOTE: Lua has *no* `<localleader>` maps. Every other language here binds `,` to a REPL or evaluation workflow; Lua does not, because Neovim *is* the Lua runtime — see <<running-lua,Running Lua>> below for what replaces them.
 
@@ -39,7 +39,7 @@ Lua diagnostics are configured to be *readable* rather than merely present: `lua
 [cols=",,",options="header",]
 |===
 |Keys |Mode |Action
-|`<leader>f` |Normal / Visual |Format buffer, or the visual selection
+|`<leader>f` |Normal, Visual |Format buffer, or the visual selection
 |===
 
 `stylua` runs on every write through conform.nvim, with a 2-second timeout, and respects a `stylua.toml` or `.stylua.toml` in the project root. It is *required rather than optional* in this repository — a `PostToolUse` hook re-runs it on every Lua file Claude Code edits, so the committed tree stays stylua-clean. A missing `stylua` degrades gracefully: formatting simply does not apply, and nothing errors or blocks the write.
@@ -68,11 +68,11 @@ Treesitter-backed, and active in Lua buffers.
 [cols=",,",options="header",]
 |===
 |Keys |Mode |Action
-|`af` / `if` |Visual / Operator |Outer / inner function
-|`ac` / `ic` |Visual / Operator |Outer / inner class
-|`aa` / `ia` |Visual / Operator |Outer / inner argument
-|`]f` / `[f` |Normal / Visual / Operator |Jump to next / previous function start
-|`]F` / `[F` |Normal / Visual / Operator |Jump to next / previous function end
+|`af` / `if` |Visual, Operator |Outer / inner function
+|`ac` / `ic` |Visual, Operator |Outer / inner class
+|`aa` / `ia` |Visual, Operator |Outer / inner argument
+|`]f` / `[f` |Normal, Visual, Operator |Jump to next / previous function start
+|`]F` / `[F` |Normal, Visual, Operator |Jump to next / previous function end
 |===
 
 == Indentation and Folding

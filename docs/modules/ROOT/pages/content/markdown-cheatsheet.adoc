@@ -2,7 +2,7 @@
 
 *LocalLeader* = `,` in Markdown buffers
 
-→ Back to xref:editor/keybindings.adoc[main cheatsheet] · Markdown guide:
+→ Back to xref:editor/keybindings.adoc[main cheatsheet] · Markdown guide: · xref:editor/keybindings.adoc#reading-tables[Reading these tables]
 ../guides/markdown.md · Diagrams guide: ../guides/diagrams.md ·
 Presentations guide: ../guides/presentations.md · Confluence guide:
 ../guides/confluence.md · Jira guide: ../guides/jira.md
@@ -21,9 +21,9 @@ Presentations guide: ../guides/presentations.md · Confluence guide:
 |`++[++[` |Normal |Previous heading
 |`++]++[` |Normal |Next heading at the same level
 |`++[++]` |Normal |Previous heading at the same level
-|`+` |Normal / Visual |Increase heading importance (remove `#`)
-|`-` |Normal / Visual |Decrease heading importance (add `#`)
-|`++<++C-Space++>++` |Normal / Visual |Toggle to-do item status
+|`+` |Normal, Visual |Increase heading importance (remove `#`)
+|`-` |Normal, Visual |Decrease heading importance (add `#`)
+|`++<++C-Space++>++` |Normal, Visual |Toggle to-do item status
 |`o` |Normal |New list item below (enter insert mode)
 |`O` |Normal |New list item above (enter insert mode)
 |`yaa` |Normal |Yank anchor link to heading under cursor
