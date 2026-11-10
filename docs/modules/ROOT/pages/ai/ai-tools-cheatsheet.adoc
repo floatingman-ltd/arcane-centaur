@@ -22,6 +22,31 @@ Persistent editor-aware session via WebSocket MCP protocol (native terminal, no 
 |`++<++leader++>++gcr` |Normal |Reject Claude's proposed diff
 |===
 
+=== Commands
+
+[width="100%",cols="50%,50%",options="header",]
+|===
+|Command |Description
+|`:ClaudeCode ++[++args++]++` |Toggle the session terminal (`++<++leader++>++gcc`)
+|`:ClaudeCodeFocus ++[++args++]++` |Focus the terminal, or hide it if focused (`++<++leader++>++gcf`)
+|`:ClaudeCodeOpen ++[++args++]++` |Open the session terminal
+|`:ClaudeCodeClose` |Close the session terminal window
+|`:ClaudeCodeAdd ++<++path++>++ ++[++start++]++ ++[++end++]++` |Add a file or directory, optionally a line range (`++<++leader++>++gcb` = `:ClaudeCodeAdd %`)
+|`:ClaudeCodeSend` |Send the selection as an @-mention (`++<++leader++>++gcv`)
+|`:ClaudeCodeTreeAdd` |Add the nvim-tree file(s) under the cursor or selection
+|`:ClaudeCodeSendText++[++!++]++ ++<++text++>++` |Type text into the session and submit it (`!` = do not submit)
+|`:ClaudeCodeDiffAccept` |Accept the proposed diff (`++<++leader++>++gca`)
+|`:ClaudeCodeDiffDeny` |Reject the proposed diff (`++<++leader++>++gcr`)
+|`:ClaudeCodeCloseAllDiffs` |Close pending diffs; accepted or saved ones stay
+|`:ClaudeCodeSelectModel ++[++args++]++` |Pick a model, then open with `--model`
+|`:ClaudeCodeStart` / `:ClaudeCodeStop` |Start / stop the WebSocket server
+|`:ClaudeCodeStatus` |Show whether the server is running, and its port
+|===
+
+`:ClaudeCodeOpen`, `:ClaudeCodeClose`, `:ClaudeCodeTreeAdd`,
+`:ClaudeCodeSendText` and `:ClaudeCodeSelectModel` exist only once the plugin
+has loaded (after the first `:ClaudeCode…` command or `++<++leader++>++gc*` key).
+
 '''''
 
 == Claude CLI (one-shot)
@@ -135,6 +160,28 @@ The same workflows are available as Claude Code skills:
 |`++<++leader++>++aa` |Open avante with the current provider (ollama)
 |`++<++leader++>++ao` |Select the ollama provider and open avante
 |`++<++C++>++s` |Submit the prompt (inside the avante input; `++<++CR++>++` = newline)
+|===
+
+=== Commands
+
+[width="100%",cols="50%,50%",options="header",]
+|===
+|Command |Description
+|`:AvanteAsk ++[++question++]++` |Open the sidebar; submit the question if given
+|`:AvanteChat` / `:AvanteChatNew` |Open the sidebar in chat mode / start a new chat
+|`:AvanteToggle` |Show or hide the sidebar
+|`:AvanteFocus` |Move focus between sidebar and code window
+|`:AvanteRefresh` |Redraw the sidebar
+|`:AvanteHistory` |Load a saved chat
+|`:AvanteClear ++[++history\|cache++]++` |Clear the current chat (default) or delete history and cache
+|`:AvanteStop` |Cancel the request in flight
+|`:'++<++,'++>++AvanteEdit ++[++request++]++` |Edit prompt for the selected lines
+|`:AvanteBuild ++[++source=true\|false++]++` |Rerun the plugin's `make` build
+|`:AvanteSwitchProvider` |Pick a provider; only `ollama` is configured
+|`:AvanteModels` |Model picker; does not list `ollama`, so unused here
+|`:AvanteSwitchSelectorProvider ++<++name++>++` |Set the picker backend (`native` default; fzf-lua installed)
+|`:AvanteSwitchInputProvider ++<++name++>++` |Set the input backend (`native` is the only one installed)
+|`:AvanteACPModels` / `:AvanteACPModes` |ACP agent model / mode; no ACP provider configured
 |===
 
 _Avante is Ollama-only; the Claude backend is disabled (Anthropic OAuth ToS) — see the guide to re-enable via API key._

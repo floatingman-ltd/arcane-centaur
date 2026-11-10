@@ -14,6 +14,7 @@ All Haskell plugins lazy-load only when you open a `.hs` or `.lhs` file.
 | xref:#quick-start[Quick Start] | Open a file and start the REPL
 | xref:#lsp[LSP] | Language server features
 | xref:#repl[REPL (GHCi)] | Interactive evaluation keymaps
+| xref:#commands[Commands] | `:Haskell` and `:Hls` subcommands
 | xref:#configuration[Configuration] | Plugin and ftplugin locations
 | xref:#prerequisites[Prerequisites] | GHC, HLS install
 |===
@@ -46,6 +47,19 @@ manual `lspconfig` setup is needed. See the
 xref:editor/code-intelligence.adoc[Code Intelligence cheatsheet] for
 shared LSP keybindings (`gd`, `K`, `gr`, etc.).
 
+`:Hls` controls the language server client. `:Hls <Tab>` offers only `start` when no
+HLS client is attached to the buffer, and `stop`, `restart`, `evalAll` when one is.
+
+[cols="1,2",options="header"]
+|===
+|Command |Action
+|`:Hls start` |Start HLS for the current buffer
+|`:Hls stop` |Stop HLS for the current buffer
+|`:Hls restart` |Restart HLS for the current buffer
+|`:Hls evalAll` |Run every HLS eval code lens (`-- >>>` snippets in comments); same as
+`Space-ea`
+|===
+
 '''''
 
 [[repl]]
@@ -67,6 +81,41 @@ Leader is `Space`; no LocalLeader bindings are used in Haskell buffers.
 |`Space-ea` |Evaluate all code snippets in the buffer
 |===
 
+[[commands]]
+=== Commands
+
+`:Haskell` takes a subcommand; `:Haskell <Tab>` completes them. Both `:Haskell` and
+`:Hls` (see xref:#lsp[LSP]) are created when the first Haskell buffer opens. Neither
+waits for HLS to attach, and the `repl`, project-file and `log` subcommands work with
+no language server running.
+
+[cols="1,2",options="header"]
+|===
+|Command |Action
+|`:Haskell repl toggle [file]` |Toggle a GHCi REPL loaded with `file` (default: the
+current buffer); same as `++<++leader++>++rf`
+|`:Haskell repl quit` |Quit the REPL; same as `++<++leader++>++rq`
+|`:Haskell repl load [file]` |Load `file` (default: the current buffer) into the
+running REPL
+|`:Haskell repl reload` |Send `:r` to the REPL
+|`:Haskell repl cword_type` |Ask the REPL for the type of the word under the cursor
+|`:Haskell repl cword_info` |Ask the REPL for info on the word under the cursor
+|`:Haskell repl paste_type [reg]` |Ask the REPL for the type of the contents of
+register `reg` (default: `"`)
+|`:Haskell repl paste_info [reg]` |Ask the REPL for info on the contents of register
+`reg` (default: `"`)
+|`:Haskell projectFile` |Open the project file (`cabal.project` or `stack.yaml`)
+|`:Haskell packageCabal` |Open the package's `*.cabal` file
+|`:Haskell packageYaml` |Open the package's `package.yaml`
+|`:Haskell log setLevel \{level}` |Set the haskell-tools and LSP client log level
+(`TRACE`, `DEBUG`, `INFO`, `WARN`, `ERROR`, `OFF`)
+|`:Haskell log openLog` |Open the haskell-tools log file
+|`:Haskell log openHlsLog` |Open the haskell-language-server log file
+|===
+
+There is no command form of `++<++leader++>++rr` (package-scoped REPL); `:Haskell repl
+toggle` always passes a file.
+
 '''''
 
 [[configuration]]
@@ -84,7 +133,10 @@ DAP launch configurations once https://github.com/mfussenegger/nvim-dap[nvim-dap
 is installed (added in change 07 for .NET debug support).
 
 Use the standard debug keymaps (`<F5>`, `<F9>`, `<F10>`/`<F11>`/`<F12>`) to start
-a session.
+a session. The `:Dap*` commands (`:DapContinue`, `:DapToggleBreakpoint`,
+`:DapClearBreakpoints`, …) also work here; opening a Haskell buffer loads nvim-dap, so
+they exist from then on. The full table is in the
+xref:languages/dotnet.adoc#dap-commands[.NET guide].
 
 [IMPORTANT]
 ====

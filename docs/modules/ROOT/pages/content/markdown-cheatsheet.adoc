@@ -255,6 +255,23 @@ Requires `JIRA++_++EMAIL`, `JIRA++_++API++_++TOKEN`, and
 |Command |Description
 |`:MarkdownPreviewToggle` |Toggle browser Markdown preview (single file)
 
+|`:MarkdownPreview` / `:MarkdownPreviewStop` |Start / stop the browser
+preview. GUI sessions only — not loaded in console
+
+|`:RenderMarkdown buf_toggle` |Toggle in-buffer rendering for this buffer
+(what `,pp` runs). Also `toggle`, `enable`, `disable`, `preview` — see
+xref:content/markdown.adoc#popup-preview[Markdown guide]
+
+|`:MkdnTable \{cols} \{rows}` |Insert a table below the cursor; add `noh`
+for no header row
+
+|`:MkdnTableFormat` |Realign the table under the cursor
+
+|`:MkdnDeadLinks` |Quickfix list of links whose target file is missing;
+`:MkdnDeadLinks notebook` checks every `.md` file in the notebook
+
+|`:MkdnBacklinks` |Toggle a side panel of files linking to this one
+
 |`:MdServerPreview` |Open current file in markserv Docker server
 (cross-page links)
 
@@ -343,16 +360,28 @@ _Keymaps defined in `after/ftplugin/plantuml.lua`. Commands defined in
 [cols=",,",options="header",]
 |===
 |Keys |Mode |Action
-|`,p` |Normal |Start HTML live preview in browser (`Bracey`)
-|`,x` |Normal |Stop the live preview server (`BraceyStop`)
-|`,r` |Normal |Reload the live preview (`BraceyReload`)
+|`,p` |Normal |Start HTML live preview in browser (`:Bracey`)
+|`,x` |Normal |Stop the live preview server (`:BraceyStop`)
+|`,r` |Normal |Reload the live preview (`:BraceyReload`)
 |===
+
+`:BraceyEval` has no keymap. With no argument it sends the whole buffer to
+the browser to run as JavaScript, whatever the filetype; with arguments it
+runs them instead, e.g. `:BraceyEval console.log(document.title)`. The
+server must already be running (`,p`). Saving a `.js` buffer while the
+server runs evaluates it the same way.
 
 Bracey starts a local server and opens the current HTML file in the
 default browser. Changes to the HTML, CSS, or JavaScript are reflected
 live without a manual reload.
 
 Node.js (e.g. via `nvm`) must be available at install time.
+
+Bracey also needs Neovim's Python 3 provider (the `pynvim` package), which
+is not a listed prerequisite. Without it `:Bracey` prints
+`It looks like your vim does not have python support` and fails with
+`E117: Unknown function: bracey#start`. `:checkhealth vim.provider` shows
+whether the provider is available.
 
 _Keymaps defined in `after/ftplugin/html.lua`. Plugin configured in
 `lua/plugins/html.lua`._

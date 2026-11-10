@@ -29,6 +29,24 @@
 |`Space-ea` |Normal |Evaluate all code snippets in the buffer
 |===
 
+== Commands
+
+Created when the first Haskell buffer opens; HLS need not be attached.
+
+[cols=",",options="header",]
+|===
+|Command |Action
+|`:Haskell repl toggle [file]` |Toggle GHCi for `file` (default: current buffer)
+|`:Haskell repl load [file]` / `reload` / `quit` |Load a file / send `:r` / quit
+|`:Haskell repl cword_type` / `cword_info` |Type / info of the word under the cursor
+|`:Haskell repl paste_type [reg]` / `paste_info [reg]` |Type / info of a register (default `"`)
+|`:Haskell projectFile` / `packageCabal` / `packageYaml` |Open the project / package file
+|`:Haskell log setLevel \{level}` |Set the log level
+|`:Haskell log openLog` / `openHlsLog` |Open the haskell-tools / HLS log
+|`:Hls start` / `stop` / `restart` |Control the HLS client
+|`:Hls evalAll` |Run all eval code lenses (same as `Space-ea`)
+|===
+
 == LSP (haskell-language-server)
 
 haskell-tools manages the HLS connection automatically. The standard LSP

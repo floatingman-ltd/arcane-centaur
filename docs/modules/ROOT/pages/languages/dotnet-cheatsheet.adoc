@@ -21,6 +21,20 @@ REPL backend: *csharprepl* for C# buffers · *dotnet fsi* for F# buffers.
 |`,cl` |Clear REPL output
 |===
 
+`[ft]` defaults to the buffer's filetype (`cs` or `fsharp`).
+
+[cols=",",options="header",]
+|===
+|Command |Action
+|`:IronRepl [ft]` |Open the REPL, or show / hide it if running
+|`:IronReplHere [ft]` |Open the REPL in the current window
+|`:IronFocus [ft]` / `:IronHide [ft]` |Jump into / close the REPL window
+|`:IronRestart` |Replace the REPL with a fresh one (no prompt)
+|`:IronSend \{text}` / `:IronSend! \{ft} \{text}` |Send text to this / the `ft` REPL
+|`:IronWatch file` / `:IronWatch mark` |On write, send the file / the last-sent region
+|`:IronAttach \{ft}` |Send from this buffer to the `ft` REPL
+|===
+
 '''''
 
 == LSP
@@ -71,6 +85,21 @@ Prerequisites: netcoredbg (GitHub-release binary — *not* `dotnet tool`), the `
 |===
 
 The `++<++leader++>++b` mirrors exist for terminals that grab the F-keys (e.g. `<F11>` fullscreen).
+
+[cols=",",options="header",]
+|===
+|Command |Action
+|`:DapContinue` / `:DapToggleBreakpoint` |Same as `<F5>` / `<F9>`
+|`:DapStepOver` / `:DapStepInto` / `:DapStepOut` |Same as `<F10>` / `<F11>` / `<F12>`
+|`:DapTerminate` |Same as `<S-F5>`; ends the debuggee
+|`:DapDisconnect` |Detach, leave the debuggee running
+|`:DapNew [name...]` |Start another session
+|`:DapPause` / `:DapRestartFrame` |Pause a thread / restart the current frame
+|`:DapClearBreakpoints` |Remove every breakpoint
+|`:DapToggleRepl` |Open / close the nvim-dap REPL
+|`:DapEval[!]` |Expression scratch buffer; `:w` evaluates (`!` evaluates at once)
+|`:DapSetLogLevel \{level}` / `:DapShowLog` |Set the log level / open the log
+|===
 
 '''''
 

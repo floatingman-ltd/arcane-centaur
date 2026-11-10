@@ -36,10 +36,10 @@ The signs in the left column mean:
 |`++<++leader++>++hS` |Normal |Stage entire buffer
 |`++<++leader++>++hR` |Normal |Reset entire buffer
 |`++<++leader++>++hu` |Normal |Undo last stage
-|`++<++leader++>++hp` |Normal |Preview hunk inline
+|`++<++leader++>++hp` |Normal |Preview hunk in a float
 |`++<++leader++>++hb` |Normal |Full blame for current line
 |`++<++leader++>++hd` |Normal |Diff this file (unstaged)
-|`++<++leader++>++hD` |Normal |Diff this file (staged, vs. HEAD)
+|`++<++leader++>++hD` |Normal |Diff this file against the commit before HEAD (`HEAD~`)
 |===
 
 In Visual mode, only the lines inside your selection are staged or reset — which is how you commit
@@ -61,6 +61,40 @@ ____
 `.hs` files. The buffer-local Haskell binding wins there, so stage from the fugitive status window
 (`:Git`) instead while editing Haskell.
 ____
+
+=== The `:Gitsigns` command
+
+Every keymap above calls a gitsigns function, and `:Gitsigns \{subcommand} \{args}` calls the same
+functions by name. Use it for the actions that have no keymap here. `:Gitsigns ++<++Tab++>++`
+completes the subcommand names; `:Gitsigns` on its own opens a picker of them.
+
+[cols="1,2",options="header"]
+|===
+|Command |Action
+|`:Gitsigns blame_line` |Blame for the current line in a float. `++<++leader++>++hb` adds
+`--full`, which shows the whole commit message and the hunk.
+|`:Gitsigns blame` |Blame the whole file in a scroll-bound vertical split.
+|`:Gitsigns toggle_current_line_blame` |Toggle end-of-line blame text on the cursor line. Off by
+default.
+|`:Gitsigns preview_hunk` |Show the hunk under the cursor in a float (as `++<++leader++>++hp`).
+|`:Gitsigns preview_hunk_inline` |Show the hunk's removed lines inline in the buffer.
+|`:Gitsigns stage_hunk` / `reset_hunk` |Stage or reset the hunk under the cursor. With a range,
+e.g. `:'++<++,'++>++Gitsigns stage_hunk`, only those lines.
+|`:Gitsigns diffthis \{base}` |Diff the file against `\{base}` in a split. No `\{base}` diffs
+against the index; `@` against `HEAD`; `~` against the commit before `HEAD` (gitsigns reads a
+leading `~` as `HEAD~`).
+|`:Gitsigns change_base \{rev}` |Draw the signs against `\{rev}` instead of the index, e.g.
+`HEAD~3`. `:Gitsigns reset_base` goes back to the index.
+|`:Gitsigns setqflist all` |List the hunks of every modified file in the repository in the
+quickfix list and open it. No argument lists the current buffer only.
+|`:Gitsigns toggle_word_diff` |Highlight changed words inside changed lines.
+|`:Gitsigns toggle_linehl` / `toggle_numhl` |Highlight changed lines, or their line numbers.
+|`:Gitsigns toggle_signs` |Hide or show the signs column.
+|===
+
+`true`, `false`, `nil` and numbers are passed as Lua values, so
+`:Gitsigns toggle_current_line_blame true` sets the value instead of toggling it. The full
+function list is in `:help gitsigns-functions`.
 
 === Setup
 

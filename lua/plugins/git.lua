@@ -62,7 +62,7 @@ return {
         map("n", "<leader>hd", gs.diffthis, "Diff this (unstaged)")
         map("n", "<leader>hD", function()
           gs.diffthis("~")
-        end, "Diff this (staged)")
+        end, "Diff this vs HEAD~ (parent commit)")
 
         -- Text object: select hunk with <leader>ih in visual / operator mode
         map({ "o", "x" }, "<leader>ih", ":<C-U>Gitsigns select_hunk<CR>", "Select hunk (text object)")

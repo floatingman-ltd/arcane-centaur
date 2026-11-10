@@ -143,10 +143,28 @@ xref:languages/lisp.adoc#structural-editing[../guides/lisp.md]
 for step-by-step examples of each slurp/barf operation.
 ____
 
+== Commands
+
+[cols=",",options="header",]
+|===
+|Command |Action
+|`:ConjureSchool` |Interactive Conjure tutorial
+|`:ConjureEval [code]` / `:%ConjureEval` |Evaluate code / the whole buffer
+|`:ConjureConnect [host] [port]` |Connect to a network REPL (Swank, nREPL)
+|`:ConjureLogToggle` |Toggle the log window (`,lg`)
+|`:ConjureCommonLispConnect` / `Disconnect` |Swank connect / disconnect (`,cc` / `,cd`)
+|`:ConjureSchemeStart` / `:ConjureSchemeStop` |Start / stop `mit-scheme` (`,cs` / `,cS`)
+|`:ParinferOff` / `:ParinferOn` / `:ParinferToggle` |Parinfer in this buffer (`!` = global default)
+|`:ParinferLog [file]` |Log parinfer to `file`; no argument stops logging
+|`:ParinferStats` |Parinfer run-time statistics for this buffer
+|===
+
+Full list: `:help conjure` and the client pages, e.g. `:help conjure-client-common-lisp-swank`.
+
 == Other Active Plugins
 
 * *nvim-parinfer* — keeps parentheses balanced as you edit indentation
-(no keymaps)
+(no keymaps; see Commands above)
 * *rainbow-delimiters.nvim* — color-codes matching delimiters by depth
 (no keymaps)
 * *LSP* (none configured by default for Common Lisp) — see lsp.md
