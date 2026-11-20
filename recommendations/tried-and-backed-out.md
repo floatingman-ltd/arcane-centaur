@@ -106,6 +106,6 @@ Early swaps where no commit records a failure. Listed so the history is in one p
 | kitty and WezTerm recommendations | GNOME Terminal default, TTY console secondary | 2026-03-05 | `8e38af0`, `b7b877b` | none |
 | `j`/`k` for completion navigation | `<C-n>`/`<C-p>` | 2026-03-12 | `9290671` | none |
 | `<C-/>` comment maps | `gc`/`gcc` only | 2026-05-14 | `644da34` | use the defaults only |
-| GitHub Copilot, OpenCode | Claude (CLI, claudecode.nvim, skills) | 2026-06-03 | `95acd42` | consolidate on Claude |
+| GitHub Copilot, OpenCode | Claude (CLI, claudecode.nvim, skills) | 2026-06-03 | `95acd42` | consolidate on Claude. Copilot restored 2026-11-20 as a per-machine option (`NVIM_AI_AGENT=copilot`, change `add-ai-agent-selector`) for a client that uses it; Claude stays the default |
 | nvim-cmp and five sources | blink.cmp v1 | 2026-07-01 | `341a80a` | modernisation (`03-migrate-completion-blink`) |
 | vim-airline, vim-surround, vim-commentary, vim-sensible | lualine, nvim-surround, native `gc`, nothing | 2026-07-01 | `ce92c8b` | modernisation (`04-modernize-editing-plugins`) |

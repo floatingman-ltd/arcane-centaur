@@ -9,6 +9,9 @@ into Neovim:
 |*Claude CLI* |Ask Claude to suggest shell commands or explain
 code without leaving the editor
 
+|*GitHub Copilot* |The same `<leader>gc` keys driven by Copilot, plus
+inline completion, on machines that select it
+
 |*Research popup* |Ask a free-form question and read the answer in a
 floating window — local (grounded in this config) or general knowledge
 
@@ -24,12 +27,49 @@ assistants such as Claude Code
 
 [cols="1,3"]
 |===
+| xref:#choosing-agent[Choosing the agent] | Claude or Copilot, per machine
 | xref:#claude-cli[Claude CLI] | Suggest commands, explain code
+| xref:#copilot[GitHub Copilot] | Session, one-shot commands, inline completion
 | xref:#research-popup[Research popup] | Free-form question popup
 | xref:#openspec[OpenSpec] | Change workflow from Neovim keymaps
 | xref:#serena[Serena MCP Server] | Symbol-aware code intelligence
 | xref:#avante[Avante] | Q&A chat with a local ollama model
 |===
+
+'''''
+
+[[choosing-agent]]
+== Choosing the agent: Claude or Copilot
+
+Each machine uses one AI agent, chosen by the `NVIM_AI_AGENT` environment
+variable when Neovim starts:
+
+[cols="1,3",options="header",]
+|===
+|Value |Agent
+|unset, empty or `claude` |Claude: the xref:#claude-cli[Claude CLI] and the
+Claude Code session
+|`copilot` |GitHub Copilot: the xref:#copilot[Copilot session, one-shot
+commands, inline completion and Avante provider]
+|anything else |A warning naming the value, then Claude
+|===
+
+The value is case-insensitive. Only the selected agent's plugins, commands
+and `++<++leader++>++gc` maps are loaded, and the which-key `++<++leader++>++gc`
+group is labelled "Claude" or "Copilot" to match.
+
+To use Copilot on a machine, add this to its shell rc (`~/.zshrc` or
+`~/.bashrc`):
+
+[source,sh]
+----
+export NVIM_AI_AGENT=copilot
+----
+
+Then restart Neovim. If Neovim runs inside tmux, restart the tmux server
+too (`tmux kill-server`); a server started before the variable was set
+keeps the old environment. If `++<++leader++>++gc` shows "Claude" on a
+machine meant to use Copilot, the variable did not reach Neovim.
 
 '''''
 
@@ -194,6 +234,98 @@ No extra install needed — claudecode.nvim uses the same binary.
 
 '''''
 
+[[copilot]]
+== GitHub Copilot
+
+Used when `NVIM_AI_AGENT=copilot` (see xref:#choosing-agent[Choosing the
+agent]). Copilot takes over the `++<++leader++>++gc` keys that Claude uses
+on other machines, and adds inline completion.
+
+=== Session
+
+The `copilot` CLI runs in a terminal split on the right
+(`lua/config/copilot_session.lua`).
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`++<++leader++>++gcc` |Normal |Show or hide the session. Hiding leaves
+`copilot` running
+|`++<++leader++>++gcf` |Normal |Focus the session, opening it if needed
+|`++<++leader++>++gcb` |Normal |Type `@++<++path++>++` for the current file
+into the session input
+|`++<++leader++>++gcv` |Visual |Type the selected lines, as a fenced block
+headed `path:start-end`, into the session input
+|===
+
+`++<++leader++>++gcb` and `++<++leader++>++gcv` start the session if it is
+not running. Nothing is submitted: the text waits on the input line so you
+can add a question and press Enter. Text sent while `copilot` is still
+starting is held until it is ready.
+
+There is no `++<++leader++>++gca`/`++<++leader++>++gcr`. Copilot edits
+files itself, asking for approval in the session, and has no diff for the
+editor to accept or reject.
+
+[cols=",",options="header",]
+|===
+|Command |Description
+|`:CopilotSession` |Show or hide the session (`++<++leader++>++gcc`)
+|`:++[++range++]++CopilotSessionSend` |Type the lines into the session
+(`++<++leader++>++gcv`)
+|===
+
+=== One-shot commands
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`++<++leader++>++gcs` |Normal / Visual |`:CopilotSuggest`: suggest a shell
+command for the selection or buffer
+|`++<++leader++>++gce` |Normal / Visual |`:CopilotExplain`: explain the
+selection or buffer
+|===
+
+These run `copilot -s --available-tools= -p ++<++prompt++>++` and show the
+reply in a floating window (`q` or `Esc` closes it). `--available-tools=`
+gives Copilot no tools for these calls, so a one-shot question cannot edit
+files or run commands.
+
+=== Inline completion
+
+https://github.com/github/copilot.vim[copilot.vim] shows suggestions as
+ghost text in insert mode.
+
+[cols=",",options="header",]
+|===
+|Key (insert mode) |Action
+|`++<++C-J++>++` |Accept the whole suggestion
+|`++<++M-f++>++` |Accept the next word
+|===
+
+`++<++Tab++>++` is not taken by Copilot.
+
+=== Avante provider
+
+On Copilot machines `++<++leader++>++ac` switches xref:#avante[Avante] to
+its `copilot` provider and opens it. Ollama stays the default at startup;
+`++<++leader++>++ao` switches back. Check the client's Copilot policy before
+using this: it calls Copilot's chat API from a third-party plugin.
+
+=== Prerequisites
+
+. Install the CLI (Node 22+): `npm install -g @github/copilot`
+. Sign in: run `copilot`, then `/login`
+. In Neovim, run `:Lazy install` (installs copilot.vim), then
+`:Copilot setup` to sign in for inline completion. The Avante provider
+reuses this sign-in.
+
+If the account's Copilot policy blocks the CLI, `:CopilotSuggest` and
+`:CopilotExplain` show the CLI's message, e.g. `Access denied by policy
+settings`, in an error notification.
+
+'''''
+
 [[research-popup]]
 == Research Popup
 
@@ -326,8 +458,10 @@ uv tool install serena-agent
 == AI Research — Avante
 
 https://github.com/yetone/avante.nvim[avante.nvim] provides a Q&A chat
-interface inside Neovim. It is configured *Ollama-only* — an offline, local
-model with no external account or API key.
+interface inside Neovim. Its default provider is Ollama, an offline, local
+model with no external account or API key. On machines that select Copilot
+(xref:#choosing-agent[Choosing the agent]) a `copilot` provider is also
+available on `++<++leader++>++ac`.
 
 [NOTE]
 ====
@@ -353,6 +487,7 @@ native `vim.ui` for its select/input prompts.
 |Key |Action
 |`++<++leader++>++aa` |Open avante with the current provider (ollama)
 |`++<++leader++>++ao` |Select the ollama provider and open avante
+|`++<++leader++>++ac` |Copilot machines only: select the copilot provider and open avante
 |`++<++C++>++s` |Submit the prompt (inside the avante input; `++<++CR++>++` inserts a newline)
 |===
 
@@ -507,7 +642,7 @@ The Claude (Anthropic) provider is *not configured*. Two reasons:
 * The API-key path (`ANTHROPIC_API_KEY`) avoids that, but adds an external
   account/billing dependency this config would rather not require.
 
-So avante stays Ollama-only. To re-enable Claude with an API key (the
+So avante has no Claude provider. To re-enable Claude with an API key (the
 ToS-safe path), add a `claude` provider back to `lua/plugins/avante.lua` and
 a `++<++leader++>++ac` mapping:
 

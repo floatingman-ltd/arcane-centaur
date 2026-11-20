@@ -47,4 +47,4 @@
 - [x] 9.1 `find . -name '*.lua' -print0 | xargs -0 luac -p`
 - [x] 9.2 Add `## Change · add-ai-agent-selector` to `openspec/TEST_PLAN.md`, covering both agents (Claude unset on this laptop; `NVIM_AI_AGENT=copilot` on this laptop and on the client)
 - [ ] 9.3 Walk every TEST_PLAN step in a live Neovim session and tick only what was confirmed
-- [x] 9.4 Mirror the change artifacts onto `main`
+- [ ] 9.4 Mirror the change artifacts onto `main`

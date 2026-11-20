@@ -1,7 +1,10 @@
 == AI Tools Cheat Sheet
 
-Covers in-editor keymaps for the *Claude CLI* (`claude`) and the
-*OpenSpec* workflow tool.
+Covers in-editor keymaps for the *Claude CLI* (`claude`), *GitHub
+Copilot* and the *OpenSpec* workflow tool.
+
+`++<++leader++>++gc` belongs to one agent per machine: Claude by default,
+Copilot when `NVIM_AI_AGENT=copilot` (xref:ai/ai-tools.adoc#choosing-agent[Choosing the agent]).
 
 *Leader* = `Space` · xref:editor/keybindings.adoc#reading-tables[Reading these tables]
 
@@ -88,6 +91,26 @@ explanation
 
 '''''
 
+== GitHub Copilot (`NVIM_AI_AGENT=copilot`)
+
+[cols=",,",options="header",]
+|===
+|Keys |Mode |Action
+|`++<++leader++>++gcc` |Normal |Show or hide the `copilot` session (keeps running when hidden)
+|`++<++leader++>++gcf` |Normal |Focus the session
+|`++<++leader++>++gcb` |Normal |Type `@++<++path++>++` for the current file into the session
+|`++<++leader++>++gcv` |Visual |Type the selection into the session (not submitted)
+|`++<++leader++>++gcs` |Normal / Visual |`:CopilotSuggest`: suggest a shell command
+|`++<++leader++>++gce` |Normal / Visual |`:CopilotExplain`: explain code
+|`++<++C-J++>++` |Insert |Accept the inline suggestion
+|`++<++M-f++>++` |Insert |Accept the next word of the suggestion
+|`++<++leader++>++ac` |Normal |Avante: select the copilot provider and open
+|===
+
+No `++<++leader++>++gca`/`++<++leader++>++gcr` under Copilot.
+
+'''''
+
 == Research Popup
 
 Ask a free-form question from any buffer and read the answer in a floating window.
@@ -159,6 +182,7 @@ The same workflows are available as Claude Code skills:
 |Key |Action
 |`++<++leader++>++aa` |Open avante with the current provider (ollama)
 |`++<++leader++>++ao` |Select the ollama provider and open avante
+|`++<++leader++>++ac` |Copilot machines only: select the copilot provider and open avante
 |`++<++C++>++s` |Submit the prompt (inside the avante input; `++<++CR++>++` = newline)
 |===
 

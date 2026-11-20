@@ -11,9 +11,16 @@
 -- `gc` (comment) operator on fast input — the `<Space>gc` prefix wasn't held and
 -- the buffered `gc` fired the comment. Registering at startup makes the prefix
 -- known before which-key initialises, matching how `claude_cli` binds gcs/gce.
+--
+-- Loaded only when Claude is the selected agent (lua/config/ai_agent.lua). With
+-- `cond` false lazy.nvim skips `init` as well, so none of these maps exist on a
+-- Copilot machine; lua/config/copilot_session.lua binds the same keys there.
 return {
   {
     "coder/claudecode.nvim",
+    cond = function()
+      return require("config.ai_agent").is_claude
+    end,
     cmd = {
       "ClaudeCode",
       "ClaudeCodeFocus",
