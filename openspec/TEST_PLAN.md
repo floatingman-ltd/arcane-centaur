@@ -4271,3 +4271,119 @@ Mostly documentation: every user command that plugins define and a user would ty
 2. Optional, once RK.3 passes: `rm -rf ~/.local/share/nvim/vendor/kulala.nvim` on this machine (nothing reads it now).
 
 - [ ] `:Lazy` is clean on `main`
+
+## Change · add-ai-agent-selector
+
+**Branch:** `feat/add-ai-agent-selector`
+
+`$NVIM_AI_AGENT` chooses the AI agent per machine (`lua/config/ai_agent.lua`). Unset or `claude` keeps today's Claude setup; `copilot` loads GitHub Copilot instead: the `copilot` CLI in a terminal split on `<leader>gcc/gcf/gcb/gcv` (`lua/config/copilot_session.lua`), `:CopilotSuggest`/`:CopilotExplain` on `<leader>gcs/gce` (`lua/config/copilot_cli.lua`), copilot.vim inline completion (`lua/plugins/copilot.lua`), and (dropped during validation, see AS.7) avante's `copilot` provider. claudecode.nvim and copilot.vim are gated with `cond`; `init.lua` and `lua/keymaps.lua` dispatch on the selector; which-key labels `<leader>gc` with the agent's name. The selection helper shared by both CLI wrappers moved to `util.context_text`. Docs: AI guide and cheatsheet, getting-started, `CLAUDE.md`, `recommendations/tried-and-backed-out.md`.
+
+**Prerequisites:**
+- This laptop: `claude` and `copilot` (Copilot CLI 1.0.54) on `$PATH`. This account's Copilot policy denies requests (`Access denied by policy settings`), so AS.3 and AS.4 check wiring and the failure path here; replies are checked on the client in AS.7.
+- The client AVD/WSL machine, with the branch checked out and the `copilot` CLI installed and signed in.
+
+### Prepare
+
+1. `git fetch origin && git checkout feat/add-ai-agent-selector`
+2. `find . -name '*.lua' -print0 | xargs -0 luac -p` (expect no output).
+
+- [ ] Branch checked out, all Lua parses
+
+> Headless pass 2026-11-20 on this laptop:
+> - The selector returned `claude Claude true false` with the variable unset and `copilot Copilot false true` for `Copilot`. For `gemini` it returned claude and warned `NVIM_AI_AGENT="gemini" is not recognised (expected claude or copilot); using claude`.
+> - Unset: `:ClaudeSuggest`/`:ClaudeCode` existed and none of the `:Copilot*` commands did. `<leader>gc` held `c f b a r s e` (normal) and `v s e` (visual), all described `Claude: …`. Avante keys were `<leader>aa,<leader>ao`.
+> - `NVIM_AI_AGENT=copilot`: no `:Claude*` commands, and `:CopilotSuggest`, `:CopilotExplain`, `:CopilotSession` and `:Copilot` existed. `<leader>gc` held `c f b s e` (normal) and `v s e` (visual), all described `Copilot: …`. Avante keys were `<leader>aa,<leader>ao,<leader>ac`.
+> - After dropping the avante copilot provider (AS.7 note), the same check under `NVIM_AI_AGENT=copilot` showed avante keys `<leader>aa,<leader>ao`, with the `<leader>gc` maps unchanged.
+> - After `InsertEnter`, insert `<C-J>` was described `Copilot: accept suggestion` and `<M-f>` `Copilot: accept next word`.
+> - `:1,3CopilotExplain` notified `copilot CLI failed (exit 1): Error: Access denied by policy settings …` (the message comes from stdout).
+>
+> Defect found and fixed: `<leader>gcb` sent right after the session started never reached the input, because the TUI drops input while it is starting. Sends are now queued until the terminal has been quiet for 600 ms after its first output (cap 15 s). Retest from a cold start: `add_buffer()` then `send_lines(1, 1)` showed `@lua/config/ai_agent.lua lua/config/ai_agent.lua:1-1` and the fenced line on the input, not submitted.
+>
+> Not exercised headlessly: which-key rendering, real keystroke timing on `<leader>gcv`, ghost text, avante's copilot provider, any successful Copilot reply.
+
+### Validate
+
+#### AS.1 — Claude machine unchanged (variable unset)
+
+1. In a shell without `NVIM_AI_AGENT`, start `nvim`, press `<Space>g` and pause.
+2. `<leader>gcc`, then `<leader>gcc` again.
+3. Select two lines, press `<leader>gcv`.
+4. `<leader>gce` on a buffer.
+
+- [ ] which-key shows the `gc` group labelled "Claude"
+- [ ] `<leader>gcc` toggles the Claude Code session as before
+- [ ] `<leader>gcv` sends the selection to Claude, and the lines are not commented
+- [ ] `<leader>gce` shows a Claude explanation in a float
+- [ ] `<leader>ac` does nothing, and `:Copilot` is not a command
+
+#### AS.2 — Unrecognised value
+
+1. `NVIM_AI_AGENT=gemini nvim`
+
+- [ ] A warning naming `gemini` appears, and `<leader>gc` is labelled "Claude"
+
+#### AS.3 — Copilot wiring on this laptop
+
+1. `NVIM_AI_AGENT=copilot nvim lua/config/ai_agent.lua`, press `<Space>g` and pause, then `<Space>gc` and pause.
+2. `<leader>gcc`; wait for the CLI; `<leader>gcc` again; `<leader>gcf`.
+3. `<C-\><C-n>`, back to the source window, `<leader>gcb`.
+4. Select two lines, press `<leader>gcv` quickly.
+5. Close Neovim, start it again as in step 1, and press `<leader>gcb` before anything else.
+
+- [ ] which-key shows the `gc` group labelled "Copilot", with no `a` or `r` entry under it
+- [ ] `<leader>gcc` opens a right-hand split running `copilot`; the second press closes it; `<leader>gcf` reopens the same session in terminal-insert mode
+- [ ] `<leader>gcb` puts `@lua/config/ai_agent.lua ` on the session input, not submitted
+- [ ] `<leader>gcv` puts the selection, headed `lua/config/ai_agent.lua:N-M` and fenced, on the input, not submitted, and the lines are not commented
+- [ ] Step 5 starts the session and the `@` mention arrives once it is ready
+- [ ] `:ClaudeCode` and `:ClaudeSuggest` are not commands
+
+#### AS.4 — Copilot one-shot failure path on this laptop
+
+1. In the AS.3 session, `<leader>gce`.
+
+- [ ] An error notification shows the CLI's `Access denied by policy settings` message, and no float opens
+
+#### AS.5 — Missing CLI
+
+1. `PATH=/usr/bin:/bin NVIM_AI_AGENT=copilot nvim`, then `<leader>gcc` and `<leader>gcs`.
+
+- [ ] Both show an error naming `npm install -g @github/copilot`; no split or float opens
+
+#### AS.6 — Docs build
+
+1. `./docker/antora/run.sh antora-playbook.yml`
+
+- [ ] The build completes with no new warnings for the pages this branch touches
+
+> 2026-11-20 build: no warnings from `ai/ai-tools.adoc`, `ai/ai-tools-cheatsheet.adoc` or `getting-started.adoc`. The `#choosing-agent` and `#copilot` anchors render, and the cheatsheet and getting-started link to `ai-tools.html#choosing-agent`.
+
+#### AS.7 — Client machine (Copilot licensed)
+
+1. Add `export NVIM_AI_AGENT=copilot` to the shell rc, open a new shell (and `tmux kill-server` if inside tmux), start `nvim`.
+2. `:Lazy install`, then `:Copilot setup` and complete the device sign-in.
+3. In a code buffer, type in insert mode until ghost text appears; press `<M-f>`, then `<C-J>`.
+4. `<leader>gce` on a selection; `<leader>gcs` on a buffer.
+5. `<leader>gcb`, type a question after the mention, press Enter.
+6. `<leader>ac`.
+
+- [X] which-key labels `gc` "Copilot"
+- [X] Ghost text appears; `<M-f>` inserts one word of it, `<C-J>` the rest; `<Tab>` behaves as it does without Copilot
+- [X] `<leader>gce` and `<leader>gcs` show Copilot's reply in a float
+- [X] The session answers a question about the mentioned file
+- [X] `<leader>ac` does nothing (the avante copilot provider was dropped; see the note below)
+
+> 2026-11-20, client: `<leader>ac` failed with `E5108: … avante/providers/copilot.lua:463: You must setup copilot with either copilot.lua or copilot.vim` (raised from `get_oauth_token`, line 123). avante v0.1.2, like v0.4.8 and v0.5.0, reads the token only from `~/.config/github-copilot/hosts.json` or `apps.json`; copilot.vim 1.59.0 stores it in `auth.db`. Fix: the provider and `<leader>ac` were removed and avante is Ollama-only on every machine again (design D6, `recommendations/tried-and-backed-out.md`). Re-check this step after pulling the fix.
+
+> 2026-11-20: merged by the user's decision with Prepare and AS.1–AS.6 unticked; defects found in use are logged separately. AS.7 (the client, Copilot licensed) was walked and passed. Prepare, AS.3, AS.4 and AS.6 have only the headless and build evidence recorded above; AS.1, AS.2 and AS.5 have none beyond the headless gating check. Listed in `openspec/DEFERRED_VERIFICATION.md` group B.
+
+### Raise PR & merge
+
+- [ ] Every box above is ticked
+- [ ] PR raised with an explicit `--title` (the branch has more than one commit)
+- [ ] Merged
+
+### Post-merge
+
+1. `git checkout main && git pull --rebase`
+
+- [ ] `nvim` on `main` with the variable unset behaves as AS.1

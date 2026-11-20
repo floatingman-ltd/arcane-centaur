@@ -100,7 +100,7 @@ return {
         group("<leader>b", "Debug"),
         group("<leader>e", { haskell = "Haskell: evaluate" }),
         group("<leader>g", "Git"),
-        group("<leader>gc", "Claude"),
+        group("<leader>gc", require("config.ai_agent").label),
         group("<leader>h", { haskell = "Git hunks / Hoogle", default = "Git hunks" }),
         group("<leader>i", { markdown = "Table: insert" }),
         group("<leader>o", "OpenSpec"),
@@ -133,7 +133,7 @@ return {
         -- mode <localleader>e holds vim-sexp's wrap-element maps, not Conjure's.
         group("<leader>a", "Avante", "x"),
         group("<leader>g", "Git", "x"),
-        group("<leader>gc", "Claude", "x"),
+        group("<leader>gc", require("config.ai_agent").label, "x"),
         group("<localleader>e", "sexp: wrap element", "x"),
         group("<localleader>j", "Jira", "x"),
         group("<localleader>s", "REPL", "x"),

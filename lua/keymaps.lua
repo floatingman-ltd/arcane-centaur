@@ -236,22 +236,23 @@ vim.api.nvim_create_user_command("Bd", function()
   vim.cmd("bdelete " .. target)
 end, { desc = "Delete buffer without closing window" })
 
--- GitHub Copilot has been removed; AI assistance is now provided by Claude.
--- Use Avante.nvim (<leader>aa) or the Claude CLI (<leader>gcs) for AI assistance.
 vim.keymap.set("n", "<leader>c", "<C-w>h", { noremap = true, silent = true, desc = "Window: focus left" })
 
--- Claude CLI (uses Claude Code's built-in authentication)
+-- One-shot AI commands for the selected agent (lua/config/ai_agent.lua):
+-- Claude uses `claude -p`, Copilot uses `copilot -p`; both show the reply in a float.
+local ai_agent = require("config.ai_agent")
+local ai_cmd = ai_agent.is_copilot and "Copilot" or "Claude"
 vim.keymap.set(
   { "n", "v" },
   "<leader>gcs",
-  "<cmd>ClaudeSuggest<CR>",
-  { noremap = true, silent = true, desc = "Claude: suggest shell command" }
+  "<cmd>" .. ai_cmd .. "Suggest<CR>",
+  { noremap = true, silent = true, desc = ai_agent.label .. ": suggest shell command" }
 )
 vim.keymap.set(
   { "n", "v" },
   "<leader>gce",
-  "<cmd>ClaudeExplain<CR>",
-  { noremap = true, silent = true, desc = "Claude: explain code" }
+  "<cmd>" .. ai_cmd .. "Explain<CR>",
+  { noremap = true, silent = true, desc = ai_agent.label .. ": explain code" }
 )
 
 -- :MarkdownPopup renders the current buffer in the shared markdown float,

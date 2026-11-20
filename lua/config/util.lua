@@ -139,4 +139,52 @@ function M.open_url(url)
   )
 end
 
+--- Extract text from an explicit command range, the active visual selection,
+--- or the whole buffer when neither applies.
+--
+-- `'<` / `'>` marks persist after leaving Visual mode, so they must not be
+-- treated as a real selection unless the command was invoked with a range or
+-- we are still currently in Visual mode.
+--
+---@param args? { range?: integer, line1?: integer, line2?: integer }
+---@return string  Multi-line text ready to pass to an AI CLI.
+function M.context_text(args)
+  local buf = vim.api.nvim_get_current_buf()
+  local line_count = vim.api.nvim_buf_line_count(buf)
+
+  local sl, el
+
+  if args and args.range and args.range > 0 then
+    sl = args.line1
+    el = args.line2
+  else
+    local mode = vim.fn.mode()
+    local is_visual_mode = mode == "v" or mode == "V" or mode == "\22"
+
+    if is_visual_mode then
+      local start_pos = vim.fn.getpos("'<")
+      local end_pos = vim.fn.getpos("'>")
+      sl = start_pos[2]
+      el = end_pos[2]
+    end
+  end
+
+  local has_selection = sl ~= nil
+    and el ~= nil
+    and sl > 0
+    and el > 0
+    and sl <= el
+    and sl <= line_count
+    and el <= line_count
+
+  if has_selection then
+    local lines = vim.api.nvim_buf_get_lines(buf, sl - 1, el, false)
+    return table.concat(lines, "\n")
+  end
+
+  -- Fall back to the whole buffer.
+  local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+  return table.concat(lines, "\n")
+end
+
 return M

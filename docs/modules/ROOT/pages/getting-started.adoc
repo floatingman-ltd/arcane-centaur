@@ -440,7 +440,8 @@ leaves the rest of the config fully functional.
 |===
 |Binary |Needed by |Install
 |`make` |avante.nvim's build step |`sudo apt install -y make` (included in `build-essential`)
-|`claude` |All three AI features |xref:#claude-cli[see below]
+|`claude` |All three AI features (default agent) |xref:#claude-cli[see below]
+|`copilot` |GitHub Copilot, on machines with `NVIM_AI_AGENT=copilot` |xref:#copilot-cli[see below]
 |`python3` |PlantUML diagram encoding |`sudo apt install -y python3`
 |`pandoc` + `jq` |Confluence publish and pull |`sudo apt install -y pandoc jq` — see xref:tooling/confluence.adoc#prerequisites[Confluence]
 |`docker` |Nine containerized features |xref:#docker[see above]
@@ -471,6 +472,19 @@ and a stray `ANTHROPIC_API_KEY` in your environment actively breaks `claude_cli`
 commands start failing.
 ====
 
+[[copilot-cli]]
+=== copilot CLI (machines that use Copilot)
+
+A machine that sets `NVIM_AI_AGENT=copilot` uses GitHub Copilot for the `++<++leader++>++gc` keys
+instead of Claude (xref:ai/ai-tools.adoc#choosing-agent[Choosing the agent]). It needs:
+
+. The CLI, which needs Node 22+ (xref:#nodejs[see below]): `npm install -g @github/copilot`
+. A sign-in: run `copilot`, then `/login`
+. In Neovim, `:Lazy install` (installs copilot.vim), then `:Copilot setup`
+
+The research popup (`++<++leader++>++?l` / `++<++leader++>++?a`) still uses `claude` on these
+machines.
+
 [[nodejs]]
 === Node.js and npm
 
@@ -495,6 +509,19 @@ nvm alias default lts/*
 node --version
 npm --version
 ----
+
+The `copilot` CLI (xref:#copilot-cli[machines that use Copilot]) needs Node 22 or newer. If
+`node --version` prints something below `v22`, for example on a machine where Node was installed
+earlier, install 22 and make it the default:
+
+[source,sh]
+----
+nvm install 22
+nvm alias default 22
+----
+
+Global npm packages are installed per Node version under nvm, so install `@github/copilot` after
+switching.
 
 [[lazygit]]
 === LazyGit (optional — enables the LazyGit float)
