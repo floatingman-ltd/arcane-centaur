@@ -4276,7 +4276,7 @@ Mostly documentation: every user command that plugins define and a user would ty
 
 **Branch:** `feat/add-ai-agent-selector`
 
-`$NVIM_AI_AGENT` chooses the AI agent per machine (`lua/config/ai_agent.lua`). Unset or `claude` keeps today's Claude setup; `copilot` loads GitHub Copilot instead: the `copilot` CLI in a terminal split on `<leader>gcc/gcf/gcb/gcv` (`lua/config/copilot_session.lua`), `:CopilotSuggest`/`:CopilotExplain` on `<leader>gcs/gce` (`lua/config/copilot_cli.lua`), copilot.vim inline completion (`lua/plugins/copilot.lua`), and avante's `copilot` provider on `<leader>ac`. claudecode.nvim and copilot.vim are gated with `cond`; `init.lua` and `lua/keymaps.lua` dispatch on the selector; which-key labels `<leader>gc` with the agent's name. The selection helper shared by both CLI wrappers moved to `util.context_text`. Docs: AI guide and cheatsheet, getting-started, `CLAUDE.md`, `recommendations/tried-and-backed-out.md`.
+`$NVIM_AI_AGENT` chooses the AI agent per machine (`lua/config/ai_agent.lua`). Unset or `claude` keeps today's Claude setup; `copilot` loads GitHub Copilot instead: the `copilot` CLI in a terminal split on `<leader>gcc/gcf/gcb/gcv` (`lua/config/copilot_session.lua`), `:CopilotSuggest`/`:CopilotExplain` on `<leader>gcs/gce` (`lua/config/copilot_cli.lua`), copilot.vim inline completion (`lua/plugins/copilot.lua`), and (dropped during validation, see AS.7) avante's `copilot` provider. claudecode.nvim and copilot.vim are gated with `cond`; `init.lua` and `lua/keymaps.lua` dispatch on the selector; which-key labels `<leader>gc` with the agent's name. The selection helper shared by both CLI wrappers moved to `util.context_text`. Docs: AI guide and cheatsheet, getting-started, `CLAUDE.md`, `recommendations/tried-and-backed-out.md`.
 
 **Prerequisites:**
 - This laptop: `claude` and `copilot` (Copilot CLI 1.0.54) on `$PATH`. This account's Copilot policy denies requests (`Access denied by policy settings`), so AS.3 and AS.4 check wiring and the failure path here; replies are checked on the client in AS.7.
@@ -4293,6 +4293,7 @@ Mostly documentation: every user command that plugins define and a user would ty
 > - The selector returned `claude Claude true false` with the variable unset and `copilot Copilot false true` for `Copilot`. For `gemini` it returned claude and warned `NVIM_AI_AGENT="gemini" is not recognised (expected claude or copilot); using claude`.
 > - Unset: `:ClaudeSuggest`/`:ClaudeCode` existed and none of the `:Copilot*` commands did. `<leader>gc` held `c f b a r s e` (normal) and `v s e` (visual), all described `Claude: …`. Avante keys were `<leader>aa,<leader>ao`.
 > - `NVIM_AI_AGENT=copilot`: no `:Claude*` commands, and `:CopilotSuggest`, `:CopilotExplain`, `:CopilotSession` and `:Copilot` existed. `<leader>gc` held `c f b s e` (normal) and `v s e` (visual), all described `Copilot: …`. Avante keys were `<leader>aa,<leader>ao,<leader>ac`.
+> - After dropping the avante copilot provider (AS.7 note), the same check under `NVIM_AI_AGENT=copilot` showed avante keys `<leader>aa,<leader>ao`, with the `<leader>gc` maps unchanged.
 > - After `InsertEnter`, insert `<C-J>` was described `Copilot: accept suggestion` and `<M-f>` `Copilot: accept next word`.
 > - `:1,3CopilotExplain` notified `copilot CLI failed (exit 1): Error: Access denied by policy settings …` (the message comes from stdout).
 >
@@ -4363,13 +4364,15 @@ Mostly documentation: every user command that plugins define and a user would ty
 3. In a code buffer, type in insert mode until ghost text appears; press `<M-f>`, then `<C-J>`.
 4. `<leader>gce` on a selection; `<leader>gcs` on a buffer.
 5. `<leader>gcb`, type a question after the mention, press Enter.
-6. `<leader>ac`, ask a question; then `<leader>ao`.
+6. `<leader>ac`.
 
 - [ ] which-key labels `gc` "Copilot"
 - [ ] Ghost text appears; `<M-f>` inserts one word of it, `<C-J>` the rest; `<Tab>` behaves as it does without Copilot
 - [ ] `<leader>gce` and `<leader>gcs` show Copilot's reply in a float
 - [ ] The session answers a question about the mentioned file
-- [ ] Avante answers through the copilot provider (or the client's policy blocks it, which is recorded here), and `<leader>ao` switches back to ollama
+- [ ] `<leader>ac` does nothing (the avante copilot provider was dropped; see the note below)
+
+> 2026-11-20, client: `<leader>ac` failed with `E5108: … avante/providers/copilot.lua:463: You must setup copilot with either copilot.lua or copilot.vim` (raised from `get_oauth_token`, line 123). avante v0.1.2, like v0.4.8 and v0.5.0, reads the token only from `~/.config/github-copilot/hosts.json` or `apps.json`; copilot.vim 1.59.0 stores it in `auth.db`. Fix: the provider and `<leader>ac` were removed and avante is Ollama-only on every machine again (design D6, `recommendations/tried-and-backed-out.md`). Re-check this step after pulling the fix.
 
 ### Raise PR & merge
 
