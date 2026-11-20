@@ -56,6 +56,8 @@ Genuinely incomplete, and each says so in place.
 
 **`Change · add-lazygit-float` LG.13 — docs.** Deferred by the user on 2026-10-01. A local Antora build on the branch produced the LazyGit page and nav link, but nobody has looked at the rendered pages or at the `<leader>?` cheatsheet section.
 
+**`Change · add-ai-agent-selector` Prepare and AS.1–AS.6 — this laptop.** Merged by the user on 2026-11-20 with these unticked, to log defects as they are found instead. AS.7, the Copilot-licensed client, was walked and passed. Headless evidence only: under each of unset, `gemini` and `copilot`, the selector value, which commands exist, the `<leader>gc` map descriptions and the avante keys; the Copilot policy-denied error notification; `gcb`/`gcv` reaching the session input from a cold start; the Antora build. Never looked at: the which-key `gc` label on this laptop, Claude's session and `gcv` after the change (AS.1), the `gemini` warning in a live session (AS.2), `gcv` keystroke timing under Copilot (AS.3), the missing-CLI messages (AS.5).
+
 ---
 
 ## C. Changes in flight, paused mid-validation

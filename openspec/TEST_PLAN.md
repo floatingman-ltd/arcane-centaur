@@ -4374,6 +4374,8 @@ Mostly documentation: every user command that plugins define and a user would ty
 
 > 2026-11-20, client: `<leader>ac` failed with `E5108: … avante/providers/copilot.lua:463: You must setup copilot with either copilot.lua or copilot.vim` (raised from `get_oauth_token`, line 123). avante v0.1.2, like v0.4.8 and v0.5.0, reads the token only from `~/.config/github-copilot/hosts.json` or `apps.json`; copilot.vim 1.59.0 stores it in `auth.db`. Fix: the provider and `<leader>ac` were removed and avante is Ollama-only on every machine again (design D6, `recommendations/tried-and-backed-out.md`). Re-check this step after pulling the fix.
 
+> 2026-11-20: merged by the user's decision with Prepare and AS.1–AS.6 unticked; defects found in use are logged separately. AS.7 (the client, Copilot licensed) was walked and passed. Prepare, AS.3, AS.4 and AS.6 have only the headless and build evidence recorded above; AS.1, AS.2 and AS.5 have none beyond the headless gating check. Listed in `openspec/DEFERRED_VERIFICATION.md` group B.
+
 ### Raise PR & merge
 
 - [ ] Every box above is ticked
