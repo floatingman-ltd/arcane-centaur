@@ -4366,11 +4366,11 @@ Mostly documentation: every user command that plugins define and a user would ty
 5. `<leader>gcb`, type a question after the mention, press Enter.
 6. `<leader>ac`.
 
-- [ ] which-key labels `gc` "Copilot"
-- [ ] Ghost text appears; `<M-f>` inserts one word of it, `<C-J>` the rest; `<Tab>` behaves as it does without Copilot
-- [ ] `<leader>gce` and `<leader>gcs` show Copilot's reply in a float
-- [ ] The session answers a question about the mentioned file
-- [ ] `<leader>ac` does nothing (the avante copilot provider was dropped; see the note below)
+- [X] which-key labels `gc` "Copilot"
+- [X] Ghost text appears; `<M-f>` inserts one word of it, `<C-J>` the rest; `<Tab>` behaves as it does without Copilot
+- [X] `<leader>gce` and `<leader>gcs` show Copilot's reply in a float
+- [X] The session answers a question about the mentioned file
+- [X] `<leader>ac` does nothing (the avante copilot provider was dropped; see the note below)
 
 > 2026-11-20, client: `<leader>ac` failed with `E5108: … avante/providers/copilot.lua:463: You must setup copilot with either copilot.lua or copilot.vim` (raised from `get_oauth_token`, line 123). avante v0.1.2, like v0.4.8 and v0.5.0, reads the token only from `~/.config/github-copilot/hosts.json` or `apps.json`; copilot.vim 1.59.0 stores it in `auth.db`. Fix: the provider and `<leader>ac` were removed and avante is Ollama-only on every machine again (design D6, `recommendations/tried-and-backed-out.md`). Re-check this step after pulling the fix.
 
