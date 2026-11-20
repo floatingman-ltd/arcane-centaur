@@ -60,9 +60,13 @@ The argv is `copilot -s --available-tools= -p <prompt>` (checked against Copilot
 
 `github/copilot.vim`, `cond` on Copilot, `event = "InsertEnter"`. Maps from `95acd42^`: insert `<C-J>` accept (with `vim.g.copilot_no_tab_map = true`, so `<Tab>` stays with blink/indent) and `<M-f>` accept-word. blink's keymap has `preset = "none"` and binds neither key; `<C-j>` is bound in normal mode only (`lua/keymaps.lua:17`). The old `copilot_mcp_servers` Serena block is not restored, because copilot.vim does not run agent tools. Serena belongs to the CLI's own MCP config.
 
-### D6. Avante: conditional `copilot` provider
+### D6. Avante: no `copilot` provider (dropped during validation)
 
-When Copilot is selected, `opts.providers.copilot = {}` (avante's built-in copilot provider reads copilot.vim's stored OAuth token), and `<leader>ac` switches to it and opens. `provider` stays `"ollama"`. When Claude is selected, neither the provider nor `<leader>ac` is added, so the "no `<leader>ac`" decision on the Claude machine still holds.
+The first implementation added `opts.providers.copilot = {}` and a `<leader>ac` map on Copilot machines, on the understanding that avante's built-in copilot provider reads copilot.vim's stored OAuth token. On the client, `<leader>ac` failed with `You must setup copilot with either copilot.lua or copilot.vim` (`avante/providers/copilot.lua:123`). avante v0.1.2 looks only for `github-copilot/hosts.json` (copilot.lua) or `apps.json` (older copilot.vim), and v0.4.8 and v0.5.0 have the same lookup. copilot.vim 1.59.0 stores its sign-in in `~/.config/github-copilot/auth.db`; on this laptop that directory holds only `auth.db` and `versions.json`.
+
+avante's untagged `main` replaces the provider with its own sign-in (`:Avante copilot login`, credentials under `stdpath("data")/avante/copilot/`), independent of copilot.vim. It arrived in a Rust rewrite with breaking command changes, so moving to it would affect the Ollama setup on every machine and is not part of this change.
+
+Decision: avante stays Ollama-only everywhere; `avante-runtime` and `ai-research-ollama` are unchanged. Revisit when an avante release ships the new sign-in.
 
 ### D7. which-key label from the selector
 
@@ -71,7 +75,6 @@ When Copilot is selected, `opts.providers.copilot = {}` (avante's built-in copil
 ## Risks / Trade-offs
 
 - [Copilot CLI flags or `@` mention syntax differ from 2026-06 knowledge] → D3/D4 verification tasks check them against `copilot --help` on the client machine before ticking.
-- [Avante's copilot provider uses Copilot's chat API from a third-party client. The client's Copilot policy may not allow that] → The provider only takes effect on `<leader>ac`, and Ollama stays the default. Check the client's policy before using it; it can be dropped without touching the other three surfaces.
 - [`$NVIM_AI_AGENT` is not set in the environment Neovim starts from (GUI launcher, a tmux server started earlier)] → The fallback is Claude, which shows "Claude" in which-key on the Copilot machine and is immediately visible. Document setting it in the shell rc and restarting tmux.
 - [Both agents' code paths can rot, because each machine exercises only one] → Each path gets its own TEST_PLAN section. Validate with `NVIM_AI_AGENT=copilot nvim` on this laptop as well as on the client.
 

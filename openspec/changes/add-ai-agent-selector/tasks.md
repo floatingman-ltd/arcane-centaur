@@ -29,6 +29,7 @@
 ## 6. Avante
 
 - [x] 6.1 `lua/plugins/avante.lua`: when Copilot is selected, add `providers.copilot` and a `<leader>ac` map that switches to it and opens; leave `provider = "ollama"`; update the header comment
+- [x] 6.2 Drop the provider again after `<leader>ac` failed on the client (design D6): `lua/plugins/avante.lua` back to its `main` version, Avante docs, `CLAUDE.md`, the `avante-runtime`/`ai-research-ollama` deltas removed, the reason recorded in `tried-and-backed-out.md`
 
 ## 7. which-key
 
@@ -37,7 +38,7 @@
 ## 8. Docs
 
 - [x] 8.1 `docs/modules/ROOT/pages/ai/ai-tools.adoc`: an agent-selection section (`NVIM_AI_AGENT`, rc file, restart tmux/Neovim), and the Copilot surfaces with prerequisites (`copilot` CLI, `:Copilot setup`)
-- [x] 8.2 `ai-tools-cheatsheet.adoc`: the `<leader>gc` table per agent, `<C-J>`/`<M-f>`, `<leader>ac` (Copilot only)
+- [x] 8.2 `ai-tools-cheatsheet.adoc`: the `<leader>gc` table per agent, `<C-J>`/`<M-f>`
 - [x] 8.3 `getting-started.adoc`: the `copilot` CLI as a prerequisite on Copilot machines
 - [x] 8.4 Update the `CLAUDE.md` AI assistance section and the Copilot row in `recommendations/tried-and-backed-out.md`
 - [x] 8.5 Build the Antora site and confirm both pages render

@@ -5,9 +5,6 @@
 --   <C-J>  accept the whole suggestion
 --   <M-f>  accept the next word only
 -- <Tab> is left alone (copilot_no_tab_map), so it keeps its usual behaviour.
---
--- Avante's `copilot` provider (lua/plugins/avante.lua) reuses the token this
--- plugin stores, so `:Copilot setup` also authenticates <leader>ac.
 return {
   {
     "github/copilot.vim",

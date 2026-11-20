@@ -50,7 +50,7 @@ variable when Neovim starts:
 |unset, empty or `claude` |Claude: the xref:#claude-cli[Claude CLI] and the
 Claude Code session
 |`copilot` |GitHub Copilot: the xref:#copilot[Copilot session, one-shot
-commands, inline completion and Avante provider]
+commands and inline completion]
 |anything else |A warning naming the value, then Claude
 |===
 
@@ -313,20 +313,14 @@ ghost text in insert mode.
 
 `++<++Tab++>++` is not taken by Copilot.
 
-=== Avante provider
-
-On Copilot machines `++<++leader++>++ac` switches xref:#avante[Avante] to
-its `copilot` provider and opens it. Ollama stays the default at startup;
-`++<++leader++>++ao` switches back. Check the client's Copilot policy before
-using this: it calls Copilot's chat API from a third-party plugin.
+Avante has no Copilot provider: see xref:#avante[Avante].
 
 === Prerequisites
 
 . Install the CLI (Node 22+): `npm install -g @github/copilot`
 . Sign in: run `copilot`, then `/login`
 . In Neovim, run `:Lazy install` (installs copilot.vim), then
-`:Copilot setup` to sign in for inline completion. The Avante provider
-reuses this sign-in.
+`:Copilot setup` to sign in for inline completion.
 
 If the account's Copilot policy blocks the CLI, `:CopilotSuggest` and
 `:CopilotExplain` show the CLI's message, e.g. `Access denied by policy
@@ -466,10 +460,19 @@ uv tool install serena-agent
 == AI Research — Avante
 
 https://github.com/yetone/avante.nvim[avante.nvim] provides a Q&A chat
-interface inside Neovim. Its default provider is Ollama, an offline, local
-model with no external account or API key. On machines that select Copilot
-(xref:#choosing-agent[Choosing the agent]) a `copilot` provider is also
-available on `++<++leader++>++ac`.
+interface inside Neovim. It is configured *Ollama-only* — an offline, local
+model with no external account or API key.
+
+[NOTE]
+====
+There is no Copilot provider, on Copilot machines either. avante's tagged
+releases (up to v0.5.0) read Copilot's sign-in only from
+`~/.config/github-copilot/hosts.json` or `apps.json`, and copilot.vim 1.59
+stores it in `auth.db` instead, so the provider fails with `You must setup
+copilot with either copilot.lua or copilot.vim`. avante's untagged `main`
+has its own Copilot sign-in (`:Avante copilot login`); revisit once a
+release ships it.
+====
 
 [NOTE]
 ====
@@ -495,7 +498,6 @@ native `vim.ui` for its select/input prompts.
 |Key |Action
 |`++<++leader++>++aa` |Open avante with the current provider (ollama)
 |`++<++leader++>++ao` |Select the ollama provider and open avante
-|`++<++leader++>++ac` |Copilot machines only: select the copilot provider and open avante
 |`++<++C++>++s` |Submit the prompt (inside the avante input; `++<++CR++>++` inserts a newline)
 |===
 
@@ -650,7 +652,7 @@ The Claude (Anthropic) provider is *not configured*. Two reasons:
 * The API-key path (`ANTHROPIC_API_KEY`) avoids that, but adds an external
   account/billing dependency this config would rather not require.
 
-So avante has no Claude provider. To re-enable Claude with an API key (the
+So avante stays Ollama-only. To re-enable Claude with an API key (the
 ToS-safe path), add a `claude` provider back to `lua/plugins/avante.lua` and
 a `++<++leader++>++ac` mapping:
 
