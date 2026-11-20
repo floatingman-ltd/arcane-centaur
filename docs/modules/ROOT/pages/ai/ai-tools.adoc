@@ -66,10 +66,18 @@ To use Copilot on a machine, add this to its shell rc (`~/.zshrc` or
 export NVIM_AI_AGENT=copilot
 ----
 
-Then restart Neovim. If Neovim runs inside tmux, restart the tmux server
-too (`tmux kill-server`); a server started before the variable was set
-keeps the old environment. If `++<++leader++>++gc` shows "Claude" on a
-machine meant to use Copilot, the variable did not reach Neovim.
+Open a new shell and check the variable is set before starting Neovim:
+
+[source,sh]
+----
+echo $NVIM_AI_AGENT
+----
+
+It should print `copilot`. Then restart Neovim. If Neovim runs inside tmux,
+restart the tmux server too (`tmux kill-server`); a server started before
+the variable was set keeps the old environment. If `++<++leader++>++gc`
+shows "Claude" on a machine meant to use Copilot, the variable did not
+reach Neovim: run the `echo` from the shell Neovim was started in.
 
 '''''
 

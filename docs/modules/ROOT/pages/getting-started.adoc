@@ -510,6 +510,19 @@ node --version
 npm --version
 ----
 
+The `copilot` CLI (xref:#copilot-cli[machines that use Copilot]) needs Node 22 or newer. If
+`node --version` prints something below `v22`, for example on a machine where Node was installed
+earlier, install 22 and make it the default:
+
+[source,sh]
+----
+nvm install 22
+nvm alias default 22
+----
+
+Global npm packages are installed per Node version under nvm, so install `@github/copilot` after
+switching.
+
 [[lazygit]]
 === LazyGit (optional — enables the LazyGit float)
 
